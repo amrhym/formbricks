@@ -1,8 +1,8 @@
 "use server";
 
 import { z } from "zod";
-import { ZId } from "@formbricks/types/common";
-import { ZIntegrationInput } from "@formbricks/types/integration";
+import { ZId } from "@hivecfm/types/common";
+import { ZIntegrationInput } from "@hivecfm/types/integration";
 import { createOrUpdateIntegration, deleteIntegration } from "@/lib/integration/service";
 import { authenticatedActionClient } from "@/lib/utils/action-client";
 import { checkAuthorizationUpdated } from "@/lib/utils/action-client/action-client-middleware";

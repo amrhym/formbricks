@@ -1,5 +1,5 @@
-import { logger } from "@formbricks/logger";
-import { TooManyRequestsError } from "@formbricks/types/errors";
+import { logger } from "@hivecfm/logger";
+import { TooManyRequestsError } from "@hivecfm/types/errors";
 import { hashString } from "@/lib/hash-string";
 import { getClientIpFromHeaders } from "@/lib/utils/client-ip";
 import { checkRateLimit } from "./rate-limit";

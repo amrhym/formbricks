@@ -1,9 +1,9 @@
 import { Prisma } from "@prisma/client";
 import { afterEach, beforeEach, describe, expect, test, vi } from "vitest";
-import { prisma } from "@formbricks/database";
-import { DatabaseError, ResourceNotFoundError } from "@formbricks/types/errors";
-import { TSurveyQuota } from "@formbricks/types/quota";
-import { TResponseInput } from "@formbricks/types/responses";
+import { prisma } from "@hivecfm/database";
+import { DatabaseError, ResourceNotFoundError } from "@hivecfm/types/errors";
+import { TSurveyQuota } from "@hivecfm/types/quota";
+import { TResponseInput } from "@hivecfm/types/responses";
 import { getOrganizationByEnvironmentId } from "@/lib/organization/service";
 import { calculateTtcTotal } from "@/lib/response/utils";
 import { evaluateResponseQuotas } from "@/modules/ee/quotas/lib/evaluation-service";
@@ -30,7 +30,7 @@ vi.mock("@/lib/utils/validate", () => ({
   validateInputs: vi.fn(),
 }));
 
-vi.mock("@formbricks/database", () => ({
+vi.mock("@hivecfm/database", () => ({
   prisma: {
     response: {
       create: vi.fn(),
@@ -39,7 +39,7 @@ vi.mock("@formbricks/database", () => ({
   },
 }));
 
-vi.mock("@formbricks/logger", () => ({
+vi.mock("@hivecfm/logger", () => ({
   logger: {
     error: vi.fn(),
   },

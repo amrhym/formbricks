@@ -3,8 +3,8 @@
 import { ArrowDownIcon, ArrowUpIcon, MoreVertical, Trash2 } from "lucide-react";
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
-import { TContactAttributeKey } from "@formbricks/types/contact-attribute-key";
-import type { TBaseFilter, TBaseFilters, TSegment, TSegmentConnector } from "@formbricks/types/segment";
+import { TContactAttributeKey } from "@hivecfm/types/contact-attribute-key";
+import type { TBaseFilter, TBaseFilters, TSegment, TSegmentConnector } from "@hivecfm/types/segment";
 import { cn } from "@/lib/cn";
 import { structuredClone } from "@/lib/pollyfills/structuredClone";
 import {

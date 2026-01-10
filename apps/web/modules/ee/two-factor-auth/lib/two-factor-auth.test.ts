@@ -1,12 +1,12 @@
 import { afterEach, describe, expect, test, vi } from "vitest";
-import { prisma } from "@formbricks/database";
-import { InvalidInputError, ResourceNotFoundError } from "@formbricks/types/errors";
+import { prisma } from "@hivecfm/database";
+import { InvalidInputError, ResourceNotFoundError } from "@hivecfm/types/errors";
 import { symmetricDecrypt, symmetricEncrypt } from "@/lib/crypto";
 import { totpAuthenticatorCheck } from "@/modules/auth/lib/totp";
 import { verifyPassword } from "@/modules/auth/lib/utils";
 import { disableTwoFactorAuth, enableTwoFactorAuth, setupTwoFactorAuth } from "./two-factor-auth";
 
-vi.mock("@formbricks/database", () => ({
+vi.mock("@hivecfm/database", () => ({
   prisma: {
     user: {
       findUnique: vi.fn(),

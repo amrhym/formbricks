@@ -1,8 +1,8 @@
 "use server";
 
 import { z } from "zod";
-import { ResourceNotFoundError } from "@formbricks/types/errors";
-import { ZUserEmail } from "@formbricks/types/user";
+import { ResourceNotFoundError } from "@hivecfm/types/errors";
+import { ZUserEmail } from "@hivecfm/types/user";
 import { actionClient } from "@/lib/utils/action-client";
 import { ActionClientCtx } from "@/lib/utils/action-client/types/context";
 import { getUserByEmail } from "@/modules/auth/lib/user";

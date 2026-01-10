@@ -1,6 +1,6 @@
 "use client";
 
-import { TSurveyRatingQuestion } from "@formbricks/types/surveys/types";
+import { TSurveyRatingQuestion } from "@hivecfm/types/surveys/types";
 import { RatingResponse } from "@/modules/ui/components/rating-response";
 
 interface RatingScaleLegendProps {

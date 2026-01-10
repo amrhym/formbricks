@@ -1,8 +1,8 @@
 import { Language, Prisma, Project } from "@prisma/client";
 import { cache as reactCache } from "react";
-import { prisma } from "@formbricks/database";
-import { logger } from "@formbricks/logger";
-import { DatabaseError, ResourceNotFoundError } from "@formbricks/types/errors";
+import { prisma } from "@hivecfm/database";
+import { logger } from "@hivecfm/logger";
+import { DatabaseError, ResourceNotFoundError } from "@hivecfm/types/errors";
 
 export const getProject = reactCache(async (projectId: string): Promise<Project | null> => {
   try {

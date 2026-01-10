@@ -1,8 +1,8 @@
 import { Prisma } from "@prisma/client";
 import { beforeEach, describe, expect, test, vi } from "vitest";
-import { prisma } from "@formbricks/database";
-import { DatabaseError, InvalidInputError, ResourceNotFoundError } from "@formbricks/types/errors";
-import { TSurveyQuota } from "@formbricks/types/quota";
+import { prisma } from "@hivecfm/database";
+import { DatabaseError, InvalidInputError, ResourceNotFoundError } from "@hivecfm/types/errors";
+import { TSurveyQuota } from "@hivecfm/types/quota";
 import { validateInputs } from "@/lib/utils/validate";
 import { getQuota as getQuotaService } from "@/modules/ee/quotas/lib/quotas";
 import {
@@ -30,7 +30,7 @@ vi.mock("@/lib/utils/validate", () => ({
   validateInputs: vi.fn(),
 }));
 
-vi.mock("@formbricks/database", () => ({
+vi.mock("@hivecfm/database", () => ({
   prisma: {
     actionClass: {
       findUnique: vi.fn(),

@@ -2,7 +2,7 @@
 
 import { Language } from "@prisma/client";
 import { useTranslation } from "react-i18next";
-import { getLanguageLabel } from "@formbricks/i18n-utils/src/utils";
+import { getLanguageLabel } from "@hivecfm/i18n-utils/src/utils";
 import { DefaultTag } from "@/modules/ui/components/default-tag";
 import { Label } from "@/modules/ui/components/label";
 import {

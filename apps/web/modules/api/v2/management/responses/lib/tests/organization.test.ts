@@ -6,7 +6,7 @@ import {
   organizationId,
 } from "./__mocks__/organization.mock";
 import { beforeEach, describe, expect, test, vi } from "vitest";
-import { prisma } from "@formbricks/database";
+import { prisma } from "@hivecfm/database";
 import {
   getAllEnvironmentsFromOrganizationId,
   getMonthlyOrganizationResponseCount,
@@ -14,7 +14,7 @@ import {
   getOrganizationIdFromEnvironmentId,
 } from "@/modules/api/v2/management/responses/lib/organization";
 
-vi.mock("@formbricks/database", () => ({
+vi.mock("@hivecfm/database", () => ({
   prisma: {
     organization: {
       findFirst: vi.fn(),

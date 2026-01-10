@@ -4,7 +4,7 @@ import { Webhook } from "@prisma/client";
 import { WebhookIcon } from "lucide-react";
 import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
-import { TSurvey } from "@formbricks/types/surveys/types";
+import { TSurvey } from "@hivecfm/types/surveys/types";
 import { WebhookOverviewTab } from "@/modules/integrations/webhooks/components/webhook-overview-tab";
 import { WebhookSettingsTab } from "@/modules/integrations/webhooks/components/webhook-settings-tab";
 import {

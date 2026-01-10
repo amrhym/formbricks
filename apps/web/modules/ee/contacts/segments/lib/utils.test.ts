@@ -9,7 +9,7 @@ import {
   TSegmentFilter,
   TSegmentPersonFilter,
   TSegmentSegmentFilter,
-} from "@formbricks/types/segment";
+} from "@hivecfm/types/segment";
 import {
   addFilterBelow,
   addFilterInGroup,

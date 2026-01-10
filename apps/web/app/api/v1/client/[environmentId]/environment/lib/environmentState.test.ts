@@ -1,11 +1,11 @@
 import { afterEach, beforeEach, describe, expect, test, vi } from "vitest";
-import { prisma } from "@formbricks/database";
-import { logger } from "@formbricks/logger";
-import { TActionClass } from "@formbricks/types/action-classes";
-import { ResourceNotFoundError } from "@formbricks/types/errors";
-import { TJsEnvironmentState, TJsEnvironmentStateProject } from "@formbricks/types/js";
-import { TOrganization } from "@formbricks/types/organizations";
-import { TSurvey } from "@formbricks/types/surveys/types";
+import { prisma } from "@hivecfm/database";
+import { logger } from "@hivecfm/logger";
+import { TActionClass } from "@hivecfm/types/action-classes";
+import { ResourceNotFoundError } from "@hivecfm/types/errors";
+import { TJsEnvironmentState, TJsEnvironmentStateProject } from "@hivecfm/types/js";
+import { TOrganization } from "@hivecfm/types/organizations";
+import { TSurvey } from "@hivecfm/types/surveys/types";
 import { cache } from "@/lib/cache";
 import { getMonthlyOrganizationResponseCount } from "@/lib/organization/service";
 import { EnvironmentStateData, getEnvironmentStateData } from "./data";
@@ -19,14 +19,14 @@ vi.mock("@/lib/cache", () => ({
   },
 }));
 
-vi.mock("@formbricks/database", () => ({
+vi.mock("@hivecfm/database", () => ({
   prisma: {
     environment: {
       update: vi.fn(),
     },
   },
 }));
-vi.mock("@formbricks/logger", () => ({
+vi.mock("@hivecfm/logger", () => ({
   logger: {
     error: vi.fn(),
   },
@@ -41,8 +41,8 @@ vi.mock("@/lib/constants", () => ({
   ENTERPRISE_LICENSE_KEY: "mock_enterprise_license_key",
 }));
 
-// Mock @formbricks/cache
-vi.mock("@formbricks/cache", () => ({
+// Mock @hivecfm/cache
+vi.mock("@hivecfm/cache", () => ({
   createCacheKey: {
     environment: {
       state: vi.fn((environmentId: string) => `fb:env:${environmentId}:state`),

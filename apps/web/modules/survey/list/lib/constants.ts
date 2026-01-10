@@ -1,4 +1,4 @@
-import { TSurveyFilters } from "@formbricks/types/surveys/types";
+import { TSurveyFilters } from "@hivecfm/types/surveys/types";
 
 export const initialFilters: TSurveyFilters = {
   name: "",

@@ -1,8 +1,8 @@
 import { Prisma, Webhook } from "@prisma/client";
-import { prisma } from "@formbricks/database";
-import { PrismaErrorType } from "@formbricks/database/types/error";
-import { ZId } from "@formbricks/types/common";
-import { DatabaseError, ResourceNotFoundError } from "@formbricks/types/errors";
+import { prisma } from "@hivecfm/database";
+import { PrismaErrorType } from "@hivecfm/database/types/error";
+import { ZId } from "@hivecfm/types/common";
+import { DatabaseError, ResourceNotFoundError } from "@hivecfm/types/errors";
 import { validateInputs } from "@/lib/utils/validate";
 
 export const deleteWebhook = async (id: string): Promise<Webhook> => {

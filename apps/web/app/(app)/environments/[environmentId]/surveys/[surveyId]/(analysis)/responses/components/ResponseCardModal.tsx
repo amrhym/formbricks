@@ -1,11 +1,11 @@
 import { VisuallyHidden } from "@radix-ui/react-visually-hidden";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { useEffect, useMemo, useState } from "react";
-import { TEnvironment } from "@formbricks/types/environment";
-import { TResponse } from "@formbricks/types/responses";
-import { TSurvey } from "@formbricks/types/surveys/types";
-import { TTag } from "@formbricks/types/tags";
-import { TUser, TUserLocale } from "@formbricks/types/user";
+import { TEnvironment } from "@hivecfm/types/environment";
+import { TResponse } from "@hivecfm/types/responses";
+import { TSurvey } from "@hivecfm/types/surveys/types";
+import { TTag } from "@hivecfm/types/tags";
+import { TUser, TUserLocale } from "@hivecfm/types/user";
 import { SingleResponseCard } from "@/modules/analysis/components/SingleResponseCard";
 import { Button } from "@/modules/ui/components/button";
 import {

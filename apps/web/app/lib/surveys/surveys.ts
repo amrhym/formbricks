@@ -1,14 +1,14 @@
-import { TSurveyQuota } from "@formbricks/types/quota";
+import { TSurveyQuota } from "@hivecfm/types/quota";
 import {
   TResponseFilterCriteria,
   TResponseHiddenFieldsFilter,
   TSurveyContactAttributes,
   TSurveyMetaFieldFilter,
-} from "@formbricks/types/responses";
-import { TSurveyElementTypeEnum } from "@formbricks/types/surveys/elements";
-import { TSurvey } from "@formbricks/types/surveys/types";
-import { getTextContent } from "@formbricks/types/surveys/validation";
-import { TTag } from "@formbricks/types/tags";
+} from "@hivecfm/types/responses";
+import { TSurveyElementTypeEnum } from "@hivecfm/types/surveys/elements";
+import { TSurvey } from "@hivecfm/types/surveys/types";
+import { getTextContent } from "@hivecfm/types/surveys/validation";
+import { TTag } from "@hivecfm/types/tags";
 import {
   DateRange,
   FilterValue,

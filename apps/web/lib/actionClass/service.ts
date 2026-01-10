@@ -3,11 +3,11 @@
 import "server-only";
 import { ActionClass, Prisma } from "@prisma/client";
 import { cache as reactCache } from "react";
-import { prisma } from "@formbricks/database";
-import { PrismaErrorType } from "@formbricks/database/types/error";
-import { TActionClass, TActionClassInput, ZActionClassInput } from "@formbricks/types/action-classes";
-import { ZId, ZOptionalNumber, ZString } from "@formbricks/types/common";
-import { DatabaseError, ResourceNotFoundError } from "@formbricks/types/errors";
+import { prisma } from "@hivecfm/database";
+import { PrismaErrorType } from "@hivecfm/database/types/error";
+import { TActionClass, TActionClassInput, ZActionClassInput } from "@hivecfm/types/action-classes";
+import { ZId, ZOptionalNumber, ZString } from "@hivecfm/types/common";
+import { DatabaseError, ResourceNotFoundError } from "@hivecfm/types/errors";
 import { ITEMS_PER_PAGE } from "../constants";
 import { validateInputs } from "../utils/validate";
 

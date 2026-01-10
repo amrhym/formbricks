@@ -1,8 +1,8 @@
 import { useState } from "preact/hooks";
 import { useTranslation } from "react-i18next";
-import { NPS as Nps } from "@formbricks/survey-ui";
-import { type TResponseData, type TResponseTtc } from "@formbricks/types/responses";
-import type { TSurveyNPSElement } from "@formbricks/types/surveys/elements";
+import { NPS as Nps } from "@hivecfm/survey-ui";
+import { type TResponseData, type TResponseTtc } from "@hivecfm/types/responses";
+import type { TSurveyNPSElement } from "@hivecfm/types/surveys/elements";
 // Import as Nps to fix sonar issue - "Imported JSX component NPS must be in PascalCase"
 import { getLocalizedValue } from "@/lib/i18n";
 import { getUpdatedTtc, useTtc } from "@/lib/ttc";

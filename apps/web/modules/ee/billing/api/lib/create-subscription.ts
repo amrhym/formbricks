@@ -1,5 +1,5 @@
 import Stripe from "stripe";
-import { logger } from "@formbricks/logger";
+import { logger } from "@hivecfm/logger";
 import { STRIPE_API_VERSION, STRIPE_PRICE_LOOKUP_KEYS, WEBAPP_URL } from "@/lib/constants";
 import { env } from "@/lib/env";
 import { getOrganization } from "@/lib/organization/service";

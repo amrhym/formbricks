@@ -2,7 +2,7 @@
 
 import { usePathname } from "next/navigation";
 import { useTranslation } from "react-i18next";
-import { TOrganizationRole } from "@formbricks/types/memberships";
+import { TOrganizationRole } from "@hivecfm/types/memberships";
 import { getAccessFlags } from "@/lib/membership/utils";
 import { SecondaryNavigation } from "@/modules/ui/components/secondary-navigation";
 

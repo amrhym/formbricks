@@ -1,5 +1,5 @@
 import { OrganizationRole } from "@prisma/client";
-import { Result, err, ok } from "@formbricks/types/error-handlers";
+import { Result, err, ok } from "@hivecfm/types/error-handlers";
 import { IS_FORMBRICKS_CLOUD } from "@/lib/constants";
 import { ApiErrorResponseV2 } from "@/modules/api/v2/types/api-error";
 

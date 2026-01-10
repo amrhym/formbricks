@@ -8,10 +8,10 @@ import { GripIcon, Handshake, Undo2 } from "lucide-react";
 import { useMemo, useState } from "react";
 import toast from "react-hot-toast";
 import { useTranslation } from "react-i18next";
-import { TSurveyQuota } from "@formbricks/types/quota";
-import { TSurvey, TSurveyEndScreenCard, TSurveyRedirectUrlCard } from "@formbricks/types/surveys/types";
-import { getTextContent } from "@formbricks/types/surveys/validation";
-import { TUserLocale } from "@formbricks/types/user";
+import { TSurveyQuota } from "@hivecfm/types/quota";
+import { TSurvey, TSurveyEndScreenCard, TSurveyRedirectUrlCard } from "@hivecfm/types/surveys/types";
+import { getTextContent } from "@hivecfm/types/surveys/validation";
+import { TUserLocale } from "@hivecfm/types/user";
 import { cn } from "@/lib/cn";
 import { recallToHeadline } from "@/lib/utils/recall";
 import { EditorCardMenu } from "@/modules/survey/editor/components/editor-card-menu";
@@ -205,7 +205,7 @@ export const EditEndingCard = ({
         {...attributes}
         className={cn(
           open ? "bg-slate-50" : "",
-          "flex w-10 flex-col items-center justify-between rounded-l-lg border-b border-l border-t py-2 group-aria-expanded:rounded-bl-none",
+          "flex w-10 flex-col items-center justify-between rounded-l-lg border-t border-b border-l py-2 group-aria-expanded:rounded-bl-none",
           isInvalid ? "bg-red-400" : "bg-white group-hover:bg-slate-50"
         )}>
         <div className="mt-3 flex w-full justify-center">
@@ -215,7 +215,7 @@ export const EditEndingCard = ({
             <Undo2 className="h-4 w-4 rotate-180" />
           )}
         </div>
-        <button className="opacity-0 transition-all duration-300 hover:cursor-move group-hover:opacity-100">
+        <button className="opacity-0 transition-all duration-300 group-hover:opacity-100 hover:cursor-move">
           <GripIcon className="h-4 w-4" />
         </button>
       </div>

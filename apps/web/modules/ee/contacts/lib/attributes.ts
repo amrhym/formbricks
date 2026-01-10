@@ -1,7 +1,7 @@
-import { prisma } from "@formbricks/database";
-import { ZId, ZString } from "@formbricks/types/common";
-import { TContactAttributes, ZContactAttributes } from "@formbricks/types/contact-attribute";
-import { TContactAttributeKey } from "@formbricks/types/contact-attribute-key";
+import { prisma } from "@hivecfm/database";
+import { ZId, ZString } from "@hivecfm/types/common";
+import { TContactAttributes, ZContactAttributes } from "@hivecfm/types/contact-attribute";
+import { TContactAttributeKey } from "@hivecfm/types/contact-attribute-key";
 import { MAX_ATTRIBUTE_CLASSES_PER_ENVIRONMENT } from "@/lib/constants";
 import { validateInputs } from "@/lib/utils/validate";
 import { getContactAttributeKeys } from "@/modules/ee/contacts/lib/contact-attribute-keys";

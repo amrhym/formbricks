@@ -1,5 +1,5 @@
 import { beforeEach, describe, expect, test, vi } from "vitest";
-import { prisma } from "@formbricks/database";
+import { prisma } from "@hivecfm/database";
 import { TGetTeamsFilter } from "@/modules/api/v2/organizations/[organizationId]/teams/types/teams";
 import { createTeam, getTeams } from "../teams";
 
@@ -15,7 +15,7 @@ beforeEach(() => {
 });
 
 // Mock prisma methods
-vi.mock("@formbricks/database", () => ({
+vi.mock("@hivecfm/database", () => ({
   prisma: {
     team: {
       create: vi.fn(),

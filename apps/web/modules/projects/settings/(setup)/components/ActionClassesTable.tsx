@@ -1,8 +1,8 @@
 "use client";
 
 import { type JSX, useState } from "react";
-import { TActionClass } from "@formbricks/types/action-classes";
-import { TEnvironment } from "@formbricks/types/environment";
+import { TActionClass } from "@hivecfm/types/action-classes";
+import { TEnvironment } from "@hivecfm/types/environment";
 import { ActionDetailModal } from "./ActionDetailModal";
 
 interface ActionClassesTableProps {

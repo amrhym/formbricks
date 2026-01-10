@@ -2,7 +2,7 @@
 
 import React, { useMemo } from "react";
 import { useTranslation } from "react-i18next";
-import { TSegmentWithSurveyNames } from "@formbricks/types/segment";
+import { TSegmentWithSurveyNames } from "@hivecfm/types/segment";
 import { Button } from "@/modules/ui/components/button";
 import {
   Dialog,

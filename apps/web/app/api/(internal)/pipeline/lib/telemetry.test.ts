@@ -1,13 +1,13 @@
 import { IntegrationType } from "@prisma/client";
 import { afterEach, beforeEach, describe, expect, test, vi } from "vitest";
-import { getCacheService } from "@formbricks/cache";
-import { prisma } from "@formbricks/database";
-import { logger } from "@formbricks/logger";
+import { getCacheService } from "@hivecfm/cache";
+import { prisma } from "@hivecfm/database";
+import { logger } from "@hivecfm/logger";
 import { sendTelemetryEvents } from "./telemetry";
 
 // Mock dependencies
-vi.mock("@formbricks/cache");
-vi.mock("@formbricks/database", () => ({
+vi.mock("@hivecfm/cache");
+vi.mock("@hivecfm/database", () => ({
   prisma: {
     organization: {
       findFirst: vi.fn(),
@@ -29,7 +29,7 @@ vi.mock("@formbricks/database", () => ({
     $queryRaw: vi.fn(),
   },
 }));
-vi.mock("@formbricks/logger", () => ({
+vi.mock("@hivecfm/logger", () => ({
   logger: {
     error: vi.fn(),
     info: vi.fn(),

@@ -2,9 +2,9 @@ import "server-only";
 import { Prisma } from "@prisma/client";
 import { cache as reactCache } from "react";
 import { z } from "zod";
-import { prisma } from "@formbricks/database";
-import { ZId, ZOptionalNumber } from "@formbricks/types/common";
-import { DatabaseError, ResourceNotFoundError } from "@formbricks/types/errors";
+import { prisma } from "@hivecfm/database";
+import { ZId, ZOptionalNumber } from "@hivecfm/types/common";
+import { DatabaseError, ResourceNotFoundError } from "@hivecfm/types/errors";
 import {
   TResponseContact,
   TResponseContactAttributes,
@@ -13,12 +13,12 @@ import {
   TResponseTtc,
   TResponseVariables,
   ZResponseFilterCriteria,
-} from "@formbricks/types/responses";
+} from "@hivecfm/types/responses";
 import {
   TSurveyElement,
   TSurveyElementChoice,
   TSurveyElementTypeEnum,
-} from "@formbricks/types/surveys/elements";
+} from "@hivecfm/types/surveys/elements";
 import {
   TSurvey,
   TSurveyElementSummaryAddress,
@@ -33,8 +33,8 @@ import {
   TSurveyElementSummaryRating,
   TSurveyLanguage,
   TSurveySummary,
-} from "@formbricks/types/surveys/types";
-import { getTextContent } from "@formbricks/types/surveys/validation";
+} from "@hivecfm/types/surveys/types";
+import { getTextContent } from "@hivecfm/types/surveys/validation";
 import { getQuotasSummary } from "@/app/(app)/environments/[environmentId]/surveys/[surveyId]/(analysis)/summary/lib/survey";
 import { RESPONSES_PER_PAGE } from "@/lib/constants";
 import { getDisplayCountBySurveyId } from "@/lib/display/service";

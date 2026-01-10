@@ -2,9 +2,9 @@
 
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
-import { TActionClass } from "@formbricks/types/action-classes";
-import { TEnvironment } from "@formbricks/types/environment";
-import { TUserLocale } from "@formbricks/types/user";
+import { TActionClass } from "@hivecfm/types/action-classes";
+import { TEnvironment } from "@hivecfm/types/environment";
+import { TUserLocale } from "@hivecfm/types/user";
 import { SettingsCard } from "@/app/(app)/environments/[environmentId]/settings/components/SettingsCard";
 import { ActionClassesTable } from "@/modules/projects/settings/(setup)/components/ActionClassesTable";
 import { ActionClassDataRow } from "@/modules/projects/settings/(setup)/components/ActionRowData";

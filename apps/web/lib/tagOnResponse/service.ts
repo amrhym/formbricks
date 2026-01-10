@@ -1,10 +1,10 @@
 import "server-only";
 import { Prisma } from "@prisma/client";
 import { cache as reactCache } from "react";
-import { prisma } from "@formbricks/database";
-import { ZId } from "@formbricks/types/common";
-import { DatabaseError } from "@formbricks/types/errors";
-import { TTagsCount, TTagsOnResponses } from "@formbricks/types/tags";
+import { prisma } from "@hivecfm/database";
+import { ZId } from "@hivecfm/types/common";
+import { DatabaseError } from "@hivecfm/types/errors";
+import { TTagsCount, TTagsOnResponses } from "@hivecfm/types/tags";
 import { validateInputs } from "../utils/validate";
 
 const selectTagsOnResponse = {

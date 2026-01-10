@@ -1,6 +1,6 @@
 import "server-only";
-import { type CacheKey, type CacheService, getCacheService } from "@formbricks/cache";
-import { logger } from "@formbricks/logger";
+import { type CacheKey, type CacheService, getCacheService } from "@hivecfm/cache";
+import { logger } from "@hivecfm/logger";
 
 // Expose an async-leaning service to reflect lazy init for sync members like getRedisClient
 type AsyncCacheService = Omit<CacheService, "getRedisClient"> & {

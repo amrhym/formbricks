@@ -1,6 +1,6 @@
 "use client";
 
-import { TSortOption, TSurveyFilters } from "@formbricks/types/surveys/types";
+import { TSortOption, TSurveyFilters } from "@hivecfm/types/surveys/types";
 import { DropdownMenuItem } from "@/modules/ui/components/dropdown-menu";
 
 interface SortOptionProps {

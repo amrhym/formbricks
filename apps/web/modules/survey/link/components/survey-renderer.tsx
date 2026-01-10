@@ -1,8 +1,8 @@
 import { type Response } from "@prisma/client";
 import { notFound } from "next/navigation";
-import { TProjectStyling } from "@formbricks/types/project";
-import { TSurvey, TSurveyStyling } from "@formbricks/types/surveys/types";
-import { TUserLocale } from "@formbricks/types/user";
+import { TProjectStyling } from "@hivecfm/types/project";
+import { TSurvey, TSurveyStyling } from "@hivecfm/types/surveys/types";
+import { TUserLocale } from "@hivecfm/types/user";
 import {
   IMPRINT_URL,
   IS_FORMBRICKS_CLOUD,

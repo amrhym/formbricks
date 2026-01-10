@@ -17,7 +17,7 @@ const translations: Record<TranslationKey, TranslationValue> = {
   "emails.embed_survey_preview_email_didnt_request": "Didn't request this?",
   "emails.embed_survey_preview_email_environment_id": "Environment ID",
   "emails.embed_survey_preview_email_fight_spam":
-    "Help us fight spam and forward this mail to hola@formbricks.com",
+    "Help us fight spam and forward this mail to hola@hivecfm.com",
   "emails.embed_survey_preview_email_heading": "Preview Email Embed",
   "emails.embed_survey_preview_email_subject": "Formbricks Email Survey Preview",
   "emails.embed_survey_preview_email_text": "This is how the code snippet looks embedded into an email:",

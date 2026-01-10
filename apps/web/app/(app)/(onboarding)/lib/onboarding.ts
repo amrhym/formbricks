@@ -2,9 +2,9 @@
 
 import { Prisma } from "@prisma/client";
 import { cache as reactCache } from "react";
-import { prisma } from "@formbricks/database";
-import { ZId } from "@formbricks/types/common";
-import { DatabaseError } from "@formbricks/types/errors";
+import { prisma } from "@hivecfm/database";
+import { ZId } from "@hivecfm/types/common";
+import { DatabaseError } from "@hivecfm/types/errors";
 import { TOrganizationTeam } from "@/app/(app)/(onboarding)/types/onboarding";
 import { validateInputs } from "@/lib/utils/validate";
 

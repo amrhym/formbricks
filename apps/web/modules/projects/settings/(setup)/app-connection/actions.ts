@@ -1,9 +1,9 @@
 "use server";
 
 import { z } from "zod";
-import { ZActionClassInput } from "@formbricks/types/action-classes";
-import { ZId } from "@formbricks/types/common";
-import { ResourceNotFoundError } from "@formbricks/types/errors";
+import { ZActionClassInput } from "@hivecfm/types/action-classes";
+import { ZId } from "@hivecfm/types/common";
+import { ResourceNotFoundError } from "@hivecfm/types/errors";
 import { deleteActionClass, getActionClass, updateActionClass } from "@/lib/actionClass/service";
 import { getSurveysByActionClassId } from "@/lib/survey/service";
 import { actionClient, authenticatedActionClient } from "@/lib/utils/action-client";

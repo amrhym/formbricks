@@ -1,6 +1,6 @@
-import { TResponseData } from "@formbricks/types/responses";
-import { TSurvey } from "@formbricks/types/surveys/types";
-import { FORBIDDEN_IDS } from "@formbricks/types/surveys/validation";
+import { TResponseData } from "@hivecfm/types/responses";
+import { TSurvey } from "@hivecfm/types/surveys/types";
+import { FORBIDDEN_IDS } from "@hivecfm/types/surveys/validation";
 import { getElementsFromBlocks } from "@/modules/survey/lib/client-utils";
 import { transformElement } from "./transformers";
 import { validateElement } from "./validators";

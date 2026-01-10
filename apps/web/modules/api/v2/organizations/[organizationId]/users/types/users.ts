@@ -1,6 +1,6 @@
 import { z } from "zod";
-import { ZUser } from "@formbricks/database/zod/users";
-import { ZUserName } from "@formbricks/types/user";
+import { ZUser } from "@hivecfm/database/zod/users";
+import { ZUserName } from "@hivecfm/types/user";
 import { ZGetFilter } from "@/modules/api/v2/types/api-filter";
 
 export const ZGetUsersFilter = ZGetFilter.extend({

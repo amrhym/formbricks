@@ -1,5 +1,5 @@
 import { describe, expect, test } from "vitest";
-import type { TSurveyFilters } from "@formbricks/types/surveys/types";
+import type { TSurveyFilters } from "@hivecfm/types/surveys/types";
 import { getFormattedFilters } from "./utils";
 
 describe("getFormattedFilters", () => {

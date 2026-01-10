@@ -1,5 +1,5 @@
-import { logger } from "@formbricks/logger";
-import { ResourceNotFoundError } from "@formbricks/types/errors";
+import { logger } from "@hivecfm/logger";
+import { ResourceNotFoundError } from "@hivecfm/types/errors";
 import { ZDisplayCreateInputV2 } from "@/app/api/v2/client/[environmentId]/displays/types/display";
 import { responses } from "@/app/lib/api/response";
 import { transformErrorToDetails } from "@/app/lib/api/validator";

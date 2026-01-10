@@ -1,5 +1,5 @@
 import { signOut } from "next-auth/react";
-import { logger } from "@formbricks/logger";
+import { logger } from "@hivecfm/logger";
 import { FORMBRICKS_ENVIRONMENT_ID_LS } from "@/lib/localStorage";
 import { logSignOutAction } from "@/modules/auth/actions/sign-out";
 

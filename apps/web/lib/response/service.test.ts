@@ -1,12 +1,12 @@
 import { Prisma } from "@prisma/client";
 import { beforeEach, describe, expect, test, vi } from "vitest";
-import { prisma } from "@formbricks/database";
-import { DatabaseError, ResourceNotFoundError } from "@formbricks/types/errors";
-import { TResponseUpdateInput } from "@formbricks/types/responses";
+import { prisma } from "@hivecfm/database";
+import { DatabaseError, ResourceNotFoundError } from "@hivecfm/types/errors";
+import { TResponseUpdateInput } from "@hivecfm/types/responses";
 import { updateResponse } from "./service";
 import { calculateTtcTotal } from "./utils";
 
-vi.mock("@formbricks/database", () => ({
+vi.mock("@hivecfm/database", () => ({
   prisma: {
     response: {
       findUnique: vi.fn(),

@@ -1,7 +1,7 @@
 import { NextRequest } from "next/server";
 import { z } from "zod";
-import { logger } from "@formbricks/logger";
-import { OrganizationAccessType } from "@formbricks/types/api-key";
+import { logger } from "@hivecfm/logger";
+import { OrganizationAccessType } from "@hivecfm/types/api-key";
 import { IS_FORMBRICKS_CLOUD } from "@/lib/constants";
 import { authenticatedApiClient } from "@/modules/api/v2/auth/authenticated-api-client";
 import { responses } from "@/modules/api/v2/lib/response";

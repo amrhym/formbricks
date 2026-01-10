@@ -3,8 +3,8 @@
 import { Project, Response } from "@prisma/client";
 import { useCallback, useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
-import { TProjectStyling } from "@formbricks/types/project";
-import { TSurvey, TSurveyStyling } from "@formbricks/types/surveys/types";
+import { TProjectStyling } from "@hivecfm/types/project";
+import { TSurvey, TSurveyStyling } from "@hivecfm/types/surveys/types";
 import { cn } from "@/lib/cn";
 import { getFormattedErrorMessage } from "@/lib/utils/helper";
 import { validateSurveyPinAction } from "@/modules/survey/link/actions";

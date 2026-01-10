@@ -2,10 +2,10 @@ import "server-only";
 import { Prisma } from "@prisma/client";
 import { cache as reactCache } from "react";
 import { z } from "zod";
-import { prisma } from "@formbricks/database";
-import { logger } from "@formbricks/logger";
-import { ZId, ZOptionalNumber, ZString } from "@formbricks/types/common";
-import { DatabaseError, ResourceNotFoundError } from "@formbricks/types/errors";
+import { prisma } from "@hivecfm/database";
+import { logger } from "@hivecfm/logger";
+import { ZId, ZOptionalNumber, ZString } from "@hivecfm/types/common";
+import { DatabaseError, ResourceNotFoundError } from "@hivecfm/types/errors";
 import {
   TResponse,
   TResponseContact,
@@ -14,10 +14,10 @@ import {
   TResponseWithQuotas,
   ZResponseFilterCriteria,
   ZResponseUpdateInput,
-} from "@formbricks/types/responses";
-import { TSurveyElementTypeEnum } from "@formbricks/types/surveys/elements";
-import { TSurvey } from "@formbricks/types/surveys/types";
-import { TTag } from "@formbricks/types/tags";
+} from "@hivecfm/types/responses";
+import { TSurveyElementTypeEnum } from "@hivecfm/types/surveys/elements";
+import { TSurvey } from "@hivecfm/types/surveys/types";
+import { TTag } from "@hivecfm/types/tags";
 import { getElementsFromBlocks } from "@/lib/survey/utils";
 import { getIsQuotasEnabled } from "@/modules/ee/license-check/lib/utils";
 import { reduceQuotaLimits } from "@/modules/ee/quotas/lib/quotas";

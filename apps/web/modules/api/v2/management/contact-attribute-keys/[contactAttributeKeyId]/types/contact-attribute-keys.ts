@@ -1,6 +1,6 @@
 import { z } from "zod";
 import { extendZodWithOpenApi } from "zod-openapi";
-import { ZContactAttributeKey } from "@formbricks/database/zod/contact-attribute-keys";
+import { ZContactAttributeKey } from "@hivecfm/database/zod/contact-attribute-keys";
 
 extendZodWithOpenApi(z);
 

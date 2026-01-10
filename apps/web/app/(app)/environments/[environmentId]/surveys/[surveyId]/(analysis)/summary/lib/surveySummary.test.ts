@@ -1,11 +1,11 @@
 import { Prisma } from "@prisma/client";
 import { beforeEach, describe, expect, test, vi } from "vitest";
-import { prisma } from "@formbricks/database";
-import { DatabaseError, ResourceNotFoundError } from "@formbricks/types/errors";
-import { TLanguage } from "@formbricks/types/project";
-import { TResponseFilterCriteria } from "@formbricks/types/responses";
-import { TSurveyElement, TSurveyElementTypeEnum } from "@formbricks/types/surveys/elements";
-import { TSurvey, TSurveySummary } from "@formbricks/types/surveys/types";
+import { prisma } from "@hivecfm/database";
+import { DatabaseError, ResourceNotFoundError } from "@hivecfm/types/errors";
+import { TLanguage } from "@hivecfm/types/project";
+import { TResponseFilterCriteria } from "@hivecfm/types/responses";
+import { TSurveyElement, TSurveyElementTypeEnum } from "@hivecfm/types/surveys/elements";
+import { TSurvey, TSurveySummary } from "@hivecfm/types/surveys/types";
 import { getQuotasSummary } from "@/app/(app)/environments/[environmentId]/surveys/[surveyId]/(analysis)/summary/lib/survey";
 import { getDisplayCountBySurveyId } from "@/lib/display/service";
 import { getLocalizedValue } from "@/lib/i18n/utils";
@@ -49,7 +49,7 @@ vi.mock("@/lib/surveyLogic/utils", () => ({
 vi.mock("@/lib/utils/validate", () => ({
   validateInputs: vi.fn(),
 }));
-vi.mock("@formbricks/database", () => ({
+vi.mock("@hivecfm/database", () => ({
   prisma: {
     response: {
       findMany: vi.fn(),

@@ -13,9 +13,9 @@ import {
   Tailwind,
   Text,
   render,
-} from "@formbricks/email";
-import { TSurveyCTAElement, TSurveyElementTypeEnum } from "@formbricks/types/surveys/elements";
-import { type TSurvey, type TSurveyStyling } from "@formbricks/types/surveys/types";
+} from "@hivecfm/email";
+import { TSurveyCTAElement, TSurveyElementTypeEnum } from "@hivecfm/types/surveys/elements";
+import { type TSurvey, type TSurveyStyling } from "@hivecfm/types/surveys/types";
 import { cn } from "@/lib/cn";
 import { WEBAPP_URL } from "@/lib/constants";
 import { getLocalizedValue } from "@/lib/i18n/utils";

@@ -1,6 +1,6 @@
 import { describe, expect, test, vi } from "vitest";
 import { z } from "zod";
-import { prisma } from "@formbricks/database";
+import { prisma } from "@hivecfm/database";
 import {
   mockedPrismaWebhookUpdateReturn,
   prismaNotFoundError,
@@ -8,7 +8,7 @@ import {
 import { ZWebhookUpdateSchema } from "@/modules/api/v2/management/webhooks/[webhookId]/types/webhooks";
 import { deleteWebhook, getWebhook, updateWebhook } from "../webhook";
 
-vi.mock("@formbricks/database", () => ({
+vi.mock("@hivecfm/database", () => ({
   prisma: {
     webhook: {
       findUnique: vi.fn(),

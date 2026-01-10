@@ -4,9 +4,9 @@ import { useAutoAnimate } from "@formkit/auto-animate/react";
 import { ChevronDown, ChevronUp, Plus, TrashIcon } from "lucide-react";
 import React, { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
-import { TI18nString } from "@formbricks/types/i18n";
-import { TSurveyElementTypeEnum } from "@formbricks/types/surveys/elements";
-import { TSurvey } from "@formbricks/types/surveys/types";
+import { TI18nString } from "@hivecfm/types/i18n";
+import { TSurveyElementTypeEnum } from "@hivecfm/types/surveys/elements";
+import { TSurvey } from "@hivecfm/types/surveys/types";
 import {
   SelectedFilterValue,
   TResponseStatus,

@@ -1,8 +1,8 @@
 import { Prisma } from "@prisma/client";
 import "@testing-library/jest-dom/vitest";
 import { beforeEach, describe, expect, test, vi } from "vitest";
-import { prisma } from "@formbricks/database";
-import { DatabaseError } from "@formbricks/types/errors";
+import { prisma } from "@hivecfm/database";
+import { DatabaseError } from "@hivecfm/types/errors";
 import { validateInputs } from "@/lib/utils/validate";
 import { getProjectByEnvironmentId } from "./project";
 
@@ -10,7 +10,7 @@ vi.mock("@/lib/utils/validate", () => ({
   validateInputs: vi.fn(),
 }));
 
-vi.mock("@formbricks/database", () => ({
+vi.mock("@hivecfm/database", () => ({
   prisma: {
     project: {
       findFirst: vi.fn(),
@@ -18,7 +18,7 @@ vi.mock("@formbricks/database", () => ({
   },
 }));
 
-vi.mock("@formbricks/logger", () => ({
+vi.mock("@hivecfm/logger", () => ({
   logger: {
     error: vi.fn(),
   },

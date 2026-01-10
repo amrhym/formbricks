@@ -1,7 +1,7 @@
 import { ContactAttributeKey, Prisma } from "@prisma/client";
 import { describe, expect, test, vi } from "vitest";
-import { prisma } from "@formbricks/database";
-import { PrismaErrorType } from "@formbricks/database/types/error";
+import { prisma } from "@hivecfm/database";
+import { PrismaErrorType } from "@hivecfm/database/types/error";
 import { TContactAttributeKeyUpdateSchema } from "@/modules/api/v2/management/contact-attribute-keys/[contactAttributeKeyId]/types/contact-attribute-keys";
 import {
   deleteContactAttributeKey,
@@ -10,7 +10,7 @@ import {
 } from "../contact-attribute-key";
 
 // Mock dependencies
-vi.mock("@formbricks/database", () => ({
+vi.mock("@hivecfm/database", () => ({
   prisma: {
     contactAttributeKey: {
       findUnique: vi.fn(),

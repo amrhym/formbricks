@@ -1,11 +1,11 @@
 import "server-only";
 import { Prisma } from "@prisma/client";
 import { cache as reactCache } from "react";
-import { prisma } from "@formbricks/database";
-import { logger } from "@formbricks/logger";
-import { ZId, ZOptionalNumber } from "@formbricks/types/common";
-import { DatabaseError } from "@formbricks/types/errors";
-import { TSurvey } from "@formbricks/types/surveys/types";
+import { prisma } from "@hivecfm/database";
+import { logger } from "@hivecfm/logger";
+import { ZId, ZOptionalNumber } from "@hivecfm/types/common";
+import { DatabaseError } from "@hivecfm/types/errors";
+import { TSurvey } from "@hivecfm/types/surveys/types";
 import { selectSurvey } from "@/lib/survey/service";
 import { transformPrismaSurvey } from "@/lib/survey/utils";
 import { validateInputs } from "@/lib/utils/validate";

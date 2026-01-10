@@ -3,8 +3,8 @@
 import type { Session } from "next-auth";
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
-import { TOrganization } from "@formbricks/types/organizations";
-import { TUser } from "@formbricks/types/user";
+import { TOrganization } from "@hivecfm/types/organizations";
+import { TUser } from "@hivecfm/types/user";
 import { DeleteAccountModal } from "@/modules/account/components/DeleteAccountModal";
 import { Button } from "@/modules/ui/components/button";
 import { TooltipRenderer } from "@/modules/ui/components/tooltip";

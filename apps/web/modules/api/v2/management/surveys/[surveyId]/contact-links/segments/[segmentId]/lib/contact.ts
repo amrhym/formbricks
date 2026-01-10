@@ -1,7 +1,7 @@
 import { cache as reactCache } from "react";
-import { prisma } from "@formbricks/database";
-import { logger } from "@formbricks/logger";
-import { err, ok } from "@formbricks/types/error-handlers";
+import { prisma } from "@hivecfm/database";
+import { logger } from "@hivecfm/logger";
+import { err, ok } from "@hivecfm/types/error-handlers";
 import { getContactAttributeKeys } from "@/modules/api/v2/management/surveys/[surveyId]/contact-links/segments/[segmentId]/lib/contact-attribute-key";
 import { getSegment } from "@/modules/api/v2/management/surveys/[surveyId]/contact-links/segments/[segmentId]/lib/segment";
 import { getSurvey } from "@/modules/api/v2/management/surveys/[surveyId]/contact-links/segments/[segmentId]/lib/surveys";

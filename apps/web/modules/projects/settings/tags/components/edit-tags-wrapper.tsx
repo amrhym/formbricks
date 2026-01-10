@@ -2,7 +2,7 @@
 
 import React from "react";
 import { useTranslation } from "react-i18next";
-import { TTag, TTagsCount } from "@formbricks/types/tags";
+import { TTag, TTagsCount } from "@hivecfm/types/tags";
 import { SingleTag } from "@/modules/projects/settings/tags/components/single-tag";
 import { EmptyState } from "@/modules/ui/components/empty-state";
 

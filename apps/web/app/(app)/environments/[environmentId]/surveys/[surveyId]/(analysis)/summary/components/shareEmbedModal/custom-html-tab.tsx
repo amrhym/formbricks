@@ -5,7 +5,7 @@ import { useState } from "react";
 import { useForm } from "react-hook-form";
 import toast from "react-hot-toast";
 import { useTranslation } from "react-i18next";
-import { TSurvey } from "@formbricks/types/surveys/types";
+import { TSurvey } from "@hivecfm/types/surveys/types";
 import { useSurvey } from "@/app/(app)/environments/[environmentId]/surveys/[surveyId]/context/survey-context";
 import { cn } from "@/lib/cn";
 import { updateSurveyAction } from "@/modules/survey/editor/actions";

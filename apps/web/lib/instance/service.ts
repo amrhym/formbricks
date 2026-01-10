@@ -1,8 +1,8 @@
 import "server-only";
 import { Prisma } from "@prisma/client";
 import { cache as reactCache } from "react";
-import { prisma } from "@formbricks/database";
-import { DatabaseError } from "@formbricks/types/errors";
+import { prisma } from "@hivecfm/database";
+import { DatabaseError } from "@hivecfm/types/errors";
 
 // Function to check if there are any users in the database
 export const getIsFreshInstance = reactCache(async (): Promise<boolean> => {

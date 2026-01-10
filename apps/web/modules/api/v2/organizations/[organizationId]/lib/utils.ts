@@ -1,6 +1,6 @@
-import { logger } from "@formbricks/logger";
-import { OrganizationAccessType } from "@formbricks/types/api-key";
-import { TAuthenticationApiKey } from "@formbricks/types/auth";
+import { logger } from "@hivecfm/logger";
+import { OrganizationAccessType } from "@hivecfm/types/api-key";
+import { TAuthenticationApiKey } from "@hivecfm/types/auth";
 import { hasOrganizationAccess } from "@/modules/organization/settings/api-keys/lib/utils";
 
 export const hasOrganizationIdAndAccess = (

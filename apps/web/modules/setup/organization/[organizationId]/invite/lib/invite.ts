@@ -1,6 +1,6 @@
 import { Prisma } from "@prisma/client";
-import { prisma } from "@formbricks/database";
-import { DatabaseError, InvalidInputError } from "@formbricks/types/errors";
+import { prisma } from "@hivecfm/database";
+import { DatabaseError, InvalidInputError } from "@hivecfm/types/errors";
 import { getMembershipByUserIdOrganizationId } from "@/lib/membership/service";
 import { TInvitee } from "@/modules/setup/organization/[organizationId]/invite/types/invites";
 

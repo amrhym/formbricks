@@ -3,9 +3,9 @@
 import { useAutoAnimate } from "@formkit/auto-animate/react";
 import { HashIcon, PlusIcon, SmileIcon, StarIcon } from "lucide-react";
 import { useTranslation } from "react-i18next";
-import { TSurveyRatingElement } from "@formbricks/types/surveys/elements";
-import { TSurvey } from "@formbricks/types/surveys/types";
-import { TUserLocale } from "@formbricks/types/user";
+import { TSurveyRatingElement } from "@hivecfm/types/surveys/elements";
+import { TSurvey } from "@hivecfm/types/surveys/types";
+import { TUserLocale } from "@hivecfm/types/user";
 import { createI18nString, extractLanguageCodes } from "@/lib/i18n/utils";
 import { ElementFormInput } from "@/modules/survey/components/element-form-input";
 import { Dropdown } from "@/modules/survey/editor/components/rating-type-dropdown";

@@ -1,8 +1,8 @@
 import crypto from "crypto";
 import { authenticator } from "otplib";
 import qrcode from "qrcode";
-import { prisma } from "@formbricks/database";
-import { InvalidInputError, ResourceNotFoundError } from "@formbricks/types/errors";
+import { prisma } from "@hivecfm/database";
+import { InvalidInputError, ResourceNotFoundError } from "@hivecfm/types/errors";
 import { ENCRYPTION_KEY } from "@/lib/constants";
 import { symmetricDecrypt, symmetricEncrypt } from "@/lib/crypto";
 import { totpAuthenticatorCheck } from "@/modules/auth/lib/totp";
@@ -64,7 +64,7 @@ export const setupTwoFactorAuth = async (
   });
 
   const name = user.email || user.name || user.id.toString();
-  const keyUri = authenticator.keyuri(name, "Formbricks", secret);
+  const keyUri = authenticator.keyuri(name, "HiveCFM", secret);
   const dataUri = await qrcode.toDataURL(keyUri);
 
   return { secret, keyUri, dataUri, backupCodes };

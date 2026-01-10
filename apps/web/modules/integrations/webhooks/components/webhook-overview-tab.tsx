@@ -3,7 +3,7 @@
 import { Webhook } from "@prisma/client";
 import { TFunction } from "i18next";
 import { useTranslation } from "react-i18next";
-import { TSurvey } from "@formbricks/types/surveys/types";
+import { TSurvey } from "@hivecfm/types/surveys/types";
 import { convertDateTimeStringShort } from "@/lib/time";
 import { Label } from "@/modules/ui/components/label";
 
@@ -50,7 +50,7 @@ export const WebhookOverviewTab = ({ webhook, surveys }: ActivityTabProps) => {
           <Label className="text-slate-500">
             {t("environments.integrations.webhooks.created_by_third_party")}
           </Label>
-          <p className="text-sm capitalize text-slate-900">
+          <p className="text-sm text-slate-900 capitalize">
             {webhook.source === "user" ? "No" : webhook.source}
           </p>
         </div>

@@ -12,8 +12,8 @@ import { prisma } from "@/lib/__mocks__/database";
 import { Prisma } from "@prisma/client";
 import { afterEach, beforeEach, describe, expect, test, vi } from "vitest";
 import { testInputValidation } from "vitestSetup";
-import { PrismaErrorType } from "@formbricks/database/types/error";
-import { DatabaseError } from "@formbricks/types/errors";
+import { PrismaErrorType } from "@hivecfm/database/types/error";
+import { DatabaseError } from "@hivecfm/types/errors";
 import { createDisplay } from "@/app/api/v1/client/[environmentId]/displays/lib/display";
 import { deleteDisplay } from "../service";
 

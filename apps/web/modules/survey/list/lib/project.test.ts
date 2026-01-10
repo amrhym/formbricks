@@ -1,12 +1,12 @@
 import { Prisma } from "@prisma/client";
 import { beforeEach, describe, expect, test, vi } from "vitest";
-import { prisma } from "@formbricks/database";
-import { DatabaseError, ValidationError } from "@formbricks/types/errors";
+import { prisma } from "@hivecfm/database";
+import { DatabaseError, ValidationError } from "@hivecfm/types/errors";
 import { TUserProject } from "@/modules/survey/list/types/projects";
 import { TProjectWithLanguages } from "@/modules/survey/list/types/surveys";
 import { getProjectWithLanguagesByEnvironmentId, getUserProjects } from "./project";
 
-vi.mock("@formbricks/database", () => ({
+vi.mock("@hivecfm/database", () => ({
   prisma: {
     project: {
       findFirst: vi.fn(),

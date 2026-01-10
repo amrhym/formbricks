@@ -1,10 +1,10 @@
 import { Prisma } from "@prisma/client";
 import { afterEach, beforeEach, describe, expect, test, vi } from "vitest";
-import { prisma } from "@formbricks/database";
-import { DatabaseError } from "@formbricks/types/errors";
+import { prisma } from "@hivecfm/database";
+import { DatabaseError } from "@hivecfm/types/errors";
 import { getContacts } from "./contacts";
 
-vi.mock("@formbricks/database", () => ({
+vi.mock("@hivecfm/database", () => ({
   prisma: {
     contact: {
       findMany: vi.fn(),

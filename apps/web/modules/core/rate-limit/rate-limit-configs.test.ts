@@ -24,7 +24,7 @@ vi.mock("@/lib/cache", () => ({
   },
 }));
 
-vi.mock("@formbricks/logger", () => ({
+vi.mock("@hivecfm/logger", () => ({
   logger: {
     debug: vi.fn(),
     warn: vi.fn(),
@@ -37,7 +37,7 @@ vi.mock("@sentry/nextjs", () => ({
   captureException: vi.fn(),
 }));
 
-vi.mock("@formbricks/cache", () => ({
+vi.mock("@hivecfm/cache", () => ({
   createCacheKey: {
     rateLimit: {
       core: vi.fn(

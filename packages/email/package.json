@@ -1,5 +1,5 @@
 {
-  "name": "@formbricks/email",
+  "name": "@hivecfm/email",
   "version": "1.0.0",
   "private": true,
   "description": "Email templates for Formbricks with React Email preview server",
@@ -17,9 +17,9 @@
     "react-email": "5.0.8"
   },
   "devDependencies": {
-    "@formbricks/config-typescript": "workspace:*",
-    "@formbricks/eslint-config": "workspace:*",
-    "@formbricks/types": "workspace:*",
+    "@hivecfm/config-typescript": "workspace:*",
+    "@hivecfm/eslint-config": "workspace:*",
+    "@hivecfm/types": "workspace:*",
     "@react-email/preview-server": "5.0.8",
     "autoprefixer": "10.4.21",
     "clsx": "2.1.1",

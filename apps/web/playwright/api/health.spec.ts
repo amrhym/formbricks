@@ -1,5 +1,5 @@
 import { expect } from "@playwright/test";
-import { logger } from "@formbricks/logger";
+import { logger } from "@hivecfm/logger";
 import { test } from "../lib/fixtures";
 import { HEALTH_API_URL } from "./constants";
 

@@ -3,10 +3,10 @@
 import { TrashIcon } from "lucide-react";
 import Link from "next/link";
 import { useTranslation } from "react-i18next";
-import { TEnvironment } from "@formbricks/types/environment";
-import { TResponse } from "@formbricks/types/responses";
-import { TSurvey } from "@formbricks/types/surveys/types";
-import { TUser, TUserLocale } from "@formbricks/types/user";
+import { TEnvironment } from "@hivecfm/types/environment";
+import { TResponse } from "@hivecfm/types/responses";
+import { TSurvey } from "@hivecfm/types/surveys/types";
+import { TUser, TUserLocale } from "@hivecfm/types/user";
 import { timeSince } from "@/lib/time";
 import { getContactIdentifier } from "@/lib/utils/contact";
 import { PersonAvatar } from "@/modules/ui/components/avatars";
@@ -50,7 +50,7 @@ export const SingleResponseCardHeader = ({
   const deleteSubmissionToolTip = <>{t("environments.surveys.responses.this_response_is_in_progress")}</>;
 
   return (
-    <div className="space-y-2 border-b border-slate-200 px-6 pb-4 pt-4">
+    <div className="space-y-2 border-b border-slate-200 px-6 pt-4 pb-4">
       <div className="flex items-center justify-between">
         <div className="flex items-center justify-center space-x-2">
           {pageType === "response" && (

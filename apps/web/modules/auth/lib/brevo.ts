@@ -1,6 +1,6 @@
-import { logger } from "@formbricks/logger";
-import { ZId } from "@formbricks/types/common";
-import { TUserEmail, ZUserEmail } from "@formbricks/types/user";
+import { logger } from "@hivecfm/logger";
+import { ZId } from "@hivecfm/types/common";
+import { TUserEmail, ZUserEmail } from "@hivecfm/types/user";
 import { BREVO_API_KEY, BREVO_LIST_ID } from "@/lib/constants";
 import { validateInputs } from "@/lib/utils/validate";
 

@@ -1,10 +1,10 @@
 import { Prisma } from "@prisma/client";
 import { cache as reactCache } from "react";
-import { prisma } from "@formbricks/database";
-import { PrismaErrorType } from "@formbricks/database/types/error";
-import { ZId } from "@formbricks/types/common";
-import { DatabaseError, InvalidInputError, ResourceNotFoundError } from "@formbricks/types/errors";
-import { TUserCreateInput, TUserUpdateInput, ZUserEmail, ZUserUpdateInput } from "@formbricks/types/user";
+import { prisma } from "@hivecfm/database";
+import { PrismaErrorType } from "@hivecfm/database/types/error";
+import { ZId } from "@hivecfm/types/common";
+import { DatabaseError, InvalidInputError, ResourceNotFoundError } from "@hivecfm/types/errors";
+import { TUserCreateInput, TUserUpdateInput, ZUserEmail, ZUserUpdateInput } from "@hivecfm/types/user";
 import { validateInputs } from "@/lib/utils/validate";
 
 export const updateUser = async (id: string, data: TUserUpdateInput) => {

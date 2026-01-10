@@ -1,12 +1,12 @@
 import { Prisma } from "@prisma/client";
 import { afterEach, describe, expect, test, vi } from "vitest";
-import { prisma } from "@formbricks/database";
-import { PrismaErrorType } from "@formbricks/database/types/error";
-import { ResourceNotFoundError } from "@formbricks/types/errors";
-import { TOrganizationRole } from "@formbricks/types/memberships";
+import { prisma } from "@hivecfm/database";
+import { PrismaErrorType } from "@hivecfm/database/types/error";
+import { ResourceNotFoundError } from "@hivecfm/types/errors";
+import { TOrganizationRole } from "@hivecfm/types/memberships";
 import { updateMembership } from "./membership";
 
-vi.mock("@formbricks/database", () => ({
+vi.mock("@hivecfm/database", () => ({
   prisma: {
     membership: {
       update: vi.fn(),

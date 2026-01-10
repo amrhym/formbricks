@@ -1,6 +1,6 @@
 import { NextRequest } from "next/server";
 import * as z from "zod";
-import { logger } from "@formbricks/logger";
+import { logger } from "@hivecfm/logger";
 import { responses } from "@/app/lib/api/response";
 import { TSessionAuthentication, withV1ApiWrapper } from "@/app/lib/api/with-api-logging";
 import { fetchAirtableAuthToken } from "@/lib/airtable/service";

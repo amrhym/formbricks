@@ -1,7 +1,7 @@
 import { Prisma } from "@prisma/client";
 import { afterEach, describe, expect, test, vi } from "vitest";
-import { prisma } from "@formbricks/database";
-import { DatabaseError } from "@formbricks/types/errors";
+import { prisma } from "@hivecfm/database";
+import { DatabaseError } from "@hivecfm/types/errors";
 import { getResponseCountBySurveyId } from "./response";
 
 vi.mock("react", async () => {
@@ -12,7 +12,7 @@ vi.mock("react", async () => {
   };
 });
 
-vi.mock("@formbricks/database", () => ({
+vi.mock("@hivecfm/database", () => ({
   prisma: {
     response: {
       count: vi.fn(),

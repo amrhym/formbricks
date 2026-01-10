@@ -1,8 +1,8 @@
 import { useEffect } from "preact/hooks";
 import { useTranslation } from "react-i18next";
-import { type TI18nString } from "@formbricks/types/i18n";
-import { type TJsEnvironmentStateSurvey } from "@formbricks/types/js";
-import { type TResponseData, type TResponseTtc, type TResponseVariables } from "@formbricks/types/responses";
+import { type TI18nString } from "@hivecfm/types/i18n";
+import { type TJsEnvironmentStateSurvey } from "@hivecfm/types/js";
+import { type TResponseData, type TResponseTtc, type TResponseVariables } from "@hivecfm/types/responses";
 import { SubmitButton } from "@/components/buttons/submit-button";
 import { ScrollableContainer } from "@/components/wrappers/scrollable-container";
 import { getLocalizedValue } from "@/lib/i18n";
@@ -181,9 +181,7 @@ export function WelcomeCard({
             data-testid="fb__surveys__welcome-card__time-display">
             <TimerIcon />
             <p className="pt-1 text-xs">
-              <span>
-                {calculateTimeToComplete()}{" "}
-              </span>
+              <span>{calculateTimeToComplete()} </span>
             </p>
           </div>
         ) : null}
@@ -201,9 +199,7 @@ export function WelcomeCard({
           <div className="text-subheading my-4 flex items-center">
             <TimerIcon />
             <p className="pt-1 text-xs" data-testid="fb__surveys__welcome-card__info-text-test">
-              <span>
-                {calculateTimeToComplete()}{" "}
-              </span>
+              <span>{calculateTimeToComplete()} </span>
               <span data-testid="fb__surveys__welcome-card__response-count">
                 {responseCount && responseCount > 3
                   ? `⋅ ${t("common.people_responded", { count: responseCount })}`

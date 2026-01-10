@@ -1,8 +1,8 @@
 import { describe, expect, test } from "vitest";
-import { InvalidInputError } from "@formbricks/types/errors";
-import { TSurveyBlock } from "@formbricks/types/surveys/blocks";
-import { TSurveyCTAElement } from "@formbricks/types/surveys/elements";
-import { TSurveyQuestion, TSurveyQuestionTypeEnum } from "@formbricks/types/surveys/types";
+import { InvalidInputError } from "@hivecfm/types/errors";
+import { TSurveyBlock } from "@hivecfm/types/surveys/blocks";
+import { TSurveyCTAElement } from "@hivecfm/types/surveys/elements";
+import { TSurveyQuestion, TSurveyQuestionTypeEnum } from "@hivecfm/types/surveys/types";
 import {
   transformBlocksToQuestions,
   transformQuestionsToBlocks,

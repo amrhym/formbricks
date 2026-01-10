@@ -1,9 +1,9 @@
 import { beforeEach, describe, expect, test, vi } from "vitest";
-import { prisma } from "@formbricks/database";
-import { TContactAttribute } from "@formbricks/types/contact-attribute";
+import { prisma } from "@hivecfm/database";
+import { TContactAttribute } from "@hivecfm/types/contact-attribute";
 import { getContactAttributes, hasEmailAttribute, hasUserIdAttribute } from "./contact-attributes";
 
-vi.mock("@formbricks/database", () => ({
+vi.mock("@hivecfm/database", () => ({
   prisma: {
     contactAttribute: {
       findMany: vi.fn(),

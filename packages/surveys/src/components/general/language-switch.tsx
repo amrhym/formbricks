@@ -1,8 +1,8 @@
 import { useRef, useState } from "preact/hooks";
 import { useTranslation } from "react-i18next";
-import { getLanguageLabel } from "@formbricks/i18n-utils/src";
-import { TJsEnvironmentStateSurvey } from "@formbricks/types/js";
-import { type TSurveyLanguage } from "@formbricks/types/surveys/types";
+import { getLanguageLabel } from "@hivecfm/i18n-utils/src";
+import { TJsEnvironmentStateSurvey } from "@hivecfm/types/js";
+import { type TSurveyLanguage } from "@hivecfm/types/surveys/types";
 import { LanguageIcon } from "@/components/icons/language-icon";
 import { mixColor } from "@/lib/color";
 import { getI18nLanguage } from "@/lib/i18n-utils";

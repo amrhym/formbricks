@@ -1,9 +1,9 @@
 "use server";
 
 import { z } from "zod";
-import { ZId } from "@formbricks/types/common";
-import { OperationNotAllowedError } from "@formbricks/types/errors";
-import { ZSegmentCreateInput, ZSegmentFilters, ZSegmentUpdateInput } from "@formbricks/types/segment";
+import { ZId } from "@hivecfm/types/common";
+import { OperationNotAllowedError } from "@hivecfm/types/errors";
+import { ZSegmentCreateInput, ZSegmentFilters, ZSegmentUpdateInput } from "@hivecfm/types/segment";
 import { getOrganization } from "@/lib/organization/service";
 import { loadNewSegmentInSurvey } from "@/lib/survey/service";
 import { authenticatedActionClient } from "@/lib/utils/action-client";

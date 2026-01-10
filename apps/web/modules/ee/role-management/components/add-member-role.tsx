@@ -3,7 +3,7 @@
 import { useMemo } from "react";
 import { type Control, Controller } from "react-hook-form";
 import { useTranslation } from "react-i18next";
-import { TOrganizationRole } from "@formbricks/types/memberships";
+import { TOrganizationRole } from "@hivecfm/types/memberships";
 import { getAccessFlags } from "@/lib/membership/utils";
 import { Label } from "@/modules/ui/components/label";
 import {

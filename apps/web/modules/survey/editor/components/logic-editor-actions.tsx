@@ -8,12 +8,12 @@ import {
   TSurveyBlockLogic,
   TSurveyBlockLogicAction,
   TSurveyBlockLogicActionObjective,
-} from "@formbricks/types/surveys/blocks";
+} from "@hivecfm/types/surveys/blocks";
 import {
   TActionNumberVariableCalculateOperator,
   TActionTextVariableCalculateOperator,
-} from "@formbricks/types/surveys/logic";
-import { TSurvey } from "@formbricks/types/surveys/types";
+} from "@hivecfm/types/surveys/logic";
+import { TSurvey } from "@hivecfm/types/surveys/types";
 import { getUpdatedActionBody } from "@/lib/surveyLogic/utils";
 import {
   getActionObjectiveOptions,

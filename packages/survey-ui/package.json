@@ -1,5 +1,5 @@
 {
-  "name": "@formbricks/survey-ui",
+  "name": "@hivecfm/survey-ui",
   "license": "MIT",
   "version": "1.0.4",
   "description": "React UI components for building surveys and forms - includes NPS, rating scales, multi-select, file upload, and more. Built with Radix UI and Tailwind CSS.",
@@ -83,8 +83,8 @@
     "tailwind-merge": "3.2.0"
   },
   "devDependencies": {
-    "@formbricks/config-typescript": "workspace:*",
-    "@formbricks/eslint-config": "workspace:*",
+    "@hivecfm/config-typescript": "workspace:*",
+    "@hivecfm/eslint-config": "workspace:*",
     "@storybook/react": "8.5.4",
     "@storybook/react-vite": "8.5.4",
     "@tailwindcss/postcss": "4.0.0",

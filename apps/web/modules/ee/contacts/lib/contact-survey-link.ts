@@ -1,6 +1,6 @@
 import jwt from "jsonwebtoken";
-import { logger } from "@formbricks/logger";
-import { Result, err, ok } from "@formbricks/types/error-handlers";
+import { logger } from "@hivecfm/logger";
+import { Result, err, ok } from "@hivecfm/types/error-handlers";
 import { ENCRYPTION_KEY } from "@/lib/constants";
 import { symmetricDecrypt, symmetricEncrypt } from "@/lib/crypto";
 import { getPublicDomain } from "@/lib/getPublicUrl";

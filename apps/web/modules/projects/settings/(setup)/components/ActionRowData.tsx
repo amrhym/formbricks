@@ -1,5 +1,5 @@
-import { TActionClass } from "@formbricks/types/action-classes";
-import { TUserLocale } from "@formbricks/types/user";
+import { TActionClass } from "@hivecfm/types/action-classes";
+import { TUserLocale } from "@hivecfm/types/user";
 import { timeSince } from "@/lib/time";
 import { ACTION_TYPE_ICON_LOOKUP } from "@/modules/projects/settings/(setup)/app-connection/utils";
 
@@ -18,12 +18,12 @@ export const ActionClassDataRow = ({
             {ACTION_TYPE_ICON_LOOKUP[actionClass.type]}
           </div>
           <div className="text-left">
-            <div className="break-words font-medium text-slate-900">{actionClass.name}</div>
-            <div className="break-words text-xs text-slate-400">{actionClass.description}</div>
+            <div className="font-medium break-words text-slate-900">{actionClass.name}</div>
+            <div className="text-xs break-words text-slate-400">{actionClass.description}</div>
           </div>
         </div>
       </div>
-      <div className="col-span-2 my-auto whitespace-nowrap text-center text-sm text-slate-500">
+      <div className="col-span-2 my-auto text-center text-sm whitespace-nowrap text-slate-500">
         {timeSince(actionClass.createdAt.toString(), locale)}
       </div>
     </div>

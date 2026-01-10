@@ -1,12 +1,12 @@
 import "server-only";
 import { ActionClass, Prisma } from "@prisma/client";
 import { cache as reactCache } from "react";
-import { prisma } from "@formbricks/database";
-import { logger } from "@formbricks/logger";
-import { ZId, ZOptionalNumber } from "@formbricks/types/common";
-import { DatabaseError, InvalidInputError, ResourceNotFoundError } from "@formbricks/types/errors";
-import { TSegment, ZSegmentFilters } from "@formbricks/types/segment";
-import { TSurvey, TSurveyCreateInput, ZSurvey, ZSurveyCreateInput } from "@formbricks/types/surveys/types";
+import { prisma } from "@hivecfm/database";
+import { logger } from "@hivecfm/logger";
+import { ZId, ZOptionalNumber } from "@hivecfm/types/common";
+import { DatabaseError, InvalidInputError, ResourceNotFoundError } from "@hivecfm/types/errors";
+import { TSegment, ZSegmentFilters } from "@hivecfm/types/segment";
+import { TSurvey, TSurveyCreateInput, ZSurvey, ZSurveyCreateInput } from "@hivecfm/types/surveys/types";
 import {
   getOrganizationByEnvironmentId,
   subscribeOrganizationMembersToSurveyResponses,

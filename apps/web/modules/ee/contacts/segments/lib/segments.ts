@@ -1,14 +1,14 @@
 import { Prisma } from "@prisma/client";
 import { cache as reactCache } from "react";
-import { prisma } from "@formbricks/database";
-import { logger } from "@formbricks/logger";
-import { ZId, ZString } from "@formbricks/types/common";
+import { prisma } from "@hivecfm/database";
+import { logger } from "@hivecfm/logger";
+import { ZId, ZString } from "@hivecfm/types/common";
 import {
   DatabaseError,
   OperationNotAllowedError,
   ResourceNotFoundError,
   ValidationError,
-} from "@formbricks/types/errors";
+} from "@hivecfm/types/errors";
 import {
   TAllOperators,
   TBaseFilters,
@@ -25,7 +25,7 @@ import {
   ZSegmentCreateInput,
   ZSegmentFilters,
   ZSegmentUpdateInput,
-} from "@formbricks/types/segment";
+} from "@hivecfm/types/segment";
 import { getSurvey } from "@/lib/survey/service";
 import { validateInputs } from "@/lib/utils/validate";
 import { isResourceFilter, searchForAttributeKeyInSegment } from "@/modules/ee/contacts/segments/lib/utils";

@@ -1,7 +1,7 @@
 import { OrganizationRole, Prisma, TeamUserRole } from "@prisma/client";
-import { prisma } from "@formbricks/database";
-import { TUser } from "@formbricks/database/zod/users";
-import { Result, err, ok } from "@formbricks/types/error-handlers";
+import { prisma } from "@hivecfm/database";
+import { TUser } from "@hivecfm/database/zod/users";
+import { Result, err, ok } from "@hivecfm/types/error-handlers";
 import { getUsersQuery } from "@/modules/api/v2/organizations/[organizationId]/users/lib/utils";
 import {
   TGetUsersFilter,

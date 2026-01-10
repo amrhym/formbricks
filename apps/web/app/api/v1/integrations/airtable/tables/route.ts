@@ -1,6 +1,6 @@
 import { NextRequest } from "next/server";
 import * as z from "zod";
-import { TIntegrationAirtable } from "@formbricks/types/integration/airtable";
+import { TIntegrationAirtable } from "@hivecfm/types/integration/airtable";
 import { responses } from "@/app/lib/api/response";
 import { TSessionAuthentication, withV1ApiWrapper } from "@/app/lib/api/with-api-logging";
 import { getTables } from "@/lib/airtable/service";

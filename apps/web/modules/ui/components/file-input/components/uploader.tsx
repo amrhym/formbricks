@@ -1,6 +1,6 @@
 import { ArrowUpFromLineIcon } from "lucide-react";
 import React from "react";
-import { TAllowedFileExtension } from "@formbricks/types/storage";
+import { TAllowedFileExtension } from "@hivecfm/types/storage";
 import { cn } from "@/lib/cn";
 import { showStorageNotConfiguredToast } from "@/modules/ui/components/storage-not-configured-toast/lib/utils";
 
@@ -79,7 +79,7 @@ export const Uploader = ({
           showStorageNotConfiguredToast();
         }
       }}>
-      <div className="flex flex-col items-center justify-center pb-6 pt-5">
+      <div className="flex flex-col items-center justify-center pt-5 pb-6">
         <ArrowUpFromLineIcon className="h-6 text-slate-500" />
         <p className={cn("mt-2 text-center text-sm text-slate-500", uploadMore && "text-xs")}>
           <span className="font-semibold">Click or drag to upload files.</span>

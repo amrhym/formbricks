@@ -1,7 +1,7 @@
 import { Prisma } from "@prisma/client";
-import { prisma } from "@formbricks/database";
-import { TAccount, TAccountInput, ZAccountInput } from "@formbricks/types/account";
-import { DatabaseError } from "@formbricks/types/errors";
+import { prisma } from "@hivecfm/database";
+import { TAccount, TAccountInput, ZAccountInput } from "@hivecfm/types/account";
+import { DatabaseError } from "@hivecfm/types/errors";
 import { validateInputs } from "../utils/validate";
 import { filterAccountInputData } from "./utils";
 

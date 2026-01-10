@@ -1,6 +1,6 @@
 import { getServerSession } from "next-auth";
 import { redirect } from "next/navigation";
-import { AuthorizationError } from "@formbricks/types/errors";
+import { AuthorizationError } from "@hivecfm/types/errors";
 import { hasUserEnvironmentAccess } from "@/lib/environment/auth";
 import { getMembershipByUserIdOrganizationId } from "@/lib/membership/service";
 import { getAccessFlags } from "@/lib/membership/utils";

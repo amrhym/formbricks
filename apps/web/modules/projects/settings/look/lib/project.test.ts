@@ -1,12 +1,12 @@
 import { Prisma, Project } from "@prisma/client";
 import { afterEach, describe, expect, test, vi } from "vitest";
-import { prisma } from "@formbricks/database";
-import { DatabaseError } from "@formbricks/types/errors";
+import { prisma } from "@hivecfm/database";
+import { DatabaseError } from "@hivecfm/types/errors";
 import { getProjectByEnvironmentId } from "./project";
 
 vi.mock("@/lib/utils/validate", () => ({ validateInputs: vi.fn() }));
-vi.mock("@formbricks/database", () => ({ prisma: { project: { findFirst: vi.fn() } } }));
-vi.mock("@formbricks/logger", () => ({ logger: { error: vi.fn() } }));
+vi.mock("@hivecfm/database", () => ({ prisma: { project: { findFirst: vi.fn() } } }));
+vi.mock("@hivecfm/logger", () => ({ logger: { error: vi.fn() } }));
 
 const baseProject: Project = {
   id: "p1",

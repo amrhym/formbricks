@@ -1,6 +1,6 @@
 import { AsyncParser } from "@json2csv/node";
 import * as xlsx from "xlsx";
-import { logger } from "@formbricks/logger";
+import { logger } from "@hivecfm/logger";
 
 export const convertToCsv = async (fields: string[], jsonData: Record<string, string | number>[]) => {
   let csv: string = "";

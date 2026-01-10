@@ -3,7 +3,7 @@ import {
   TSurveyQuestion,
   TSurveyQuestionChoice,
   TSurveyQuestionTypeEnum,
-} from "@formbricks/types/surveys/types";
+} from "@hivecfm/types/surveys/types";
 import { MAX_OTHER_OPTION_LENGTH } from "@/lib/constants";
 import { validateOtherOptionLength, validateOtherOptionLengthForMultipleChoice } from "../element";
 
@@ -32,7 +32,7 @@ vi.mock("@/app/api/v2/client/[environmentId]/responses/lib/organization", () => 
   getOrganizationBillingByEnvironmentId: vi.fn(),
 }));
 
-vi.mock("@formbricks/logger", () => ({
+vi.mock("@hivecfm/logger", () => ({
   logger: {
     error: vi.fn(),
   },

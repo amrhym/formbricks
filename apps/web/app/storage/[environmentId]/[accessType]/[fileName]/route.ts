@@ -1,7 +1,7 @@
 import { getServerSession } from "next-auth";
 import { type NextRequest } from "next/server";
-import { logger } from "@formbricks/logger";
-import { TAccessType, ZDeleteFileRequest, ZDownloadFileRequest } from "@formbricks/types/storage";
+import { logger } from "@hivecfm/logger";
+import { TAccessType, ZDeleteFileRequest, ZDownloadFileRequest } from "@hivecfm/types/storage";
 import { responses } from "@/app/lib/api/response";
 import { transformErrorToDetails } from "@/app/lib/api/validator";
 import { authorizePrivateDownload } from "@/app/storage/[environmentId]/[accessType]/[fileName]/lib/auth";

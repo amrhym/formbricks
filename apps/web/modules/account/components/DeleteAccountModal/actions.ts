@@ -1,6 +1,6 @@
 "use server";
 
-import { OperationNotAllowedError } from "@formbricks/types/errors";
+import { OperationNotAllowedError } from "@hivecfm/types/errors";
 import { getOrganizationsWhereUserIsSingleOwner } from "@/lib/organization/service";
 import { deleteUser, getUser } from "@/lib/user/service";
 import { authenticatedActionClient } from "@/lib/utils/action-client";

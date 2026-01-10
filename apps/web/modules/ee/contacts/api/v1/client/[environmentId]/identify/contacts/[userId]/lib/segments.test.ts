@@ -1,9 +1,9 @@
 import { Prisma } from "@prisma/client";
 import { afterEach, beforeEach, describe, expect, test, vi } from "vitest";
-import { prisma } from "@formbricks/database";
-import { PrismaErrorType } from "@formbricks/database/types/error";
-import { DatabaseError } from "@formbricks/types/errors";
-import { TBaseFilter } from "@formbricks/types/segment";
+import { prisma } from "@hivecfm/database";
+import { PrismaErrorType } from "@hivecfm/database/types/error";
+import { DatabaseError } from "@hivecfm/types/errors";
+import { TBaseFilter } from "@hivecfm/types/segment";
 import {
   getPersonSegmentIds,
   getSegments,
@@ -17,7 +17,7 @@ vi.mock("@/lib/cache", () => ({
   },
 }));
 
-vi.mock("@formbricks/cache", () => ({
+vi.mock("@hivecfm/cache", () => ({
   createCacheKey: {
     environment: {
       segments: vi.fn((environmentId) => `segments-${environmentId}`),
@@ -38,7 +38,7 @@ vi.mock("@/modules/ee/contacts/segments/lib/segments", () => ({
   evaluateSegment: vi.fn(),
 }));
 
-vi.mock("@formbricks/database", () => ({
+vi.mock("@hivecfm/database", () => ({
   prisma: {
     segment: {
       findMany: vi.fn(),

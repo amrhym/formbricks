@@ -3,8 +3,8 @@
 import { useRouter } from "next/navigation";
 import toast from "react-hot-toast";
 import { useTranslation } from "react-i18next";
-import { TEnvironment } from "@formbricks/types/environment";
-import { TSurvey } from "@formbricks/types/surveys/types";
+import { TEnvironment } from "@hivecfm/types/environment";
+import { TSurvey } from "@hivecfm/types/surveys/types";
 import { getFormattedErrorMessage } from "@/lib/utils/helper";
 import {
   Select,
@@ -57,7 +57,7 @@ export const SurveyStatusDropdown = ({
     <>
       {survey.status === "draft" ? (
         <div className="flex items-center">
-          <p className="text-sm italic text-slate-600">{t("common.draft")}</p>
+          <p className="text-sm text-slate-600 italic">{t("common.draft")}</p>
         </div>
       ) : (
         <Select

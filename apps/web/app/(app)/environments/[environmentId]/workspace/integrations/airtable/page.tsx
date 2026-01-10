@@ -1,6 +1,6 @@
 import { redirect } from "next/navigation";
-import { TIntegrationItem } from "@formbricks/types/integration";
-import { TIntegrationAirtable } from "@formbricks/types/integration/airtable";
+import { TIntegrationItem } from "@hivecfm/types/integration";
+import { TIntegrationAirtable } from "@hivecfm/types/integration/airtable";
 import { AirtableWrapper } from "@/app/(app)/environments/[environmentId]/workspace/integrations/airtable/components/AirtableWrapper";
 import { getSurveys } from "@/app/(app)/environments/[environmentId]/workspace/integrations/lib/surveys";
 import { getAirtableTables } from "@/lib/airtable/service";

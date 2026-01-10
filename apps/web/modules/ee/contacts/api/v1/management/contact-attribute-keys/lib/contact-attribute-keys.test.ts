@@ -1,14 +1,14 @@
 import { Prisma } from "@prisma/client";
 import { beforeEach, describe, expect, test, vi } from "vitest";
-import { prisma } from "@formbricks/database";
-import { PrismaErrorType } from "@formbricks/database/types/error";
-import { TContactAttributeKeyType } from "@formbricks/types/contact-attribute-key";
-import { DatabaseError, OperationNotAllowedError } from "@formbricks/types/errors";
+import { prisma } from "@hivecfm/database";
+import { PrismaErrorType } from "@hivecfm/database/types/error";
+import { TContactAttributeKeyType } from "@hivecfm/types/contact-attribute-key";
+import { DatabaseError, OperationNotAllowedError } from "@hivecfm/types/errors";
 import { MAX_ATTRIBUTE_CLASSES_PER_ENVIRONMENT } from "@/lib/constants";
 import { TContactAttributeKeyCreateInput } from "@/modules/ee/contacts/api/v1/management/contact-attribute-keys/[contactAttributeKeyId]/types/contact-attribute-keys";
 import { createContactAttributeKey, getContactAttributeKeys } from "./contact-attribute-keys";
 
-vi.mock("@formbricks/database", () => ({
+vi.mock("@hivecfm/database", () => ({
   prisma: {
     contactAttributeKey: {
       findMany: vi.fn(),

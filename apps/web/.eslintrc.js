@@ -1,5 +1,5 @@
 module.exports = {
-  extends: ["@formbricks/eslint-config/legacy-next.js"],
+  extends: ["@hivecfm/eslint-config/legacy-next.js"],
   ignorePatterns: ["**/package.json", "**/tsconfig.json"],
   overrides: [
     {

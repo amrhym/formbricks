@@ -3,8 +3,8 @@
 import { useCallback, useMemo } from "react";
 import { FieldErrors } from "react-hook-form";
 import { useTranslation } from "react-i18next";
-import { TSurveyQuotaInput, TSurveyQuotaLogic } from "@formbricks/types/quota";
-import { TSurvey } from "@formbricks/types/surveys/types";
+import { TSurveyQuotaInput, TSurveyQuotaLogic } from "@hivecfm/types/quota";
+import { TSurvey } from "@hivecfm/types/surveys/types";
 import {
   TQuotaConditionGroup,
   createSharedConditionsFactory,

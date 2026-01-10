@@ -1,4 +1,4 @@
-import { TSurveyCTAElement, TSurveyElementTypeEnum } from "@formbricks/types/surveys/elements";
+import { TSurveyCTAElement, TSurveyElementTypeEnum } from "@hivecfm/types/surveys/elements";
 import {
   TSurvey,
   TSurveyCalQuestion,
@@ -13,7 +13,7 @@ import {
   TSurveyQuestionTypeEnum,
   TSurveyRatingQuestion,
   TSurveyWelcomeCard,
-} from "@formbricks/types/surveys/types";
+} from "@hivecfm/types/surveys/types";
 import { mockSurveyLanguages } from "@/lib/survey/__mock__/survey.mock";
 
 export const mockWelcomeCard: TSurveyWelcomeCard = {

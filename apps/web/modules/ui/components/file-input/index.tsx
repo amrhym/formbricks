@@ -5,7 +5,7 @@ import Image from "next/image";
 import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
 import { useTranslation } from "react-i18next";
-import { TAllowedFileExtension } from "@formbricks/types/storage";
+import { TAllowedFileExtension } from "@hivecfm/types/storage";
 import { cn } from "@/lib/cn";
 import { FileUploadError, handleFileUpload } from "@/modules/storage/file-upload";
 import { LoadingSpinner } from "@/modules/ui/components/loading-spinner";
@@ -258,7 +258,7 @@ export const FileInput = ({
                             />
                             {file.uploaded ? (
                               <button
-                                className="absolute right-2 top-2 flex cursor-pointer items-center justify-center rounded-md bg-slate-100 p-1 hover:bg-slate-200 hover:bg-white/90"
+                                className="absolute top-2 right-2 flex cursor-pointer items-center justify-center rounded-md bg-slate-100 p-1 hover:bg-slate-200 hover:bg-white/90"
                                 onClick={(e) => {
                                   e.preventDefault();
                                   handleRemove(idx);
@@ -279,7 +279,7 @@ export const FileInput = ({
                             </p>
                             {file.uploaded ? (
                               <button
-                                className="absolute right-2 top-2 flex cursor-pointer items-center justify-center rounded-md bg-slate-100 p-1 hover:bg-slate-200 hover:bg-white/90"
+                                className="absolute top-2 right-2 flex cursor-pointer items-center justify-center rounded-md bg-slate-100 p-1 hover:bg-slate-200 hover:bg-white/90"
                                 onClick={(e) => {
                                   e.preventDefault();
                                   handleRemove(idx);
@@ -323,7 +323,7 @@ export const FileInput = ({
                         />
                         {selectedFiles[0].uploaded ? (
                           <button
-                            className="absolute right-2 top-2 flex cursor-pointer items-center justify-center rounded-md bg-slate-100 p-1 hover:bg-slate-200 hover:bg-white/90"
+                            className="absolute top-2 right-2 flex cursor-pointer items-center justify-center rounded-md bg-slate-100 p-1 hover:bg-slate-200 hover:bg-white/90"
                             onClick={(e) => {
                               e.preventDefault();
                               handleRemove(0);
@@ -342,7 +342,7 @@ export const FileInput = ({
                         </p>
                         {selectedFiles[0].uploaded ? (
                           <button
-                            className="absolute right-2 top-2 flex cursor-pointer items-center justify-center rounded-md bg-slate-100 p-1 hover:bg-slate-200 hover:bg-white/90"
+                            className="absolute top-2 right-2 flex cursor-pointer items-center justify-center rounded-md bg-slate-100 p-1 hover:bg-slate-200 hover:bg-white/90"
                             onClick={(e) => {
                               e.preventDefault();
                               handleRemove(0);

@@ -7,9 +7,9 @@ import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { toast } from "react-hot-toast";
 import { useTranslation } from "react-i18next";
-import { iso639Languages } from "@formbricks/i18n-utils/src/utils";
-import type { TProject } from "@formbricks/types/project";
-import { TUserLocale } from "@formbricks/types/user";
+import { iso639Languages } from "@hivecfm/i18n-utils/src/utils";
+import type { TProject } from "@hivecfm/types/project";
+import { TUserLocale } from "@hivecfm/types/user";
 import { getFormattedErrorMessage } from "@/lib/utils/helper";
 import { Alert, AlertDescription } from "@/modules/ui/components/alert";
 import { Button } from "@/modules/ui/components/button";
@@ -173,15 +173,11 @@ export function EditLanguage({
   const buttons: [ModalButton, ModalButton] = [
     {
       text: isFormbricksCloud ? t("common.start_free_trial") : t("common.request_trial_license"),
-      href: isFormbricksCloud
-        ? `/environments/${environmentId}/settings/billing`
-        : "https://formbricks.com/upgrade-self-hosting-license",
+      href: isFormbricksCloud ? `/environments/${environmentId}/settings/billing` : "#",
     },
     {
       text: t("common.learn_more"),
-      href: isFormbricksCloud
-        ? `/environments/${environmentId}/settings/billing`
-        : "https://formbricks.com/learn-more-self-hosting-license",
+      href: isFormbricksCloud ? `/environments/${environmentId}/settings/billing` : "#",
     },
   ];
 

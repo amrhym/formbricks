@@ -1,14 +1,14 @@
 "use client";
 
 import { useState } from "react";
-import { TEnvironment } from "@formbricks/types/environment";
+import { TEnvironment } from "@hivecfm/types/environment";
 import {
   TIntegrationNotion,
   TIntegrationNotionConfigData,
   TIntegrationNotionDatabase,
-} from "@formbricks/types/integration/notion";
-import { TSurvey } from "@formbricks/types/surveys/types";
-import { TUserLocale } from "@formbricks/types/user";
+} from "@hivecfm/types/integration/notion";
+import { TSurvey } from "@hivecfm/types/surveys/types";
+import { TUserLocale } from "@hivecfm/types/user";
 import { AddIntegrationModal } from "@/app/(app)/environments/[environmentId]/workspace/integrations/notion/components/AddIntegrationModal";
 import { ManageIntegration } from "@/app/(app)/environments/[environmentId]/workspace/integrations/notion/components/ManageIntegration";
 import notionLogo from "@/images/notion.png";

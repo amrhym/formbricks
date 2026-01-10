@@ -1,143 +1,143 @@
 {
   "$schema": "https://turborepo.org/schema.json",
   "tasks": {
-    "@formbricks/cache#build": {
-      "dependsOn": ["@formbricks/logger#build"]
+    "@hivecfm/cache#build": {
+      "dependsOn": ["@hivecfm/logger#build"]
     },
-    "@formbricks/cache#go": {
-      "dependsOn": ["@formbricks/logger#build"]
+    "@hivecfm/cache#go": {
+      "dependsOn": ["@hivecfm/logger#build"]
     },
-    "@formbricks/cache#lint": {
-      "dependsOn": ["@formbricks/logger#build"]
+    "@hivecfm/cache#lint": {
+      "dependsOn": ["@hivecfm/logger#build"]
     },
-    "@formbricks/cache#test": {
-      "dependsOn": ["@formbricks/logger#build"]
+    "@hivecfm/cache#test": {
+      "dependsOn": ["@hivecfm/logger#build"]
     },
-    "@formbricks/cache#test:coverage": {
-      "dependsOn": ["@formbricks/logger#build"]
+    "@hivecfm/cache#test:coverage": {
+      "dependsOn": ["@hivecfm/logger#build"]
     },
-    "@formbricks/database#build": {
+    "@hivecfm/database#build": {
       "dependsOn": ["^build"],
       "outputs": ["dist/**"]
     },
-    "@formbricks/database#lint": {
-      "dependsOn": ["@formbricks/logger#build", "@formbricks/database#build"]
+    "@hivecfm/database#lint": {
+      "dependsOn": ["@hivecfm/logger#build", "@hivecfm/database#build"]
     },
-    "@formbricks/database#setup": {
+    "@hivecfm/database#setup": {
       "dependsOn": ["db:up"]
     },
-    "@formbricks/i18n-utils#build": {
+    "@hivecfm/i18n-utils#build": {
       "dependsOn": ["^build"],
       "outputs": ["packages/i18n-utils/dist/**"]
     },
-    "@formbricks/i18n-utils#lint": {
+    "@hivecfm/i18n-utils#lint": {
       "dependsOn": ["^lint"]
     },
-    "@formbricks/i18n-utils#test": {
-      "dependsOn": ["@formbricks/i18n-utils#build"]
+    "@hivecfm/i18n-utils#test": {
+      "dependsOn": ["@hivecfm/i18n-utils#build"]
     },
-    "@formbricks/js-core#build": {
-      "dependsOn": ["^build", "@formbricks/database#build"],
+    "@hivecfm/js-core#build": {
+      "dependsOn": ["^build", "@hivecfm/database#build"],
       "outputs": ["dist/**"]
     },
-    "@formbricks/js-core#go": {
+    "@hivecfm/js-core#go": {
       "cache": false,
-      "dependsOn": ["@formbricks/database#db:setup"],
+      "dependsOn": ["@hivecfm/database#db:setup"],
       "persistent": true
     },
-    "@formbricks/js-core#lint": {
-      "dependsOn": ["@formbricks/database#build"]
+    "@hivecfm/js-core#lint": {
+      "dependsOn": ["@hivecfm/database#build"]
     },
-    "@formbricks/react-native#build": {
-      "dependsOn": ["^build", "@formbricks/database#build"],
+    "@hivecfm/react-native#build": {
+      "dependsOn": ["^build", "@hivecfm/database#build"],
       "outputs": ["dist/**"]
     },
-    "@formbricks/react-native#go": {
+    "@hivecfm/react-native#go": {
       "cache": false,
-      "dependsOn": ["@formbricks/database#db:setup"],
+      "dependsOn": ["@hivecfm/database#db:setup"],
       "persistent": true
     },
-    "@formbricks/storage#build": {
-      "dependsOn": ["@formbricks/logger#build"]
+    "@hivecfm/storage#build": {
+      "dependsOn": ["@hivecfm/logger#build"]
     },
-    "@formbricks/storage#go": {
+    "@hivecfm/storage#go": {
       "cache": false,
-      "dependsOn": ["@formbricks/storage#build"],
+      "dependsOn": ["@hivecfm/storage#build"],
       "persistent": true
     },
-    "@formbricks/storage#lint": {
-      "dependsOn": ["@formbricks/logger#build"]
+    "@hivecfm/storage#lint": {
+      "dependsOn": ["@hivecfm/logger#build"]
     },
-    "@formbricks/storage#test": {
-      "dependsOn": ["@formbricks/logger#build"]
+    "@hivecfm/storage#test": {
+      "dependsOn": ["@hivecfm/logger#build"]
     },
-    "@formbricks/storage#test:coverage": {
-      "dependsOn": ["@formbricks/logger#build"]
+    "@hivecfm/storage#test:coverage": {
+      "dependsOn": ["@hivecfm/logger#build"]
     },
-    "@formbricks/survey-ui#build": {
+    "@hivecfm/survey-ui#build": {
       "dependsOn": ["^build"],
       "outputs": ["dist/**"]
     },
-    "@formbricks/survey-ui#build:dev": {
+    "@hivecfm/survey-ui#build:dev": {
       "dependsOn": ["^build:dev"],
       "outputs": ["dist/**"]
     },
-    "@formbricks/survey-ui#go": {
+    "@hivecfm/survey-ui#go": {
       "cache": false,
-      "dependsOn": ["@formbricks/survey-ui#build"],
+      "dependsOn": ["@hivecfm/survey-ui#build"],
       "persistent": true
     },
-    "@formbricks/surveys#build": {
+    "@hivecfm/surveys#build": {
       "dependsOn": ["^build"],
       "outputs": ["dist/**"]
     },
-    "@formbricks/surveys#build:dev": {
-      "dependsOn": ["^build:dev", "@formbricks/i18n-utils#build"],
+    "@hivecfm/surveys#build:dev": {
+      "dependsOn": ["^build:dev", "@hivecfm/i18n-utils#build"],
       "outputs": ["dist/**"]
     },
-    "@formbricks/surveys#go": {
+    "@hivecfm/surveys#go": {
       "cache": false,
-      "dependsOn": ["@formbricks/surveys#build"],
+      "dependsOn": ["@hivecfm/surveys#build"],
       "persistent": true
     },
-    "@formbricks/surveys#test": {
-      "dependsOn": ["@formbricks/survey-ui#build"]
+    "@hivecfm/surveys#test": {
+      "dependsOn": ["@hivecfm/survey-ui#build"]
     },
-    "@formbricks/surveys#test:coverage": {
-      "dependsOn": ["@formbricks/survey-ui#build"]
+    "@hivecfm/surveys#test:coverage": {
+      "dependsOn": ["@hivecfm/survey-ui#build"]
     },
-    "@formbricks/ui#build": {
+    "@hivecfm/ui#build": {
       "dependsOn": ["^build"],
       "outputs": ["dist/**"]
     },
-    "@formbricks/ui#build:dev": {
+    "@hivecfm/ui#build:dev": {
       "dependsOn": ["^build:dev"],
       "outputs": ["dist/**"]
     },
-    "@formbricks/ui#go": {
+    "@hivecfm/ui#go": {
       "cache": false,
-      "dependsOn": ["@formbricks/ui#build"],
+      "dependsOn": ["@hivecfm/ui#build"],
       "persistent": true
     },
-    "@formbricks/web#go": {
+    "@hivecfm/web#go": {
       "cache": false,
-      "dependsOn": ["@formbricks/database#db:setup"],
+      "dependsOn": ["@hivecfm/database#db:setup"],
       "persistent": true
     },
-    "@formbricks/web#test": {
+    "@hivecfm/web#test": {
       "dependsOn": [
-        "@formbricks/logger#build",
-        "@formbricks/database#build",
-        "@formbricks/storage#build",
-        "@formbricks/cache#build"
+        "@hivecfm/logger#build",
+        "@hivecfm/database#build",
+        "@hivecfm/storage#build",
+        "@hivecfm/cache#build"
       ]
     },
-    "@formbricks/web#test:coverage": {
+    "@hivecfm/web#test:coverage": {
       "dependsOn": [
-        "@formbricks/logger#build",
-        "@formbricks/database#build",
-        "@formbricks/storage#build",
-        "@formbricks/cache#build"
+        "@hivecfm/logger#build",
+        "@hivecfm/database#build",
+        "@hivecfm/storage#build",
+        "@hivecfm/cache#build"
       ]
     },
     "build": {
@@ -206,6 +206,7 @@
         "OIDC_SIGNING_ALGORITHM",
         "PASSWORD_RESET_DISABLED",
         "PLAYWRIGHT_CI",
+        "DOCS_URL",
         "PRIVACY_URL",
         "RATE_LIMITING_DISABLED",
         "REDIS_URL",
@@ -280,7 +281,7 @@
     },
     "db:setup": {
       "cache": false,
-      "dependsOn": ["@formbricks/logger#build", "@formbricks/database#build"],
+      "dependsOn": ["@hivecfm/logger#build", "@hivecfm/database#build"],
       "outputs": []
     },
     "db:start": {
@@ -312,7 +313,7 @@
       "persistent": true
     },
     "storybook#storybook": {
-      "dependsOn": ["@formbricks/logger#build"]
+      "dependsOn": ["@hivecfm/logger#build"]
     },
     "test": {
       "outputs": []

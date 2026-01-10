@@ -1,4 +1,4 @@
-import { TUserLocale } from "@formbricks/types/user";
+import { TUserLocale } from "@hivecfm/types/user";
 import { getApiKeysWithEnvironmentPermissions } from "@/modules/organization/settings/api-keys/lib/api-key";
 import { TOrganizationProject } from "@/modules/organization/settings/api-keys/types/api-keys";
 import { EditAPIKeys } from "./edit-api-keys";

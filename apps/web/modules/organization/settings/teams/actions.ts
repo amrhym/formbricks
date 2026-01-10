@@ -2,9 +2,9 @@
 
 import { OrganizationRole } from "@prisma/client";
 import { z } from "zod";
-import { ZId, ZUuid } from "@formbricks/types/common";
-import { AuthenticationError, OperationNotAllowedError, ValidationError } from "@formbricks/types/errors";
-import { TOrganizationRole, ZOrganizationRole } from "@formbricks/types/memberships";
+import { ZId, ZUuid } from "@hivecfm/types/common";
+import { AuthenticationError, OperationNotAllowedError, ValidationError } from "@hivecfm/types/errors";
+import { TOrganizationRole, ZOrganizationRole } from "@hivecfm/types/memberships";
 import { INVITE_DISABLED, IS_FORMBRICKS_CLOUD } from "@/lib/constants";
 import { createInviteToken } from "@/lib/jwt";
 import { getMembershipByUserIdOrganizationId } from "@/lib/membership/service";

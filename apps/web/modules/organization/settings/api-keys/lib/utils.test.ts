@@ -1,5 +1,5 @@
 import { describe, expect, test } from "vitest";
-import { TAPIKeyEnvironmentPermission } from "@formbricks/types/auth";
+import { TAPIKeyEnvironmentPermission } from "@hivecfm/types/auth";
 import { hasPermission } from "./utils";
 
 describe("hasPermission", () => {

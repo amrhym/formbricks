@@ -1,5 +1,5 @@
 import { describe, expect, test } from "vitest";
-import { TOrganizationRole } from "@formbricks/types/memberships";
+import { TOrganizationRole } from "@hivecfm/types/memberships";
 import { getAccessFlags } from "./utils";
 
 describe("getAccessFlags", () => {

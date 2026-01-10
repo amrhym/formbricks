@@ -1,4 +1,4 @@
-import { TActionClassPageUrlRule } from "@formbricks/types/action-classes";
+import { TActionClassPageUrlRule } from "@hivecfm/types/action-classes";
 
 export const testURLmatch = (
   testUrl: string,

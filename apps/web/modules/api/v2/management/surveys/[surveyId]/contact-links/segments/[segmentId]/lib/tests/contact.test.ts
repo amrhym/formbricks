@@ -1,14 +1,14 @@
 import { SurveyStatus, SurveyType } from "@prisma/client";
 import { afterEach, beforeEach, describe, expect, test, vi } from "vitest";
-import { prisma } from "@formbricks/database";
-import type { TBaseFilters } from "@formbricks/types/segment";
+import { prisma } from "@hivecfm/database";
+import type { TBaseFilters } from "@hivecfm/types/segment";
 import { ApiErrorResponseV2 } from "@/modules/api/v2/types/api-error";
 import { getContactsInSegment } from "../contact";
 import { getSegment } from "../segment";
 import { getSurvey } from "../surveys";
 
 // Mock dependencies
-vi.mock("@formbricks/database", () => ({
+vi.mock("@hivecfm/database", () => ({
   prisma: {
     contact: {
       findMany: vi.fn(),

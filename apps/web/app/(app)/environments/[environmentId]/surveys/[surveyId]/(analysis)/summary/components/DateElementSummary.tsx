@@ -3,8 +3,8 @@
 import Link from "next/link";
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
-import { TSurvey, TSurveyElementSummaryDate } from "@formbricks/types/surveys/types";
-import { TUserLocale } from "@formbricks/types/user";
+import { TSurvey, TSurveyElementSummaryDate } from "@hivecfm/types/surveys/types";
+import { TUserLocale } from "@hivecfm/types/user";
 import { timeSince } from "@/lib/time";
 import { getContactIdentifier } from "@/lib/utils/contact";
 import { formatDateWithOrdinal } from "@/lib/utils/datetime";
@@ -81,7 +81,7 @@ export const DateElementSummary = ({ elementSummary, environmentId, survey, loca
                     </div>
                   )}
                 </div>
-                <div className="ph-no-capture col-span-2 whitespace-pre-wrap pl-6 font-semibold">
+                <div className="ph-no-capture col-span-2 pl-6 font-semibold whitespace-pre-wrap">
                   {renderResponseValue(response.value)}
                 </div>
                 <div className="px-4 text-slate-500 md:px-6">

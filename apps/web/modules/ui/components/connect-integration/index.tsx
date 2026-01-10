@@ -6,7 +6,7 @@ import { useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
 import { useTranslation } from "react-i18next";
-import { TIntegrationType } from "@formbricks/types/integration";
+import { TIntegrationType } from "@hivecfm/types/integration";
 import { Button } from "@/modules/ui/components/button";
 import { FormbricksLogo } from "@/modules/ui/components/formbricks-logo";
 import { getIntegrationDetails } from "./lib/utils";

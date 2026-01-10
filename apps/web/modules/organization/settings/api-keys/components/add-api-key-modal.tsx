@@ -6,7 +6,7 @@ import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "react-hot-toast";
 import { useTranslation } from "react-i18next";
-import { TOrganizationAccess } from "@formbricks/types/api-key";
+import { TOrganizationAccess } from "@hivecfm/types/api-key";
 import { TOrganizationProject } from "@/modules/organization/settings/api-keys/types/api-keys";
 import { Alert, AlertTitle } from "@/modules/ui/components/alert";
 import { Button } from "@/modules/ui/components/button";

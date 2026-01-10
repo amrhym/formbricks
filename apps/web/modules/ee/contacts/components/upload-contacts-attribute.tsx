@@ -3,7 +3,7 @@
 import { createId } from "@paralleldrive/cuid2";
 import { useEffect, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
-import { TContactAttributeKey } from "@formbricks/types/contact-attribute-key";
+import { TContactAttributeKey } from "@hivecfm/types/contact-attribute-key";
 import { UploadContactsAttributeCombobox } from "@/modules/ee/contacts/components/upload-contacts-attribute-combobox";
 import { Badge } from "@/modules/ui/components/badge";
 
@@ -128,7 +128,7 @@ export const UploadContactsAttributes = ({
 
   return (
     <div className="flex w-full items-center justify-start gap-4">
-      <span className="w-25 overflow-hidden text-ellipsis font-medium text-slate-700">{csvColumn}</span>
+      <span className="w-25 overflow-hidden font-medium text-ellipsis text-slate-700">{csvColumn}</span>
       <h4 className="text-sm font-medium text-slate-500">
         {t("environments.contacts.upload_contacts_modal_attributes_should_be_mapped_to")}
       </h4>

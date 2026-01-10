@@ -1,8 +1,8 @@
 import { Prisma } from "@prisma/client";
 import { cache as reactCache } from "react";
-import { prisma } from "@formbricks/database";
-import { TAuthenticationApiKey } from "@formbricks/types/auth";
-import { Result, err, ok } from "@formbricks/types/error-handlers";
+import { prisma } from "@hivecfm/database";
+import { TAuthenticationApiKey } from "@hivecfm/types/auth";
+import { Result, err, ok } from "@hivecfm/types/error-handlers";
 import { buildCommonFilterQuery, pickCommonFilter } from "@/modules/api/v2/management/lib/utils";
 import { TGetProjectTeamsFilter } from "@/modules/api/v2/organizations/[organizationId]/project-teams/types/project-teams";
 import { ApiErrorResponseV2 } from "@/modules/api/v2/types/api-error";

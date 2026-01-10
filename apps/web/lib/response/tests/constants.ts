@@ -1,4 +1,4 @@
-import { TEnvironment } from "@formbricks/types/environment";
+import { TEnvironment } from "@hivecfm/types/environment";
 
 export const mockId = "ars2tjk8hsi8oqk1uac00mo8";
 

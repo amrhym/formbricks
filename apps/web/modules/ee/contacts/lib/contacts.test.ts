@@ -1,7 +1,7 @@
 import { Prisma } from "@prisma/client";
 import { beforeEach, describe, expect, test, vi } from "vitest";
-import { prisma } from "@formbricks/database";
-import { DatabaseError, ValidationError } from "@formbricks/types/errors";
+import { prisma } from "@hivecfm/database";
+import { DatabaseError, ValidationError } from "@hivecfm/types/errors";
 import { getContactSurveyLink } from "@/modules/ee/contacts/lib/contact-survey-link";
 import { segmentFilterToPrismaQuery } from "@/modules/ee/contacts/segments/lib/filter/prisma-query";
 import { getSegment } from "@/modules/ee/contacts/segments/lib/segments";
@@ -16,7 +16,7 @@ import {
 } from "./contacts";
 import { transformPrismaContact } from "./utils";
 
-vi.mock("@formbricks/database", () => ({
+vi.mock("@hivecfm/database", () => ({
   prisma: {
     contact: {
       findMany: vi.fn(),
@@ -56,7 +56,7 @@ vi.mock("./utils", () => ({
   transformPrismaContact: vi.fn(),
 }));
 
-vi.mock("@formbricks/logger", () => ({
+vi.mock("@hivecfm/logger", () => ({
   logger: {
     error: vi.fn(),
     warn: vi.fn(),

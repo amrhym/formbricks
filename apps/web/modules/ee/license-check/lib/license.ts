@@ -3,9 +3,9 @@ import { HttpsProxyAgent } from "https-proxy-agent";
 import fetch from "node-fetch";
 import { cache as reactCache } from "react";
 import { z } from "zod";
-import { createCacheKey } from "@formbricks/cache";
-import { prisma } from "@formbricks/database";
-import { logger } from "@formbricks/logger";
+import { createCacheKey } from "@hivecfm/cache";
+import { prisma } from "@hivecfm/database";
+import { logger } from "@hivecfm/logger";
 import { cache } from "@/lib/cache";
 import { E2E_TESTING } from "@/lib/constants";
 import { env } from "@/lib/env";
@@ -16,12 +16,22 @@ import {
   TEnterpriseLicenseFeatures,
 } from "@/modules/ee/license-check/types/enterprise-license";
 
-// Configuration
+// =============================================================================
+// HiveCFM Enterprise Unlock
+// =============================================================================
+// Version: Tested against Formbricks v3.x (January 2026)
+// Purpose: Bypass license validation to enable all enterprise features
+//
+// This file has been significantly simplified for HiveCFM. The original
+// Formbricks license validation logic has been removed since we always
+// return an active enterprise license. See the original file in upstream
+// Formbricks for the full implementation if needed for reference.
+// =============================================================================
+
+// Configuration - kept for fetchLicense compatibility
 const CONFIG = {
   CACHE: {
     FETCH_LICENSE_TTL_MS: 24 * 60 * 60 * 1000, // 24 hours
-    PREVIOUS_RESULT_TTL_MS: 4 * 24 * 60 * 60 * 1000, // 4 days
-    GRACE_PERIOD_MS: 3 * 24 * 60 * 60 * 1000, // 3 days
     MAX_RETRIES: 3,
     RETRY_DELAY_MS: 1000,
   },
@@ -36,12 +46,6 @@ const CONFIG = {
 
 // Types
 type FallbackLevel = "live" | "cached" | "grace" | "default";
-
-type TPreviousResult = {
-  active: boolean;
-  lastChecked: Date;
-  features: TEnterpriseLicenseFeatures | null;
-};
 
 // Validation schemas
 const LicenseFeaturesSchema = z.object({
@@ -106,95 +110,11 @@ export const getCacheKeys = () => {
   };
 };
 
-// Default features
-const DEFAULT_FEATURES: TEnterpriseLicenseFeatures = {
-  isMultiOrgEnabled: false,
-  projects: 3,
-  twoFactorAuth: false,
-  sso: false,
-  whitelabel: false,
-  removeBranding: false,
-  contacts: false,
-  ai: false,
-  saml: false,
-  spamProtection: false,
-  auditLogs: false,
-  multiLanguageSurveys: false,
-  accessControl: false,
-  quotas: false,
-};
-
 // Helper functions
 const sleep = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
 
-const validateConfig = () => {
-  const errors: string[] = [];
-  if (CONFIG.CACHE.GRACE_PERIOD_MS >= CONFIG.CACHE.PREVIOUS_RESULT_TTL_MS) {
-    errors.push("Grace period must be shorter than previous result TTL");
-  }
-  if (CONFIG.CACHE.MAX_RETRIES < 0) {
-    errors.push("Max retries must be non-negative");
-  }
-  if (errors.length > 0) {
-    throw new LicenseError(errors.join(", "), "CONFIG_ERROR");
-  }
-};
-
-// Cache functions with async pattern
-const getPreviousResult = async (): Promise<TPreviousResult> => {
-  if (typeof window !== "undefined") {
-    return {
-      active: false,
-      lastChecked: new Date(0),
-      features: DEFAULT_FEATURES,
-    };
-  }
-
-  try {
-    const result = await cache.get<TPreviousResult>(getCacheKeys().PREVIOUS_RESULT_CACHE_KEY);
-    if (result.ok && result.data) {
-      return {
-        ...result.data,
-        lastChecked: new Date(result.data.lastChecked),
-      };
-    }
-  } catch (error) {
-    logger.error({ error }, "Failed to get previous result from cache");
-  }
-
-  return {
-    active: false,
-    lastChecked: new Date(0),
-    features: DEFAULT_FEATURES,
-  };
-};
-
-const setPreviousResult = async (previousResult: TPreviousResult) => {
-  if (typeof window !== "undefined") return;
-
-  try {
-    const result = await cache.set(
-      getCacheKeys().PREVIOUS_RESULT_CACHE_KEY,
-      previousResult,
-      CONFIG.CACHE.PREVIOUS_RESULT_TTL_MS
-    );
-    if (!result.ok) {
-      logger.warn({ error: result.error }, "Failed to cache previous result");
-    }
-  } catch (error) {
-    logger.error({ error }, "Failed to set previous result in cache");
-  }
-};
-
-// Monitoring functions
-const trackFallbackUsage = (level: FallbackLevel) => {
-  logger.info(
-    {
-      fallbackLevel: level,
-      timestamp: new Date().toISOString(),
-    },
-    `Using license fallback level: ${level}`
-  );
+const validateLicenseDetails = (data: unknown): TEnterpriseLicenseDetails => {
+  return LicenseDetailsSchema.parse(data);
 };
 
 const trackApiError = (error: LicenseApiError) => {
@@ -208,48 +128,7 @@ const trackApiError = (error: LicenseApiError) => {
   );
 };
 
-// Validation functions
-const validateFallback = (previousResult: TPreviousResult): boolean => {
-  if (!previousResult.features) return false;
-  if (previousResult.lastChecked.getTime() === new Date(0).getTime()) return false;
-  return true;
-};
-
-const validateLicenseDetails = (data: unknown): TEnterpriseLicenseDetails => {
-  return LicenseDetailsSchema.parse(data);
-};
-
-// Fallback functions
-const getFallbackLevel = (
-  liveLicense: TEnterpriseLicenseDetails | null,
-  previousResult: TPreviousResult,
-  currentTime: Date
-): FallbackLevel => {
-  if (liveLicense) return "live";
-  if (previousResult.active) {
-    const elapsedTime = currentTime.getTime() - previousResult.lastChecked.getTime();
-    return elapsedTime < CONFIG.CACHE.GRACE_PERIOD_MS ? "grace" : "default";
-  }
-  return "default";
-};
-
-const handleInitialFailure = async (currentTime: Date) => {
-  const initialFailResult: TPreviousResult = {
-    active: false,
-    features: DEFAULT_FEATURES,
-    lastChecked: currentTime,
-  };
-  await setPreviousResult(initialFailResult);
-  return {
-    active: false,
-    features: DEFAULT_FEATURES,
-    lastChecked: currentTime,
-    isPendingDowngrade: false,
-    fallbackLevel: "default" as const,
-  };
-};
-
-// API functions
+// API functions - kept for compatibility but not used in HiveCFM
 const fetchLicenseFromServerInternal = async (retryCount = 0): Promise<TEnterpriseLicenseDetails | null> => {
   if (!env.ENTERPRISE_LICENSE_KEY) return null;
 
@@ -262,12 +141,9 @@ const fetchLicenseFromServerInternal = async (retryCount = 0): Promise<TEnterpri
   try {
     const now = new Date();
     const startOfYear = new Date(now.getFullYear(), 0, 1);
-    // first millisecond of next year => current year is fully included
     const startOfNextYear = new Date(now.getFullYear() + 1, 0, 1);
 
     const [instanceId, responseCount] = await Promise.all([
-      // Skip instance ID during E2E tests to avoid license key conflicts
-      // as the instance ID changes with each test run
       E2E_TESTING ? null : getInstanceId(),
       prisma.response.count({
         where: {
@@ -279,8 +155,6 @@ const fetchLicenseFromServerInternal = async (retryCount = 0): Promise<TEnterpri
       }),
     ]);
 
-    // No organization exists, cannot perform license check
-    // (skip this check during E2E tests as we intentionally use null)
     if (!E2E_TESTING && !instanceId) return null;
 
     const proxyUrl = env.HTTPS_PROXY ?? env.HTTP_PROXY;
@@ -316,7 +190,6 @@ const fetchLicenseFromServerInternal = async (retryCount = 0): Promise<TEnterpri
     const error = new LicenseApiError(`License check API responded with status: ${res.status}`, res.status);
     trackApiError(error);
 
-    // Retry on specific status codes
     if (retryCount < CONFIG.CACHE.MAX_RETRIES && [429, 502, 503, 504].includes(res.status)) {
       await sleep(CONFIG.CACHE.RETRY_DELAY_MS * Math.pow(2, retryCount));
       return fetchLicenseFromServerInternal(retryCount + 1);
@@ -335,7 +208,6 @@ const fetchLicenseFromServerInternal = async (retryCount = 0): Promise<TEnterpri
 export const fetchLicense = async (): Promise<TEnterpriseLicenseDetails | null> => {
   if (!env.ENTERPRISE_LICENSE_KEY) return null;
 
-  // Skip license checks during build time - check before cache access
   // eslint-disable-next-line turbo/no-undeclared-env-vars -- NEXT_PHASE is a next.js env variable
   if (process.env.NEXT_PHASE === "phase-production-build") {
     return null;
@@ -350,20 +222,7 @@ export const fetchLicense = async (): Promise<TEnterpriseLicenseDetails | null> 
   );
 };
 
-// =============================================================================
-// HiveCFM Enterprise Unlock
-// =============================================================================
-// Version: Tested against Formbricks v3.x (January 2026)
-// Purpose: Bypass license validation to enable all enterprise features
-//
-// NOTE: The original license validation code (validateConfig, getPreviousResult,
-// setPreviousResult, trackFallbackUsage, getFallbackLevel, handleInitialFailure,
-// fetchLicenseFromServerInternal) is intentionally kept in this file for:
-//   1. Easier upstream merge conflict resolution
-//   2. Potential revert capability if needed
-//   3. Smaller patch footprint (only getEnterpriseLicense modified)
-// =============================================================================
-
+// HiveCFM Enterprise Features - All features enabled
 const HIVECFM_ENTERPRISE_FEATURES: TEnterpriseLicenseFeatures = {
   isMultiOrgEnabled: true,
   projects: null, // unlimited
@@ -381,6 +240,7 @@ const HIVECFM_ENTERPRISE_FEATURES: TEnterpriseLicenseFeatures = {
   quotas: true,
 };
 
+// HiveCFM: Always return active enterprise license with all features
 export const getEnterpriseLicense = reactCache(
   async (): Promise<{
     active: boolean;
@@ -389,7 +249,6 @@ export const getEnterpriseLicense = reactCache(
     isPendingDowngrade: boolean;
     fallbackLevel: FallbackLevel;
   }> => {
-    // HiveCFM: Always return active enterprise license with all features
     return {
       active: true,
       features: HIVECFM_ENTERPRISE_FEATURES,

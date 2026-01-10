@@ -1,6 +1,6 @@
 import { NextRequest } from "next/server";
 import { describe, expect, test, vi } from "vitest";
-import { TAPIKeyEnvironmentPermission } from "@formbricks/types/auth";
+import { TAPIKeyEnvironmentPermission } from "@hivecfm/types/auth";
 import { getApiKeyWithPermissions } from "@/modules/organization/settings/api-keys/lib/api-key";
 import { hasPermission } from "@/modules/organization/settings/api-keys/lib/utils";
 import { authenticateRequest } from "./auth";

@@ -3,8 +3,8 @@
 import { Dispatch, SetStateAction, useState } from "react";
 import toast from "react-hot-toast";
 import { Trans, useTranslation } from "react-i18next";
-import { TOrganization } from "@formbricks/types/organizations";
-import { TUser } from "@formbricks/types/user";
+import { TOrganization } from "@hivecfm/types/organizations";
+import { TUser } from "@hivecfm/types/user";
 import { useSignOut } from "@/modules/auth/hooks/use-sign-out";
 import { DeleteDialog } from "@/modules/ui/components/delete-dialog";
 import { Input } from "@/modules/ui/components/input";
@@ -47,7 +47,7 @@ export const DeleteAccountModal = ({
 
       // Manual redirect after signOut completes
       if (isFormbricksCloud) {
-        window.location.replace("https://app.formbricks.com/s/clri52y3z8f221225wjdhsoo2");
+        window.location.replace("#/s/clri52y3z8f221225wjdhsoo2");
       } else {
         window.location.replace("/auth/login");
       }

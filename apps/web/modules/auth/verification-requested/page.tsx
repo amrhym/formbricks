@@ -1,5 +1,5 @@
-import { logger } from "@formbricks/logger";
-import { ZUserEmail } from "@formbricks/types/user";
+import { logger } from "@hivecfm/logger";
+import { ZUserEmail } from "@hivecfm/types/user";
 import { getEmailFromEmailToken } from "@/lib/jwt";
 import { getTranslate } from "@/lingodotdev/server";
 import { FormWrapper } from "@/modules/auth/components/form-wrapper";
@@ -16,7 +16,7 @@ export const VerificationRequestedPage = async ({ searchParams }) => {
       return (
         <FormWrapper>
           <>
-            <h1 className="leading-2 mb-4 text-center text-lg font-semibold text-slate-900">
+            <h1 className="mb-4 text-center text-lg leading-2 font-semibold text-slate-900">
               {t("auth.verification-requested.please_confirm_your_email_address")}
             </h1>
             <VerificationMessage email={email} />

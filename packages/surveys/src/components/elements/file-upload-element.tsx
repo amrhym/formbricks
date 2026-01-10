@@ -1,9 +1,9 @@
 import { useCallback, useState } from "preact/hooks";
 import { useTranslation } from "react-i18next";
-import { FileUpload, type UploadedFile } from "@formbricks/survey-ui";
-import { type TResponseData, type TResponseTtc } from "@formbricks/types/responses";
-import type { TAllowedFileExtension } from "@formbricks/types/storage";
-import type { TSurveyFileUploadElement } from "@formbricks/types/surveys/elements";
+import { FileUpload, type UploadedFile } from "@hivecfm/survey-ui";
+import { type TResponseData, type TResponseTtc } from "@hivecfm/types/responses";
+import type { TAllowedFileExtension } from "@hivecfm/types/storage";
+import type { TSurveyFileUploadElement } from "@hivecfm/types/surveys/elements";
 import { getLocalizedValue } from "@/lib/i18n";
 import { getUpdatedTtc, useTtc } from "@/lib/ttc";
 

@@ -1,13 +1,13 @@
 "use client";
 
 import { useState } from "react";
-import { TEnvironment } from "@formbricks/types/environment";
+import { TEnvironment } from "@hivecfm/types/environment";
 import {
   TIntegrationGoogleSheets,
   TIntegrationGoogleSheetsConfigData,
-} from "@formbricks/types/integration/google-sheet";
-import { TSurvey } from "@formbricks/types/surveys/types";
-import { TUserLocale } from "@formbricks/types/user";
+} from "@hivecfm/types/integration/google-sheet";
+import { TSurvey } from "@hivecfm/types/surveys/types";
+import { TUserLocale } from "@hivecfm/types/user";
 import { ManageIntegration } from "@/app/(app)/environments/[environmentId]/workspace/integrations/google-sheets/components/ManageIntegration";
 import { authorize } from "@/app/(app)/environments/[environmentId]/workspace/integrations/google-sheets/lib/google";
 import googleSheetLogo from "@/images/googleSheetsLogo.png";

@@ -1,7 +1,7 @@
 import { getServerSession } from "next-auth";
-import { TEnvironment } from "@formbricks/types/environment";
-import { TSurvey } from "@formbricks/types/surveys/types";
-import { TTag } from "@formbricks/types/tags";
+import { TEnvironment } from "@hivecfm/types/environment";
+import { TSurvey } from "@hivecfm/types/surveys/types";
+import { TTag } from "@hivecfm/types/tags";
 import { getProjectByEnvironmentId } from "@/lib/project/service";
 import { getResponsesByContactId } from "@/lib/response/service";
 import { getSurveys } from "@/lib/survey/service";

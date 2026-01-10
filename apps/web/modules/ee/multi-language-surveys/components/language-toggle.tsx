@@ -2,8 +2,8 @@
 
 import { Language } from "@prisma/client";
 import { useTranslation } from "react-i18next";
-import { getLanguageLabel } from "@formbricks/i18n-utils/src/utils";
-import type { TUserLocale } from "@formbricks/types/user";
+import { getLanguageLabel } from "@hivecfm/i18n-utils/src/utils";
+import type { TUserLocale } from "@hivecfm/types/user";
 import { Label } from "@/modules/ui/components/label";
 import { Switch } from "@/modules/ui/components/switch";
 

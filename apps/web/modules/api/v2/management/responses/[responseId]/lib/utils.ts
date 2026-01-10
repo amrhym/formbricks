@@ -1,7 +1,7 @@
 import { Response, Survey } from "@prisma/client";
-import { logger } from "@formbricks/logger";
-import { Result, okVoid } from "@formbricks/types/error-handlers";
-import { TSurveyQuestionTypeEnum } from "@formbricks/types/surveys/types";
+import { logger } from "@hivecfm/logger";
+import { Result, okVoid } from "@hivecfm/types/error-handlers";
+import { TSurveyQuestionTypeEnum } from "@hivecfm/types/surveys/types";
 import { ApiErrorResponseV2 } from "@/modules/api/v2/types/api-error";
 import { deleteFile } from "@/modules/storage/service";
 

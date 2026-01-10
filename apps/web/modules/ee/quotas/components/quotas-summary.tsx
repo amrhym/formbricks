@@ -1,5 +1,5 @@
 import { useTranslation } from "react-i18next";
-import type { TSurveySummary } from "@formbricks/types/surveys/types";
+import type { TSurveySummary } from "@hivecfm/types/surveys/types";
 import { ProgressBar } from "@/modules/ui/components/progress-bar";
 
 interface QuotasSummaryProps {
@@ -28,8 +28,8 @@ export const QuotasSummary = ({ quotas }: QuotasSummaryProps) => {
               <div className="col-span-1 flex h-full items-center justify-center p-2">
                 <ProgressBar progress={quota.percentage / 100} barColor="bg-brand-dark" height={2} />
               </div>
-              <div className="col-span-3 flex items-center whitespace-pre-wrap p-2">{quota.name}</div>
-              <div className="flex items-center justify-end whitespace-pre-wrap p-2">{quota.limit}</div>
+              <div className="col-span-3 flex items-center p-2 whitespace-pre-wrap">{quota.name}</div>
+              <div className="flex items-center justify-end p-2 whitespace-pre-wrap">{quota.limit}</div>
               <div className="flex items-center justify-end gap-2 p-2 text-right">
                 <span className="rounded-xl bg-slate-100 px-2 py-1 text-xs">{quota.percentage}%</span>
                 <span>{quota.count}</span>

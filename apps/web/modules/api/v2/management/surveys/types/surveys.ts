@@ -1,6 +1,6 @@
 import { z } from "zod";
 import { extendZodWithOpenApi } from "zod-openapi";
-import { ZSurveyWithoutQuestionType } from "@formbricks/database/zod/surveys";
+import { ZSurveyWithoutQuestionType } from "@hivecfm/database/zod/surveys";
 
 extendZodWithOpenApi(z);
 

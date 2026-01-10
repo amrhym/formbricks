@@ -1,6 +1,6 @@
 import { NextRequest } from "next/server";
-import { logger } from "@formbricks/logger";
-import { ZResponseUpdateInput } from "@formbricks/types/responses";
+import { logger } from "@hivecfm/logger";
+import { ZResponseUpdateInput } from "@hivecfm/types/responses";
 import { handleErrorResponse } from "@/app/api/v1/auth";
 import { responses } from "@/app/lib/api/response";
 import { transformErrorToDetails } from "@/app/lib/api/validator";

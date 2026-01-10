@@ -15,10 +15,10 @@ import { prisma } from "@/lib/__mocks__/database";
 import { Prisma } from "@prisma/client";
 import { beforeEach, describe, expect, test, vi } from "vitest";
 import { testInputValidation } from "vitestSetup";
-import { PrismaErrorType } from "@formbricks/database/types/error";
-import { DatabaseError, ResourceNotFoundError } from "@formbricks/types/errors";
-import { TResponse } from "@formbricks/types/responses";
-import { TTag } from "@formbricks/types/tags";
+import { PrismaErrorType } from "@hivecfm/database/types/error";
+import { DatabaseError, ResourceNotFoundError } from "@hivecfm/types/errors";
+import { TResponse } from "@hivecfm/types/responses";
+import { TTag } from "@hivecfm/types/tags";
 import { getSurveySummary } from "@/app/(app)/environments/[environmentId]/surveys/[surveyId]/(analysis)/summary/lib/surveySummary";
 import {
   mockContactAttributeKey,

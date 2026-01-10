@@ -1,14 +1,14 @@
 import { useEffect, useRef, useState } from "preact/hooks";
-import { type TJsFileUploadParams } from "@formbricks/types/js";
-import { type TResponseData, TResponseDataValue, type TResponseTtc } from "@formbricks/types/responses";
-import { type TUploadFileConfig } from "@formbricks/types/storage";
-import { TSurveyBlock } from "@formbricks/types/surveys/blocks";
+import { type TJsFileUploadParams } from "@hivecfm/types/js";
+import { type TResponseData, TResponseDataValue, type TResponseTtc } from "@hivecfm/types/responses";
+import { type TUploadFileConfig } from "@hivecfm/types/storage";
+import { TSurveyBlock } from "@hivecfm/types/surveys/blocks";
 import {
   TSurveyElement,
   TSurveyElementTypeEnum,
   TSurveyMatrixElement,
   TSurveyRankingElement,
-} from "@formbricks/types/surveys/elements";
+} from "@hivecfm/types/surveys/elements";
 import { BackButton } from "@/components/buttons/back-button";
 import { SubmitButton } from "@/components/buttons/submit-button";
 import { ElementConditional } from "@/components/general/element-conditional";

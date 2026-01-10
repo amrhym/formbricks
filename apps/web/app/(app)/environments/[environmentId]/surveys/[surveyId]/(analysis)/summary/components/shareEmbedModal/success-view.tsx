@@ -2,8 +2,8 @@ import { BellRing, BlocksIcon, Share2Icon, UserIcon } from "lucide-react";
 import Link from "next/link";
 import React from "react";
 import { useTranslation } from "react-i18next";
-import { TSurvey } from "@formbricks/types/surveys/types";
-import { TUser } from "@formbricks/types/user";
+import { TSurvey } from "@hivecfm/types/surveys/types";
+import { TUser } from "@hivecfm/types/user";
 import { ShareSurveyLink } from "@/modules/analysis/components/ShareSurveyLink";
 import { Badge } from "@/modules/ui/components/badge";
 

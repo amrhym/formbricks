@@ -3,9 +3,9 @@
 import { Project } from "@prisma/client";
 import { useSearchParams } from "next/navigation";
 import { useEffect, useMemo, useState } from "react";
-import { TProjectStyling } from "@formbricks/types/project";
-import { TResponseData } from "@formbricks/types/responses";
-import { TSurvey, TSurveyStyling } from "@formbricks/types/surveys/types";
+import { TProjectStyling } from "@hivecfm/types/project";
+import { TResponseData } from "@hivecfm/types/responses";
+import { TSurvey, TSurveyStyling } from "@hivecfm/types/surveys/types";
 import { getElementsFromBlocks } from "@/modules/survey/lib/client-utils";
 import { CustomScriptsInjector } from "@/modules/survey/link/components/custom-scripts-injector";
 import { LinkSurveyWrapper } from "@/modules/survey/link/components/link-survey-wrapper";

@@ -5,8 +5,8 @@ import { useRouter } from "next/navigation";
 import { type ChangeEvent, useRef, useState } from "react";
 import { toast } from "react-hot-toast";
 import { useTranslation } from "react-i18next";
-import { TOrganization } from "@formbricks/types/organizations";
-import { TAllowedFileExtension } from "@formbricks/types/storage";
+import { TOrganization } from "@hivecfm/types/organizations";
+import { TAllowedFileExtension } from "@hivecfm/types/storage";
 import { SettingsCard } from "@/app/(app)/environments/[environmentId]/settings/components/SettingsCard";
 import { getFormattedErrorMessage } from "@/lib/utils/helper";
 import {

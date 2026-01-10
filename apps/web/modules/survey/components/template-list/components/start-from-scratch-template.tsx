@@ -3,7 +3,7 @@
 import { Project } from "@prisma/client";
 import { PlusCircleIcon } from "lucide-react";
 import { useTranslation } from "react-i18next";
-import { TTemplate } from "@formbricks/types/templates";
+import { TTemplate } from "@hivecfm/types/templates";
 import { customSurveyTemplate } from "@/app/lib/templates";
 import { cn } from "@/lib/cn";
 import { replacePresetPlaceholders } from "@/lib/utils/templates";
@@ -52,7 +52,7 @@ export const StartFromScratchTemplate = ({
   const cardContent = (
     <>
       <PlusCircleIcon className="text-brand-dark h-8 w-8 transition-all duration-150 group-hover:scale-110" />
-      <h3 className="text-md mb-1 mt-3 text-left font-bold text-slate-700">{customSurvey.name}</h3>
+      <h3 className="text-md mt-3 mb-1 text-left font-bold text-slate-700">{customSurvey.name}</h3>
       <p className="text-left text-xs text-slate-600">{customSurvey.description}</p>
       {showCreateSurveyButton && (
         <div className="text-left">

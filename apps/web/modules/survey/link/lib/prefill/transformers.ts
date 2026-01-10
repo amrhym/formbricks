@@ -1,4 +1,4 @@
-import { TSurveyElementTypeEnum } from "@formbricks/types/surveys/elements";
+import { TSurveyElementTypeEnum } from "@hivecfm/types/surveys/elements";
 import { parseNumber } from "./parsers";
 import {
   TValidationResult,

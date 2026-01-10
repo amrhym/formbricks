@@ -1,17 +1,17 @@
 import * as yaml from "yaml";
 import { z } from "zod";
 import { createDocument, extendZodWithOpenApi } from "zod-openapi";
-import { ZApiKeyData } from "@formbricks/database/zod/api-keys";
-import { ZContact } from "@formbricks/database/zod/contact";
-import { ZContactAttributeKey } from "@formbricks/database/zod/contact-attribute-keys";
-import { ZContactAttribute } from "@formbricks/database/zod/contact-attributes";
-import { ZProjectTeam } from "@formbricks/database/zod/project-teams";
-import { ZResponse } from "@formbricks/database/zod/responses";
-import { ZRoles } from "@formbricks/database/zod/roles";
-import { ZSurveyWithoutQuestionType } from "@formbricks/database/zod/surveys";
-import { ZTeam } from "@formbricks/database/zod/teams";
-import { ZUser } from "@formbricks/database/zod/users";
-import { ZWebhook } from "@formbricks/database/zod/webhooks";
+import { ZApiKeyData } from "@hivecfm/database/zod/api-keys";
+import { ZContact } from "@hivecfm/database/zod/contact";
+import { ZContactAttributeKey } from "@hivecfm/database/zod/contact-attribute-keys";
+import { ZContactAttribute } from "@hivecfm/database/zod/contact-attributes";
+import { ZProjectTeam } from "@hivecfm/database/zod/project-teams";
+import { ZResponse } from "@hivecfm/database/zod/responses";
+import { ZRoles } from "@hivecfm/database/zod/roles";
+import { ZSurveyWithoutQuestionType } from "@hivecfm/database/zod/surveys";
+import { ZTeam } from "@hivecfm/database/zod/teams";
+import { ZUser } from "@hivecfm/database/zod/users";
+import { ZWebhook } from "@hivecfm/database/zod/webhooks";
 import { healthPaths } from "@/modules/api/v2/health/lib/openapi";
 import { ZOverallHealthStatus } from "@/modules/api/v2/health/types/health-status";
 import { contactAttributeKeyPaths } from "@/modules/api/v2/management/contact-attribute-keys/lib/openapi";
@@ -32,8 +32,8 @@ extendZodWithOpenApi(z);
 const document = createDocument({
   openapi: "3.1.0",
   info: {
-    title: "Formbricks API",
-    description: "Manage Formbricks resources programmatically.",
+    title: "HiveCFM API",
+    description: "Manage HiveCFM resources programmatically.",
     version: "2.0.0",
   },
   paths: {
@@ -53,8 +53,8 @@ const document = createDocument({
   },
   servers: [
     {
-      url: "https://app.formbricks.com/api/v2",
-      description: "Formbricks Cloud",
+      url: "/api/v2",
+      description: "HiveCFM API",
     },
   ],
   tags: [
@@ -117,7 +117,7 @@ const document = createDocument({
         type: "apiKey",
         in: "header",
         name: "x-api-key",
-        description: "Use your Formbricks x-api-key to authenticate.",
+        description: "Use your HiveCFM x-api-key to authenticate.",
       },
     },
     schemas: {

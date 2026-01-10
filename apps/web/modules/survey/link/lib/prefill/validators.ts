@@ -5,7 +5,7 @@ import {
   TSurveyMultipleChoiceElement,
   TSurveyPictureSelectionElement,
   TSurveyRatingElement,
-} from "@formbricks/types/surveys/elements";
+} from "@hivecfm/types/surveys/elements";
 import { matchOptionByIdOrLabel } from "./matchers";
 import { parseCommaSeparated, parseNumber } from "./parsers";
 import { TValidationResult } from "./types";

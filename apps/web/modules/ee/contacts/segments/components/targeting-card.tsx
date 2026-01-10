@@ -7,14 +7,9 @@ import { useRouter } from "next/navigation";
 import React, { useEffect, useMemo, useState } from "react";
 import toast from "react-hot-toast";
 import { useTranslation } from "react-i18next";
-import { TContactAttributeKey } from "@formbricks/types/contact-attribute-key";
-import type {
-  TBaseFilter,
-  TSegment,
-  TSegmentCreateInput,
-  TSegmentUpdateInput,
-} from "@formbricks/types/segment";
-import type { TSurvey } from "@formbricks/types/surveys/types";
+import { TContactAttributeKey } from "@hivecfm/types/contact-attribute-key";
+import type { TBaseFilter, TSegment, TSegmentCreateInput, TSegmentUpdateInput } from "@hivecfm/types/segment";
+import type { TSurvey } from "@hivecfm/types/surveys/types";
 import { cn } from "@/lib/cn";
 import { structuredClone } from "@/lib/pollyfills/structuredClone";
 import {
@@ -171,7 +166,7 @@ export function TargetingCard({
         asChild
         className="h-full w-full cursor-pointer rounded-lg hover:bg-slate-50">
         <div className="inline-flex px-4 py-4">
-          <div className="flex items-center pl-2 pr-5">
+          <div className="flex items-center pr-5 pl-2">
             <CheckIcon
               className="h-7 w-7 rounded-full border border-green-300 bg-green-100 p-1.5 text-green-600"
               strokeWidth={3}

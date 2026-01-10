@@ -1,6 +1,6 @@
 import { afterEach, beforeEach, describe, expect, test, vi } from "vitest";
 import type { Mock } from "vitest";
-import { prisma } from "@formbricks/database";
+import { prisma } from "@hivecfm/database";
 import { getInstanceId, getInstanceInfo } from "@/lib/instance";
 import {
   TEnterpriseLicenseDetails,
@@ -13,7 +13,7 @@ vi.mock("@/lib/env", () => ({
     ENTERPRISE_LICENSE_KEY: "test-license-key",
     ENVIRONMENT: "production",
     VERCEL_URL: "some.vercel.url",
-    FORMBRICKS_COM_URL: "https://app.formbricks.com",
+    FORMBRICKS_COM_URL: "#",
     HTTPS_PROXY: undefined,
     HTTP_PROXY: undefined,
   },
@@ -33,7 +33,7 @@ vi.mock("@/lib/cache", () => ({
 }));
 
 // Mock the createCacheKey functions
-vi.mock("@formbricks/cache", () => ({
+vi.mock("@hivecfm/cache", () => ({
   createCacheKey: {
     license: {
       status: (identifier: string) => `fb:license:${identifier}:status`,
@@ -50,7 +50,7 @@ vi.mock("node-fetch", () => ({
   default: vi.fn(),
 }));
 
-vi.mock("@formbricks/database", () => ({
+vi.mock("@hivecfm/database", () => ({
   prisma: {
     response: {
       count: vi.fn(),
@@ -69,7 +69,7 @@ const mockLogger = {
   debug: vi.fn(),
 };
 
-vi.mock("@formbricks/logger", () => ({
+vi.mock("@hivecfm/logger", () => ({
   logger: mockLogger,
 }));
 
@@ -373,7 +373,7 @@ describe("License Core Logic", () => {
         env: {
           ENTERPRISE_LICENSE_KEY: "",
           VERCEL_URL: "some.vercel.url",
-          FORMBRICKS_COM_URL: "https://app.formbricks.com",
+          FORMBRICKS_COM_URL: "#",
           HTTPS_PROXY: undefined,
           HTTP_PROXY: undefined,
         },
@@ -426,7 +426,7 @@ describe("License Core Logic", () => {
         env: {
           ENTERPRISE_LICENSE_KEY: "test-license-key",
           VERCEL_URL: "some.vercel.url",
-          FORMBRICKS_COM_URL: "https://app.formbricks.com",
+          FORMBRICKS_COM_URL: "#",
           HTTPS_PROXY: undefined,
           HTTP_PROXY: undefined,
         },
@@ -519,7 +519,7 @@ describe("License Core Logic", () => {
         env: {
           ENTERPRISE_LICENSE_KEY: undefined,
           VERCEL_URL: "some.vercel.url",
-          FORMBRICKS_COM_URL: "https://app.formbricks.com",
+          FORMBRICKS_COM_URL: "#",
           HTTPS_PROXY: undefined,
           HTTP_PROXY: undefined,
         },
@@ -539,7 +539,7 @@ describe("License Core Logic", () => {
         env: {
           ENTERPRISE_LICENSE_KEY: testLicenseKey,
           VERCEL_URL: "some.vercel.url",
-          FORMBRICKS_COM_URL: "https://app.formbricks.com",
+          FORMBRICKS_COM_URL: "#",
           HTTPS_PROXY: undefined,
           HTTP_PROXY: undefined,
         },

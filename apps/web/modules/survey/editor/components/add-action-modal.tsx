@@ -3,7 +3,7 @@
 import { ActionClass } from "@prisma/client";
 import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
-import { TSurvey } from "@formbricks/types/surveys/types";
+import { TSurvey } from "@hivecfm/types/surveys/types";
 import { CreateNewActionTab } from "@/modules/survey/editor/components/create-new-action-tab";
 import { SavedActionsTab } from "@/modules/survey/editor/components/saved-actions-tab";
 import {

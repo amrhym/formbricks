@@ -1,6 +1,6 @@
 import snippet from "@calcom/embed-snippet";
 import { useEffect, useMemo } from "preact/hooks";
-import { type TSurveyCalElement } from "@formbricks/types/surveys/elements";
+import { type TSurveyCalElement } from "@hivecfm/types/surveys/elements";
 import { cn } from "@/lib/utils";
 
 interface CalEmbedProps {

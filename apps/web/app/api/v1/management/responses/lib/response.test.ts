@@ -1,9 +1,9 @@
 import { Organization, Prisma, Response as ResponsePrisma } from "@prisma/client";
 import { beforeEach, describe, expect, test, vi } from "vitest";
-import { prisma } from "@formbricks/database";
-import { logger } from "@formbricks/logger";
-import { DatabaseError, ResourceNotFoundError } from "@formbricks/types/errors";
-import { TResponse, TResponseInput } from "@formbricks/types/responses";
+import { prisma } from "@hivecfm/database";
+import { logger } from "@hivecfm/logger";
+import { DatabaseError, ResourceNotFoundError } from "@hivecfm/types/errors";
+import { TResponse, TResponseInput } from "@hivecfm/types/responses";
 import { getOrganizationByEnvironmentId } from "@/lib/organization/service";
 import { getResponseContact } from "@/lib/response/service";
 import { calculateTtcTotal } from "@/lib/response/utils";
@@ -114,7 +114,7 @@ vi.mock("@/lib/organization/service");
 vi.mock("@/lib/response/service");
 vi.mock("@/lib/response/utils");
 vi.mock("@/lib/utils/validate");
-vi.mock("@formbricks/database", () => ({
+vi.mock("@hivecfm/database", () => ({
   prisma: {
     response: {
       create: vi.fn(),
@@ -122,7 +122,7 @@ vi.mock("@formbricks/database", () => ({
     },
   },
 }));
-vi.mock("@formbricks/logger");
+vi.mock("@hivecfm/logger");
 vi.mock("./contact");
 
 type MockTx = {

@@ -1,9 +1,9 @@
 import { Prisma, Team } from "@prisma/client";
 import { cache as reactCache } from "react";
 import { z } from "zod";
-import { prisma } from "@formbricks/database";
-import { PrismaErrorType } from "@formbricks/database/types/error";
-import { Result, err, ok } from "@formbricks/types/error-handlers";
+import { prisma } from "@hivecfm/database";
+import { PrismaErrorType } from "@hivecfm/database/types/error";
+import { Result, err, ok } from "@hivecfm/types/error-handlers";
 import { ZTeamUpdateSchema } from "@/modules/api/v2/organizations/[organizationId]/teams/[teamId]/types/teams";
 import { ApiErrorResponseV2 } from "@/modules/api/v2/types/api-error";
 

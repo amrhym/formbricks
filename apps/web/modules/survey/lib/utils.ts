@@ -1,8 +1,8 @@
 import "server-only";
 import { Prisma } from "@prisma/client";
-import { TJsEnvironmentStateSurvey } from "@formbricks/types/js";
-import { TSegment } from "@formbricks/types/segment";
-import { TSurvey, TSurveyFilterCriteria } from "@formbricks/types/surveys/types";
+import { TJsEnvironmentStateSurvey } from "@hivecfm/types/js";
+import { TSegment } from "@hivecfm/types/segment";
+import { TSurvey, TSurveyFilterCriteria } from "@hivecfm/types/surveys/types";
 
 export const transformPrismaSurvey = <T extends TSurvey | TJsEnvironmentStateSurvey>(
   surveyPrisma: any

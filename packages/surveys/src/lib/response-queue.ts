@@ -1,7 +1,7 @@
-import { Result, err, ok } from "@formbricks/types/error-handlers";
-import { ApiErrorResponse } from "@formbricks/types/errors";
-import { TQuotaFullResponse } from "@formbricks/types/quota";
-import { TResponseUpdate } from "@formbricks/types/responses";
+import { Result, err, ok } from "@hivecfm/types/error-handlers";
+import { ApiErrorResponse } from "@hivecfm/types/errors";
+import { TQuotaFullResponse } from "@hivecfm/types/quota";
+import { TResponseUpdate } from "@hivecfm/types/responses";
 import { RECAPTCHA_VERIFICATION_ERROR_CODE } from "@/lib/constants";
 import { TResponseErrorCodesEnum } from "@/types/response-error-codes";
 import { ApiClient } from "./api-client";

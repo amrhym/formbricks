@@ -9,9 +9,9 @@ import {
   TIntegrationGoogleSheets,
   TIntegrationGoogleSheetsConfigData,
   TIntegrationGoogleSheetsInput,
-} from "@formbricks/types/integration/google-sheet";
-import { TSurvey, TSurveyQuestionId } from "@formbricks/types/surveys/types";
-import { getTextContent } from "@formbricks/types/surveys/validation";
+} from "@hivecfm/types/integration/google-sheet";
+import { TSurvey, TSurveyQuestionId } from "@hivecfm/types/surveys/types";
+import { getTextContent } from "@hivecfm/types/surveys/validation";
 import { createOrUpdateIntegrationAction } from "@/app/(app)/environments/[environmentId]/workspace/integrations/actions";
 import { getSpreadsheetNameByIdAction } from "@/app/(app)/environments/[environmentId]/workspace/integrations/google-sheets/actions";
 import {

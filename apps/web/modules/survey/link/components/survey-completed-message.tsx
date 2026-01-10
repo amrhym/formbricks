@@ -2,7 +2,7 @@ import { Project } from "@prisma/client";
 import { CheckCircle2Icon } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
-import { TSurveySingleUse } from "@formbricks/types/surveys/types";
+import { TSurveySingleUse } from "@hivecfm/types/surveys/types";
 import { getTranslate } from "@/lingodotdev/server";
 import footerLogo from "../lib/footerlogo.svg";
 

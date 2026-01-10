@@ -1,7 +1,7 @@
 import { NextRequest } from "next/server";
-import { logger } from "@formbricks/logger";
-import { TAuthenticationApiKey } from "@formbricks/types/auth";
-import { ZSurveyUpdateInput } from "@formbricks/types/surveys/types";
+import { logger } from "@hivecfm/logger";
+import { TAuthenticationApiKey } from "@hivecfm/types/auth";
+import { ZSurveyUpdateInput } from "@hivecfm/types/surveys/types";
 import { handleErrorResponse } from "@/app/api/v1/auth";
 import { deleteSurvey } from "@/app/api/v1/management/surveys/[surveyId]/lib/surveys";
 import { checkFeaturePermissions } from "@/app/api/v1/management/surveys/lib/utils";

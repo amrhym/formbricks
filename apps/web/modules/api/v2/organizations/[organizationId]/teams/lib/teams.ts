@@ -1,7 +1,7 @@
 import "server-only";
 import { Team } from "@prisma/client";
-import { prisma } from "@formbricks/database";
-import { Result, err, ok } from "@formbricks/types/error-handlers";
+import { prisma } from "@hivecfm/database";
+import { Result, err, ok } from "@hivecfm/types/error-handlers";
 import { getTeamsQuery } from "@/modules/api/v2/organizations/[organizationId]/teams/lib/utils";
 import {
   TGetTeamsFilter,

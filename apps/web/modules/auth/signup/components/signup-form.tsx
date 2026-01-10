@@ -9,7 +9,7 @@ import toast from "react-hot-toast";
 import { useTranslation } from "react-i18next";
 import Turnstile, { useTurnstile } from "react-turnstile";
 import { z } from "zod";
-import { TUserLocale, ZUserName, ZUserPassword } from "@formbricks/types/user";
+import { TUserLocale, ZUserName, ZUserPassword } from "@hivecfm/types/user";
 import { getFormattedErrorMessage } from "@/lib/utils/helper";
 import { createUserAction } from "@/modules/auth/signup/actions";
 import { TermsPrivacyLinks } from "@/modules/auth/signup/components/terms-privacy-links";

@@ -1,8 +1,8 @@
 import { Prisma } from "@prisma/client";
 import { describe, expect, test } from "vitest";
-import { TResponse } from "@formbricks/types/responses";
-import { TSurveyElementTypeEnum } from "@formbricks/types/surveys/elements";
-import { TSurvey } from "@formbricks/types/surveys/types";
+import { TResponse } from "@hivecfm/types/responses";
+import { TSurveyElementTypeEnum } from "@hivecfm/types/surveys/elements";
+import { TSurvey } from "@hivecfm/types/surveys/types";
 import {
   buildWhereClause,
   calculateTtcTotal,

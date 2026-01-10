@@ -1,5 +1,5 @@
 import { Prisma } from "@prisma/client";
-import { logger } from "@formbricks/logger";
+import { logger } from "@hivecfm/logger";
 import type { MigrationScript } from "../../src/scripts/migration-runner";
 
 type I18nString = Record<string, string>;

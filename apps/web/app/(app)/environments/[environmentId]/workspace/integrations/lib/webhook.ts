@@ -1,8 +1,8 @@
 import { Prisma, Webhook } from "@prisma/client";
 import { z } from "zod";
-import { prisma } from "@formbricks/database";
-import { ZId } from "@formbricks/types/common";
-import { DatabaseError } from "@formbricks/types/errors";
+import { prisma } from "@hivecfm/database";
+import { ZId } from "@hivecfm/types/common";
+import { DatabaseError } from "@hivecfm/types/errors";
 import { validateInputs } from "@/lib/utils/validate";
 
 export const getWebhookCountBySource = async (

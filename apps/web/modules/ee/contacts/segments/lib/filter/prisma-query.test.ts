@@ -1,5 +1,5 @@
 import { afterEach, beforeEach, describe, expect, test, vi } from "vitest";
-import { TBaseFilters, TSegment } from "@formbricks/types/segment";
+import { TBaseFilters, TSegment } from "@hivecfm/types/segment";
 import { getSegment } from "../segments";
 import { segmentFilterToPrismaQuery } from "./prisma-query";
 
@@ -249,7 +249,7 @@ describe("segmentFilterToPrismaQuery", () => {
             type: "attribute" as const,
             contactAttributeKey: "company",
           },
-          value: "Formbricks",
+          value: "HiveCFM",
           qualifier: {
             operator: "equals",
           },
@@ -343,7 +343,7 @@ describe("segmentFilterToPrismaQuery", () => {
                 attributes: {
                   some: {
                     attributeKey: { key: "company" },
-                    value: { equals: "Formbricks", mode: "insensitive" },
+                    value: { equals: "HiveCFM", mode: "insensitive" },
                   },
                 },
               },
@@ -403,7 +403,7 @@ describe("segmentFilterToPrismaQuery", () => {
             type: "attribute" as const,
             contactAttributeKey: "company",
           },
-          value: "Formbricks",
+          value: "HiveCFM",
           qualifier: {
             operator: "equals",
           },
@@ -458,7 +458,7 @@ describe("segmentFilterToPrismaQuery", () => {
                     attributeKey: {
                       key: "company",
                     },
-                    value: { equals: "Formbricks", mode: "insensitive" },
+                    value: { equals: "HiveCFM", mode: "insensitive" },
                   },
                 },
               },

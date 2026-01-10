@@ -1,8 +1,8 @@
 import { ActionClass, Prisma } from "@prisma/client";
-import { prisma } from "@formbricks/database";
-import { logger } from "@formbricks/logger";
-import { DatabaseError, InvalidInputError, ResourceNotFoundError } from "@formbricks/types/errors";
-import { TSurvey, TSurveyCreateInput } from "@formbricks/types/surveys/types";
+import { prisma } from "@hivecfm/database";
+import { logger } from "@hivecfm/logger";
+import { DatabaseError, InvalidInputError, ResourceNotFoundError } from "@hivecfm/types/errors";
+import { TSurvey, TSurveyCreateInput } from "@hivecfm/types/surveys/types";
 import {
   getOrganizationByEnvironmentId,
   subscribeOrganizationMembersToSurveyResponses,

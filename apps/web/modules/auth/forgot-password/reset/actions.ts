@@ -1,8 +1,8 @@
 "use server";
 
 import { z } from "zod";
-import { ResourceNotFoundError } from "@formbricks/types/errors";
-import { ZUserPassword } from "@formbricks/types/user";
+import { ResourceNotFoundError } from "@hivecfm/types/errors";
+import { ZUserPassword } from "@hivecfm/types/user";
 import { hashPassword } from "@/lib/auth";
 import { verifyToken } from "@/lib/jwt";
 import { actionClient } from "@/lib/utils/action-client";

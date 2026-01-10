@@ -1,8 +1,8 @@
 import { IntegrationType, Prisma } from "@prisma/client";
 import { afterEach, beforeEach, describe, expect, test, vi } from "vitest";
-import { prisma } from "@formbricks/database";
-import { DatabaseError } from "@formbricks/types/errors";
-import { TIntegrationInput } from "@formbricks/types/integration";
+import { prisma } from "@hivecfm/database";
+import { DatabaseError } from "@hivecfm/types/errors";
+import { TIntegrationInput } from "@hivecfm/types/integration";
 import { ITEMS_PER_PAGE } from "../constants";
 import {
   createOrUpdateIntegration,
@@ -12,7 +12,7 @@ import {
   getIntegrations,
 } from "./service";
 
-vi.mock("@formbricks/database", () => ({
+vi.mock("@hivecfm/database", () => ({
   prisma: {
     integration: {
       upsert: vi.fn(),

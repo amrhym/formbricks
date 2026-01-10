@@ -1,9 +1,9 @@
 import { Prisma } from "@prisma/client";
 import { cache as reactCache } from "react";
-import { prisma } from "@formbricks/database";
-import { ZString } from "@formbricks/types/common";
-import { DatabaseError } from "@formbricks/types/errors";
-import { TMembership, ZMembership } from "@formbricks/types/memberships";
+import { prisma } from "@hivecfm/database";
+import { ZString } from "@hivecfm/types/common";
+import { DatabaseError } from "@hivecfm/types/errors";
+import { TMembership, ZMembership } from "@hivecfm/types/memberships";
 import { validateInputs } from "@/lib/utils/validate";
 
 export const getProjectsByUserId = reactCache(

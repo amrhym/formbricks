@@ -1,5 +1,5 @@
 {
-  "name": "@formbricks/vite-plugins",
+  "name": "@hivecfm/vite-plugins",
   "license": "MIT",
   "version": "1.0.0",
   "private": true,
@@ -15,8 +15,8 @@
     "lint": "eslint . --ext .ts,.js,.tsx,.jsx"
   },
   "devDependencies": {
-    "@formbricks/config-typescript": "workspace:*",
-    "@formbricks/eslint-config": "workspace:*",
+    "@hivecfm/config-typescript": "workspace:*",
+    "@hivecfm/eslint-config": "workspace:*",
     "vite": "6.4.1"
   }
 }

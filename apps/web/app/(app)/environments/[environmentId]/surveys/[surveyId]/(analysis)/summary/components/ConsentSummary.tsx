@@ -1,9 +1,9 @@
 "use client";
 
 import { useTranslation } from "react-i18next";
-import { type TI18nString } from "@formbricks/types/i18n";
-import { TSurveyElementTypeEnum } from "@formbricks/types/surveys/elements";
-import { TSurvey, TSurveyElementSummaryConsent } from "@formbricks/types/surveys/types";
+import { type TI18nString } from "@hivecfm/types/i18n";
+import { TSurveyElementTypeEnum } from "@hivecfm/types/surveys/elements";
+import { TSurvey, TSurveyElementSummaryConsent } from "@hivecfm/types/surveys/types";
 import { ProgressBar } from "@/modules/ui/components/progress-bar";
 import { convertFloatToNDecimal } from "../lib/utils";
 import { ElementSummaryHeader } from "./ElementSummaryHeader";
@@ -37,7 +37,7 @@ export const ConsentSummary = ({ elementSummary, survey, setFilter }: ConsentSum
   return (
     <div className="rounded-xl border border-slate-200 bg-white shadow-sm">
       <ElementSummaryHeader elementSummary={elementSummary} survey={survey} />
-      <div className="space-y-5 px-4 pb-6 pt-4 text-sm md:px-6 md:text-base">
+      <div className="space-y-5 px-4 pt-4 pb-6 text-sm md:px-6 md:text-base">
         {summaryItems.map((summaryItem) => {
           return (
             <button

@@ -3,7 +3,7 @@
 import { MailIcon, PaintbrushIcon, Rows3Icon, SettingsIcon } from "lucide-react";
 import { type JSX, useMemo } from "react";
 import { useTranslation } from "react-i18next";
-import { TSurveyEditorTabs } from "@formbricks/types/surveys/types";
+import { TSurveyEditorTabs } from "@hivecfm/types/surveys/types";
 import { cn } from "@/lib/cn";
 import { ProBadge } from "@/modules/ui/components/pro-badge";
 

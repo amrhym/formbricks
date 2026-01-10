@@ -1,7 +1,7 @@
 import { Metadata } from "next";
 import { getServerSession } from "next-auth";
 import { notFound } from "next/navigation";
-import { AuthenticationError } from "@formbricks/types/errors";
+import { AuthenticationError } from "@hivecfm/types/errors";
 import { SMTP_HOST, SMTP_PASSWORD, SMTP_PORT, SMTP_USER } from "@/lib/constants";
 import { verifyUserRoleAccess } from "@/lib/organization/auth";
 import { getTranslate } from "@/lingodotdev/server";

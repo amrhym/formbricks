@@ -1,4 +1,4 @@
-import { logger } from "@formbricks/logger";
+import { logger } from "@hivecfm/logger";
 import { AUDIT_LOG_ENABLED, AUDIT_LOG_GET_USER_IP } from "@/lib/constants";
 import { ActionClientCtx, AuthenticatedActionClientCtx } from "@/lib/utils/action-client/types/context";
 import { getClientIpFromHeaders } from "@/lib/utils/client-ip";

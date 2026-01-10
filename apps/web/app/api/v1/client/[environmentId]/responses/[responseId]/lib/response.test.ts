@@ -1,7 +1,7 @@
 import { beforeEach, describe, expect, test, vi } from "vitest";
-import { prisma } from "@formbricks/database";
-import { TSurveyQuota } from "@formbricks/types/quota";
-import { TResponse } from "@formbricks/types/responses";
+import { prisma } from "@hivecfm/database";
+import { TSurveyQuota } from "@hivecfm/types/quota";
+import { TResponse } from "@hivecfm/types/responses";
 import { updateResponse } from "@/lib/response/service";
 import { evaluateResponseQuotas } from "@/modules/ee/quotas/lib/evaluation-service";
 import { updateResponseWithQuotaEvaluation } from "./response";

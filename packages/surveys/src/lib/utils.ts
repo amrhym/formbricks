@@ -1,10 +1,10 @@
-import { type Result, err, ok, wrapThrowsAsync } from "@formbricks/types/error-handlers";
-import { type ApiErrorResponse } from "@formbricks/types/errors";
-import { type TJsEnvironmentStateSurvey } from "@formbricks/types/js";
-import { TAllowedFileExtension, mimeTypes } from "@formbricks/types/storage";
-import { TSurveyBlock, TSurveyBlockLogic, TSurveyBlockLogicAction } from "@formbricks/types/surveys/blocks";
-import { type TSurveyElement, TSurveyElementChoice } from "@formbricks/types/surveys/elements";
-import { type TShuffleOption } from "@formbricks/types/surveys/types";
+import { type Result, err, ok, wrapThrowsAsync } from "@hivecfm/types/error-handlers";
+import { type ApiErrorResponse } from "@hivecfm/types/errors";
+import { type TJsEnvironmentStateSurvey } from "@hivecfm/types/js";
+import { TAllowedFileExtension, mimeTypes } from "@hivecfm/types/storage";
+import { TSurveyBlock, TSurveyBlockLogic, TSurveyBlockLogicAction } from "@hivecfm/types/surveys/blocks";
+import { type TSurveyElement, TSurveyElementChoice } from "@hivecfm/types/surveys/elements";
+import { type TShuffleOption } from "@hivecfm/types/surveys/types";
 import { ApiResponse, ApiSuccessResponse } from "@/types/api";
 
 export const cn = (...classes: string[]) => {

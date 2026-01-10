@@ -1,4 +1,4 @@
-import { TJsEnvironmentStateProject, TJsEnvironmentStateSurvey } from "@formbricks/types/js";
+import { TJsEnvironmentStateProject, TJsEnvironmentStateSurvey } from "@hivecfm/types/js";
 
 export const getStyling = (project: TJsEnvironmentStateProject, survey: TJsEnvironmentStateSurvey) => {
   // allow style overwrite is disabled from the project

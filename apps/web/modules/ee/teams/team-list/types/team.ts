@@ -1,6 +1,6 @@
 import { z } from "zod";
-import { ZId } from "@formbricks/types/common";
-import { ZOrganizationRole } from "@formbricks/types/memberships";
+import { ZId } from "@hivecfm/types/common";
+import { ZOrganizationRole } from "@hivecfm/types/memberships";
 import { ZTeamPermission } from "@/modules/ee/teams/project-teams/types/team";
 
 export const ZTeamRole = z.enum(["admin", "contributor"]);

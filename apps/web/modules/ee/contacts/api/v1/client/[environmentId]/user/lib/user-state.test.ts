@@ -1,10 +1,10 @@
 import { afterEach, beforeEach, describe, expect, test, vi } from "vitest";
-import { prisma } from "@formbricks/database";
-import { TJsPersonState } from "@formbricks/types/js";
+import { prisma } from "@hivecfm/database";
+import { TJsPersonState } from "@hivecfm/types/js";
 import { getPersonSegmentIds } from "./segments";
 import { getUserState } from "./user-state";
 
-vi.mock("@formbricks/database", () => ({
+vi.mock("@hivecfm/database", () => ({
   prisma: {
     contact: {
       findUniqueOrThrow: vi.fn(),

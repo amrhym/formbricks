@@ -1,10 +1,10 @@
 import "server-only";
 import { Prisma, Project } from "@prisma/client";
 import { cache as reactCache } from "react";
-import { prisma } from "@formbricks/database";
-import { ZId } from "@formbricks/types/common";
-import { DatabaseError, ResourceNotFoundError } from "@formbricks/types/errors";
-import { TOrganizationBilling, TOrganizationWhitelabel } from "@formbricks/types/organizations";
+import { prisma } from "@hivecfm/database";
+import { ZId } from "@hivecfm/types/common";
+import { DatabaseError, ResourceNotFoundError } from "@hivecfm/types/errors";
+import { TOrganizationBilling, TOrganizationWhitelabel } from "@hivecfm/types/organizations";
 import { validateInputs } from "@/lib/utils/validate";
 
 /**

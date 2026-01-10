@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { ZWebhook } from "@formbricks/database/zod/webhooks";
+import { ZWebhook } from "@hivecfm/database/zod/webhooks";
 
 export const ZWebhookInput = ZWebhook.partial({
   name: true,

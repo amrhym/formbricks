@@ -1,10 +1,10 @@
 import { describe, expect, test, vi } from "vitest";
-import { TJsEnvironmentStateSurvey } from "@formbricks/types/js";
-import { TResponseData, TResponseVariables } from "@formbricks/types/responses";
-import { TSurveyBlockLogic, TSurveyBlockLogicAction } from "@formbricks/types/surveys/blocks";
-import { TSurveyElementTypeEnum } from "@formbricks/types/surveys/elements";
-import { TConditionGroup, TSingleCondition } from "@formbricks/types/surveys/logic";
-import { TSurveyLogicAction } from "@formbricks/types/surveys/types";
+import { TJsEnvironmentStateSurvey } from "@hivecfm/types/js";
+import { TResponseData, TResponseVariables } from "@hivecfm/types/responses";
+import { TSurveyBlockLogic, TSurveyBlockLogicAction } from "@hivecfm/types/surveys/blocks";
+import { TSurveyElementTypeEnum } from "@hivecfm/types/surveys/elements";
+import { TConditionGroup, TSingleCondition } from "@hivecfm/types/surveys/logic";
+import { TSurveyLogicAction } from "@hivecfm/types/surveys/types";
 import {
   addConditionBelow,
   createGroupFromResource,

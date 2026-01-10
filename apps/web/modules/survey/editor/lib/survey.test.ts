@@ -1,9 +1,9 @@
 import { ActionClass, Prisma } from "@prisma/client";
 import { afterEach, beforeEach, describe, expect, test, vi } from "vitest";
-import { prisma } from "@formbricks/database";
-import { DatabaseError, InvalidInputError, ResourceNotFoundError } from "@formbricks/types/errors";
-import { TSegment } from "@formbricks/types/segment";
-import { TSurvey, TSurveyQuestionTypeEnum } from "@formbricks/types/surveys/types";
+import { prisma } from "@hivecfm/database";
+import { DatabaseError, InvalidInputError, ResourceNotFoundError } from "@hivecfm/types/errors";
+import { TSegment } from "@hivecfm/types/segment";
+import { TSurvey, TSurveyQuestionTypeEnum } from "@hivecfm/types/surveys/types";
 import { updateSurveyInternal } from "@/lib/survey/service";
 import { getActionClasses } from "@/modules/survey/lib/action-class";
 import { getOrganizationAIKeys, getOrganizationIdFromEnvironmentId } from "@/modules/survey/lib/organization";
@@ -11,7 +11,7 @@ import { getSurvey } from "@/modules/survey/lib/survey";
 import { checkTriggersValidity, handleTriggerUpdates, updateSurvey, updateSurveyDraft } from "./survey";
 
 // Mock dependencies
-vi.mock("@formbricks/database", () => ({
+vi.mock("@hivecfm/database", () => ({
   prisma: {
     survey: {
       update: vi.fn(),
@@ -52,7 +52,7 @@ vi.mock("@/modules/survey/lib/survey", () => ({
   },
 }));
 
-vi.mock("@formbricks/logger", () => ({
+vi.mock("@hivecfm/logger", () => ({
   logger: {
     error: vi.fn(),
   },
@@ -312,8 +312,8 @@ describe("Survey Editor Library Tests", () => {
                 to: "test@example.com",
                 subject: "Test",
                 body: "Test body",
-                from: "test@formbricks.com",
-                replyTo: ["reply@formbricks.com"],
+                from: "test@hivecfm.com",
+                replyTo: ["reply@hivecfm.com"],
                 attachResponseData: false,
               },
             },
@@ -337,8 +337,8 @@ describe("Survey Editor Library Tests", () => {
                 to: "new@example.com",
                 subject: "New Test",
                 body: "New test body",
-                from: "test@formbricks.com",
-                replyTo: ["reply@formbricks.com"],
+                from: "test@hivecfm.com",
+                replyTo: ["reply@hivecfm.com"],
                 attachResponseData: false,
               },
             },
@@ -362,8 +362,8 @@ describe("Survey Editor Library Tests", () => {
                 to: "delete@example.com",
                 subject: "Delete Test",
                 body: "Delete test body",
-                from: "test@formbricks.com",
-                replyTo: ["reply@formbricks.com"],
+                from: "test@hivecfm.com",
+                replyTo: ["reply@hivecfm.com"],
                 attachResponseData: false,
               },
             },
@@ -391,8 +391,8 @@ describe("Survey Editor Library Tests", () => {
                 to: "test@example.com",
                 subject: "Test",
                 body: "Test body",
-                from: "test@formbricks.com",
-                replyTo: ["reply@formbricks.com"],
+                from: "test@hivecfm.com",
+                replyTo: ["reply@hivecfm.com"],
                 attachResponseData: false,
               },
             },

@@ -1,6 +1,6 @@
 import { z } from "zod";
 import { extendZodWithOpenApi } from "zod-openapi";
-import { ZWebhook } from "@formbricks/database/zod/webhooks";
+import { ZWebhook } from "@hivecfm/database/zod/webhooks";
 
 extendZodWithOpenApi(z);
 

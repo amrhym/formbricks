@@ -1,7 +1,7 @@
 import { NextRequest } from "next/server";
-import { logger } from "@formbricks/logger";
-import { DatabaseError, InvalidInputError, ResourceNotFoundError } from "@formbricks/types/errors";
-import { ZResponseUpdateInput } from "@formbricks/types/responses";
+import { logger } from "@hivecfm/logger";
+import { DatabaseError, InvalidInputError, ResourceNotFoundError } from "@hivecfm/types/errors";
+import { ZResponseUpdateInput } from "@hivecfm/types/responses";
 import { responses } from "@/app/lib/api/response";
 import { transformErrorToDetails } from "@/app/lib/api/validator";
 import { withV1ApiWrapper } from "@/app/lib/api/with-api-logging";

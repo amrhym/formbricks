@@ -1,9 +1,9 @@
 import "server-only";
 import { Prisma } from "@prisma/client";
 import { cache as reactCache } from "react";
-import { prisma } from "@formbricks/database";
-import { DatabaseError, InvalidInputError, ResourceNotFoundError } from "@formbricks/types/errors";
-import { TSurveyStatus } from "@formbricks/types/surveys/types";
+import { prisma } from "@hivecfm/database";
+import { DatabaseError, InvalidInputError, ResourceNotFoundError } from "@hivecfm/types/errors";
+import { TSurveyStatus } from "@hivecfm/types/surveys/types";
 
 export interface TSurveyBySlug {
   id: string;

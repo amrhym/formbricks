@@ -4,13 +4,13 @@ import { createId } from "@paralleldrive/cuid2";
 import { FingerprintIcon, MonitorSmartphoneIcon, TagIcon, Users2Icon } from "lucide-react";
 import React, { type JSX, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
-import { TContactAttributeKey } from "@formbricks/types/contact-attribute-key";
+import { TContactAttributeKey } from "@hivecfm/types/contact-attribute-key";
 import type {
   TBaseFilter,
   TSegment,
   TSegmentAttributeFilter,
   TSegmentPersonFilter,
-} from "@formbricks/types/segment";
+} from "@hivecfm/types/segment";
 import { cn } from "@/lib/cn";
 import { Dialog, DialogBody, DialogContent, DialogHeader, DialogTitle } from "@/modules/ui/components/dialog";
 import { Input } from "@/modules/ui/components/input";

@@ -11,8 +11,8 @@ import {
 import Link from "next/link";
 import { ReactNode, useMemo } from "react";
 import { useTranslation } from "react-i18next";
-import { TActionClass } from "@formbricks/types/action-classes";
-import { TSegment } from "@formbricks/types/segment";
+import { TActionClass } from "@hivecfm/types/action-classes";
+import { TSegment } from "@hivecfm/types/segment";
 import { useEnvironment } from "@/app/(app)/environments/[environmentId]/context/environment-context";
 import { useSurvey } from "@/app/(app)/environments/[environmentId]/surveys/[surveyId]/context/survey-context";
 import { Alert, AlertButton, AlertDescription, AlertTitle } from "@/modules/ui/components/alert";

@@ -30,7 +30,7 @@ import {
 } from "lucide-react";
 import { Fragment, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
-import { TSurveyElementTypeEnum } from "@formbricks/types/surveys/elements";
+import { TSurveyElementTypeEnum } from "@hivecfm/types/surveys/elements";
 import { getLocalizedValue } from "@/lib/i18n/utils";
 import { useClickOutside } from "@/lib/utils/hooks/useClickOutside";
 import { Button } from "@/modules/ui/components/button";

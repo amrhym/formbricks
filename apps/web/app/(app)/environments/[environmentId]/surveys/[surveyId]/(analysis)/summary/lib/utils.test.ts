@@ -1,6 +1,6 @@
 import { describe, expect, test, vi } from "vitest";
-import { TSurveyElementTypeEnum } from "@formbricks/types/surveys/elements";
-import { TSurvey } from "@formbricks/types/surveys/types";
+import { TSurveyElementTypeEnum } from "@hivecfm/types/surveys/elements";
+import { TSurvey } from "@hivecfm/types/surveys/types";
 import { constructToastMessage, convertFloatTo2Decimal, convertFloatToNDecimal } from "./utils";
 
 describe("Utils Tests", () => {

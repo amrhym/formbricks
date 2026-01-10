@@ -1,10 +1,10 @@
 import { Prisma } from "@prisma/client";
 import { afterEach, describe, expect, test, vi } from "vitest";
-import { prisma } from "@formbricks/database";
-import { ResourceNotFoundError } from "@formbricks/types/errors";
+import { prisma } from "@hivecfm/database";
+import { ResourceNotFoundError } from "@hivecfm/types/errors";
 import { updateOrganizationFaviconUrl } from "./organization";
 
-vi.mock("@formbricks/database", () => ({
+vi.mock("@hivecfm/database", () => ({
   prisma: {
     organization: {
       findUnique: vi.fn(),

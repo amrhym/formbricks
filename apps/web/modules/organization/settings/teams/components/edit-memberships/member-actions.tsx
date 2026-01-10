@@ -5,8 +5,8 @@ import { useRouter } from "next/navigation";
 import { useMemo, useState } from "react";
 import toast from "react-hot-toast";
 import { useTranslation } from "react-i18next";
-import { TMember } from "@formbricks/types/memberships";
-import { TOrganization } from "@formbricks/types/organizations";
+import { TMember } from "@hivecfm/types/memberships";
+import { TOrganization } from "@hivecfm/types/organizations";
 import { getFormattedErrorMessage } from "@/lib/utils/helper";
 import {
   createInviteTokenAction,

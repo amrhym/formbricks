@@ -12,7 +12,7 @@ import {
   resourceFromAttributes,
 } from "@opentelemetry/resources";
 import { MeterProvider } from "@opentelemetry/sdk-metrics";
-import { logger } from "@formbricks/logger";
+import { logger } from "@hivecfm/logger";
 import { env } from "@/lib/env";
 
 const exporter = new PrometheusExporter({

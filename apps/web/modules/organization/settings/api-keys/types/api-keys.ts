@@ -1,9 +1,9 @@
 import { ApiKey, ApiKeyPermission } from "@prisma/client";
 import { z } from "zod";
-import { ZApiKey, ZApiKeyEnvironment } from "@formbricks/database/zod/api-keys";
-import { ZOrganizationAccess } from "@formbricks/types/api-key";
-import { ZEnvironment } from "@formbricks/types/environment";
-import { ZProject } from "@formbricks/types/project";
+import { ZApiKey, ZApiKeyEnvironment } from "@hivecfm/database/zod/api-keys";
+import { ZOrganizationAccess } from "@hivecfm/types/api-key";
+import { ZEnvironment } from "@hivecfm/types/environment";
+import { ZProject } from "@hivecfm/types/project";
 
 export const ZApiKeyEnvironmentPermission = z.object({
   environmentId: z.string(),

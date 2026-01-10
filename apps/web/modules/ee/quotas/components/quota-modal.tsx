@@ -15,8 +15,8 @@ import {
   TSurveyQuotaLogic,
   ZSurveyQuotaAction,
   ZSurveyQuotaInput,
-} from "@formbricks/types/quota";
-import { TSurvey } from "@formbricks/types/surveys/types";
+} from "@hivecfm/types/quota";
+import { TSurvey } from "@hivecfm/types/surveys/types";
 import { getFormattedErrorMessage } from "@/lib/utils/helper";
 import { replaceHeadlineRecall } from "@/lib/utils/recall";
 import { createQuotaAction, updateQuotaAction } from "@/modules/ee/quotas/actions";
@@ -408,7 +408,7 @@ export const QuotaModal = ({
                 control={control}
                 name="countPartialSubmissions"
                 render={({ field }) => (
-                  <FormItem className="flex flex-row items-start space-x-3 space-y-0">
+                  <FormItem className="flex flex-row items-start space-y-0 space-x-3">
                     <FormControl>
                       <Switch checked={field.value} onCheckedChange={field.onChange} />
                     </FormControl>

@@ -1,7 +1,7 @@
 import { TFunction } from "i18next";
 import Image from "next/image";
 import { redirect } from "next/navigation";
-import { TIntegrationType } from "@formbricks/types/integration";
+import { TIntegrationType } from "@hivecfm/types/integration";
 import { getWebhookCountBySource } from "@/app/(app)/environments/[environmentId]/workspace/integrations/lib/webhook";
 import ActivePiecesLogo from "@/images/activepieces.webp";
 import AirtableLogo from "@/images/airtableLogo.svg";

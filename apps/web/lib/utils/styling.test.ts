@@ -1,5 +1,5 @@
 import { describe, expect, test } from "vitest";
-import { TJsEnvironmentStateProject, TJsEnvironmentStateSurvey } from "@formbricks/types/js";
+import { TJsEnvironmentStateProject, TJsEnvironmentStateSurvey } from "@hivecfm/types/js";
 import { getStyling } from "./styling";
 
 describe("Styling Utilities", () => {

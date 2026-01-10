@@ -3,7 +3,7 @@
 import { MousePointerClickIcon } from "lucide-react";
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
-import { TActionClass } from "@formbricks/types/action-classes";
+import { TActionClass } from "@hivecfm/types/action-classes";
 import { CreateNewActionTab } from "@/modules/survey/editor/components/create-new-action-tab";
 import {
   Dialog,

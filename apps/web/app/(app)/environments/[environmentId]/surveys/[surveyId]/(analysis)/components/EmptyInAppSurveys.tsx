@@ -3,7 +3,7 @@
 import { Unplug } from "lucide-react";
 import Link from "next/link";
 import { useTranslation } from "react-i18next";
-import { TEnvironment } from "@formbricks/types/environment";
+import { TEnvironment } from "@hivecfm/types/environment";
 import { Button } from "@/modules/ui/components/button";
 
 interface TEmptyAppSurveysProps {

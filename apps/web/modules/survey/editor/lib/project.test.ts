@@ -1,10 +1,10 @@
 import { Prisma } from "@prisma/client";
 import { describe, expect, test, vi } from "vitest";
-import { prisma } from "@formbricks/database";
-import { DatabaseError, ResourceNotFoundError } from "@formbricks/types/errors";
+import { prisma } from "@hivecfm/database";
+import { DatabaseError, ResourceNotFoundError } from "@hivecfm/types/errors";
 import { getProject, getProjectLanguages } from "./project";
 
-vi.mock("@formbricks/database", () => ({
+vi.mock("@hivecfm/database", () => ({
   prisma: {
     project: {
       findUnique: vi.fn(),

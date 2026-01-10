@@ -61,6 +61,7 @@ export const env = createEnv({
         ? z.string().optional()
         : z.string().url("REDIS_URL is required for caching, rate limiting, and audit logging"),
     PASSWORD_RESET_DISABLED: z.enum(["1", "0"]).optional(),
+    DOCS_URL: z.string().url().optional(), // HiveCFM: Documentation URL override
     PRIVACY_URL: z
       .string()
       .url()
@@ -184,6 +185,7 @@ export const env = createEnv({
     OIDC_SIGNING_ALGORITHM: process.env.OIDC_SIGNING_ALGORITHM,
     REDIS_URL: process.env.REDIS_URL,
     PASSWORD_RESET_DISABLED: process.env.PASSWORD_RESET_DISABLED,
+    DOCS_URL: process.env.DOCS_URL,
     PRIVACY_URL: process.env.PRIVACY_URL,
     RATE_LIMITING_DISABLED: process.env.RATE_LIMITING_DISABLED,
     S3_ACCESS_KEY: process.env.S3_ACCESS_KEY,

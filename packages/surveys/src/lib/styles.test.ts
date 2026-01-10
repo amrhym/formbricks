@@ -1,6 +1,6 @@
 import { afterEach, beforeEach, describe, expect, test, vi } from "vitest";
-import { type TProjectStyling } from "@formbricks/types/project";
-import { type TSurveyStyling } from "@formbricks/types/surveys/types";
+import { type TProjectStyling } from "@hivecfm/types/project";
+import { type TSurveyStyling } from "@hivecfm/types/surveys/types";
 import { addCustomThemeToDom, addStylesToDom, getStyleNonce, setStyleNonce } from "./styles";
 
 // Mock CSS module imports

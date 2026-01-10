@@ -1,14 +1,14 @@
 import { type ActionClass } from "@prisma/client";
 import { afterEach, beforeEach, describe, expect, test, vi } from "vitest";
-import { prisma } from "@formbricks/database";
-import { DatabaseError, ValidationError } from "@formbricks/types/errors";
+import { prisma } from "@hivecfm/database";
+import { DatabaseError, ValidationError } from "@hivecfm/types/errors";
 import { validateInputs } from "@/lib/utils/validate";
 import { getActionClasses } from "./action-class";
 
 vi.mock("@/lib/utils/validate");
 
 // Mock prisma
-vi.mock("@formbricks/database", () => ({
+vi.mock("@hivecfm/database", () => ({
   prisma: {
     actionClass: {
       findMany: vi.fn(),

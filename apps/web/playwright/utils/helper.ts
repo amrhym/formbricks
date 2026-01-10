@@ -1,8 +1,8 @@
 import { expect } from "@playwright/test";
 import { readFileSync, writeFileSync } from "fs";
 import { Page } from "playwright";
-import { logger } from "@formbricks/logger";
-import { TProjectConfigChannel } from "@formbricks/types/project";
+import { logger } from "@hivecfm/logger";
+import { TProjectConfigChannel } from "@hivecfm/types/project";
 import { CreateSurveyParams, CreateSurveyWithLogicParams } from "@/playwright/utils/mock";
 
 export const signUpAndLogin = async (

@@ -5,8 +5,8 @@ import { ChevronDownIcon, X } from "lucide-react";
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useDebounce } from "react-use";
-import { TProjectConfigChannel } from "@formbricks/types/project";
-import { TFilterOption, TSortOption, TSurveyFilters } from "@formbricks/types/surveys/types";
+import { TProjectConfigChannel } from "@hivecfm/types/project";
+import { TFilterOption, TSortOption, TSurveyFilters } from "@hivecfm/types/surveys/types";
 import { FORMBRICKS_SURVEYS_FILTERS_KEY_LS } from "@/lib/localStorage";
 import { SortOption } from "@/modules/survey/list/components/sort-option";
 import { initialFilters } from "@/modules/survey/list/lib/constants";
@@ -175,7 +175,7 @@ export const SurveyFilters = ({
           <DropdownMenuTrigger
             asChild
             className="surveyFilterDropdown h-full cursor-pointer border border-slate-700 outline-none hover:bg-slate-900">
-            <div className="min-w-auto h-8 rounded-md border sm:flex sm:px-2">
+            <div className="h-8 min-w-auto rounded-md border sm:flex sm:px-2">
               <div className="hidden w-full items-center justify-between hover:text-white sm:flex">
                 <span className="text-sm">
                   {t("common.sort_by")}:{" "}

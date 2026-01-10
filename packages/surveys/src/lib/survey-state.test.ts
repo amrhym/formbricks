@@ -1,5 +1,5 @@
 import { beforeEach, describe, expect, test } from "vitest";
-import { TResponseUpdate } from "@formbricks/types/responses";
+import { TResponseUpdate } from "@hivecfm/types/responses";
 import { SurveyState } from "./survey-state";
 
 describe("SurveyState", () => {

@@ -1,6 +1,6 @@
 import { beforeEach, describe, expect, test, vi } from "vitest";
-import { prisma } from "@formbricks/database";
-import type { TUser } from "@formbricks/types/user";
+import { prisma } from "@hivecfm/database";
+import type { TUser } from "@hivecfm/types/user";
 import { createMembership } from "@/lib/membership/service";
 import { createOrganization, getOrganization } from "@/lib/organization/service";
 import { findMatchingLocale } from "@/lib/utils/locale";
@@ -47,7 +47,7 @@ vi.mock("@/modules/ee/license-check/lib/utils", () => ({
   getIsMultiOrgEnabled: vi.fn(),
 }));
 
-vi.mock("@formbricks/database", () => ({
+vi.mock("@hivecfm/database", () => ({
   prisma: {
     user: {
       findFirst: vi.fn(),
@@ -78,11 +78,11 @@ vi.mock("@/lib/utils/locale", () => ({
   findMatchingLocale: vi.fn(),
 }));
 
-vi.mock("@formbricks/lib/jwt", () => ({
+vi.mock("@hivecfm/lib/jwt", () => ({
   verifyInviteToken: vi.fn(),
 }));
 
-vi.mock("@formbricks/logger", () => ({
+vi.mock("@hivecfm/logger", () => ({
   logger: {
     error: vi.fn(),
     debug: vi.fn(),

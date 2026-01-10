@@ -1,9 +1,9 @@
 import { Prisma } from "@prisma/client";
 import { beforeEach, describe, expect, test, vi } from "vitest";
-import { prisma } from "@formbricks/database";
-import { PrismaErrorType } from "@formbricks/database/types/error";
-import { logger } from "@formbricks/logger";
-import { DatabaseError } from "@formbricks/types/errors";
+import { prisma } from "@hivecfm/database";
+import { PrismaErrorType } from "@hivecfm/database/types/error";
+import { logger } from "@hivecfm/logger";
+import { DatabaseError } from "@hivecfm/types/errors";
 import { deleteInvite, getInvite, getIsValidInviteToken } from "./invite";
 
 // Mock data
@@ -30,7 +30,7 @@ const mockInvite = {
 };
 
 // Mock prisma methods
-vi.mock("@formbricks/database", () => ({
+vi.mock("@hivecfm/database", () => ({
   prisma: {
     invite: {
       delete: vi.fn(),
@@ -40,7 +40,7 @@ vi.mock("@formbricks/database", () => ({
 }));
 
 // Mock logger
-vi.mock("@formbricks/logger", () => ({
+vi.mock("@hivecfm/logger", () => ({
   logger: {
     error: vi.fn(),
   },

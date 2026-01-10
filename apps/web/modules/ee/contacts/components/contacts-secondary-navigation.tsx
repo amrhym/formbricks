@@ -1,4 +1,4 @@
-import { TProject } from "@formbricks/types/project";
+import { TProject } from "@hivecfm/types/project";
 import { getProjectByEnvironmentId } from "@/lib/project/service";
 import { getTranslate } from "@/lingodotdev/server";
 import { SecondaryNavigation } from "@/modules/ui/components/secondary-navigation";

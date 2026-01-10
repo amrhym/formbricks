@@ -7,9 +7,9 @@ import { useRouter } from "next/navigation";
 import { FormProvider, useForm } from "react-hook-form";
 import { useTranslation } from "react-i18next";
 import { z } from "zod";
-import { ZId } from "@formbricks/types/common";
-import { TOrganizationRole, ZOrganizationRole } from "@formbricks/types/memberships";
-import { ZUserName } from "@formbricks/types/user";
+import { ZId } from "@hivecfm/types/common";
+import { TOrganizationRole, ZOrganizationRole } from "@hivecfm/types/memberships";
+import { ZUserName } from "@hivecfm/types/user";
 import { AddMemberRole } from "@/modules/ee/role-management/components/add-member-role";
 import { TOrganizationTeam } from "@/modules/ee/teams/team-list/types/team";
 import { Alert, AlertDescription } from "@/modules/ui/components/alert";
@@ -180,11 +180,7 @@ export const IndividualInviteTab = ({
               <Link
                 className="ml-1 underline"
                 target="_blank"
-                href={
-                  isFormbricksCloud
-                    ? `/environments/${environmentId}/settings/billing`
-                    : "https://formbricks.com/upgrade-self-hosting-license"
-                }>
+                href={isFormbricksCloud ? `/environments/${environmentId}/settings/billing` : "#"}>
                 {t("common.start_free_trial")}
               </Link>
             </AlertDescription>

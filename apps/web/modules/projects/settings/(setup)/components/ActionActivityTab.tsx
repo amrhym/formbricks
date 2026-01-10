@@ -3,8 +3,8 @@
 import { useEffect, useMemo, useState } from "react";
 import toast from "react-hot-toast";
 import { useTranslation } from "react-i18next";
-import { TActionClass, TActionClassInput, TActionClassInputCode } from "@formbricks/types/action-classes";
-import { TEnvironment } from "@formbricks/types/environment";
+import { TActionClass, TActionClassInput, TActionClassInputCode } from "@hivecfm/types/action-classes";
+import { TEnvironment } from "@hivecfm/types/environment";
 import { convertDateTimeStringShort } from "@/lib/time";
 import { getFormattedErrorMessage } from "@/lib/utils/helper";
 import { getActiveInactiveSurveysAction } from "@/modules/projects/settings/(setup)/app-connection/actions";
@@ -151,7 +151,7 @@ export const ActionActivityTab = ({
           <Label className="block text-xs font-normal text-slate-500">Type</Label>
           <div className="mt-1 flex items-center">
             <div className="mr-1.5 h-4 w-4 text-slate-600">{ACTION_TYPE_ICON_LOOKUP[actionClass.type]}</div>
-            <p className="text-sm capitalize text-slate-700">{actionClass.type}</p>
+            <p className="text-sm text-slate-700 capitalize">{actionClass.type}</p>
           </div>
         </div>
         <div className="">

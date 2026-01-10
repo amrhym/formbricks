@@ -13,7 +13,7 @@ import {
   TSegmentOperator,
   TSegmentPersonFilter,
   TSegmentSegmentFilter,
-} from "@formbricks/types/segment";
+} from "@hivecfm/types/segment";
 
 // type guard to check if a resource is a filter
 export const isResourceFilter = (resource: TSegmentFilter | TBaseFilters): resource is TSegmentFilter => {

@@ -1,7 +1,7 @@
 import { Prisma } from "@prisma/client";
-import { DatabaseError, UnknownError } from "@formbricks/types/errors";
-import { TIntegration, TIntegrationItem } from "@formbricks/types/integration";
-import { TIntegrationSlack, TIntegrationSlackCredential } from "@formbricks/types/integration/slack";
+import { DatabaseError, UnknownError } from "@hivecfm/types/errors";
+import { TIntegration, TIntegrationItem } from "@hivecfm/types/integration";
+import { TIntegrationSlack, TIntegrationSlackCredential } from "@hivecfm/types/integration/slack";
 import { SLACK_MESSAGE_LIMIT } from "../constants";
 import { deleteIntegration, getIntegrationByType } from "../integration/service";
 import { truncateText } from "../utils/strings";

@@ -1,12 +1,12 @@
 import { Prisma } from "@prisma/client";
 import { beforeEach, describe, expect, test, vi } from "vitest";
-import { prisma } from "@formbricks/database";
-import { PrismaErrorType } from "@formbricks/database/types/error";
-import { TTag } from "@formbricks/types/tags";
+import { prisma } from "@hivecfm/database";
+import { PrismaErrorType } from "@hivecfm/database/types/error";
+import { TTag } from "@hivecfm/types/tags";
 import { TagError } from "@/modules/projects/settings/types/tag";
 import { createTag, getTag, getTagsByEnvironmentId } from "./service";
 
-vi.mock("@formbricks/database", () => ({
+vi.mock("@hivecfm/database", () => ({
   prisma: {
     tag: {
       findMany: vi.fn(),

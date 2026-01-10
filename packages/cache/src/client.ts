@@ -1,5 +1,5 @@
 import { createClient } from "redis";
-import { logger } from "@formbricks/logger";
+import { logger } from "@hivecfm/logger";
 import type { RedisClient } from "@/types/client";
 import { type CacheError, ErrorCode, type Result, err, ok } from "@/types/error";
 import { CacheService } from "./service";

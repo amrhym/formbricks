@@ -3,9 +3,9 @@
 import { LanguagesIcon, LucideIcon, MonitorIcon, SmartphoneIcon, Tag } from "lucide-react";
 import { ReactNode } from "react";
 import { useTranslation } from "react-i18next";
-import { getLanguageLabel } from "@formbricks/i18n-utils/src/utils";
-import { TResponse } from "@formbricks/types/responses";
-import { TUserLocale } from "@formbricks/types/user";
+import { getLanguageLabel } from "@hivecfm/i18n-utils/src/utils";
+import { TResponse } from "@hivecfm/types/responses";
+import { TUserLocale } from "@hivecfm/types/user";
 import { Button } from "@/modules/ui/components/button";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/modules/ui/components/tooltip";
 

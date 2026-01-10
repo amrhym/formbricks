@@ -5,9 +5,9 @@ import { useRouter } from "next/navigation";
 import { useMemo, useState } from "react";
 import toast from "react-hot-toast";
 import { useTranslation } from "react-i18next";
-import { ZProjectConfigChannel, ZProjectConfigIndustry } from "@formbricks/types/project";
-import { TSurveyCreateInput, TSurveyType } from "@formbricks/types/surveys/types";
-import { TTemplate, TTemplateFilter, ZTemplateRole } from "@formbricks/types/templates";
+import { ZProjectConfigChannel, ZProjectConfigIndustry } from "@hivecfm/types/project";
+import { TSurveyCreateInput, TSurveyType } from "@hivecfm/types/surveys/types";
+import { TTemplate, TTemplateFilter, ZTemplateRole } from "@hivecfm/types/templates";
 import { templates } from "@/app/lib/templates";
 import { getFormattedErrorMessage } from "@/lib/utils/helper";
 import { createSurveyAction } from "./actions";
@@ -103,7 +103,7 @@ export const TemplateList = ({
   };
 
   return (
-    <main className="relative z-0 flex-1 overflow-y-auto px-6 pb-6 pt-2 focus:outline-none">
+    <main className="relative z-0 flex-1 overflow-y-auto px-6 pt-2 pb-6 focus:outline-none">
       {showFilters && !templateSearch && (
         <TemplateFilters
           selectedFilter={selectedFilter}

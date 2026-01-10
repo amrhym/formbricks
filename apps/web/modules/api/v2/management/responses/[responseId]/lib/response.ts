@@ -1,10 +1,10 @@
 import { Prisma, Response } from "@prisma/client";
 import { cache as reactCache } from "react";
 import { z } from "zod";
-import { prisma } from "@formbricks/database";
-import { PrismaErrorType } from "@formbricks/database/types/error";
-import { Result, err, ok } from "@formbricks/types/error-handlers";
-import { TResponse } from "@formbricks/types/responses";
+import { prisma } from "@hivecfm/database";
+import { PrismaErrorType } from "@hivecfm/database/types/error";
+import { Result, err, ok } from "@hivecfm/types/error-handlers";
+import { TResponse } from "@hivecfm/types/responses";
 import { deleteDisplay } from "@/modules/api/v2/management/responses/[responseId]/lib/display";
 import { getSurveyQuestions } from "@/modules/api/v2/management/responses/[responseId]/lib/survey";
 import { findAndDeleteUploadedFilesInResponse } from "@/modules/api/v2/management/responses/[responseId]/lib/utils";

@@ -1,8 +1,8 @@
 import { useCallback, useEffect, useMemo, useState } from "preact/hooks";
 import { useTranslation } from "react-i18next";
-import { MultiSelect, type MultiSelectOption } from "@formbricks/survey-ui";
-import { type TResponseData, type TResponseTtc } from "@formbricks/types/responses";
-import type { TSurveyMultipleChoiceElement } from "@formbricks/types/surveys/elements";
+import { MultiSelect, type MultiSelectOption } from "@hivecfm/survey-ui";
+import { type TResponseData, type TResponseTtc } from "@hivecfm/types/responses";
+import type { TSurveyMultipleChoiceElement } from "@hivecfm/types/surveys/elements";
 import { getLocalizedValue } from "@/lib/i18n";
 import { getUpdatedTtc, useTtc } from "@/lib/ttc";
 import { getShuffledChoicesIds } from "@/lib/utils";

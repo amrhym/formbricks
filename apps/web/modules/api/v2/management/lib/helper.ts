@@ -1,4 +1,4 @@
-import { Result, ok } from "@formbricks/types/error-handlers";
+import { Result, ok } from "@hivecfm/types/error-handlers";
 import {
   fetchEnvironmentId,
   fetchEnvironmentIdFromSurveyIds,

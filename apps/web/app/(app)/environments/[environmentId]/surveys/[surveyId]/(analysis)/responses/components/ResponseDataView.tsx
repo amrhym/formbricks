@@ -3,12 +3,12 @@
 import { TFunction } from "i18next";
 import React from "react";
 import { useTranslation } from "react-i18next";
-import { TEnvironment } from "@formbricks/types/environment";
-import { TSurveyQuota } from "@formbricks/types/quota";
-import { TResponseDataValue, TResponseTableData, TResponseWithQuotas } from "@formbricks/types/responses";
-import { TSurvey } from "@formbricks/types/surveys/types";
-import { TTag } from "@formbricks/types/tags";
-import { TUser, TUserLocale } from "@formbricks/types/user";
+import { TEnvironment } from "@hivecfm/types/environment";
+import { TSurveyQuota } from "@hivecfm/types/quota";
+import { TResponseDataValue, TResponseTableData, TResponseWithQuotas } from "@hivecfm/types/responses";
+import { TSurvey } from "@hivecfm/types/surveys/types";
+import { TTag } from "@hivecfm/types/tags";
+import { TUser, TUserLocale } from "@hivecfm/types/user";
 import { ResponseTable } from "@/app/(app)/environments/[environmentId]/surveys/[surveyId]/(analysis)/responses/components/ResponseTable";
 import { getElementsFromBlocks } from "@/modules/survey/lib/client-utils";
 

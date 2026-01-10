@@ -1,8 +1,8 @@
 import { describe, expect, test, vi } from "vitest";
-import { prisma } from "@formbricks/database";
+import { prisma } from "@hivecfm/database";
 import { fetchEnvironmentId, fetchEnvironmentIdFromSurveyIds } from "../services";
 
-vi.mock("@formbricks/database", () => ({
+vi.mock("@hivecfm/database", () => ({
   prisma: {
     survey: {
       findFirst: vi.fn(),

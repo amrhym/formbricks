@@ -1,6 +1,6 @@
 import { z } from "zod";
 import { extendZodWithOpenApi } from "zod-openapi";
-import { ZTeam } from "@formbricks/database/zod/teams";
+import { ZTeam } from "@hivecfm/database/zod/teams";
 
 extendZodWithOpenApi(z);
 

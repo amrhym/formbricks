@@ -1,9 +1,9 @@
 import { describe, expect, test, vi } from "vitest";
-import { prisma } from "@formbricks/database";
-import { ValidationError } from "@formbricks/types/errors";
+import { prisma } from "@hivecfm/database";
+import { ValidationError } from "@hivecfm/types/errors";
 import { getContactAttributes } from "./attributes";
 
-vi.mock("@formbricks/database", () => ({
+vi.mock("@hivecfm/database", () => ({
   prisma: {
     contactAttribute: {
       findMany: vi.fn(),

@@ -4,7 +4,7 @@ import { useAutoAnimate } from "@formkit/auto-animate/react";
 import { CopyIcon, EllipsisVerticalIcon, PlusIcon, TrashIcon, WorkflowIcon } from "lucide-react";
 import { FieldErrors } from "react-hook-form";
 import { useTranslation } from "react-i18next";
-import { TSurveyQuotaInput } from "@formbricks/types/quota";
+import { TSurveyQuotaInput } from "@hivecfm/types/quota";
 import { Button } from "@/modules/ui/components/button";
 import { isConditionGroup } from "@/modules/ui/components/conditions-editor/lib/utils";
 import {
@@ -111,7 +111,7 @@ export function ConditionsEditor({
             </div>
 
             {condition.conditions.length > 1 && (
-              <div className="absolute right-3 top-3">
+              <div className="absolute top-3 right-3">
                 <DropdownMenu>
                   <DropdownMenuTrigger>
                     <Button
@@ -279,7 +279,7 @@ export function ConditionsEditor({
             <SelectTrigger className="w-auto bg-white">
               <SelectValue />
             </SelectTrigger>
-            <SelectContent className="flex min-w-fit max-w-fit items-center justify-between">
+            <SelectContent className="flex max-w-fit min-w-fit items-center justify-between">
               <SelectItem value="and">all are true</SelectItem>
               <SelectItem value="or">any is true</SelectItem>
             </SelectContent>

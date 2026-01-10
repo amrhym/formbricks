@@ -1,6 +1,6 @@
 import { z } from "zod";
 import { ZodOpenApiOperationObject, ZodOpenApiPathsObject } from "zod-openapi";
-import { ZTeam } from "@formbricks/database/zod/teams";
+import { ZTeam } from "@hivecfm/database/zod/teams";
 import {
   deleteTeamEndpoint,
   getTeamEndpoint,

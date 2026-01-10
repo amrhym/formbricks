@@ -1,5 +1,5 @@
 {
-  "name": "formbricks",
+  "name": "hivecfm",
   "version": "0.0.0",
   "private": true,
   "workspaces": [
@@ -35,11 +35,11 @@
     "test-e2e:azure": "pnpm test:e2e -c playwright.service.config.ts --workers=10",
     "prepare": "husky install",
     "storybook": "turbo run storybook",
-    "fb-migrate-dev": "pnpm --filter @formbricks/database create-migration && pnpm prisma generate",
-    "i18n:surveys:generate": "pnpm --filter @formbricks/surveys i18n:generate",
-    "i18n:web:generate": "pnpm --filter @formbricks/web i18n:generate",
+    "fb-migrate-dev": "pnpm --filter @hivecfm/database create-migration && pnpm prisma generate",
+    "i18n:surveys:generate": "pnpm --filter @hivecfm/surveys i18n:generate",
+    "i18n:web:generate": "pnpm --filter @hivecfm/web i18n:generate",
     "generate-translations": "pnpm i18n:web:generate && pnpm i18n:surveys:generate",
-    "scan-translations": "pnpm --filter @formbricks/i18n-utils scan-translations",
+    "scan-translations": "pnpm --filter @hivecfm/i18n-utils scan-translations",
     "i18n": "pnpm generate-translations && pnpm scan-translations",
     "i18n:validate": "pnpm scan-translations"
   },
@@ -50,7 +50,7 @@
   "devDependencies": {
     "@azure/identity": "4.13.0",
     "@azure/playwright": "1.0.0",
-    "@formbricks/eslint-config": "workspace:*",
+    "@hivecfm/eslint-config": "workspace:*",
     "@playwright/test": "1.56.1",
     "eslint": "8.57.0",
     "glob": "^11.1.0",

@@ -1,6 +1,6 @@
 import { cache as reactCache } from "react";
-import { prisma } from "@formbricks/database";
-import { ZId } from "@formbricks/types/common";
+import { prisma } from "@hivecfm/database";
+import { ZId } from "@hivecfm/types/common";
 import { validateInputs } from "@/lib/utils/validate";
 
 export const getContactAttributes = reactCache(async (contactId: string): Promise<Record<string, string>> => {

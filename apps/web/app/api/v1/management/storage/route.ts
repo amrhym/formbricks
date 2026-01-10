@@ -1,6 +1,6 @@
 import { NextRequest } from "next/server";
-import { logger } from "@formbricks/logger";
-import { TUploadPublicFileRequest, ZUploadPublicFileRequest } from "@formbricks/types/storage";
+import { logger } from "@hivecfm/logger";
+import { TUploadPublicFileRequest, ZUploadPublicFileRequest } from "@hivecfm/types/storage";
 import { checkAuth } from "@/app/api/v1/management/storage/lib/utils";
 import { responses } from "@/app/lib/api/response";
 import { transformErrorToDetails } from "@/app/lib/api/validator";

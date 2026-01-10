@@ -1,9 +1,9 @@
 "use server";
 
 import { z } from "zod";
-import { ZId } from "@formbricks/types/common";
-import { OperationNotAllowedError, ResourceNotFoundError } from "@formbricks/types/errors";
-import { ZLanguageInput } from "@formbricks/types/project";
+import { ZId } from "@hivecfm/types/common";
+import { OperationNotAllowedError, ResourceNotFoundError } from "@hivecfm/types/errors";
+import { ZLanguageInput } from "@hivecfm/types/project";
 import {
   createLanguage,
   deleteLanguage,

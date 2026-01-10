@@ -1,5 +1,5 @@
-import { TContactAttributes } from "@formbricks/types/contact-attribute";
-import { TResponseContact } from "@formbricks/types/responses";
+import { TContactAttributes } from "@hivecfm/types/contact-attribute";
+import { TResponseContact } from "@hivecfm/types/responses";
 
 export const getContactIdentifier = (
   contact: TResponseContact | null,

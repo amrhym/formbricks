@@ -4,14 +4,14 @@ import { useSortable } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
 import { GripVerticalIcon, PlusIcon, TrashIcon } from "lucide-react";
 import { useTranslation } from "react-i18next";
-import { TI18nString } from "@formbricks/types/i18n";
+import { TI18nString } from "@hivecfm/types/i18n";
 import {
   TSurveyElementChoice,
   TSurveyMultipleChoiceElement,
   TSurveyRankingElement,
-} from "@formbricks/types/surveys/elements";
-import { TSurvey, TSurveyLanguage } from "@formbricks/types/surveys/types";
-import { TUserLocale } from "@formbricks/types/user";
+} from "@hivecfm/types/surveys/elements";
+import { TSurvey, TSurveyLanguage } from "@hivecfm/types/surveys/types";
+import { TUserLocale } from "@hivecfm/types/user";
 import { cn } from "@/lib/cn";
 import { createI18nString } from "@/lib/i18n/utils";
 import { ElementFormInput } from "@/modules/survey/components/element-form-input";

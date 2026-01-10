@@ -1,5 +1,5 @@
 import { Response, Survey } from "@prisma/client";
-import { TSurveyQuestionTypeEnum } from "@formbricks/types/surveys/types";
+import { TSurveyQuestionTypeEnum } from "@hivecfm/types/surveys/types";
 
 export const responseId = "goy9hd7uautij04aosslsplb";
 

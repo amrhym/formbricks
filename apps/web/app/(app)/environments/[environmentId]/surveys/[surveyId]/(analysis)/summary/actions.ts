@@ -1,8 +1,8 @@
 "use server";
 
 import { z } from "zod";
-import { ZId } from "@formbricks/types/common";
-import { OperationNotAllowedError, ResourceNotFoundError, UnknownError } from "@formbricks/types/errors";
+import { ZId } from "@hivecfm/types/common";
+import { OperationNotAllowedError, ResourceNotFoundError, UnknownError } from "@hivecfm/types/errors";
 import { getEmailTemplateHtml } from "@/app/(app)/environments/[environmentId]/surveys/[surveyId]/(analysis)/summary/lib/emailTemplate";
 import { getSurvey, updateSurvey } from "@/lib/survey/service";
 import { authenticatedActionClient } from "@/lib/utils/action-client";

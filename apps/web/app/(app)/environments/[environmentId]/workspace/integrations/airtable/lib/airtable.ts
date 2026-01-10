@@ -1,5 +1,5 @@
-import { logger } from "@formbricks/logger";
-import { TIntegrationAirtableTables } from "@formbricks/types/integration/airtable";
+import { logger } from "@hivecfm/logger";
+import { TIntegrationAirtableTables } from "@hivecfm/types/integration/airtable";
 
 export const fetchTables = async (environmentId: string, baseId: string) => {
   const res = await fetch(`/api/v1/integrations/airtable/tables?baseId=${baseId}`, {

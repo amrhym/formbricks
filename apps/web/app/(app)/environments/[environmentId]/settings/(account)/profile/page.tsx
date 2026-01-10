@@ -64,13 +64,13 @@ const Page = async (props: { params: Promise<{ environmentId: string }> }) => {
                         : t("common.request_trial_license"),
                       href: IS_FORMBRICKS_CLOUD
                         ? `/environments/${params.environmentId}/settings/billing`
-                        : "https://formbricks.com/upgrade-self-hosting-license",
+                        : "#",
                     },
                     {
                       text: t("common.learn_more"),
                       href: IS_FORMBRICKS_CLOUD
                         ? `/environments/${params.environmentId}/settings/billing`
-                        : "https://formbricks.com/learn-more-self-hosting-license",
+                        : "#",
                     },
                   ]}
                 />

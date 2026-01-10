@@ -1,4 +1,4 @@
-import { TSurveyLanguage } from "@formbricks/types/surveys/types";
+import { TSurveyLanguage } from "@hivecfm/types/surveys/types";
 
 export const getI18nLanguage = (languageCode: string, languages: TSurveyLanguage[]) => {
   let locale = languageCode;

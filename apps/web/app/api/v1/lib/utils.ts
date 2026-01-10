@@ -1,6 +1,6 @@
 import { Prisma } from "@prisma/client";
-import { TContactAttributes } from "@formbricks/types/contact-attribute";
-import { TResponseInput } from "@formbricks/types/responses";
+import { TContactAttributes } from "@hivecfm/types/contact-attribute";
+import { TResponseInput } from "@hivecfm/types/responses";
 
 export const buildPrismaResponseData = (
   responseInput: TResponseInput,

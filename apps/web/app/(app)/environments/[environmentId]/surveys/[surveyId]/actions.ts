@@ -1,10 +1,10 @@
 "use server";
 
 import { z } from "zod";
-import { ZId } from "@formbricks/types/common";
-import { OperationNotAllowedError, ResourceNotFoundError } from "@formbricks/types/errors";
-import { ZResponseFilterCriteria } from "@formbricks/types/responses";
-import { TSurvey, ZSurvey } from "@formbricks/types/surveys/types";
+import { ZId } from "@hivecfm/types/common";
+import { OperationNotAllowedError, ResourceNotFoundError } from "@hivecfm/types/errors";
+import { ZResponseFilterCriteria } from "@hivecfm/types/responses";
+import { TSurvey, ZSurvey } from "@hivecfm/types/surveys/types";
 import { getOrganization } from "@/lib/organization/service";
 import { getResponseDownloadFile, getResponseFilteringValues } from "@/lib/response/service";
 import { getSurvey, updateSurvey } from "@/lib/survey/service";

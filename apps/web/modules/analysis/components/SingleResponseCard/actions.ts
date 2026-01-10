@@ -1,7 +1,7 @@
 "use server";
 
 import { z } from "zod";
-import { ZId } from "@formbricks/types/common";
+import { ZId } from "@hivecfm/types/common";
 import { deleteResponse, getResponse } from "@/lib/response/service";
 import { createTag } from "@/lib/tag/service";
 import { addTagToRespone, deleteTagOnResponse } from "@/lib/tagOnResponse/service";

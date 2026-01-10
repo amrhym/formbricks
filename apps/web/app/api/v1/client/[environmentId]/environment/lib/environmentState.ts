@@ -1,7 +1,7 @@
 import "server-only";
-import { createCacheKey } from "@formbricks/cache";
-import { prisma } from "@formbricks/database";
-import { TJsEnvironmentState } from "@formbricks/types/js";
+import { createCacheKey } from "@hivecfm/cache";
+import { prisma } from "@hivecfm/database";
+import { TJsEnvironmentState } from "@hivecfm/types/js";
 import { cache } from "@/lib/cache";
 import { IS_FORMBRICKS_CLOUD, IS_RECAPTCHA_CONFIGURED, RECAPTCHA_SITE_KEY } from "@/lib/constants";
 import { getMonthlyOrganizationResponseCount } from "@/lib/organization/service";

@@ -3,8 +3,8 @@
 import { format, formatDistanceToNow } from "date-fns";
 import { UsersIcon } from "lucide-react";
 import { useState } from "react";
-import { TContactAttributeKey } from "@formbricks/types/contact-attribute-key";
-import { TSegment, TSegmentWithSurveyNames } from "@formbricks/types/segment";
+import { TContactAttributeKey } from "@hivecfm/types/contact-attribute-key";
+import { TSegment, TSegmentWithSurveyNames } from "@hivecfm/types/segment";
 import { EditSegmentModal } from "./edit-segment-modal";
 
 type TSegmentTableDataRowProps = {

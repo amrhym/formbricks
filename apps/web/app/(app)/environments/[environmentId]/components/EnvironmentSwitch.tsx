@@ -3,7 +3,7 @@
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
-import { TEnvironment } from "@formbricks/types/environment";
+import { TEnvironment } from "@hivecfm/types/environment";
 import { cn } from "@/lib/cn";
 import { Label } from "@/modules/ui/components/label";
 import { Switch } from "@/modules/ui/components/switch";

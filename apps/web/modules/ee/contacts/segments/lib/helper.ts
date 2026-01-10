@@ -1,5 +1,5 @@
-import { InvalidInputError } from "@formbricks/types/errors";
-import { TBaseFilters } from "@formbricks/types/segment";
+import { InvalidInputError } from "@hivecfm/types/errors";
+import { TBaseFilters } from "@hivecfm/types/segment";
 import { getSegment } from "@/modules/ee/contacts/segments/lib/segments";
 import { isResourceFilter } from "@/modules/ee/contacts/segments/lib/utils";
 

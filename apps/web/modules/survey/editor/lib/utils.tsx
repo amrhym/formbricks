@@ -1,24 +1,19 @@
 import { TFunction } from "i18next";
 import { EyeOffIcon, FileDigitIcon, FileType2Icon } from "lucide-react";
 import { HTMLInputTypeAttribute, JSX } from "react";
-import { TI18nString } from "@formbricks/types/i18n";
-import { TSurveyQuota } from "@formbricks/types/quota";
-import { TSurveyBlockLogic, TSurveyBlockLogicAction } from "@formbricks/types/surveys/blocks";
-import { TSurveyElement, TSurveyElementTypeEnum } from "@formbricks/types/surveys/elements";
+import { TI18nString } from "@hivecfm/types/i18n";
+import { TSurveyQuota } from "@hivecfm/types/quota";
+import { TSurveyBlockLogic, TSurveyBlockLogicAction } from "@hivecfm/types/surveys/blocks";
+import { TSurveyElement, TSurveyElementTypeEnum } from "@hivecfm/types/surveys/elements";
 import {
   TConditionGroup,
   TLeftOperand,
   TRightOperand,
   TSingleCondition,
   TSurveyLogicConditionsOperator,
-} from "@formbricks/types/surveys/logic";
-import {
-  TSurvey,
-  TSurveyEndings,
-  TSurveyVariable,
-  TSurveyWelcomeCard,
-} from "@formbricks/types/surveys/types";
-import { getTextContent } from "@formbricks/types/surveys/validation";
+} from "@hivecfm/types/surveys/logic";
+import { TSurvey, TSurveyEndings, TSurveyVariable, TSurveyWelcomeCard } from "@hivecfm/types/surveys/types";
+import { getTextContent } from "@hivecfm/types/surveys/validation";
 import { getLocalizedValue } from "@/lib/i18n/utils";
 import { isConditionGroup } from "@/lib/surveyLogic/utils";
 import { recallToHeadline } from "@/lib/utils/recall";

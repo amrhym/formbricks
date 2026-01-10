@@ -1,8 +1,8 @@
 "use server";
 
 import { z } from "zod";
-import { OperationNotAllowedError } from "@formbricks/types/errors";
-import { ZUserEmail } from "@formbricks/types/user";
+import { OperationNotAllowedError } from "@hivecfm/types/errors";
+import { ZUserEmail } from "@hivecfm/types/user";
 import { PASSWORD_RESET_DISABLED } from "@/lib/constants";
 import { actionClient } from "@/lib/utils/action-client";
 import { getUserByEmail } from "@/modules/auth/lib/user";

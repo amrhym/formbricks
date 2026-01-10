@@ -2,7 +2,7 @@ import * as Sentry from "@sentry/nextjs";
 import { getServerSession } from "next-auth";
 import { DEFAULT_SERVER_ERROR_MESSAGE, createSafeActionClient } from "next-safe-action";
 import { v4 as uuidv4 } from "uuid";
-import { logger } from "@formbricks/logger";
+import { logger } from "@hivecfm/logger";
 import {
   AuthenticationError,
   AuthorizationError,
@@ -11,7 +11,7 @@ import {
   ResourceNotFoundError,
   TooManyRequestsError,
   UnknownError,
-} from "@formbricks/types/errors";
+} from "@hivecfm/types/errors";
 import { AUDIT_LOG_ENABLED, AUDIT_LOG_GET_USER_IP } from "@/lib/constants";
 import { getUser } from "@/lib/user/service";
 import { getClientIpFromHeaders } from "@/lib/utils/client-ip";

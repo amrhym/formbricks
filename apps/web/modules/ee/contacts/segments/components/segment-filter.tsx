@@ -13,7 +13,7 @@ import {
 import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { z } from "zod";
-import { TContactAttributeKey } from "@formbricks/types/contact-attribute-key";
+import { TContactAttributeKey } from "@hivecfm/types/contact-attribute-key";
 import type {
   TArithmeticOperator,
   TAttributeOperator,
@@ -28,13 +28,13 @@ import type {
   TSegmentOperator,
   TSegmentPersonFilter,
   TSegmentSegmentFilter,
-} from "@formbricks/types/segment";
+} from "@hivecfm/types/segment";
 import {
   ARITHMETIC_OPERATORS,
   ATTRIBUTE_OPERATORS,
   DEVICE_OPERATORS,
   PERSON_OPERATORS,
-} from "@formbricks/types/segment";
+} from "@hivecfm/types/segment";
 import { cn } from "@/lib/cn";
 import { structuredClone } from "@/lib/pollyfills/structuredClone";
 import {
@@ -315,7 +315,7 @@ function AttributeSegmentFilter({
         }}
         value={attrKeyValue}>
         <SelectTrigger
-          className="flex w-auto items-center justify-center whitespace-nowrap bg-white"
+          className="flex w-auto items-center justify-center bg-white whitespace-nowrap"
           hideArrow>
           <SelectValue>
             <div className="flex items-center gap-2">
@@ -497,7 +497,7 @@ function PersonSegmentFilter({
         }}
         value={personIdentifier}>
         <SelectTrigger
-          className="flex w-auto items-center justify-center whitespace-nowrap bg-white"
+          className="flex w-auto items-center justify-center bg-white whitespace-nowrap"
           hideArrow>
           <SelectValue>
             <div className="flex items-center gap-1 lowercase">
@@ -648,7 +648,7 @@ function SegmentSegmentFilter({
         }}
         value={currentSegment?.id}>
         <SelectTrigger
-          className="flex w-auto items-center justify-center whitespace-nowrap bg-white"
+          className="flex w-auto items-center justify-center bg-white whitespace-nowrap"
           hideArrow>
           <div className="flex items-center gap-1">
             <Users2Icon className="h-4 w-4 text-sm" />

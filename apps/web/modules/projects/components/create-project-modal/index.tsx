@@ -7,7 +7,7 @@ import { useForm } from "react-hook-form";
 import { toast } from "react-hot-toast";
 import { useTranslation } from "react-i18next";
 import { z } from "zod";
-import { ZProject } from "@formbricks/types/project";
+import { ZProject } from "@hivecfm/types/project";
 import { TOrganizationTeam } from "@/app/(app)/(onboarding)/types/onboarding";
 import { createProjectAction } from "@/app/(app)/environments/[environmentId]/actions";
 import { getFormattedErrorMessage } from "@/lib/utils/helper";

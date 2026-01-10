@@ -1,6 +1,6 @@
 import { z } from "zod";
-import { logger } from "@formbricks/logger";
-import { ValidationError } from "@formbricks/types/errors";
+import { logger } from "@hivecfm/logger";
+import { ValidationError } from "@hivecfm/types/errors";
 
 type ValidationPair<T> = [T, z.ZodType<T>];
 

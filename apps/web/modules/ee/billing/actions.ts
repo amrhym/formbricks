@@ -1,8 +1,8 @@
 "use server";
 
 import { z } from "zod";
-import { ZId } from "@formbricks/types/common";
-import { AuthorizationError, ResourceNotFoundError } from "@formbricks/types/errors";
+import { ZId } from "@hivecfm/types/common";
+import { AuthorizationError, ResourceNotFoundError } from "@hivecfm/types/errors";
 import { STRIPE_PRICE_LOOKUP_KEYS, WEBAPP_URL } from "@/lib/constants";
 import { getOrganization } from "@/lib/organization/service";
 import { authenticatedActionClient } from "@/lib/utils/action-client";

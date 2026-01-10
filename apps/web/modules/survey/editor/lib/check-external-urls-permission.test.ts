@@ -1,7 +1,7 @@
 import { beforeEach, describe, expect, test, vi } from "vitest";
-import { OperationNotAllowedError, ResourceNotFoundError } from "@formbricks/types/errors";
-import { TSurveyElementTypeEnum } from "@formbricks/types/surveys/elements";
-import { TSurvey } from "@formbricks/types/surveys/types";
+import { OperationNotAllowedError, ResourceNotFoundError } from "@hivecfm/types/errors";
+import { TSurveyElementTypeEnum } from "@hivecfm/types/surveys/elements";
+import { TSurvey } from "@hivecfm/types/surveys/types";
 import { createI18nString } from "@/lib/i18n/utils";
 import { checkExternalUrlsPermission } from "./check-external-urls-permission";
 

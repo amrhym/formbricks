@@ -1,5 +1,5 @@
 import { cache as reactCache } from "react";
-import { prisma } from "@formbricks/database";
+import { prisma } from "@hivecfm/database";
 
 export const doesContactExist = reactCache(async (id: string): Promise<boolean> => {
   const contact = await prisma.contact.findFirst({

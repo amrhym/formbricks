@@ -1,6 +1,6 @@
 import jwt from "jsonwebtoken";
 import { beforeEach, describe, expect, test, vi } from "vitest";
-import { TSurvey } from "@formbricks/types/surveys/types";
+import { TSurvey } from "@hivecfm/types/surveys/types";
 import { ENCRYPTION_KEY } from "@/lib/constants";
 import * as crypto from "@/lib/crypto";
 import { getPublicDomain } from "@/lib/getPublicUrl";

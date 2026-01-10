@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { ZProjectTeam } from "@formbricks/database/zod/project-teams";
+import { ZProjectTeam } from "@hivecfm/database/zod/project-teams";
 import { ZGetFilter } from "@/modules/api/v2/types/api-filter";
 
 export const ZGetProjectTeamsFilter = ZGetFilter.extend({

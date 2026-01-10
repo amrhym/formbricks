@@ -1,11 +1,11 @@
 import { SortableContext, verticalListSortingStrategy } from "@dnd-kit/sortable";
 import { useAutoAnimate } from "@formkit/auto-animate/react";
 import { Project } from "@prisma/client";
-import { TI18nString } from "@formbricks/types/i18n";
-import { TSurveyBlockLogic } from "@formbricks/types/surveys/blocks";
-import { TSurveyElement } from "@formbricks/types/surveys/elements";
-import { TSurvey } from "@formbricks/types/surveys/types";
-import { TUserLocale } from "@formbricks/types/user";
+import { TI18nString } from "@hivecfm/types/i18n";
+import { TSurveyBlockLogic } from "@hivecfm/types/surveys/blocks";
+import { TSurveyElement } from "@hivecfm/types/surveys/elements";
+import { TSurvey } from "@hivecfm/types/surveys/types";
+import { TUserLocale } from "@hivecfm/types/user";
 import { BlockCard } from "@/modules/survey/editor/components/block-card";
 
 interface BlocksDroppableProps {

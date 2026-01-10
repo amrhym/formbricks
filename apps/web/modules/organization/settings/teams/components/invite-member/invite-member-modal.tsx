@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
-import { TOrganizationRole } from "@formbricks/types/memberships";
+import { TOrganizationRole } from "@hivecfm/types/memberships";
 import { TOrganizationTeam } from "@/modules/ee/teams/team-list/types/team";
 import {
   Dialog,

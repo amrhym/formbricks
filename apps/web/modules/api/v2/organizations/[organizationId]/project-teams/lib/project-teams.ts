@@ -1,7 +1,7 @@
 import { ProjectTeam } from "@prisma/client";
 import { z } from "zod";
-import { prisma } from "@formbricks/database";
-import { Result, err, ok } from "@formbricks/types/error-handlers";
+import { prisma } from "@hivecfm/database";
+import { Result, err, ok } from "@hivecfm/types/error-handlers";
 import { getProjectTeamsQuery } from "@/modules/api/v2/organizations/[organizationId]/project-teams/lib/utils";
 import {
   TGetProjectTeamsFilter,

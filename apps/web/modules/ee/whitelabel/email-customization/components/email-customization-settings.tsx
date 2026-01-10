@@ -6,9 +6,9 @@ import { useRouter } from "next/navigation";
 import React, { useRef, useState } from "react";
 import { toast } from "react-hot-toast";
 import { useTranslation } from "react-i18next";
-import { TOrganization } from "@formbricks/types/organizations";
-import { TAllowedFileExtension } from "@formbricks/types/storage";
-import { TUser } from "@formbricks/types/user";
+import { TOrganization } from "@hivecfm/types/organizations";
+import { TAllowedFileExtension } from "@hivecfm/types/storage";
+import { TUser } from "@hivecfm/types/user";
 import { SettingsCard } from "@/app/(app)/environments/[environmentId]/settings/components/SettingsCard";
 import { cn } from "@/lib/cn";
 import { getFormattedErrorMessage } from "@/lib/utils/helper";
@@ -182,15 +182,11 @@ export const EmailCustomizationSettings = ({
   const buttons: [ModalButton, ModalButton] = [
     {
       text: isFormbricksCloud ? t("common.start_free_trial") : t("common.request_trial_license"),
-      href: isFormbricksCloud
-        ? `/environments/${environmentId}/settings/billing`
-        : "https://formbricks.com/upgrade-self-hosting-license",
+      href: isFormbricksCloud ? `/environments/${environmentId}/settings/billing` : "#",
     },
     {
       text: t("common.learn_more"),
-      href: isFormbricksCloud
-        ? `/environments/${environmentId}/settings/billing`
-        : "https://formbricks.com/learn-more-self-hosting-license",
+      href: isFormbricksCloud ? `/environments/${environmentId}/settings/billing` : "#",
     },
   ];
 

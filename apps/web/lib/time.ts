@@ -1,6 +1,6 @@
 import { formatDistance, intlFormat } from "date-fns";
 import { de, enUS, es, fr, ja, nl, pt, ptBR, ro, ru, sv, zhCN, zhTW } from "date-fns/locale";
-import { TUserLocale } from "@formbricks/types/user";
+import { TUserLocale } from "@hivecfm/types/user";
 
 export const convertDateString = (dateString: string | null) => {
   if (dateString === null) return null;

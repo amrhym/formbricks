@@ -1,7 +1,7 @@
 import { Prisma } from "@prisma/client";
 import { afterEach, describe, expect, test, vi } from "vitest";
-import { prisma } from "@formbricks/database";
-import { DatabaseError } from "@formbricks/types/errors";
+import { prisma } from "@hivecfm/database";
+import { DatabaseError } from "@hivecfm/types/errors";
 import { BILLING_LIMITS, PROJECT_FEATURE_KEYS } from "@/lib/constants";
 import { updateUser } from "@/lib/user/service";
 import {
@@ -12,7 +12,7 @@ import {
   updateOrganization,
 } from "./service";
 
-vi.mock("@formbricks/database", () => ({
+vi.mock("@hivecfm/database", () => ({
   prisma: {
     organization: {
       findUnique: vi.fn(),

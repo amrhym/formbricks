@@ -1,7 +1,7 @@
 import { User } from "@prisma/client";
 import { cache as reactCache } from "react";
-import { prisma } from "@formbricks/database";
-import { InvalidInputError, ResourceNotFoundError } from "@formbricks/types/errors";
+import { prisma } from "@hivecfm/database";
+import { InvalidInputError, ResourceNotFoundError } from "@hivecfm/types/errors";
 import { verifyPassword } from "@/modules/auth/lib/utils";
 
 export const getUserById = reactCache(

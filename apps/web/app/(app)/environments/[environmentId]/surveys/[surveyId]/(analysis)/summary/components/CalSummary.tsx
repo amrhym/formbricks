@@ -1,7 +1,7 @@
 "use client";
 
 import { useTranslation } from "react-i18next";
-import { TSurvey, TSurveyElementSummaryCal } from "@formbricks/types/surveys/types";
+import { TSurvey, TSurveyElementSummaryCal } from "@hivecfm/types/surveys/types";
 import { convertFloatToNDecimal } from "@/app/(app)/environments/[environmentId]/surveys/[surveyId]/(analysis)/summary/lib/utils";
 import { ProgressBar } from "@/modules/ui/components/progress-bar";
 import { ElementSummaryHeader } from "./ElementSummaryHeader";
@@ -18,7 +18,7 @@ export const CalSummary = ({ elementSummary, survey }: CalSummaryProps) => {
   return (
     <div className="rounded-xl border border-slate-200 bg-white shadow-sm">
       <ElementSummaryHeader elementSummary={elementSummary} survey={survey} />
-      <div className="space-y-5 px-4 pb-6 pt-4 text-sm md:px-6 md:text-base">
+      <div className="space-y-5 px-4 pt-4 pb-6 text-sm md:px-6 md:text-base">
         <div>
           <div className="text flex justify-between px-2 pb-2">
             <div className="mr-8 flex space-x-1">

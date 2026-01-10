@@ -1,8 +1,8 @@
-import { logger } from "@formbricks/logger";
-import { StorageError, StorageErrorCode } from "@formbricks/storage";
-import { TResponseData } from "@formbricks/types/responses";
-import { TAllowedFileExtension, ZAllowedFileExtension, mimeTypes } from "@formbricks/types/storage";
-import { TSurveyQuestion, TSurveyQuestionTypeEnum } from "@formbricks/types/surveys/types";
+import { logger } from "@hivecfm/logger";
+import { StorageError, StorageErrorCode } from "@hivecfm/storage";
+import { TResponseData } from "@hivecfm/types/responses";
+import { TAllowedFileExtension, ZAllowedFileExtension, mimeTypes } from "@hivecfm/types/storage";
+import { TSurveyQuestion, TSurveyQuestionTypeEnum } from "@hivecfm/types/surveys/types";
 import { responses } from "@/app/lib/api/response";
 
 export const getOriginalFileNameFromUrl = (fileURL: string) => {

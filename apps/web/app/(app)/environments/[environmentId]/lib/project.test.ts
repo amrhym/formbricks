@@ -1,11 +1,11 @@
 import { Prisma } from "@prisma/client";
 import { describe, expect, test, vi } from "vitest";
-import { prisma } from "@formbricks/database";
-import { DatabaseError } from "@formbricks/types/errors";
-import { TMembership } from "@formbricks/types/memberships";
+import { prisma } from "@hivecfm/database";
+import { DatabaseError } from "@hivecfm/types/errors";
+import { TMembership } from "@hivecfm/types/memberships";
 import { getProjectsByUserId } from "./project";
 
-vi.mock("@formbricks/database", () => ({
+vi.mock("@hivecfm/database", () => ({
   prisma: {
     project: {
       findMany: vi.fn(),

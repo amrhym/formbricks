@@ -2,20 +2,16 @@ import "server-only";
 import { Prisma } from "@prisma/client";
 import { cache as reactCache } from "react";
 import { z } from "zod";
-import { prisma } from "@formbricks/database";
-import { logger } from "@formbricks/logger";
-import { ZId } from "@formbricks/types/common";
+import { prisma } from "@hivecfm/database";
+import { logger } from "@hivecfm/logger";
+import { ZId } from "@hivecfm/types/common";
 import type {
   TEnvironment,
   TEnvironmentCreateInput,
   TEnvironmentUpdateInput,
-} from "@formbricks/types/environment";
-import {
-  ZEnvironment,
-  ZEnvironmentCreateInput,
-  ZEnvironmentUpdateInput,
-} from "@formbricks/types/environment";
-import { DatabaseError, ResourceNotFoundError, ValidationError } from "@formbricks/types/errors";
+} from "@hivecfm/types/environment";
+import { ZEnvironment, ZEnvironmentCreateInput, ZEnvironmentUpdateInput } from "@hivecfm/types/environment";
+import { DatabaseError, ResourceNotFoundError, ValidationError } from "@hivecfm/types/errors";
 import { getOrganizationsByUserId } from "../organization/service";
 import { getUserProjects } from "../project/service";
 import { validateInputs } from "../utils/validate";

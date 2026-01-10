@@ -1,11 +1,11 @@
 import { Prisma } from "@prisma/client";
 import { cache as reactCache } from "react";
-import { createCacheKey } from "@formbricks/cache";
-import { prisma } from "@formbricks/database";
-import { logger } from "@formbricks/logger";
-import { ZId, ZString } from "@formbricks/types/common";
-import { DatabaseError } from "@formbricks/types/errors";
-import { TBaseFilter } from "@formbricks/types/segment";
+import { createCacheKey } from "@hivecfm/cache";
+import { prisma } from "@hivecfm/database";
+import { logger } from "@hivecfm/logger";
+import { ZId, ZString } from "@hivecfm/types/common";
+import { DatabaseError } from "@hivecfm/types/errors";
+import { TBaseFilter } from "@hivecfm/types/segment";
 import { cache } from "@/lib/cache";
 import { validateInputs } from "@/lib/utils/validate";
 import { evaluateSegment } from "@/modules/ee/contacts/segments/lib/segments";

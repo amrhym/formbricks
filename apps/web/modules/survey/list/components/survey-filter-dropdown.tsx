@@ -1,7 +1,7 @@
 "use client";
 
 import { ChevronDownIcon } from "lucide-react";
-import { TFilterOption } from "@formbricks/types/surveys/types";
+import { TFilterOption } from "@hivecfm/types/surveys/types";
 import { Checkbox } from "@/modules/ui/components/checkbox";
 import {
   DropdownMenu,

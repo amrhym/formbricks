@@ -4,7 +4,7 @@ import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
 import { useTranslation } from "react-i18next";
-import { TOrganization, TOrganizationBillingPeriod } from "@formbricks/types/organizations";
+import { TOrganization, TOrganizationBillingPeriod } from "@hivecfm/types/organizations";
 import { cn } from "@/lib/cn";
 import { Badge } from "@/modules/ui/components/badge";
 import { Button } from "@/modules/ui/components/button";

@@ -1,4 +1,4 @@
-import { logger } from "@formbricks/logger";
+import { logger } from "@hivecfm/logger";
 import { RECAPTCHA_SECRET_KEY, RECAPTCHA_SITE_KEY } from "@/lib/constants";
 
 /**

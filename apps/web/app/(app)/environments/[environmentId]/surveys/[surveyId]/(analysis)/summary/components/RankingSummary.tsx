@@ -1,5 +1,5 @@
 import { useTranslation } from "react-i18next";
-import { TSurvey, TSurveyElementSummaryRanking } from "@formbricks/types/surveys/types";
+import { TSurvey, TSurveyElementSummaryRanking } from "@hivecfm/types/surveys/types";
 import { getChoiceIdByValue } from "@/lib/response/utils";
 import { IdBadge } from "@/modules/ui/components/id-badge";
 import { convertFloatToNDecimal } from "../lib/utils";
@@ -20,7 +20,7 @@ export const RankingSummary = ({ elementSummary, survey }: RankingSummaryProps) 
   return (
     <div className="rounded-xl border border-slate-200 bg-white shadow-sm">
       <ElementSummaryHeader elementSummary={elementSummary} survey={survey} />
-      <div className="space-y-5 px-4 pb-6 pt-4 text-sm md:px-6 md:text-base">
+      <div className="space-y-5 px-4 pt-4 pb-6 text-sm md:px-6 md:text-base">
         {results.map((result, resultsIdx) => {
           const choiceId = getChoiceIdByValue(result.value, elementSummary.element);
           return (

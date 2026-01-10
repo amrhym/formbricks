@@ -1,7 +1,7 @@
 import { createId } from "@paralleldrive/cuid2";
 import { TFunction } from "i18next";
-import { logger } from "@formbricks/logger";
-import { TXMTemplate } from "@formbricks/types/templates";
+import { logger } from "@hivecfm/logger";
+import { TXMTemplate } from "@hivecfm/types/templates";
 import {
   buildBlock,
   buildCTAElement,

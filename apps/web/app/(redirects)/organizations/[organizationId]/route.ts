@@ -1,7 +1,7 @@
 import { getServerSession } from "next-auth";
 import { redirect } from "next/navigation";
 import { notFound } from "next/navigation";
-import { AuthenticationError, AuthorizationError } from "@formbricks/types/errors";
+import { AuthenticationError, AuthorizationError } from "@hivecfm/types/errors";
 import { hasOrganizationAccess } from "@/lib/auth";
 import { getEnvironments } from "@/lib/environment/service";
 import { getMembershipByUserIdOrganizationId } from "@/lib/membership/service";

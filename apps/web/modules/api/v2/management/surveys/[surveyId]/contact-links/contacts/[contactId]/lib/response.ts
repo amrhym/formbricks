@@ -1,6 +1,6 @@
 import { cache as reactCache } from "react";
-import { prisma } from "@formbricks/database";
-import { err, ok } from "@formbricks/types/error-handlers";
+import { prisma } from "@hivecfm/database";
+import { err, ok } from "@hivecfm/types/error-handlers";
 
 export const getResponse = reactCache(async (contactId: string, surveyId: string) => {
   try {

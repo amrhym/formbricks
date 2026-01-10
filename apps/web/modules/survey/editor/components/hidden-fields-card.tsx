@@ -6,9 +6,9 @@ import { EyeOff } from "lucide-react";
 import { useMemo, useState } from "react";
 import { toast } from "react-hot-toast";
 import { useTranslation } from "react-i18next";
-import { TSurveyQuota } from "@formbricks/types/quota";
-import { TSurvey, TSurveyHiddenFields } from "@formbricks/types/surveys/types";
-import { validateId } from "@formbricks/types/surveys/validation";
+import { TSurveyQuota } from "@hivecfm/types/quota";
+import { TSurvey, TSurveyHiddenFields } from "@hivecfm/types/surveys/types";
+import { validateId } from "@hivecfm/types/surveys/validation";
 import { cn } from "@/lib/cn";
 import { extractRecallInfo } from "@/lib/utils/recall";
 import { findHiddenFieldUsedInLogic, isUsedInQuota, isUsedInRecall } from "@/modules/survey/editor/lib/utils";
@@ -158,7 +158,7 @@ export const HiddenFieldsCard = ({
       <div
         className={cn(
           open ? "bg-slate-50" : "bg-white group-hover:bg-slate-50",
-          "flex w-10 items-center justify-center rounded-l-lg border-b border-l border-t group-aria-expanded:rounded-bl-none"
+          "flex w-10 items-center justify-center rounded-l-lg border-t border-b border-l group-aria-expanded:rounded-bl-none"
         )}>
         <EyeOff className="h-4 w-4" />
       </div>
@@ -191,7 +191,7 @@ export const HiddenFieldsCard = ({
                 );
               })
             ) : (
-              <p className="mt-2 text-sm italic text-slate-500">
+              <p className="mt-2 text-sm text-slate-500 italic">
                 {t("environments.surveys.edit.no_hidden_fields_yet_add_first_one_below")}
               </p>
             )}

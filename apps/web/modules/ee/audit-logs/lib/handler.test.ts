@@ -41,8 +41,8 @@ vi.mock("./utils", async () => {
   };
 });
 
-// Special handling for @formbricks/logger due to hoisting issues
-vi.mock("@formbricks/logger", () => {
+// Special handling for @hivecfm/logger due to hoisting issues
+vi.mock("@hivecfm/logger", () => {
   const localLoggerErrorMock = vi.fn();
   loggerErrorMockHandle = localLoggerErrorMock;
   return {

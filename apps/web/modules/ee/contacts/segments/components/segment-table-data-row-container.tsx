@@ -1,5 +1,5 @@
-import { TContactAttributeKey } from "@formbricks/types/contact-attribute-key";
-import { TSegment } from "@formbricks/types/segment";
+import { TContactAttributeKey } from "@hivecfm/types/contact-attribute-key";
+import { TSegment } from "@hivecfm/types/segment";
 import { getSurveysBySegmentId } from "@/lib/survey/service";
 import { SegmentTableDataRow } from "./segment-table-data-row";
 

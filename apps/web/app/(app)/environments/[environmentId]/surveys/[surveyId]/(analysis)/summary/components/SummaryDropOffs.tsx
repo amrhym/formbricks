@@ -2,8 +2,8 @@
 
 import { TimerIcon } from "lucide-react";
 import { useTranslation } from "react-i18next";
-import { TSurveyElementTypeEnum } from "@formbricks/types/surveys/elements";
-import { TSurvey, TSurveySummary } from "@formbricks/types/surveys/types";
+import { TSurveyElementTypeEnum } from "@hivecfm/types/surveys/elements";
+import { TSurvey, TSurveySummary } from "@hivecfm/types/surveys/types";
 import { recallToHeadline } from "@/lib/utils/recall";
 import { formatTextWithSlashes } from "@/modules/survey/editor/lib/utils";
 import { getElementIcon } from "@/modules/survey/lib/elements";
@@ -39,7 +39,7 @@ export const SummaryDropOffs = ({ dropOff, survey }: SummaryDropOffsProps) => {
             </TooltipProvider>
           </div>
           <div className="px-4 text-right md:px-6">{t("environments.surveys.summary.impressions")}</div>
-          <div className="px-4 text-right md:mr-1 md:pl-6 md:pr-6">
+          <div className="px-4 text-right md:mr-1 md:pr-6 md:pl-6">
             {t("environments.surveys.summary.drop_offs")}
           </div>
         </div>
@@ -64,10 +64,10 @@ export const SummaryDropOffs = ({ dropOff, survey }: SummaryDropOffsProps) => {
                 )}
               </p>
             </div>
-            <div className="whitespace-pre-wrap px-4 py-2 text-right font-mono font-medium md:px-6">
+            <div className="px-4 py-2 text-right font-mono font-medium whitespace-pre-wrap md:px-6">
               {quesDropOff.ttc > 0 ? (quesDropOff.ttc / 1000).toFixed(2) + "s" : "N/A"}
             </div>
-            <div className="whitespace-pre-wrap px-4 py-2 text-right font-mono font-medium md:px-6">
+            <div className="px-4 py-2 text-right font-mono font-medium whitespace-pre-wrap md:px-6">
               {quesDropOff.impressions}
             </div>
             <div className="px-4 py-2 text-right md:px-6">

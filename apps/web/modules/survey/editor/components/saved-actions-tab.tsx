@@ -3,7 +3,7 @@
 import { ActionClass } from "@prisma/client";
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
-import { TSurvey } from "@formbricks/types/surveys/types";
+import { TSurvey } from "@hivecfm/types/surveys/types";
 import { ACTION_TYPE_ICON_LOOKUP } from "@/modules/projects/settings/(setup)/app-connection/utils";
 import { ActionClassInfo } from "@/modules/ui/components/action-class-info";
 import { Input } from "@/modules/ui/components/input";
@@ -65,7 +65,7 @@ export const SavedActionsTab = ({
           (actions, i) =>
             actions.length > 0 && (
               <div key={i} className="me-4">
-                <h2 className="mb-2 mt-4 font-semibold">
+                <h2 className="mt-4 mb-2 font-semibold">
                   {i === 0 ? t("common.no_code") : t("common.code")}
                 </h2>
                 <div className="flex flex-col gap-2">

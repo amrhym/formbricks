@@ -2,11 +2,11 @@
 
 import { ActionClass, Environment, Language, OrganizationRole, Project } from "@prisma/client";
 import { useCallback, useEffect, useRef, useState } from "react";
-import { TContactAttributeKey } from "@formbricks/types/contact-attribute-key";
-import { TSurveyQuota } from "@formbricks/types/quota";
-import { TSegment } from "@formbricks/types/segment";
-import { TSurvey, TSurveyEditorTabs, TSurveyStyling } from "@formbricks/types/surveys/types";
-import { TUserLocale } from "@formbricks/types/user";
+import { TContactAttributeKey } from "@hivecfm/types/contact-attribute-key";
+import { TSurveyQuota } from "@hivecfm/types/quota";
+import { TSegment } from "@hivecfm/types/segment";
+import { TSurvey, TSurveyEditorTabs, TSurveyStyling } from "@hivecfm/types/surveys/types";
+import { TUserLocale } from "@hivecfm/types/user";
 import { extractLanguageCodes, getEnabledLanguages } from "@/lib/i18n/utils";
 import { structuredClone } from "@/lib/pollyfills/structuredClone";
 import { useDocumentVisibility } from "@/lib/useDocumentVisibility";

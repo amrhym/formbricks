@@ -1,6 +1,6 @@
 import { Suspense } from "react";
-import { TOrganizationRole } from "@formbricks/types/memberships";
-import { TOrganization } from "@formbricks/types/organizations";
+import { TOrganizationRole } from "@hivecfm/types/memberships";
+import { TOrganization } from "@hivecfm/types/organizations";
 import { SettingsCard } from "@/app/(app)/environments/[environmentId]/settings/components/SettingsCard";
 import { INVITE_DISABLED, IS_FORMBRICKS_CLOUD, IS_STORAGE_CONFIGURED } from "@/lib/constants";
 import { getTranslate } from "@/lingodotdev/server";

@@ -2,13 +2,13 @@
 // Pull in the mocked implementations to configure them in tests
 import { getServerSession } from "next-auth";
 import { beforeEach, describe, expect, test, vi } from "vitest";
-import { prisma } from "@formbricks/database";
-import { TEnvironment } from "@formbricks/types/environment";
-import { AuthorizationError } from "@formbricks/types/errors";
-import { TMembership } from "@formbricks/types/memberships";
-import { TOrganization } from "@formbricks/types/organizations";
-import { TProject } from "@formbricks/types/project";
-import { TUser } from "@formbricks/types/user";
+import { prisma } from "@hivecfm/database";
+import { TEnvironment } from "@hivecfm/types/environment";
+import { AuthorizationError } from "@hivecfm/types/errors";
+import { TMembership } from "@hivecfm/types/memberships";
+import { TOrganization } from "@hivecfm/types/organizations";
+import { TProject } from "@hivecfm/types/project";
+import { TUser } from "@hivecfm/types/user";
 import { hasUserEnvironmentAccess } from "@/lib/environment/auth";
 import { getEnvironment } from "@/lib/environment/service";
 import { getMembershipByUserIdOrganizationId } from "@/lib/membership/service";
@@ -91,7 +91,7 @@ vi.mock("@/modules/ee/license-check/lib/utils", () => ({
   getAccessControlPermission: vi.fn(),
 }));
 
-vi.mock("@formbricks/database", () => ({
+vi.mock("@hivecfm/database", () => ({
   prisma: {
     environment: {
       findUnique: vi.fn(),
@@ -103,7 +103,7 @@ vi.mock("@/lib/constants", () => ({
   IS_FORMBRICKS_CLOUD: false,
 }));
 
-vi.mock("@formbricks/types/errors", () => ({
+vi.mock("@hivecfm/types/errors", () => ({
   AuthorizationError: class AuthorizationError extends Error {},
   DatabaseError: class DatabaseError extends Error {},
 }));

@@ -1,6 +1,6 @@
 import { z } from "zod";
 import { ZodOpenApiOperationObject, ZodOpenApiPathsObject } from "zod-openapi";
-import { ZUser } from "@formbricks/database/zod/users";
+import { ZUser } from "@hivecfm/database/zod/users";
 import { ZOrganizationIdSchema } from "@/modules/api/v2/organizations/[organizationId]/types/organizations";
 import {
   ZGetUsersFilter,

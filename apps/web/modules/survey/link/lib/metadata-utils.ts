@@ -1,5 +1,5 @@
 import { Metadata } from "next";
-import { getTextContent } from "@formbricks/types/surveys/validation";
+import { getTextContent } from "@hivecfm/types/surveys/validation";
 import { IS_FORMBRICKS_CLOUD } from "@/lib/constants";
 import { getPublicDomain } from "@/lib/getPublicUrl";
 import { getLocalizedValue } from "@/lib/i18n/utils";

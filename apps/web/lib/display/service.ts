@@ -1,10 +1,10 @@
 import "server-only";
 import { Prisma } from "@prisma/client";
 import { cache as reactCache } from "react";
-import { prisma } from "@formbricks/database";
-import { ZId } from "@formbricks/types/common";
-import { TDisplay, TDisplayFilters } from "@formbricks/types/displays";
-import { DatabaseError } from "@formbricks/types/errors";
+import { prisma } from "@hivecfm/database";
+import { ZId } from "@hivecfm/types/common";
+import { TDisplay, TDisplayFilters } from "@hivecfm/types/displays";
+import { DatabaseError } from "@hivecfm/types/errors";
 import { validateInputs } from "../utils/validate";
 
 export const selectDisplay = {

@@ -13,7 +13,7 @@ import {
   TProjectMode,
   TProjectUpdateInput,
   ZProjectUpdateInput,
-} from "@formbricks/types/project";
+} from "@hivecfm/types/project";
 import { createProjectAction } from "@/app/(app)/environments/[environmentId]/actions";
 import { previewSurvey } from "@/app/lib/templates";
 import { FORMBRICKS_SURVEYS_FILTERS_KEY_LS } from "@/lib/localStorage";

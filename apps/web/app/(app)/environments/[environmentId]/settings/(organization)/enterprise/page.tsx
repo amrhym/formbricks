@@ -106,8 +106,8 @@ const Page = async (props) => {
               </div>
               <p className="text-sm text-slate-500">
                 {t("environments.settings.enterprise.questions_please_reach_out_to")}{" "}
-                <a className="font-semibold underline" href="mailto:hola@formbricks.com">
-                  hola@formbricks.com
+                <a className="font-semibold underline" href="mailto:hola@hivecfm.com">
+                  hola@hivecfm.com
                 </a>
               </p>
             </div>
@@ -179,7 +179,7 @@ const Page = async (props) => {
               </p>
               <Button asChild>
                 <Link
-                  href="https://app.formbricks.com/s/clvupq3y205i5yrm3sm9v1xt5"
+                  href="#/s/clvupq3y205i5yrm3sm9v1xt5"
                   target="_blank"
                   rel="noopener noreferrer nofollow"
                   referrerPolicy="no-referrer">

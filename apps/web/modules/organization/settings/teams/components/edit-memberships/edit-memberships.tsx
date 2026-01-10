@@ -1,5 +1,5 @@
-import { TOrganizationRole } from "@formbricks/types/memberships";
-import { TOrganization } from "@formbricks/types/organizations";
+import { TOrganizationRole } from "@hivecfm/types/memberships";
+import { TOrganization } from "@hivecfm/types/organizations";
 import { IS_FORMBRICKS_CLOUD } from "@/lib/constants";
 import { getTranslate } from "@/lingodotdev/server";
 import { MembersInfo } from "@/modules/organization/settings/teams/components/edit-memberships/members-info";

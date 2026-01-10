@@ -1,5 +1,5 @@
 // https://github.com/airbnb/javascript/#naming--uppercase
-import { TProjectStyling } from "@formbricks/types/project";
+import { TProjectStyling } from "@hivecfm/types/project";
 
 export const COLOR_DEFAULTS = {
   brandColor: "#64748b",

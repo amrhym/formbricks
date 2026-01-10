@@ -1,10 +1,10 @@
 import { Prisma } from "@prisma/client";
 import { cache as reactCache } from "react";
-import { prisma } from "@formbricks/database";
-import { ZId, ZString } from "@formbricks/types/common";
-import { TContactAttributes } from "@formbricks/types/contact-attribute";
-import { DatabaseError } from "@formbricks/types/errors";
-import { ZUserEmail } from "@formbricks/types/user";
+import { prisma } from "@hivecfm/database";
+import { ZId, ZString } from "@hivecfm/types/common";
+import { TContactAttributes } from "@hivecfm/types/contact-attribute";
+import { DatabaseError } from "@hivecfm/types/errors";
+import { ZUserEmail } from "@hivecfm/types/user";
 import { validateInputs } from "@/lib/utils/validate";
 
 const selectContactAttribute = {

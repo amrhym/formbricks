@@ -1,17 +1,17 @@
 import { Prisma } from "@prisma/client";
-import { TActionClass } from "@formbricks/types/action-classes";
-import { TContactAttributeKey } from "@formbricks/types/contact-attribute-key";
-import { TEnvironment } from "@formbricks/types/environment";
-import { TOrganization } from "@formbricks/types/organizations";
-import { TProject } from "@formbricks/types/project";
-import { TSurveyElementTypeEnum } from "@formbricks/types/surveys/elements";
+import { TActionClass } from "@hivecfm/types/action-classes";
+import { TContactAttributeKey } from "@hivecfm/types/contact-attribute-key";
+import { TEnvironment } from "@hivecfm/types/environment";
+import { TOrganization } from "@hivecfm/types/organizations";
+import { TProject } from "@hivecfm/types/project";
+import { TSurveyElementTypeEnum } from "@hivecfm/types/surveys/elements";
 import {
   TSurvey,
   TSurveyCreateInput,
   TSurveyLanguage,
   TSurveyWelcomeCard,
-} from "@formbricks/types/surveys/types";
-import { TUser } from "@formbricks/types/user";
+} from "@hivecfm/types/surveys/types";
+import { TUser } from "@hivecfm/types/user";
 import { selectSurvey } from "../service";
 
 const selectContact = {

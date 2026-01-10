@@ -1,8 +1,8 @@
 "use server";
 
 import { z } from "zod";
-import { InvalidInputError, UnknownError } from "@formbricks/types/errors";
-import { ZUser, ZUserEmail, ZUserLocale, ZUserName, ZUserPassword } from "@formbricks/types/user";
+import { InvalidInputError, UnknownError } from "@hivecfm/types/errors";
+import { ZUser, ZUserEmail, ZUserLocale, ZUserName, ZUserPassword } from "@hivecfm/types/user";
 import { hashPassword } from "@/lib/auth";
 import { IS_TURNSTILE_CONFIGURED, TURNSTILE_SECRET_KEY } from "@/lib/constants";
 import { verifyInviteToken } from "@/lib/jwt";

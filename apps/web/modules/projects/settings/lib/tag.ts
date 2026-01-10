@@ -1,10 +1,10 @@
 import "server-only";
 import { Prisma } from "@prisma/client";
-import { prisma } from "@formbricks/database";
-import { PrismaErrorType } from "@formbricks/database/types/error";
-import { ZId } from "@formbricks/types/common";
-import { Result, err, ok } from "@formbricks/types/error-handlers";
-import { TTag } from "@formbricks/types/tags";
+import { prisma } from "@hivecfm/database";
+import { PrismaErrorType } from "@hivecfm/database/types/error";
+import { ZId } from "@hivecfm/types/common";
+import { Result, err, ok } from "@hivecfm/types/error-handlers";
+import { TTag } from "@hivecfm/types/tags";
 import { validateInputs } from "@/lib/utils/validate";
 import { TagError } from "@/modules/projects/settings/types/tag";
 

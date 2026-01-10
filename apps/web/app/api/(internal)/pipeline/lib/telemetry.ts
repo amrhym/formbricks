@@ -1,7 +1,7 @@
 import { IntegrationType } from "@prisma/client";
-import { type CacheKey, getCacheService } from "@formbricks/cache";
-import { prisma } from "@formbricks/database";
-import { logger } from "@formbricks/logger";
+import { type CacheKey, getCacheService } from "@hivecfm/cache";
+import { prisma } from "@hivecfm/database";
+import { logger } from "@hivecfm/logger";
 import { env } from "@/lib/env";
 import { getInstanceInfo } from "@/lib/instance";
 import packageJson from "@/package.json";

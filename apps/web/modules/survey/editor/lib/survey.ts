@@ -1,9 +1,9 @@
 import { ActionClass, Prisma } from "@prisma/client";
-import { prisma } from "@formbricks/database";
-import { logger } from "@formbricks/logger";
-import { DatabaseError, InvalidInputError, ResourceNotFoundError } from "@formbricks/types/errors";
-import { TSegment, ZSegmentFilters } from "@formbricks/types/segment";
-import { TSurvey } from "@formbricks/types/surveys/types";
+import { prisma } from "@hivecfm/database";
+import { logger } from "@hivecfm/logger";
+import { DatabaseError, InvalidInputError, ResourceNotFoundError } from "@hivecfm/types/errors";
+import { TSegment, ZSegmentFilters } from "@hivecfm/types/segment";
+import { TSurvey } from "@hivecfm/types/surveys/types";
 import { updateSurveyInternal } from "@/lib/survey/service";
 import { validateMediaAndPrepareBlocks } from "@/lib/survey/utils";
 import { TriggerUpdate } from "@/modules/survey/editor/types/survey-trigger";

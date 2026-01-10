@@ -1,11 +1,11 @@
 "use client";
 
 import { useCallback, useEffect, useState } from "react";
-import { TEnvironment } from "@formbricks/types/environment";
-import { TIntegrationItem } from "@formbricks/types/integration";
-import { TIntegrationSlack, TIntegrationSlackConfigData } from "@formbricks/types/integration/slack";
-import { TSurvey } from "@formbricks/types/surveys/types";
-import { TUserLocale } from "@formbricks/types/user";
+import { TEnvironment } from "@hivecfm/types/environment";
+import { TIntegrationItem } from "@hivecfm/types/integration";
+import { TIntegrationSlack, TIntegrationSlackConfigData } from "@hivecfm/types/integration/slack";
+import { TSurvey } from "@hivecfm/types/surveys/types";
+import { TUserLocale } from "@hivecfm/types/user";
 import { getSlackChannelsAction } from "@/app/(app)/environments/[environmentId]/workspace/integrations/slack/actions";
 import { AddChannelMappingModal } from "@/app/(app)/environments/[environmentId]/workspace/integrations/slack/components/AddChannelMappingModal";
 import { ManageIntegration } from "@/app/(app)/environments/[environmentId]/workspace/integrations/slack/components/ManageIntegration";

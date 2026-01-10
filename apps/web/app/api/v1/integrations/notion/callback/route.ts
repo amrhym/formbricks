@@ -1,5 +1,5 @@
 import { NextRequest } from "next/server";
-import { TIntegrationNotionConfigData, TIntegrationNotionInput } from "@formbricks/types/integration/notion";
+import { TIntegrationNotionConfigData, TIntegrationNotionInput } from "@hivecfm/types/integration/notion";
 import { responses } from "@/app/lib/api/response";
 import { withV1ApiWrapper } from "@/app/lib/api/with-api-logging";
 import {

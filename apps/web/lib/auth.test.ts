@@ -1,6 +1,6 @@
 import { beforeEach, describe, expect, test, vi } from "vitest";
-import { prisma } from "@formbricks/database";
-import { AuthenticationError } from "@formbricks/types/errors";
+import { prisma } from "@hivecfm/database";
+import { AuthenticationError } from "@hivecfm/types/errors";
 import {
   hasOrganizationAccess,
   hasOrganizationAuthority,
@@ -12,7 +12,7 @@ import {
 } from "./auth";
 
 // Mock prisma
-vi.mock("@formbricks/database", () => ({
+vi.mock("@hivecfm/database", () => ({
   prisma: {
     membership: {
       findUnique: vi.fn(),

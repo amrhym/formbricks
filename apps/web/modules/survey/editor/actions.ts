@@ -2,9 +2,9 @@
 
 import { revalidatePath } from "next/cache";
 import { z } from "zod";
-import { ZActionClassInput } from "@formbricks/types/action-classes";
-import { OperationNotAllowedError, ResourceNotFoundError } from "@formbricks/types/errors";
-import { TSurvey, ZSurvey } from "@formbricks/types/surveys/types";
+import { ZActionClassInput } from "@hivecfm/types/action-classes";
+import { OperationNotAllowedError, ResourceNotFoundError } from "@hivecfm/types/errors";
+import { TSurvey, ZSurvey } from "@hivecfm/types/surveys/types";
 import { UNSPLASH_ACCESS_KEY, UNSPLASH_ALLOWED_DOMAINS } from "@/lib/constants";
 import { actionClient, authenticatedActionClient } from "@/lib/utils/action-client";
 import { checkAuthorizationUpdated } from "@/lib/utils/action-client/action-client-middleware";

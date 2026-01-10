@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { TOrganizationRole } from "@formbricks/types/memberships";
+import { TOrganizationRole } from "@hivecfm/types/memberships";
 import { getMembershipByUserIdOrganizationIdAction } from "./actions";
 
 export const useMembershipRole = (environmentId: string, userId: string) => {

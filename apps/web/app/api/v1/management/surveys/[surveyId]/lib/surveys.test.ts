@@ -1,15 +1,15 @@
 import { Prisma } from "@prisma/client";
 import { afterEach, beforeEach, describe, expect, test, vi } from "vitest";
-import { prisma } from "@formbricks/database";
-import { logger } from "@formbricks/logger";
-import { DatabaseError } from "@formbricks/types/errors";
+import { prisma } from "@hivecfm/database";
+import { logger } from "@hivecfm/logger";
+import { DatabaseError } from "@hivecfm/types/errors";
 import { validateInputs } from "@/lib/utils/validate";
 import { deleteSurvey } from "./surveys";
 
 vi.mock("@/lib/utils/validate", () => ({
   validateInputs: vi.fn(),
 }));
-vi.mock("@formbricks/database", () => ({
+vi.mock("@hivecfm/database", () => ({
   prisma: {
     survey: {
       delete: vi.fn(),
@@ -19,7 +19,7 @@ vi.mock("@formbricks/database", () => ({
     },
   },
 }));
-vi.mock("@formbricks/logger", () => ({
+vi.mock("@hivecfm/logger", () => ({
   logger: {
     error: vi.fn(),
   },

@@ -1,7 +1,7 @@
 import { beforeEach, describe, expect, test, vi } from "vitest";
-import { type TProject } from "@formbricks/types/project";
-import type { TSurveyElement } from "@formbricks/types/surveys/elements";
-import type { TTemplate } from "@formbricks/types/templates";
+import { type TProject } from "@hivecfm/types/project";
+import type { TSurveyElement } from "@hivecfm/types/surveys/elements";
+import type { TTemplate } from "@hivecfm/types/templates";
 import * as i18nUtils from "@/lib/i18n/utils";
 import { structuredClone } from "@/lib/pollyfills/structuredClone";
 import { replaceElementPresetPlaceholders, replacePresetPlaceholders } from "./templates";

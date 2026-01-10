@@ -1,9 +1,9 @@
-import { TJsEnvironmentStateSurvey } from "@formbricks/types/js";
-import { TResponseData, TResponseVariables } from "@formbricks/types/responses";
-import { TActionCalculate, TSurveyBlockLogicAction } from "@formbricks/types/surveys/blocks";
-import { TSurveyElement, TSurveyElementTypeEnum } from "@formbricks/types/surveys/elements";
-import { TConditionGroup, TSingleCondition } from "@formbricks/types/surveys/logic";
-import { TSurveyVariable } from "@formbricks/types/surveys/types";
+import { TJsEnvironmentStateSurvey } from "@hivecfm/types/js";
+import { TResponseData, TResponseVariables } from "@hivecfm/types/responses";
+import { TActionCalculate, TSurveyBlockLogicAction } from "@hivecfm/types/surveys/blocks";
+import { TSurveyElement, TSurveyElementTypeEnum } from "@hivecfm/types/surveys/elements";
+import { TConditionGroup, TSingleCondition } from "@hivecfm/types/surveys/logic";
+import { TSurveyVariable } from "@hivecfm/types/surveys/types";
 import { getLocalizedValue } from "@/lib/i18n";
 import { getElementsFromSurveyBlocks } from "./utils";
 

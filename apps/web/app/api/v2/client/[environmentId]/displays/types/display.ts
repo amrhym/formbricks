@@ -1,6 +1,6 @@
 import { z } from "zod";
-import { ZId } from "@formbricks/types/common";
-import { ZDisplayCreateInput } from "@formbricks/types/displays";
+import { ZId } from "@hivecfm/types/common";
+import { ZDisplayCreateInput } from "@hivecfm/types/displays";
 
 export const ZDisplayCreateInputV2 = ZDisplayCreateInput.omit({ userId: true }).extend({
   contactId: ZId.optional(),

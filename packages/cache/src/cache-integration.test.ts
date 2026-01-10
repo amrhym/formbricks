@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/restrict-template-expressions, @typescript-eslint/no-non-null-assertion, @typescript-eslint/require-await -- Test file needs template expressions for test output */
 import { afterAll, beforeAll, describe, expect, test } from "vitest";
-import { logger } from "@formbricks/logger";
+import { logger } from "@hivecfm/logger";
 import { createCacheKey } from "./cache-keys";
 import { getCacheService } from "./client";
 import type { CacheService } from "./service";

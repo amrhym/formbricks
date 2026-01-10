@@ -1,8 +1,8 @@
 import { Prisma } from "@prisma/client";
 import { beforeEach, describe, expect, test, vi } from "vitest";
-import { prisma } from "@formbricks/database";
-import { PrismaErrorType } from "@formbricks/database/types/error";
-import { InvalidInputError, ResourceNotFoundError } from "@formbricks/types/errors";
+import { prisma } from "@hivecfm/database";
+import { PrismaErrorType } from "@hivecfm/database/types/error";
+import { InvalidInputError, ResourceNotFoundError } from "@hivecfm/types/errors";
 import { mockUser } from "./mock-data";
 import { createUser, getUser, getUserByEmail, updateUser, updateUserLastLoginAt } from "./user";
 
@@ -15,7 +15,7 @@ const mockPrismaUser = {
   groupId: "groupId",
 };
 
-vi.mock("@formbricks/database", () => ({
+vi.mock("@hivecfm/database", () => ({
   prisma: {
     user: {
       create: vi.fn(),

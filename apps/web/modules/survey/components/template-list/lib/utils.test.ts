@@ -1,8 +1,8 @@
 import "@testing-library/jest-dom/vitest";
 import { describe, expect, test, vi } from "vitest";
-import { TProject } from "@formbricks/types/project";
-import type { TSurveyElement } from "@formbricks/types/surveys/elements";
-import { TTemplate } from "@formbricks/types/templates";
+import { TProject } from "@hivecfm/types/project";
+import type { TSurveyElement } from "@hivecfm/types/surveys/elements";
+import { TTemplate } from "@hivecfm/types/templates";
 import { structuredClone } from "@/lib/pollyfills/structuredClone";
 import { replacePresetPlaceholders } from "@/lib/utils/templates";
 import { getChannelMapping, getIndustryMapping, getRoleMapping } from "./utils";

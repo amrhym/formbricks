@@ -1,12 +1,12 @@
 import { Prisma } from "@prisma/client";
 import { beforeEach, describe, expect, test, vi } from "vitest";
-import { prisma } from "@formbricks/database";
-import { PrismaErrorType } from "@formbricks/database/types/error";
-import { DatabaseError } from "@formbricks/types/errors";
+import { prisma } from "@hivecfm/database";
+import { PrismaErrorType } from "@hivecfm/database/types/error";
+import { DatabaseError } from "@hivecfm/types/errors";
 import { deleteResponsesAndDisplaysForSurvey, getQuotasSummary } from "./survey";
 
 // Mock prisma
-vi.mock("@formbricks/database", () => ({
+vi.mock("@hivecfm/database", () => ({
   prisma: {
     response: {
       deleteMany: vi.fn(),
@@ -31,7 +31,7 @@ beforeEach(() => {
 describe("Tests for deleteResponsesAndDisplaysForSurvey service", () => {
   describe("Happy Path", () => {
     test("Deletes all responses and displays for a survey", async () => {
-      const { prisma } = await import("@formbricks/database");
+      const { prisma } = await import("@hivecfm/database");
 
       // Mock $transaction to return the results directly
       vi.mocked(prisma.$transaction).mockResolvedValue([{ count: 5 }, { count: 3 }]);
@@ -46,7 +46,7 @@ describe("Tests for deleteResponsesAndDisplaysForSurvey service", () => {
     });
 
     test("Handles case with no responses or displays to delete", async () => {
-      const { prisma } = await import("@formbricks/database");
+      const { prisma } = await import("@hivecfm/database");
 
       // Mock $transaction to return zero counts
       vi.mocked(prisma.$transaction).mockResolvedValue([{ count: 0 }, { count: 0 }]);
@@ -62,7 +62,7 @@ describe("Tests for deleteResponsesAndDisplaysForSurvey service", () => {
 
   describe("Sad Path", () => {
     test("Throws DatabaseError on PrismaClientKnownRequestError occurrence", async () => {
-      const { prisma } = await import("@formbricks/database");
+      const { prisma } = await import("@hivecfm/database");
 
       const mockErrorMessage = "Mock error message";
       const errToThrow = new Prisma.PrismaClientKnownRequestError(mockErrorMessage, {
@@ -76,7 +76,7 @@ describe("Tests for deleteResponsesAndDisplaysForSurvey service", () => {
     });
 
     test("Throws a generic Error for other exceptions", async () => {
-      const { prisma } = await import("@formbricks/database");
+      const { prisma } = await import("@hivecfm/database");
 
       const mockErrorMessage = "Mock error message";
       vi.mocked(prisma.$transaction).mockRejectedValue(new Error(mockErrorMessage));
@@ -136,7 +136,7 @@ describe("Tests for getQuotasSummary service", () => {
   });
 
   test("Throws DatabaseError on PrismaClientKnownRequestError occurrence", async () => {
-    const { prisma } = await import("@formbricks/database");
+    const { prisma } = await import("@hivecfm/database");
 
     vi.mocked(prisma.surveyQuota.findMany).mockRejectedValue(
       new Prisma.PrismaClientKnownRequestError("Database error", {
@@ -149,7 +149,7 @@ describe("Tests for getQuotasSummary service", () => {
   });
 
   test("Throws a generic Error for other exceptions", async () => {
-    const { prisma } = await import("@formbricks/database");
+    const { prisma } = await import("@hivecfm/database");
 
     vi.mocked(prisma.surveyQuota.findMany).mockRejectedValue(new Error("Database error"));
 

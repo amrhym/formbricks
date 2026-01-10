@@ -1,15 +1,15 @@
 import "server-only";
-import { Result, err, ok } from "@formbricks/types/error-handlers";
-import { InvalidInputError } from "@formbricks/types/errors";
-import { TJsEnvironmentStateSurvey } from "@formbricks/types/js";
-import { TSegment } from "@formbricks/types/segment";
-import { TSurveyBlock } from "@formbricks/types/surveys/blocks";
+import { Result, err, ok } from "@hivecfm/types/error-handlers";
+import { InvalidInputError } from "@hivecfm/types/errors";
+import { TJsEnvironmentStateSurvey } from "@hivecfm/types/js";
+import { TSegment } from "@hivecfm/types/segment";
+import { TSurveyBlock } from "@hivecfm/types/surveys/blocks";
 import {
   TSurveyElement,
   TSurveyElementTypeEnum,
   TSurveyPictureChoice,
-} from "@formbricks/types/surveys/elements";
-import { TSurvey, TSurveyQuestion, TSurveyQuestionTypeEnum } from "@formbricks/types/surveys/types";
+} from "@hivecfm/types/surveys/elements";
+import { TSurvey, TSurveyQuestion, TSurveyQuestionTypeEnum } from "@hivecfm/types/surveys/types";
 import { isValidVideoUrl } from "@/lib/utils/video-upload";
 import { isValidImageFile } from "@/modules/storage/utils";
 

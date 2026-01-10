@@ -5,10 +5,10 @@ import { Project } from "@prisma/client";
 import { ArrowDownIcon, ArrowRightIcon, ArrowUpIcon, CopyIcon, EllipsisIcon, TrashIcon } from "lucide-react";
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
-import { TI18nString } from "@formbricks/types/i18n";
-import { TSurveyBlockLogic } from "@formbricks/types/surveys/blocks";
-import { TSurveyElement, TSurveyElementTypeEnum } from "@formbricks/types/surveys/elements";
-import { TSurvey, TSurveyEndScreenCard, TSurveyRedirectUrlCard } from "@formbricks/types/surveys/types";
+import { TI18nString } from "@hivecfm/types/i18n";
+import { TSurveyBlockLogic } from "@hivecfm/types/surveys/blocks";
+import { TSurveyElement, TSurveyElementTypeEnum } from "@hivecfm/types/surveys/elements";
+import { TSurvey, TSurveyEndScreenCard, TSurveyRedirectUrlCard } from "@hivecfm/types/surveys/types";
 import { getElementsFromBlocks } from "@/modules/survey/lib/client-utils";
 import {
   getCXElementNameMap,

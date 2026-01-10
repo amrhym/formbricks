@@ -1,12 +1,12 @@
 import { Invite, Prisma } from "@prisma/client";
 import { afterEach, beforeEach, describe, expect, test, vi } from "vitest";
-import { prisma } from "@formbricks/database";
-import { DatabaseError, InvalidInputError } from "@formbricks/types/errors";
+import { prisma } from "@hivecfm/database";
+import { DatabaseError, InvalidInputError } from "@hivecfm/types/errors";
 import { getMembershipByUserIdOrganizationId } from "@/lib/membership/service";
 import { TInvitee } from "@/modules/setup/organization/[organizationId]/invite/types/invites";
 import { inviteUser } from "./invite";
 
-vi.mock("@formbricks/database", () => ({
+vi.mock("@hivecfm/database", () => ({
   prisma: {
     invite: {
       findFirst: vi.fn(),

@@ -1,5 +1,5 @@
-import { type TResponseData, type TResponseVariables } from "@formbricks/types/responses";
-import { TSurveyElement, TSurveyElementTypeEnum } from "@formbricks/types/surveys/elements";
+import { type TResponseData, type TResponseVariables } from "@hivecfm/types/responses";
+import { TSurveyElement, TSurveyElementTypeEnum } from "@hivecfm/types/surveys/elements";
 import { formatDateWithOrdinal, isValidDateString } from "@/lib/date-time";
 import { getLocalizedValue } from "@/lib/i18n";
 

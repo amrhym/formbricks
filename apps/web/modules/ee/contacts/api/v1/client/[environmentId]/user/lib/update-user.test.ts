@@ -1,6 +1,6 @@
 import { afterEach, beforeEach, describe, expect, test, vi } from "vitest";
-import { prisma } from "@formbricks/database";
-import { ResourceNotFoundError } from "@formbricks/types/errors";
+import { prisma } from "@hivecfm/database";
+import { ResourceNotFoundError } from "@hivecfm/types/errors";
 import { updateAttributes } from "@/modules/ee/contacts/lib/attributes";
 import { getPersonSegmentIds } from "./segments";
 import { updateUser } from "./update-user";
@@ -16,7 +16,7 @@ vi.mock("@/modules/ee/contacts/lib/attributes", () => ({
   updateAttributes: vi.fn(),
 }));
 
-vi.mock("@formbricks/database", () => ({
+vi.mock("@hivecfm/database", () => ({
   prisma: {
     environment: {
       findUnique: vi.fn(),
@@ -151,7 +151,7 @@ describe("updateUser", () => {
 
   test("should return messages from updateAttributes if any", async () => {
     vi.mocked(prisma.contact.findFirst).mockResolvedValue(mockContactData as any);
-    const newAttributes = { company: "Formbricks" };
+    const newAttributes = { company: "HiveCFM" };
     const updateMessages = ["Attribute 'company' created."];
     vi.mocked(updateAttributes).mockResolvedValue({ success: true, messages: updateMessages });
 

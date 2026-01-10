@@ -1,6 +1,6 @@
 import { cleanup } from "@testing-library/react";
 import { afterEach, describe, expect, test } from "vitest";
-import { TActionClassPageUrlRule } from "@formbricks/types/action-classes";
+import { TActionClassPageUrlRule } from "@hivecfm/types/action-classes";
 import { isStringUrl, isValidCallbackUrl, testURLmatch } from "./url";
 
 afterEach(() => {

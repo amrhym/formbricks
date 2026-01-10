@@ -1,11 +1,11 @@
 import "server-only";
 import { Prisma } from "@prisma/client";
 import { cache as reactCache } from "react";
-import { prisma } from "@formbricks/database";
-import { logger } from "@formbricks/logger";
-import { ZId, ZOptionalNumber, ZString } from "@formbricks/types/common";
-import { DatabaseError, ValidationError } from "@formbricks/types/errors";
-import type { TProject } from "@formbricks/types/project";
+import { prisma } from "@hivecfm/database";
+import { logger } from "@hivecfm/logger";
+import { ZId, ZOptionalNumber, ZString } from "@hivecfm/types/common";
+import { DatabaseError, ValidationError } from "@hivecfm/types/errors";
+import type { TProject } from "@hivecfm/types/project";
 import { ITEMS_PER_PAGE } from "../constants";
 import { validateInputs } from "../utils/validate";
 

@@ -1,5 +1,5 @@
-import { logger } from "@formbricks/logger";
-import { TSurvey } from "@formbricks/types/surveys/types";
+import { logger } from "@hivecfm/logger";
+import { TSurvey } from "@hivecfm/types/surveys/types";
 import { getOrganizationBillingByEnvironmentId } from "@/app/api/v2/client/[environmentId]/responses/lib/organization";
 import { verifyRecaptchaToken } from "@/app/api/v2/client/[environmentId]/responses/lib/recaptcha";
 import { TResponseInputV2 } from "@/app/api/v2/client/[environmentId]/responses/types/response";

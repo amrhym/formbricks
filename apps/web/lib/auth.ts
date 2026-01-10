@@ -1,6 +1,6 @@
 import { compare, hash } from "bcryptjs";
-import { prisma } from "@formbricks/database";
-import { AuthenticationError } from "@formbricks/types/errors";
+import { prisma } from "@hivecfm/database";
+import { AuthenticationError } from "@hivecfm/types/errors";
 
 export const hashPassword = async (password: string) => {
   const hashedPassword = await hash(password, 12);

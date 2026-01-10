@@ -4,13 +4,13 @@ import { ErrorCode } from "@/types/error";
 import { validateInputs } from "./validation";
 
 // Mock logger
-vi.mock("@formbricks/logger", () => ({
+vi.mock("@hivecfm/logger", () => ({
   logger: {
     error: vi.fn(),
   },
 }));
 
-describe("@formbricks/cache validation utils", () => {
+describe("@hivecfm/cache validation utils", () => {
   describe("validateInputs", () => {
     const stringSchema = z.string().min(1);
     const numberSchema = z.number().positive();

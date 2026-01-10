@@ -1,8 +1,8 @@
 import * as Sentry from "@sentry/nextjs";
 import { NextRequest } from "next/server";
 import { Mock, beforeEach, describe, expect, test, vi } from "vitest";
-import { logger } from "@formbricks/logger";
-import { TAuthenticationApiKey } from "@formbricks/types/auth";
+import { logger } from "@hivecfm/logger";
+import { TAuthenticationApiKey } from "@hivecfm/types/auth";
 import { AuthenticationMethod } from "@/app/middleware/endpoint-validator";
 import { responses } from "./response";
 
@@ -33,7 +33,7 @@ const mockSentryScope = {
   setLevel: vi.fn(),
 };
 
-vi.mock("@formbricks/logger", () => {
+vi.mock("@hivecfm/logger", () => {
   const mockWithContextInstance = vi.fn(() => ({
     error: mockContextualLoggerError,
     warn: mockContextualLoggerWarn,

@@ -1,7 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import { SurveyContainerProps } from "@formbricks/types/formbricks-surveys";
+import { SurveyContainerProps } from "@hivecfm/types/formbricks-surveys";
 import { executeRecaptcha, loadRecaptchaScript } from "@/modules/ui/components/survey/recaptcha";
 
 const createContainerId = () => `formbricks-survey-container`;

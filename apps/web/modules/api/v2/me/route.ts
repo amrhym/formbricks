@@ -1,5 +1,5 @@
 import { NextRequest } from "next/server";
-import { OrganizationAccessType } from "@formbricks/types/api-key";
+import { OrganizationAccessType } from "@hivecfm/types/api-key";
 import { authenticatedApiClient } from "@/modules/api/v2/auth/authenticated-api-client";
 import { responses } from "@/modules/api/v2/lib/response";
 import { handleApiError } from "@/modules/api/v2/lib/utils";

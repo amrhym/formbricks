@@ -1,5 +1,5 @@
-import { TOrganization } from "@formbricks/types/organizations";
-import { TSurveyCreateInputWithEnvironmentId } from "@formbricks/types/surveys/types";
+import { TOrganization } from "@hivecfm/types/organizations";
+import { TSurveyCreateInputWithEnvironmentId } from "@hivecfm/types/surveys/types";
 import { responses } from "@/app/lib/api/response";
 import { getIsSpamProtectionEnabled, getMultiLanguagePermission } from "@/modules/ee/license-check/lib/utils";
 import { getSurveyFollowUpsPermission } from "@/modules/survey/follow-ups/lib/utils";

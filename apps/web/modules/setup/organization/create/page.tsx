@@ -1,7 +1,7 @@
 import { Metadata } from "next";
 import { getServerSession } from "next-auth";
 import { notFound } from "next/navigation";
-import { AuthenticationError } from "@formbricks/types/errors";
+import { AuthenticationError } from "@hivecfm/types/errors";
 import { IS_FORMBRICKS_CLOUD } from "@/lib/constants";
 import { gethasNoOrganizations } from "@/lib/instance/service";
 import { getOrganizationsByUserId } from "@/lib/organization/service";

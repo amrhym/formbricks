@@ -1,6 +1,6 @@
-import { TResponseData } from "@formbricks/types/responses";
-import { TSurveyElement, TSurveyElementTypeEnum } from "@formbricks/types/surveys/elements";
-import { TSurveyQuestionChoice } from "@formbricks/types/surveys/types";
+import { TResponseData } from "@hivecfm/types/responses";
+import { TSurveyElement, TSurveyElementTypeEnum } from "@hivecfm/types/surveys/elements";
+import { TSurveyQuestionChoice } from "@hivecfm/types/surveys/types";
 import { MAX_OTHER_OPTION_LENGTH } from "@/lib/constants";
 import { getLocalizedValue } from "@/lib/i18n/utils";
 

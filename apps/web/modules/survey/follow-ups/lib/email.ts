@@ -1,13 +1,13 @@
 import sanitizeHtml from "sanitize-html";
-import { TSurveyFollowUp } from "@formbricks/database/types/survey-follow-up";
+import { TSurveyFollowUp } from "@hivecfm/database/types/survey-follow-up";
 import {
   ProcessedHiddenField,
   ProcessedResponseElement,
   ProcessedVariable,
   renderFollowUpEmail,
-} from "@formbricks/email";
-import { TResponse } from "@formbricks/types/responses";
-import { TSurvey } from "@formbricks/types/surveys/types";
+} from "@hivecfm/email";
+import { TResponse } from "@hivecfm/types/responses";
+import { TSurvey } from "@hivecfm/types/surveys/types";
 import { IMPRINT_ADDRESS, IMPRINT_URL, PRIVACY_URL, TERMS_URL } from "@/lib/constants";
 import { getElementResponseMapping } from "@/lib/responses";
 import { parseRecallInfo } from "@/lib/utils/recall";

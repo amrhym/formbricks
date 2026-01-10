@@ -3,7 +3,7 @@
 import { AlertTriangleIcon, CheckIcon, RotateCcwIcon } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useTranslation } from "react-i18next";
-import { TEnvironment } from "@formbricks/types/environment";
+import { TEnvironment } from "@hivecfm/types/environment";
 import { cn } from "@/lib/cn";
 import { Button } from "@/modules/ui/components/button";
 

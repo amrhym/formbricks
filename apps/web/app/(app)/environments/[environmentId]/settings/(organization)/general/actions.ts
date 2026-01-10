@@ -1,9 +1,9 @@
 "use server";
 
 import { z } from "zod";
-import { ZId } from "@formbricks/types/common";
-import { OperationNotAllowedError } from "@formbricks/types/errors";
-import { ZOrganizationUpdateInput } from "@formbricks/types/organizations";
+import { ZId } from "@hivecfm/types/common";
+import { OperationNotAllowedError } from "@hivecfm/types/errors";
+import { ZOrganizationUpdateInput } from "@hivecfm/types/organizations";
 import { deleteOrganization, getOrganization, updateOrganization } from "@/lib/organization/service";
 import { authenticatedActionClient } from "@/lib/utils/action-client";
 import { checkAuthorizationUpdated } from "@/lib/utils/action-client/action-client-middleware";

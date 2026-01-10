@@ -1,5 +1,5 @@
 import { h, render } from "preact";
-import { SurveyContainerProps } from "@formbricks/types/formbricks-surveys";
+import { SurveyContainerProps } from "@hivecfm/types/formbricks-surveys";
 import { RenderSurvey } from "@/components/general/render-survey";
 import { I18nProvider } from "@/components/i18n/provider";
 import { FILE_PICK_EVENT } from "@/lib/constants";
@@ -75,7 +75,7 @@ export const onFilePick = (files: { name: string; type: string; base64: string }
 
 // Initialize the global formbricksSurveys object if it doesn't exist
 if (globalThis.window !== undefined) {
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any -- Type definition is in @formbricks/types package
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any -- Type definition is in @hivecfm/types package
   (globalThis.window as any).formbricksSurveys = {
     renderSurveyInline,
     renderSurveyModal,

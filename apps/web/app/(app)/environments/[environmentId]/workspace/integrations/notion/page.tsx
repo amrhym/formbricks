@@ -1,5 +1,5 @@
 import { redirect } from "next/navigation";
-import { TIntegrationNotion, TIntegrationNotionDatabase } from "@formbricks/types/integration/notion";
+import { TIntegrationNotion, TIntegrationNotionDatabase } from "@hivecfm/types/integration/notion";
 import { getSurveys } from "@/app/(app)/environments/[environmentId]/workspace/integrations/lib/surveys";
 import { NotionWrapper } from "@/app/(app)/environments/[environmentId]/workspace/integrations/notion/components/NotionWrapper";
 import {

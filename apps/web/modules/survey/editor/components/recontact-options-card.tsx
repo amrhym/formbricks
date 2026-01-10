@@ -5,7 +5,7 @@ import * as Collapsible from "@radix-ui/react-collapsible";
 import { CheckIcon } from "lucide-react";
 import { useEffect, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
-import { TSurvey } from "@formbricks/types/surveys/types";
+import { TSurvey } from "@hivecfm/types/surveys/types";
 import { Input } from "@/modules/ui/components/input";
 import { Label } from "@/modules/ui/components/label";
 import { RadioGroup, RadioGroupItem } from "@/modules/ui/components/radio-group";
@@ -161,7 +161,7 @@ export const RecontactOptionsCard = ({ localSurvey, setLocalSurvey }: RecontactO
         className="h-full w-full cursor-pointer rounded-lg hover:bg-slate-50"
         id="recontactOptionsCardTrigger">
         <div className="inline-flex px-4 py-4">
-          <div className="flex items-center pl-2 pr-5">
+          <div className="flex items-center pr-5 pl-2">
             <CheckIcon
               strokeWidth={3}
               className="h-7 w-7 rounded-full border border-green-300 bg-green-100 p-1.5 text-green-600"
@@ -222,7 +222,7 @@ export const RecontactOptionsCard = ({ localSurvey, setLocalSurvey }: RecontactO
                           id="overwriteDays"
                           value={inputDays}
                           onChange={handleOverwriteDaysChange}
-                          className="ml-2 mr-2 inline w-20 bg-white text-center text-sm"
+                          className="mr-2 ml-2 inline w-20 bg-white text-center text-sm"
                         />
                         {t("environments.surveys.edit.days_before_showing_this_survey_again")}
                       </p>
@@ -292,7 +292,7 @@ export const RecontactOptionsCard = ({ localSurvey, setLocalSurvey }: RecontactO
                           id="displayLimit"
                           value={displayLimit.toString()}
                           onChange={(e) => handleDisplayLimitChange(e)}
-                          className="ml-2 mr-2 inline w-20 bg-white text-center text-sm"
+                          className="mr-2 ml-2 inline w-20 bg-white text-center text-sm"
                         />
                         {t("environments.surveys.edit.times")}.
                       </p>

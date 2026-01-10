@@ -8,8 +8,8 @@ import { useRouter } from "next/navigation";
 import { useState } from "react";
 import toast from "react-hot-toast";
 import { useTranslation } from "react-i18next";
-import { TSurveyQuota, TSurveyQuotaInput } from "@formbricks/types/quota";
-import { TSurvey } from "@formbricks/types/surveys/types";
+import { TSurveyQuota, TSurveyQuotaInput } from "@hivecfm/types/quota";
+import { TSurvey } from "@hivecfm/types/surveys/types";
 import { getFormattedErrorMessage } from "@/lib/utils/helper";
 import {
   createQuotaAction,
@@ -151,7 +151,7 @@ export const QuotasCard = ({
           className="h-full w-full cursor-pointer rounded-lg hover:bg-slate-50"
           id="quotasCardTrigger">
           <div className="inline-flex px-4 py-4">
-            <div className="flex items-center pl-2 pr-5">
+            <div className="flex items-center pr-5 pl-2">
               <CheckIcon
                 strokeWidth={3}
                 className="h-7 w-7 rounded-full border border-green-300 bg-green-100 p-1.5 text-green-600"
@@ -167,7 +167,7 @@ export const QuotasCard = ({
 
         <Collapsible.Content className="flex flex-col" ref={parent}>
           <hr className="py-1 text-slate-600" />
-          <div className="px-3 pb-3 pt-1">
+          <div className="px-3 pt-1 pb-3">
             {!isQuotasAllowed ? (
               <UpgradePrompt
                 title={t("environments.surveys.edit.quotas.upgrade_prompt_title")}
@@ -177,15 +177,11 @@ export const QuotasCard = ({
                     text: isFormbricksCloud
                       ? t("common.start_free_trial")
                       : t("common.request_trial_license"),
-                    href: isFormbricksCloud
-                      ? `/environments/${environmentId}/settings/billing`
-                      : "https://formbricks.com/upgrade-self-hosting-license",
+                    href: isFormbricksCloud ? `/environments/${environmentId}/settings/billing` : "#",
                   },
                   {
                     text: t("common.learn_more"),
-                    href: isFormbricksCloud
-                      ? `/environments/${environmentId}/settings/billing`
-                      : "https://formbricks.com/learn-more-self-hosting-license",
+                    href: isFormbricksCloud ? `/environments/${environmentId}/settings/billing` : "#",
                   },
                 ]}
               />

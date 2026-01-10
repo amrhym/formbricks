@@ -10,7 +10,7 @@ vi.mock("redis", () => ({
 }));
 
 // Mock the logger
-vi.mock("@formbricks/logger", () => ({
+vi.mock("@hivecfm/logger", () => ({
   logger: {
     info: vi.fn(),
     error: vi.fn(),
@@ -48,7 +48,7 @@ interface MockRedisClient {
 // Get typed mocks
 const mockCreateClient = vi.mocked(createClient);
 
-describe("@formbricks/cache factory", () => {
+describe("@hivecfm/cache factory", () => {
   beforeEach(() => {
     vi.clearAllMocks();
     delete process.env.REDIS_URL;

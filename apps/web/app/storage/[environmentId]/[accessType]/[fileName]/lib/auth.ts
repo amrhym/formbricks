@@ -1,6 +1,6 @@
 import { getServerSession } from "next-auth";
 import { NextRequest } from "next/server";
-import { Result, err, ok } from "@formbricks/types/error-handlers";
+import { Result, err, ok } from "@hivecfm/types/error-handlers";
 import { authenticateRequest } from "@/app/api/v1/auth";
 import { hasUserEnvironmentAccess } from "@/lib/environment/auth";
 import { authOptions } from "@/modules/auth/lib/authOptions";

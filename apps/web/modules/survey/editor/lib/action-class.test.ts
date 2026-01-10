@@ -1,12 +1,12 @@
 import { ActionClass } from "@prisma/client";
 import { beforeEach, describe, expect, test, vi } from "vitest";
-import { prisma } from "@formbricks/database";
-import { PrismaErrorType } from "@formbricks/database/types/error";
-import { TActionClassInput } from "@formbricks/types/action-classes";
-import { DatabaseError } from "@formbricks/types/errors";
+import { prisma } from "@hivecfm/database";
+import { PrismaErrorType } from "@hivecfm/database/types/error";
+import { TActionClassInput } from "@hivecfm/types/action-classes";
+import { DatabaseError } from "@hivecfm/types/errors";
 import { createActionClass } from "./action-class";
 
-vi.mock("@formbricks/database", () => ({
+vi.mock("@hivecfm/database", () => ({
   prisma: {
     actionClass: {
       create: vi.fn(),

@@ -6,7 +6,7 @@ import { useRouter } from "next/navigation";
 import { useEffect, useMemo, useRef, useState } from "react";
 import toast from "react-hot-toast";
 import { useTranslation } from "react-i18next";
-import { TContactAttributeKey } from "@formbricks/types/contact-attribute-key";
+import { TContactAttributeKey } from "@hivecfm/types/contact-attribute-key";
 import { cn } from "@/lib/cn";
 import { isStringMatch } from "@/lib/utils/helper";
 import { createContactsFromCSVAction } from "@/modules/ee/contacts/actions";
@@ -333,7 +333,7 @@ export const UploadContactsCSVButton = ({
                         )}
                         onDragOver={(e) => handleDragOver(e)}
                         onDrop={(e) => handleDrop(e)}>
-                        <div className="flex flex-col items-center justify-center pb-6 pt-5">
+                        <div className="flex flex-col items-center justify-center pt-5 pb-6">
                           <ArrowUpFromLineIcon className="h-6 text-slate-500" />
                           <p className={cn("mt-2 text-center text-sm text-slate-500")}>
                             <span className="font-semibold">{t("common.upload_input_description")}</span>

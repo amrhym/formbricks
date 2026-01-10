@@ -1,10 +1,10 @@
 import { Prisma } from "@prisma/client";
 import "@testing-library/jest-dom/vitest";
 import { beforeEach, describe, expect, test, vi } from "vitest";
-import { createCacheKey } from "@formbricks/cache";
-import { prisma } from "@formbricks/database";
-import { DatabaseError, ResourceNotFoundError } from "@formbricks/types/errors";
-import { TSurvey } from "@formbricks/types/surveys/types";
+import { createCacheKey } from "@hivecfm/cache";
+import { prisma } from "@hivecfm/database";
+import { DatabaseError, ResourceNotFoundError } from "@hivecfm/types/errors";
+import { TSurvey } from "@hivecfm/types/surveys/types";
 import { cache } from "@/lib/cache";
 import { transformPrismaSurvey } from "@/modules/survey/lib/utils";
 import {
@@ -17,7 +17,7 @@ import {
 } from "./data";
 
 // Mock dependencies
-vi.mock("@formbricks/cache", () => ({
+vi.mock("@hivecfm/cache", () => ({
   createCacheKey: {
     organization: {
       billing: vi.fn(),
@@ -39,7 +39,7 @@ vi.mock("@/modules/survey/lib/utils", () => ({
   transformPrismaSurvey: vi.fn(),
 }));
 
-vi.mock("@formbricks/database", () => ({
+vi.mock("@hivecfm/database", () => ({
   prisma: {
     survey: {
       findUnique: vi.fn(),

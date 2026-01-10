@@ -24,15 +24,11 @@ export const BrandingSettingsCard = async ({
   const buttons: [ModalButton, ModalButton] = [
     {
       text: IS_FORMBRICKS_CLOUD ? t("common.start_free_trial") : t("common.request_trial_license"),
-      href: IS_FORMBRICKS_CLOUD
-        ? `/environments/${environmentId}/settings/billing`
-        : "https://formbricks.com/upgrade-self-hosting-license",
+      href: IS_FORMBRICKS_CLOUD ? `/environments/${environmentId}/settings/billing` : "#",
     },
     {
       text: t("common.learn_more"),
-      href: IS_FORMBRICKS_CLOUD
-        ? `/environments/${environmentId}/settings/billing`
-        : "https://formbricks.com/learn-more-self-hosting-license",
+      href: IS_FORMBRICKS_CLOUD ? `/environments/${environmentId}/settings/billing` : "#",
     },
   ];
 

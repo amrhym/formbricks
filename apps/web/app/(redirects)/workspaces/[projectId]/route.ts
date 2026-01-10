@@ -1,6 +1,6 @@
 import { getServerSession } from "next-auth";
 import { notFound, redirect } from "next/navigation";
-import { AuthenticationError, AuthorizationError } from "@formbricks/types/errors";
+import { AuthenticationError, AuthorizationError } from "@hivecfm/types/errors";
 import { hasOrganizationAccess } from "@/lib/auth";
 import { getEnvironments } from "@/lib/environment/service";
 import { getProject } from "@/lib/project/service";

@@ -15,8 +15,8 @@ import {
 } from "lucide-react";
 import { useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
-import { TSurveyElement, TSurveyElementId, TSurveyElementTypeEnum } from "@formbricks/types/surveys/elements";
-import { TSurvey, TSurveyHiddenFields, TSurveyRecallItem } from "@formbricks/types/surveys/types";
+import { TSurveyElement, TSurveyElementId, TSurveyElementTypeEnum } from "@hivecfm/types/surveys/elements";
+import { TSurvey, TSurveyHiddenFields, TSurveyRecallItem } from "@hivecfm/types/surveys/types";
 import { getTextContentWithRecallTruncated } from "@/lib/utils/recall";
 import { getElementsFromBlocks } from "@/modules/survey/lib/client-utils";
 import {
@@ -183,7 +183,7 @@ export const RecallItemSelect = ({
             }
           }}
         />
-        <div className="max-h-72 overflow-y-auto overflow-x-hidden">
+        <div className="max-h-72 overflow-x-hidden overflow-y-auto">
           {filteredRecallItems.map((recallItem, index) => {
             const IconComponent = getRecallItemIcon(recallItem);
             return (
@@ -207,7 +207,7 @@ export const RecallItemSelect = ({
                   }
                 }}>
                 <div>{IconComponent && <IconComponent className="mr-2 w-4" />}</div>
-                <p className="max-w-full overflow-hidden text-ellipsis whitespace-nowrap text-sm">
+                <p className="max-w-full overflow-hidden text-sm text-ellipsis whitespace-nowrap">
                   {getTextContentWithRecallTruncated(recallItem.label)}
                 </p>
               </DropdownMenuItem>

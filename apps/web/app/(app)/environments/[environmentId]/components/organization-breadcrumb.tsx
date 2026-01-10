@@ -12,7 +12,7 @@ import {
 import { usePathname, useRouter } from "next/navigation";
 import { useEffect, useState, useTransition } from "react";
 import { useTranslation } from "react-i18next";
-import { logger } from "@formbricks/logger";
+import { logger } from "@hivecfm/logger";
 import { getOrganizationsForSwitcherAction } from "@/app/(app)/environments/[environmentId]/actions";
 import { getFormattedErrorMessage } from "@/lib/utils/helper";
 import { CreateOrganizationModal } from "@/modules/organization/components/CreateOrganizationModal";

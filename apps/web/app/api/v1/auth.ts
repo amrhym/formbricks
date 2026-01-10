@@ -1,6 +1,6 @@
 import { NextRequest } from "next/server";
-import { TAuthenticationApiKey } from "@formbricks/types/auth";
-import { DatabaseError, InvalidInputError, ResourceNotFoundError } from "@formbricks/types/errors";
+import { TAuthenticationApiKey } from "@hivecfm/types/auth";
+import { DatabaseError, InvalidInputError, ResourceNotFoundError } from "@hivecfm/types/errors";
 import { responses } from "@/app/lib/api/response";
 import { getApiKeyWithPermissions } from "@/modules/organization/settings/api-keys/lib/api-key";
 

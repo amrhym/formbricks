@@ -1,16 +1,16 @@
 import { Prisma } from "@prisma/client";
 import { cache as reactCache } from "react";
-import { prisma } from "@formbricks/database";
-import { logger } from "@formbricks/logger";
-import { ZId } from "@formbricks/types/common";
-import { DatabaseError, ResourceNotFoundError, ValidationError } from "@formbricks/types/errors";
+import { prisma } from "@hivecfm/database";
+import { logger } from "@hivecfm/logger";
+import { ZId } from "@hivecfm/types/common";
+import { DatabaseError, ResourceNotFoundError, ValidationError } from "@hivecfm/types/errors";
 import {
   TLanguage,
   TLanguageInput,
   TLanguageUpdate,
   ZLanguageInput,
   ZLanguageUpdate,
-} from "@formbricks/types/project";
+} from "@hivecfm/types/project";
 import { getProject } from "../project/service";
 import { validateInputs } from "../utils/validate";
 

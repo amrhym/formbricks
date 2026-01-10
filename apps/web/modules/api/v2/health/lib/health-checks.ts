@@ -1,7 +1,7 @@
-import { getCacheService } from "@formbricks/cache";
-import { prisma } from "@formbricks/database";
-import { logger } from "@formbricks/logger";
-import { Result, err, ok } from "@formbricks/types/error-handlers";
+import { getCacheService } from "@hivecfm/cache";
+import { prisma } from "@hivecfm/database";
+import { logger } from "@hivecfm/logger";
+import { Result, err, ok } from "@hivecfm/types/error-handlers";
 import { type OverallHealthStatus } from "@/modules/api/v2/health/types/health-status";
 import { type ApiErrorResponseV2 } from "@/modules/api/v2/types/api-error";
 

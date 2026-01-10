@@ -1,6 +1,6 @@
 import { z } from "zod";
-import { ZId } from "@formbricks/types/common";
-import { ZSurveyType } from "@formbricks/types/surveys/types";
+import { ZId } from "@hivecfm/types/common";
+import { ZSurveyType } from "@hivecfm/types/surveys/types";
 
 /**
  * Lenient schema for draft survey updates.

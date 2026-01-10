@@ -1,11 +1,11 @@
 import { Prisma, Webhook } from "@prisma/client";
 import { cleanup } from "@testing-library/react";
 import { afterEach, describe, expect, test, vi } from "vitest";
-import { prisma } from "@formbricks/database";
-import { DatabaseError, ResourceNotFoundError, ValidationError } from "@formbricks/types/errors";
+import { prisma } from "@hivecfm/database";
+import { DatabaseError, ResourceNotFoundError, ValidationError } from "@hivecfm/types/errors";
 import { deleteWebhook, getWebhook } from "./webhook";
 
-vi.mock("@formbricks/database", () => ({
+vi.mock("@hivecfm/database", () => ({
   prisma: {
     webhook: {
       delete: vi.fn(),

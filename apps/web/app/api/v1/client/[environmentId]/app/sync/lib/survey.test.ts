@@ -1,11 +1,11 @@
 import { Prisma } from "@prisma/client";
 import { afterEach, beforeEach, describe, expect, test, vi } from "vitest";
-import { prisma } from "@formbricks/database";
-import { logger } from "@formbricks/logger";
-import { DatabaseError } from "@formbricks/types/errors";
-import { TProject } from "@formbricks/types/project";
-import { TSegment } from "@formbricks/types/segment";
-import { TSurvey } from "@formbricks/types/surveys/types";
+import { prisma } from "@hivecfm/database";
+import { logger } from "@hivecfm/logger";
+import { DatabaseError } from "@hivecfm/types/errors";
+import { TProject } from "@hivecfm/types/project";
+import { TSegment } from "@hivecfm/types/segment";
+import { TSurvey } from "@hivecfm/types/surveys/types";
 import { getProjectByEnvironmentId } from "@/lib/project/service";
 import { getSurveys } from "@/lib/survey/service";
 import { anySurveyHasFilters } from "@/lib/survey/utils";
@@ -31,7 +31,7 @@ vi.mock("@/lib/utils/validate", () => ({
 vi.mock("@/modules/ee/contacts/segments/lib/segments", () => ({
   evaluateSegment: vi.fn(),
 }));
-vi.mock("@formbricks/database", () => ({
+vi.mock("@hivecfm/database", () => ({
   prisma: {
     display: {
       findMany: vi.fn(),
@@ -41,7 +41,7 @@ vi.mock("@formbricks/database", () => ({
     },
   },
 }));
-vi.mock("@formbricks/logger", () => ({
+vi.mock("@hivecfm/logger", () => ({
   logger: {
     error: vi.fn(),
   },

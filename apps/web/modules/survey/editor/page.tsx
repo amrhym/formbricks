@@ -128,7 +128,7 @@ export const SurveyEditorPage = async (props) => {
       isUnsplashConfigured={!!UNSPLASH_ACCESS_KEY}
       isCxMode={isCxMode}
       locale={locale ?? DEFAULT_LOCALE}
-      mailFrom={MAIL_FROM ?? "hola@formbricks.com"}
+      mailFrom={MAIL_FROM ?? "hola@hivecfm.com"}
       isSurveyFollowUpsAllowed={isSurveyFollowUpsAllowed}
       userEmail={userEmail}
       teamMemberDetails={teamMemberDetails}

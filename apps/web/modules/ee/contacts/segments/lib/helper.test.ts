@@ -1,6 +1,6 @@
 import { beforeEach, describe, expect, test, vi } from "vitest";
-import { InvalidInputError } from "@formbricks/types/errors";
-import { TBaseFilters, TSegment } from "@formbricks/types/segment";
+import { InvalidInputError } from "@hivecfm/types/errors";
+import { TBaseFilters, TSegment } from "@hivecfm/types/segment";
 import { checkForRecursiveSegmentFilter } from "@/modules/ee/contacts/segments/lib/helper";
 import { getSegment } from "@/modules/ee/contacts/segments/lib/segments";
 

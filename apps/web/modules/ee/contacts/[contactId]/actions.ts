@@ -1,8 +1,8 @@
 "use server";
 
 import { z } from "zod";
-import { ZId } from "@formbricks/types/common";
-import { InvalidInputError, ResourceNotFoundError } from "@formbricks/types/errors";
+import { ZId } from "@hivecfm/types/common";
+import { InvalidInputError, ResourceNotFoundError } from "@hivecfm/types/errors";
 import { authenticatedActionClient } from "@/lib/utils/action-client";
 import { checkAuthorizationUpdated } from "@/lib/utils/action-client/action-client-middleware";
 import { getOrganizationIdFromContactId, getProjectIdFromContactId } from "@/lib/utils/helper";

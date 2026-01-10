@@ -2,7 +2,7 @@
 
 import { FilterIcon, UsersIcon } from "lucide-react";
 import { useTranslation } from "react-i18next";
-import { TSegment } from "@formbricks/types/segment";
+import { TSegment } from "@hivecfm/types/segment";
 
 export const TargetingIndicator = ({ segment }: { segment: TSegment | null }) => {
   const { t } = useTranslation();

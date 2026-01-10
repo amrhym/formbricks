@@ -1,8 +1,8 @@
 import * as Sentry from "@sentry/nextjs";
 import { Session, getServerSession } from "next-auth";
 import { NextRequest } from "next/server";
-import { logger } from "@formbricks/logger";
-import { TAuthenticationApiKey } from "@formbricks/types/auth";
+import { logger } from "@hivecfm/logger";
+import { TAuthenticationApiKey } from "@hivecfm/types/auth";
 import { authenticateRequest } from "@/app/api/v1/auth";
 import { responses } from "@/app/lib/api/response";
 import {

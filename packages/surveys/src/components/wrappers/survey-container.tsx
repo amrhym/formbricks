@@ -1,5 +1,5 @@
 import { useEffect, useRef } from "preact/hooks";
-import { type TPlacement } from "@formbricks/types/common";
+import { type TPlacement } from "@hivecfm/types/common";
 import { cn } from "@/lib/utils";
 
 interface SurveyContainerProps {

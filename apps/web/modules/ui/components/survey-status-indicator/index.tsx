@@ -2,7 +2,7 @@
 
 import { CheckIcon, PauseIcon, PencilIcon } from "lucide-react";
 import { useTranslation } from "react-i18next";
-import { TSurvey } from "@formbricks/types/surveys/types";
+import { TSurvey } from "@hivecfm/types/surveys/types";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/modules/ui/components/tooltip";
 
 interface SurveyStatusIndicatorProps {

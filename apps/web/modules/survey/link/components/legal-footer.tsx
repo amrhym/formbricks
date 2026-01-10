@@ -36,7 +36,7 @@ export const LegalFooter = ({
         {PRIVACY_URL && IS_FORMBRICKS_CLOUD && <span className="px-2">|</span>}
         {IS_FORMBRICKS_CLOUD && (
           <Link
-            href={`https://app.formbricks.com/s/clxbivtla014iye2vfrn436xd?surveyUrl=${surveyUrl}`}
+            href={`#/s/clxbivtla014iye2vfrn436xd?surveyUrl=${surveyUrl}`}
             target="_blank"
             className="hover:underline"
             tabIndex={-1}>

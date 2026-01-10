@@ -1,5 +1,5 @@
 import { useCallback, useMemo } from "preact/hooks";
-import { type TJsEnvironmentStateSurvey } from "@formbricks/types/js";
+import { type TJsEnvironmentStateSurvey } from "@hivecfm/types/js";
 import { Progress } from "@/components/general/progress";
 
 interface ProgressBarProps {

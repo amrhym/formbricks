@@ -1,6 +1,6 @@
 import { createId } from "@paralleldrive/cuid2";
 import type { TFunction } from "i18next";
-import type { TSurveyBlock } from "@formbricks/types/surveys/blocks";
+import type { TSurveyBlock } from "@hivecfm/types/surveys/blocks";
 import type {
   TSurveyEndScreenCard,
   TSurveyEnding,
@@ -8,8 +8,8 @@ import type {
   TSurveyLanguage,
   TSurveyLogic,
   TSurveyWelcomeCard,
-} from "@formbricks/types/surveys/types";
-import type { TTemplate, TTemplateRole } from "@formbricks/types/templates";
+} from "@hivecfm/types/surveys/types";
+import type { TTemplate, TTemplateRole } from "@hivecfm/types/templates";
 import { createI18nString, extractLanguageCodes } from "@/lib/i18n/utils";
 
 // Helper function to create standard jump logic based on operator

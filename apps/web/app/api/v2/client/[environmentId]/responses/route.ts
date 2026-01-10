@@ -1,9 +1,9 @@
 import { headers } from "next/headers";
 import { UAParser } from "ua-parser-js";
-import { logger } from "@formbricks/logger";
-import { ZEnvironmentId } from "@formbricks/types/environment";
-import { InvalidInputError } from "@formbricks/types/errors";
-import { TResponseWithQuotaFull } from "@formbricks/types/quota";
+import { logger } from "@hivecfm/logger";
+import { ZEnvironmentId } from "@hivecfm/types/environment";
+import { InvalidInputError } from "@hivecfm/types/errors";
+import { TResponseWithQuotaFull } from "@hivecfm/types/quota";
 import { checkSurveyValidity } from "@/app/api/v2/client/[environmentId]/responses/lib/utils";
 import { responses } from "@/app/lib/api/response";
 import { transformErrorToDetails } from "@/app/lib/api/validator";

@@ -1,5 +1,5 @@
 import { afterEach, beforeEach, describe, expect, test, vi } from "vitest";
-import type { CacheKey } from "@formbricks/cache";
+import type { CacheKey } from "@hivecfm/cache";
 
 // Create mocks
 const mockCacheService = {
@@ -20,11 +20,11 @@ const mockLogger = {
 };
 
 // Mock all dependencies before importing the module under test
-vi.mock("@formbricks/cache", () => ({
+vi.mock("@hivecfm/cache", () => ({
   getCacheService: mockGetCacheService,
 }));
 
-vi.mock("@formbricks/logger", () => ({
+vi.mock("@hivecfm/logger", () => ({
   logger: mockLogger,
 }));
 

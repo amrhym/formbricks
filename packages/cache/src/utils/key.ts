@@ -1,4 +1,4 @@
-import { logger } from "@formbricks/logger";
+import { logger } from "@hivecfm/logger";
 import type { CacheKey } from "@/types/keys";
 
 /**

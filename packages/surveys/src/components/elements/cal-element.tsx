@@ -1,7 +1,7 @@
 import { useCallback, useState } from "preact/hooks";
 import { useTranslation } from "react-i18next";
-import { type TResponseData, type TResponseTtc } from "@formbricks/types/responses";
-import type { TSurveyCalElement } from "@formbricks/types/surveys/elements";
+import { type TResponseData, type TResponseTtc } from "@hivecfm/types/responses";
+import type { TSurveyCalElement } from "@hivecfm/types/surveys/elements";
 import { CalEmbed } from "@/components/general/cal-embed";
 import { ElementMedia } from "@/components/general/element-media";
 import { Headline } from "@/components/general/headline";

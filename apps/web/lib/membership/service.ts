@@ -1,11 +1,11 @@
 import "server-only";
 import { Prisma } from "@prisma/client";
 import { cache as reactCache } from "react";
-import { prisma } from "@formbricks/database";
-import { logger } from "@formbricks/logger";
-import { ZString } from "@formbricks/types/common";
-import { DatabaseError, UnknownError } from "@formbricks/types/errors";
-import { TMembership, ZMembership } from "@formbricks/types/memberships";
+import { prisma } from "@hivecfm/database";
+import { logger } from "@hivecfm/logger";
+import { ZString } from "@hivecfm/types/common";
+import { DatabaseError, UnknownError } from "@hivecfm/types/errors";
+import { TMembership, ZMembership } from "@hivecfm/types/memberships";
 import { validateInputs } from "../utils/validate";
 
 export const getMembershipByUserIdOrganizationId = reactCache(

@@ -1,7 +1,7 @@
 import "server-only";
 import { Prisma } from "@prisma/client";
-import { prisma } from "@formbricks/database";
-import { DatabaseError } from "@formbricks/types/errors";
+import { prisma } from "@hivecfm/database";
+import { DatabaseError } from "@hivecfm/types/errors";
 import { getAccessFlags } from "@/lib/membership/utils";
 import { CreateMembershipInvite } from "@/modules/auth/invite/types/invites";
 

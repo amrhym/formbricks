@@ -1,7 +1,7 @@
 import { NextRequest } from "next/server";
-import { logger } from "@formbricks/logger";
-import { ZEnvironmentId } from "@formbricks/types/environment";
-import { ResourceNotFoundError } from "@formbricks/types/errors";
+import { logger } from "@hivecfm/logger";
+import { ZEnvironmentId } from "@hivecfm/types/environment";
+import { ResourceNotFoundError } from "@hivecfm/types/errors";
 import { getEnvironmentState } from "@/app/api/v1/client/[environmentId]/environment/lib/environmentState";
 import { responses } from "@/app/lib/api/response";
 import { withV1ApiWrapper } from "@/app/lib/api/with-api-logging";

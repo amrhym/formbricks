@@ -4,7 +4,7 @@
 import * as Sentry from "@sentry/nextjs";
 import { TFunction } from "i18next";
 import { useTranslation } from "react-i18next";
-import { type ClientErrorType, getClientErrorData } from "@formbricks/types/errors";
+import { type ClientErrorType, getClientErrorData } from "@hivecfm/types/errors";
 import { Button } from "@/modules/ui/components/button";
 import { ErrorComponent } from "@/modules/ui/components/error-component";
 

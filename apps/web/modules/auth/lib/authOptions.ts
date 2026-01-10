@@ -1,9 +1,9 @@
 import type { Account, NextAuthOptions } from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
 import { cookies } from "next/headers";
-import { prisma } from "@formbricks/database";
-import { logger } from "@formbricks/logger";
-import { TUser } from "@formbricks/types/user";
+import { prisma } from "@hivecfm/database";
+import { logger } from "@hivecfm/logger";
+import { TUser } from "@hivecfm/types/user";
 import {
   CONTROL_HASH,
   EMAIL_VERIFICATION_DISABLED,

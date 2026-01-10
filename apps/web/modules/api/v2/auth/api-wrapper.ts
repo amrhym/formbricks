@@ -1,6 +1,6 @@
 import { ZodRawShape, z } from "zod";
-import { logger } from "@formbricks/logger";
-import { TAuthenticationApiKey } from "@formbricks/types/auth";
+import { logger } from "@hivecfm/logger";
+import { TAuthenticationApiKey } from "@hivecfm/types/auth";
 import { TApiAuditLog } from "@/app/lib/api/with-api-logging";
 import { formatZodError, handleApiError } from "@/modules/api/v2/lib/utils";
 import { applyRateLimit } from "@/modules/core/rate-limit/helpers";

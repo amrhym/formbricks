@@ -3,7 +3,7 @@
 import { HelpCircleIcon, UsersIcon } from "lucide-react";
 import Link from "next/link";
 import { useTranslation } from "react-i18next";
-import { TUser } from "@formbricks/types/user";
+import { TUser } from "@hivecfm/types/user";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/modules/ui/components/tooltip";
 import { Membership } from "../types";
 import { NotificationSwitch } from "./NotificationSwitch";

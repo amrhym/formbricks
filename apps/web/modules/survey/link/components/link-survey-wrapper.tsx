@@ -1,7 +1,7 @@
 import { Project, SurveyType } from "@prisma/client";
 import { type JSX, useState } from "react";
-import { TProjectStyling } from "@formbricks/types/project";
-import { TSurveyStyling } from "@formbricks/types/surveys/types";
+import { TProjectStyling } from "@hivecfm/types/project";
+import { TSurveyStyling } from "@hivecfm/types/surveys/types";
 import { cn } from "@/lib/cn";
 import { LegalFooter } from "@/modules/survey/link/components/legal-footer";
 import { SurveyLoadingAnimation } from "@/modules/survey/link/components/survey-loading-animation";
@@ -84,7 +84,7 @@ export const LinkSurveyWrapper = ({
             )}
             <div className="h-full w-full max-w-4xl space-y-6 px-1.5">
               {isPreview && (
-                <div className="fixed left-0 top-0 flex w-full items-center justify-between bg-slate-600 p-2 px-4 text-center text-sm text-white shadow-sm">
+                <div className="fixed top-0 left-0 flex w-full items-center justify-between bg-slate-600 p-2 px-4 text-center text-sm text-white shadow-sm">
                   <div />
                   Survey Preview 👀
                   <ResetProgressButton onClick={handleResetSurvey} />

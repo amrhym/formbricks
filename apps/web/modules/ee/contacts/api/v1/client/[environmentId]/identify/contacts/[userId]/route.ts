@@ -1,7 +1,7 @@
 import { NextRequest, userAgent } from "next/server";
-import { logger } from "@formbricks/logger";
-import { ResourceNotFoundError } from "@formbricks/types/errors";
-import { ZJsUserIdentifyInput } from "@formbricks/types/js";
+import { logger } from "@hivecfm/logger";
+import { ResourceNotFoundError } from "@hivecfm/types/errors";
+import { ZJsUserIdentifyInput } from "@hivecfm/types/js";
 import { responses } from "@/app/lib/api/response";
 import { transformErrorToDetails } from "@/app/lib/api/validator";
 import { withV1ApiWrapper } from "@/app/lib/api/with-api-logging";

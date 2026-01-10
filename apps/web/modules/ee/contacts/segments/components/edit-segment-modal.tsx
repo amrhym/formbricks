@@ -3,8 +3,8 @@
 import { UsersIcon } from "lucide-react";
 import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
-import { TContactAttributeKey } from "@formbricks/types/contact-attribute-key";
-import { TSegment, TSegmentWithSurveyNames } from "@formbricks/types/segment";
+import { TContactAttributeKey } from "@hivecfm/types/contact-attribute-key";
+import { TSegment, TSegmentWithSurveyNames } from "@hivecfm/types/segment";
 import { SegmentSettings } from "@/modules/ee/contacts/segments/components/segment-settings";
 import {
   Dialog,

@@ -2,7 +2,7 @@
 
 import { Language } from "@prisma/client";
 import { useTranslation } from "react-i18next";
-import { TUserLocale } from "@formbricks/types/user";
+import { TUserLocale } from "@hivecfm/types/user";
 import { Button } from "@/modules/ui/components/button";
 import { Input } from "@/modules/ui/components/input";
 import { LanguageSelect } from "./language-select";

@@ -1,8 +1,8 @@
 import type { IdentityProvider, Organization } from "@prisma/client";
 import type { Account } from "next-auth";
-import { prisma } from "@formbricks/database";
-import { logger } from "@formbricks/logger";
-import type { TUser, TUserNotificationSettings } from "@formbricks/types/user";
+import { prisma } from "@hivecfm/database";
+import { logger } from "@hivecfm/logger";
+import type { TUser, TUserNotificationSettings } from "@hivecfm/types/user";
 import { createAccount } from "@/lib/account/service";
 import { DEFAULT_TEAM_ID, SKIP_INVITE_FOR_SSO } from "@/lib/constants";
 import { getIsFreshInstance } from "@/lib/instance/service";

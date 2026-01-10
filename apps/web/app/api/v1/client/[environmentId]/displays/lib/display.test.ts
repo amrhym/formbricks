@@ -1,8 +1,8 @@
 import { Prisma } from "@prisma/client";
 import { beforeEach, describe, expect, test, vi } from "vitest";
-import { prisma } from "@formbricks/database";
-import { TDisplayCreateInput } from "@formbricks/types/displays";
-import { DatabaseError, ResourceNotFoundError, ValidationError } from "@formbricks/types/errors";
+import { prisma } from "@hivecfm/database";
+import { TDisplayCreateInput } from "@hivecfm/types/displays";
+import { DatabaseError, ResourceNotFoundError, ValidationError } from "@hivecfm/types/errors";
 import { validateInputs } from "@/lib/utils/validate";
 import { getContactByUserId } from "./contact";
 import { createDisplay } from "./display";
@@ -11,7 +11,7 @@ vi.mock("@/lib/utils/validate", () => ({
   validateInputs: vi.fn((inputs) => inputs.map((input) => input[0])), // Pass through validation for testing
 }));
 
-vi.mock("@formbricks/database", () => ({
+vi.mock("@hivecfm/database", () => ({
   prisma: {
     contact: {
       create: vi.fn(),

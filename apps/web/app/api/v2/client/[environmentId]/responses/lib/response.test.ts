@@ -1,12 +1,12 @@
 import { Prisma } from "@prisma/client";
 import { afterEach, beforeEach, describe, expect, test, vi } from "vitest";
-import { prisma } from "@formbricks/database";
-import { logger } from "@formbricks/logger";
-import { TContactAttributes } from "@formbricks/types/contact-attribute";
-import { DatabaseError, ResourceNotFoundError } from "@formbricks/types/errors";
-import { TResponseWithQuotaFull, TSurveyQuota } from "@formbricks/types/quota";
-import { TResponse } from "@formbricks/types/responses";
-import { TTag } from "@formbricks/types/tags";
+import { prisma } from "@hivecfm/database";
+import { logger } from "@hivecfm/logger";
+import { TContactAttributes } from "@hivecfm/types/contact-attribute";
+import { DatabaseError, ResourceNotFoundError } from "@hivecfm/types/errors";
+import { TResponseWithQuotaFull, TSurveyQuota } from "@hivecfm/types/quota";
+import { TResponse } from "@hivecfm/types/responses";
+import { TTag } from "@hivecfm/types/tags";
 import { TResponseInputV2 } from "@/app/api/v2/client/[environmentId]/responses/types/response";
 import { getOrganizationByEnvironmentId } from "@/lib/organization/service";
 import { calculateTtcTotal } from "@/lib/response/utils";
@@ -47,14 +47,14 @@ vi.mock("@/lib/organization/service");
 vi.mock("@/lib/response/utils");
 vi.mock("@/lib/utils/validate");
 vi.mock("@/modules/ee/quotas/lib/evaluation-service");
-vi.mock("@formbricks/database", () => ({
+vi.mock("@hivecfm/database", () => ({
   prisma: {
     response: {
       create: vi.fn(),
     },
   },
 }));
-vi.mock("@formbricks/logger");
+vi.mock("@hivecfm/logger");
 vi.mock("./contact");
 
 const environmentId = "test-environment-id";

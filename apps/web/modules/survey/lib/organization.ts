@@ -1,7 +1,7 @@
 import { Organization, Prisma } from "@prisma/client";
 import { cache as reactCache } from "react";
-import { prisma } from "@formbricks/database";
-import { DatabaseError, ResourceNotFoundError } from "@formbricks/types/errors";
+import { prisma } from "@hivecfm/database";
+import { DatabaseError, ResourceNotFoundError } from "@hivecfm/types/errors";
 
 export const getOrganizationIdFromEnvironmentId = reactCache(
   async (environmentId: string): Promise<string> => {

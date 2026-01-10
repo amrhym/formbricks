@@ -1,7 +1,7 @@
 import { NextRequest } from "next/server";
-import { logger } from "@formbricks/logger";
-import { DatabaseError } from "@formbricks/types/errors";
-import { ZSurveyCreateInputWithEnvironmentId } from "@formbricks/types/surveys/types";
+import { logger } from "@hivecfm/logger";
+import { DatabaseError } from "@hivecfm/types/errors";
+import { ZSurveyCreateInputWithEnvironmentId } from "@hivecfm/types/surveys/types";
 import { checkFeaturePermissions } from "@/app/api/v1/management/surveys/lib/utils";
 import { responses } from "@/app/lib/api/response";
 import {

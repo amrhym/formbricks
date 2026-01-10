@@ -2,7 +2,7 @@
 import "@testing-library/jest-dom/vitest";
 import ResizeObserver from "resize-observer-polyfill";
 import { afterEach, beforeEach, expect, test, vi } from "vitest";
-import { ValidationError } from "@formbricks/types/errors";
+import { ValidationError } from "@hivecfm/types/errors";
 
 // mock next-auth EARLY to prevent SessionProvider errors
 vi.mock("next-auth/react", () => ({

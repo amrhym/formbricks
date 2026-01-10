@@ -1,5 +1,5 @@
 import { S3Client, type S3ClientConfig } from "@aws-sdk/client-s3";
-import { logger } from "@formbricks/logger";
+import { logger } from "@hivecfm/logger";
 import { type Result, type StorageError, StorageErrorCode, err, ok } from "../types/error";
 import {
   S3_ACCESS_KEY,

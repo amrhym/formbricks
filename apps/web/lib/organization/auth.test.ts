@@ -1,6 +1,6 @@
 import { describe, expect, test, vi } from "vitest";
-import { TMembership } from "@formbricks/types/memberships";
-import { TOrganization } from "@formbricks/types/organizations";
+import { TMembership } from "@hivecfm/types/memberships";
+import { TOrganization } from "@hivecfm/types/organizations";
 import { getMembershipByUserIdOrganizationId } from "../membership/service";
 import { getAccessFlags } from "../membership/utils";
 import { canUserAccessOrganization, verifyUserRoleAccess } from "./auth";

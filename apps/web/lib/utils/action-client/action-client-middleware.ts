@@ -1,7 +1,7 @@
 import { returnValidationErrors } from "next-safe-action";
 import { ZodIssue, z } from "zod";
-import { AuthorizationError } from "@formbricks/types/errors";
-import { type TOrganizationRole } from "@formbricks/types/memberships";
+import { AuthorizationError } from "@hivecfm/types/errors";
+import { type TOrganizationRole } from "@hivecfm/types/memberships";
 import { getMembershipRole } from "@/lib/membership/hooks/actions";
 import { getProjectPermissionByUserId, getTeamRoleByTeamIdUserId } from "@/modules/ee/teams/lib/roles";
 import { type TTeamPermission } from "@/modules/ee/teams/project-teams/types/team";

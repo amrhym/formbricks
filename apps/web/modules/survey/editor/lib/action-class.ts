@@ -1,8 +1,8 @@
 import { ActionClass, Prisma } from "@prisma/client";
-import { prisma } from "@formbricks/database";
-import { PrismaErrorType } from "@formbricks/database/types/error";
-import { TActionClassInput } from "@formbricks/types/action-classes";
-import { DatabaseError } from "@formbricks/types/errors";
+import { prisma } from "@hivecfm/database";
+import { PrismaErrorType } from "@hivecfm/database/types/error";
+import { TActionClassInput } from "@hivecfm/types/action-classes";
+import { DatabaseError } from "@hivecfm/types/errors";
 
 export const createActionClass = async (
   environmentId: string,

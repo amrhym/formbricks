@@ -1,10 +1,10 @@
 import "server-only";
 import { Prisma } from "@prisma/client";
-import { prisma } from "@formbricks/database";
-import { PrismaErrorType } from "@formbricks/database/types/error";
-import { ZId, ZUrl } from "@formbricks/types/common";
-import { ResourceNotFoundError } from "@formbricks/types/errors";
-import { TOrganizationWhitelabel } from "@formbricks/types/organizations";
+import { prisma } from "@hivecfm/database";
+import { PrismaErrorType } from "@hivecfm/database/types/error";
+import { ZId, ZUrl } from "@hivecfm/types/common";
+import { ResourceNotFoundError } from "@hivecfm/types/errors";
+import { TOrganizationWhitelabel } from "@hivecfm/types/organizations";
 import { validateInputs } from "@/lib/utils/validate";
 
 export const updateOrganizationFaviconUrl = async (

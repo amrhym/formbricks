@@ -1,6 +1,6 @@
 // Function is this file can be used in edge runtime functions, like api routes.
 import * as Sentry from "@sentry/nextjs";
-import { logger } from "@formbricks/logger";
+import { logger } from "@hivecfm/logger";
 import { IS_PRODUCTION, SENTRY_DSN } from "@/lib/constants";
 import { ApiErrorResponseV2 } from "@/modules/api/v2/types/api-error";
 

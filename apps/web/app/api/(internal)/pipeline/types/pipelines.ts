@@ -1,6 +1,6 @@
 import { z } from "zod";
-import { ZWebhook } from "@formbricks/database/zod/webhooks";
-import { ZResponse } from "@formbricks/types/responses";
+import { ZWebhook } from "@hivecfm/database/zod/webhooks";
+import { ZResponse } from "@hivecfm/types/responses";
 
 export const ZPipelineInput = z.object({
   event: ZWebhook.shape.triggers.element,

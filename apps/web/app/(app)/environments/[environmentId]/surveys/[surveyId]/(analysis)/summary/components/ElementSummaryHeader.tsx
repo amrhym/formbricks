@@ -3,8 +3,8 @@
 import { InboxIcon } from "lucide-react";
 import type { JSX } from "react";
 import { useTranslation } from "react-i18next";
-import { TSurvey, TSurveyElementSummary } from "@formbricks/types/surveys/types";
-import { getTextContent } from "@formbricks/types/surveys/validation";
+import { TSurvey, TSurveyElementSummary } from "@hivecfm/types/surveys/types";
+import { getTextContent } from "@hivecfm/types/surveys/validation";
 import { recallToHeadline } from "@/lib/utils/recall";
 import { formatTextWithSlashes } from "@/modules/survey/editor/lib/utils";
 import { getElementTypes } from "@/modules/survey/lib/elements";
@@ -27,7 +27,7 @@ export const ElementSummaryHeader = ({
   const elementType = getElementTypes(t).find((type) => type.id === elementSummary.element.type);
 
   return (
-    <div className="space-y-2 px-4 pb-5 pt-6 md:px-6">
+    <div className="space-y-2 px-4 pt-6 pb-5 md:px-6">
       <div className={"align-center flex justify-between gap-4"}>
         <h3 className="pb-1 text-lg font-semibold text-slate-900 md:text-xl">
           {formatTextWithSlashes(

@@ -1,22 +1,22 @@
 import { createId } from "@paralleldrive/cuid2";
 import { Prisma } from "@prisma/client";
 import { beforeEach, describe, expect, test, vi } from "vitest";
-import { prisma } from "@formbricks/database";
-import { logger } from "@formbricks/logger";
+import { prisma } from "@hivecfm/database";
+import { logger } from "@hivecfm/logger";
 import {
   OperationNotAllowedError,
   ResourceNotFoundError,
   // Ensure ResourceNotFoundError is imported
   ValidationError,
-} from "@formbricks/types/errors";
+} from "@hivecfm/types/errors";
 import {
   TBaseFilters,
   TEvaluateSegmentUserData,
   TSegment,
   TSegmentCreateInput,
   TSegmentUpdateInput,
-} from "@formbricks/types/segment";
-import { TSegmentFilter } from "@formbricks/types/segment";
+} from "@hivecfm/types/segment";
+import { TSegmentFilter } from "@hivecfm/types/segment";
 import { getEnvironment } from "@/lib/environment/service";
 import { getSurvey } from "@/lib/survey/service";
 import { validateInputs } from "@/lib/utils/validate";
@@ -37,7 +37,7 @@ import {
 } from "./segments";
 
 // Mock dependencies
-vi.mock("@formbricks/database", () => ({
+vi.mock("@hivecfm/database", () => ({
   prisma: {
     segment: {
       findUnique: vi.fn(),
@@ -62,7 +62,7 @@ vi.mock("@/lib/utils/validate", () => ({
   validateInputs: vi.fn(() => true), // Assume validation passes
 }));
 
-vi.mock("@formbricks/logger", () => ({
+vi.mock("@hivecfm/logger", () => ({
   logger: {
     error: vi.fn(),
   },

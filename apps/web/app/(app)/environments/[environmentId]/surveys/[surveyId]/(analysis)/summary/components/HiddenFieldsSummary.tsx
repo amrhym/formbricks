@@ -3,9 +3,9 @@
 import { InboxIcon, Link, MessageSquareTextIcon } from "lucide-react";
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
-import { TEnvironment } from "@formbricks/types/environment";
-import { TSurveyElementSummaryHiddenFields } from "@formbricks/types/surveys/types";
-import { TUserLocale } from "@formbricks/types/user";
+import { TEnvironment } from "@hivecfm/types/environment";
+import { TSurveyElementSummaryHiddenFields } from "@hivecfm/types/surveys/types";
+import { TUserLocale } from "@hivecfm/types/user";
 import { timeSince } from "@/lib/time";
 import { getContactIdentifier } from "@/lib/utils/contact";
 import { PersonAvatar } from "@/modules/ui/components/avatars";
@@ -29,7 +29,7 @@ export const HiddenFieldsSummary = ({ environment, elementSummary, locale }: Hid
   };
   return (
     <div className="rounded-xl border border-slate-200 bg-white shadow-sm">
-      <div className="space-y-2 px-4 pb-5 pt-6 md:px-6">
+      <div className="space-y-2 px-4 pt-6 pb-5 md:px-6">
         <div className={"align-center flex justify-between gap-4"}>
           <h3 className="pb-1 text-lg font-semibold text-slate-900 md:text-xl">{elementSummary.id}</h3>
         </div>
@@ -82,7 +82,7 @@ export const HiddenFieldsSummary = ({ environment, elementSummary, locale }: Hid
                   </div>
                 )}
               </div>
-              <div className="ph-no-capture col-span-2 whitespace-pre-wrap pl-6 font-semibold">
+              <div className="ph-no-capture col-span-2 pl-6 font-semibold whitespace-pre-wrap">
                 {response.value}
               </div>
               <div className="px-4 text-slate-500 md:px-6">

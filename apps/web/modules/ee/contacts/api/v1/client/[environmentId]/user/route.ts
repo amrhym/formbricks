@@ -1,9 +1,9 @@
 import { NextRequest, userAgent } from "next/server";
-import { logger } from "@formbricks/logger";
-import { TContactAttributes } from "@formbricks/types/contact-attribute";
-import { ZEnvironmentId } from "@formbricks/types/environment";
-import { ResourceNotFoundError } from "@formbricks/types/errors";
-import { TJsPersonState } from "@formbricks/types/js";
+import { logger } from "@hivecfm/logger";
+import { TContactAttributes } from "@hivecfm/types/contact-attribute";
+import { ZEnvironmentId } from "@hivecfm/types/environment";
+import { ResourceNotFoundError } from "@hivecfm/types/errors";
+import { TJsPersonState } from "@hivecfm/types/js";
 import { responses } from "@/app/lib/api/response";
 import { withV1ApiWrapper } from "@/app/lib/api/with-api-logging";
 import { getIsContactsEnabled } from "@/modules/ee/license-check/lib/utils";

@@ -1,6 +1,6 @@
 import { z } from "zod";
 import { extendZodWithOpenApi } from "zod-openapi";
-import { ZResponse } from "@formbricks/database/zod/responses";
+import { ZResponse } from "@hivecfm/database/zod/responses";
 
 extendZodWithOpenApi(z);
 

@@ -1,8 +1,8 @@
 "use server";
 
 import { z } from "zod";
-import { ZId } from "@formbricks/types/common";
-import { ZContactAttributes } from "@formbricks/types/contact-attribute";
+import { ZId } from "@hivecfm/types/common";
+import { ZContactAttributes } from "@hivecfm/types/contact-attribute";
 import { authenticatedActionClient } from "@/lib/utils/action-client";
 import { checkAuthorizationUpdated } from "@/lib/utils/action-client/action-client-middleware";
 import { AuthenticatedActionClientCtx } from "@/lib/utils/action-client/types/context";

@@ -1,11 +1,11 @@
 import { afterEach, describe, expect, test, vi } from "vitest";
-import { prisma } from "@formbricks/database";
-import { ValidationError } from "@formbricks/types/errors";
+import { prisma } from "@hivecfm/database";
+import { ValidationError } from "@hivecfm/types/errors";
 import { validateInputs } from "@/lib/utils/validate";
 import { TProjectUpdateBrandingInput } from "../types/project";
 import { updateProjectBranding } from "./project";
 
-vi.mock("@formbricks/database", () => ({
+vi.mock("@hivecfm/database", () => ({
   prisma: {
     project: {
       update: vi.fn(),

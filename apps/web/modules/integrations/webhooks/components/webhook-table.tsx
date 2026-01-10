@@ -3,8 +3,8 @@
 import { Webhook } from "@prisma/client";
 import { type JSX, useState } from "react";
 import { useTranslation } from "react-i18next";
-import { TEnvironment } from "@formbricks/types/environment";
-import { TSurvey } from "@formbricks/types/surveys/types";
+import { TEnvironment } from "@hivecfm/types/environment";
+import { TSurvey } from "@hivecfm/types/surveys/types";
 import { WebhookModal } from "@/modules/integrations/webhooks/components/webhook-detail-modal";
 import { EmptyState } from "@/modules/ui/components/empty-state";
 

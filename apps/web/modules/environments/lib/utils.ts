@@ -1,10 +1,10 @@
 import { Prisma } from "@prisma/client";
 import { getServerSession } from "next-auth";
 import { cache as reactCache } from "react";
-import { prisma } from "@formbricks/database";
-import { logger } from "@formbricks/logger";
-import { ZId } from "@formbricks/types/common";
-import { AuthorizationError, DatabaseError } from "@formbricks/types/errors";
+import { prisma } from "@hivecfm/database";
+import { logger } from "@hivecfm/logger";
+import { ZId } from "@hivecfm/types/common";
+import { AuthorizationError, DatabaseError } from "@hivecfm/types/errors";
 import { IS_FORMBRICKS_CLOUD } from "@/lib/constants";
 import { hasUserEnvironmentAccess } from "@/lib/environment/auth";
 import { getEnvironment } from "@/lib/environment/service";

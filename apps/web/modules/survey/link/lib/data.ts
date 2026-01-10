@@ -1,10 +1,10 @@
 import "server-only";
 import { Prisma } from "@prisma/client";
 import { cache as reactCache } from "react";
-import { createCacheKey } from "@formbricks/cache";
-import { prisma } from "@formbricks/database";
-import { DatabaseError, ResourceNotFoundError } from "@formbricks/types/errors";
-import { TSurvey } from "@formbricks/types/surveys/types";
+import { createCacheKey } from "@hivecfm/cache";
+import { prisma } from "@hivecfm/database";
+import { DatabaseError, ResourceNotFoundError } from "@hivecfm/types/errors";
+import { TSurvey } from "@hivecfm/types/surveys/types";
 import { cache } from "@/lib/cache";
 import { transformPrismaSurvey } from "@/modules/survey/lib/utils";
 

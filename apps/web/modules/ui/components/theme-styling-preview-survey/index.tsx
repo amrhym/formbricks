@@ -4,7 +4,7 @@ import { Project } from "@prisma/client";
 import { Variants, motion } from "framer-motion";
 import { Fragment, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
-import { TSurvey, TSurveyType } from "@formbricks/types/surveys/types";
+import { TSurvey, TSurveyType } from "@hivecfm/types/surveys/types";
 import { ClientLogo } from "@/modules/ui/components/client-logo";
 import { MediaBackground } from "@/modules/ui/components/media-background";
 import { Modal } from "@/modules/ui/components/preview-survey/components/modal";

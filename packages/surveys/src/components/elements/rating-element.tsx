@@ -1,8 +1,8 @@
 import { useState } from "preact/hooks";
 import { useTranslation } from "react-i18next";
-import { Rating } from "@formbricks/survey-ui";
-import { type TResponseData, type TResponseTtc } from "@formbricks/types/responses";
-import type { TSurveyRatingElement } from "@formbricks/types/surveys/elements";
+import { Rating } from "@hivecfm/survey-ui";
+import { type TResponseData, type TResponseTtc } from "@hivecfm/types/responses";
+import type { TSurveyRatingElement } from "@hivecfm/types/surveys/elements";
 import { getLocalizedValue } from "@/lib/i18n";
 import { getUpdatedTtc, useTtc } from "@/lib/ttc";
 

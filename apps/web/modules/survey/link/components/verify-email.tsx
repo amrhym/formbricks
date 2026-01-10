@@ -7,9 +7,9 @@ import { FormProvider, useForm } from "react-hook-form";
 import { Toaster, toast } from "react-hot-toast";
 import { useTranslation } from "react-i18next";
 import { z } from "zod";
-import { TProjectStyling } from "@formbricks/types/project";
-import { TSurvey } from "@formbricks/types/surveys/types";
-import { getTextContent } from "@formbricks/types/surveys/validation";
+import { TProjectStyling } from "@hivecfm/types/project";
+import { TSurvey } from "@hivecfm/types/surveys/types";
+import { getTextContent } from "@hivecfm/types/surveys/validation";
 import { getLocalizedValue } from "@/lib/i18n/utils";
 import { getFormattedErrorMessage } from "@/lib/utils/helper";
 import { replaceHeadlineRecall } from "@/lib/utils/recall";
@@ -175,7 +175,7 @@ export const VerifyEmail = ({
         {!emailSent && showPreviewQuestions && (
           <div>
             <p className="text-2xl font-bold">{t("s.question_preview")}</p>
-            <div className="mt-4 flex max-h-[50vh] w-full flex-col overflow-y-auto rounded-lg border border-slate-200 bg-slate-50 bg-opacity-20 p-4 text-slate-700">
+            <div className="bg-opacity-20 mt-4 flex max-h-[50vh] w-full flex-col overflow-y-auto rounded-lg border border-slate-200 bg-slate-50 p-4 text-slate-700">
               {questions.map((question, index) => (
                 <p
                   key={index}

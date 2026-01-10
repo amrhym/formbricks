@@ -1,7 +1,7 @@
 import { describe, expect, test } from "vitest";
-import { TJsEnvironmentStateSurvey } from "@formbricks/types/js";
-import { TSegment } from "@formbricks/types/segment";
-import { TSurvey, TSurveyFilterCriteria, TSurveyStatus, TSurveyType } from "@formbricks/types/surveys/types";
+import { TJsEnvironmentStateSurvey } from "@hivecfm/types/js";
+import { TSegment } from "@hivecfm/types/segment";
+import { TSurvey, TSurveyFilterCriteria, TSurveyStatus, TSurveyType } from "@hivecfm/types/surveys/types";
 import { anySurveyHasFilters, buildOrderByClause, buildWhereClause, transformPrismaSurvey } from "./utils";
 
 describe("Survey Utils", () => {

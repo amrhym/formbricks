@@ -1,8 +1,8 @@
 import { Prisma } from "@prisma/client";
-import { prisma } from "@formbricks/database";
-import { PrismaErrorType } from "@formbricks/database/types/error";
-import { ResourceNotFoundError } from "@formbricks/types/errors";
-import { TUser, TUserUpdateInput } from "@formbricks/types/user";
+import { prisma } from "@hivecfm/database";
+import { PrismaErrorType } from "@hivecfm/database/types/error";
+import { ResourceNotFoundError } from "@hivecfm/types/errors";
+import { TUser, TUserUpdateInput } from "@hivecfm/types/user";
 
 // function to update a user's user
 export const updateUser = async (personId: string, data: TUserUpdateInput): Promise<TUser> => {

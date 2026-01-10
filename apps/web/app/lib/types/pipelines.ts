@@ -1,5 +1,5 @@
 import { PipelineTriggers } from "@prisma/client";
-import { TResponse } from "@formbricks/types/responses";
+import { TResponse } from "@hivecfm/types/responses";
 
 export interface TPipelineInput {
   event: PipelineTriggers;

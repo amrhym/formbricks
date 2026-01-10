@@ -1,5 +1,5 @@
 import { describe, expect, test, vi } from "vitest";
-import { prisma } from "@formbricks/database";
+import { prisma } from "@hivecfm/database";
 import { TGetUsersFilter } from "@/modules/api/v2/organizations/[organizationId]/users/types/users";
 import { createUser, getUsers, updateUser } from "../users";
 
@@ -16,7 +16,7 @@ const mockUser = {
   teamUsers: [{ team: { name: "Test Team", id: "team123", projectTeams: [{ projectId: "proj789" }] } }],
 };
 
-vi.mock("@formbricks/database", () => ({
+vi.mock("@hivecfm/database", () => ({
   prisma: {
     user: {
       findMany: vi.fn(),

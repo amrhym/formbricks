@@ -23,7 +23,7 @@ vi.mock("@/modules/ee/license-check/lib/utils", () => ({
 }));
 
 // Move all relevant mocks to the very top
-vi.mock("@formbricks/logger", () => ({
+vi.mock("@hivecfm/logger", () => ({
   logger: { error: vi.fn() },
 }));
 vi.mock("@/lib/utils/helper", () => ({

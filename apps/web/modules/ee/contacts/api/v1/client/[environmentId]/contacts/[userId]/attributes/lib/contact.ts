@@ -1,5 +1,5 @@
 import { cache as reactCache } from "react";
-import { prisma } from "@formbricks/database";
+import { prisma } from "@hivecfm/database";
 
 export const getContactByUserIdWithAttributes = reactCache(
   async (environmentId: string, userId: string, updatedAttributes: Record<string, string>) => {

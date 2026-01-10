@@ -1,7 +1,7 @@
 import { createId } from "@paralleldrive/cuid2";
 import { type Prisma, PrismaClient } from "@prisma/client";
 import bcrypt from "bcryptjs";
-import { logger } from "@formbricks/logger";
+import { logger } from "@hivecfm/logger";
 import { SEED_CREDENTIALS, SEED_IDS } from "./seed/constants";
 
 const prisma = new PrismaClient();

@@ -1,9 +1,9 @@
 "use server";
 
 import { z } from "zod";
-import { ZId } from "@formbricks/types/common";
-import { OperationNotAllowedError } from "@formbricks/types/errors";
-import { ZProjectUpdateInput } from "@formbricks/types/project";
+import { ZId } from "@hivecfm/types/common";
+import { OperationNotAllowedError } from "@hivecfm/types/errors";
+import { ZProjectUpdateInput } from "@hivecfm/types/project";
 import { getTeamsByOrganizationId } from "@/app/(app)/(onboarding)/lib/onboarding";
 import { getOrganization } from "@/lib/organization/service";
 import { getProject } from "@/lib/project/service";

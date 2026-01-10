@@ -1,18 +1,18 @@
 import { Prisma } from "@prisma/client";
 import { afterEach, beforeEach, describe, expect, test, vi } from "vitest";
-import { prisma } from "@formbricks/database";
-import { logger } from "@formbricks/logger";
-import { TJsEnvironmentStateSurvey } from "@formbricks/types/js";
-import { TSurveyQuota } from "@formbricks/types/quota";
-import { TResponseData, TResponseVariables } from "@formbricks/types/responses";
-import { TSurveyQuestionTypeEnum } from "@formbricks/types/surveys/types";
+import { prisma } from "@hivecfm/database";
+import { logger } from "@hivecfm/logger";
+import { TJsEnvironmentStateSurvey } from "@hivecfm/types/js";
+import { TSurveyQuota } from "@hivecfm/types/quota";
+import { TResponseData, TResponseVariables } from "@hivecfm/types/responses";
+import { TSurveyQuestionTypeEnum } from "@hivecfm/types/surveys/types";
 import { updateResponse } from "@/lib/response/service";
 import { evaluateLogic } from "@/lib/surveyLogic/utils";
 import { validateInputs } from "@/lib/utils/validate";
 import { evaluateQuotas, handleQuotas, upsertResponseQuotaLinks } from "./utils";
 
 // Mock dependencies
-vi.mock("@formbricks/database", () => ({
+vi.mock("@hivecfm/database", () => ({
   prisma: {
     $transaction: vi.fn(),
     responseQuotaLink: {
@@ -37,7 +37,7 @@ vi.mock("@/lib/utils/validate", () => ({
   validateInputs: vi.fn(),
 }));
 
-vi.mock("@formbricks/logger", () => ({
+vi.mock("@hivecfm/logger", () => ({
   logger: {
     error: vi.fn(),
   },

@@ -2,7 +2,7 @@
 
 import { InboxIcon } from "lucide-react";
 import { useTranslation } from "react-i18next";
-import { TSurvey, TSurveyElementSummaryCta } from "@formbricks/types/surveys/types";
+import { TSurvey, TSurveyElementSummaryCta } from "@hivecfm/types/surveys/types";
 import { ProgressBar } from "@/modules/ui/components/progress-bar";
 import { convertFloatToNDecimal } from "../lib/utils";
 import { ElementSummaryHeader } from "./ElementSummaryHeader";
@@ -40,7 +40,7 @@ export const CTASummary = ({ elementSummary, survey }: CTASummaryProps) => {
           </>
         }
       />
-      <div className="space-y-5 px-4 pb-6 pt-4 text-sm md:px-6 md:text-base">
+      <div className="space-y-5 px-4 pt-4 pb-6 text-sm md:px-6 md:text-base">
         <div className="text flex justify-between px-2 pb-2">
           <div className="mr-8 flex space-x-1">
             <p className="font-semibold text-slate-700">CTR</p>

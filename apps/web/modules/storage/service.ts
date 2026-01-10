@@ -1,5 +1,5 @@
 import { randomUUID } from "crypto";
-import { logger } from "@formbricks/logger";
+import { logger } from "@hivecfm/logger";
 import {
   type StorageError,
   StorageErrorCode,
@@ -7,9 +7,9 @@ import {
   deleteFilesByPrefix,
   getSignedDownloadUrl,
   getSignedUploadUrl,
-} from "@formbricks/storage";
-import { Result, err, ok } from "@formbricks/types/error-handlers";
-import { TAccessType } from "@formbricks/types/storage";
+} from "@hivecfm/storage";
+import { Result, err, ok } from "@hivecfm/types/error-handlers";
+import { TAccessType } from "@hivecfm/types/storage";
 import { WEBAPP_URL } from "@/lib/constants";
 import { getPublicDomain } from "@/lib/getPublicUrl";
 import { sanitizeFileName } from "./utils";

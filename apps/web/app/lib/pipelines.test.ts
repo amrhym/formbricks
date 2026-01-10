@@ -1,7 +1,7 @@
 import { PipelineTriggers } from "@prisma/client";
 import { afterEach, beforeEach, describe, expect, test, vi } from "vitest";
-import { logger } from "@formbricks/logger";
-import { TResponse } from "@formbricks/types/responses";
+import { logger } from "@hivecfm/logger";
+import { TResponse } from "@hivecfm/types/responses";
 import { TPipelineInput } from "@/app/lib/types/pipelines";
 import { sendToPipeline } from "./pipelines";
 
@@ -12,7 +12,7 @@ vi.mock("@/lib/constants", () => ({
 }));
 
 // Mock the logger
-vi.mock("@formbricks/logger", () => ({
+vi.mock("@hivecfm/logger", () => ({
   logger: {
     error: vi.fn(),
   },

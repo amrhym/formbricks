@@ -1,7 +1,7 @@
 import { NextRequest } from "next/server";
-import { logger } from "@formbricks/logger";
-import { DatabaseError, InvalidInputError } from "@formbricks/types/errors";
-import { TResponse, TResponseInput, ZResponseInput } from "@formbricks/types/responses";
+import { logger } from "@hivecfm/logger";
+import { DatabaseError, InvalidInputError } from "@hivecfm/types/errors";
+import { TResponse, TResponseInput, ZResponseInput } from "@hivecfm/types/responses";
 import { responses } from "@/app/lib/api/response";
 import { transformErrorToDetails } from "@/app/lib/api/validator";
 import { TApiAuditLog, TApiKeyAuthentication, withV1ApiWrapper } from "@/app/lib/api/with-api-logging";

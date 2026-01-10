@@ -1,10 +1,10 @@
 import { WebhookSource } from "@prisma/client";
 import { describe, expect, test, vi } from "vitest";
-import { prisma } from "@formbricks/database";
+import { prisma } from "@hivecfm/database";
 import { TGetWebhooksFilter, TWebhookInput } from "@/modules/api/v2/management/webhooks/types/webhooks";
 import { createWebhook, getWebhooks } from "../webhook";
 
-vi.mock("@formbricks/database", () => ({
+vi.mock("@hivecfm/database", () => ({
   prisma: {
     $transaction: vi.fn(),
     webhook: {

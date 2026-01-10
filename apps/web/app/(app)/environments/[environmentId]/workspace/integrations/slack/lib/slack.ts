@@ -1,4 +1,4 @@
-import { logger } from "@formbricks/logger";
+import { logger } from "@hivecfm/logger";
 
 export const authorize = async (environmentId: string, apiHost: string): Promise<string> => {
   const res = await fetch(`${apiHost}/api/v1/integrations/slack`, {

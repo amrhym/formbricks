@@ -1,5 +1,5 @@
 import Stripe from "stripe";
-import { logger } from "@formbricks/logger";
+import { logger } from "@hivecfm/logger";
 import { STRIPE_API_VERSION } from "@/lib/constants";
 import { env } from "@/lib/env";
 import { handleCheckoutSessionCompleted } from "@/modules/ee/billing/api/lib/checkout-session-completed";

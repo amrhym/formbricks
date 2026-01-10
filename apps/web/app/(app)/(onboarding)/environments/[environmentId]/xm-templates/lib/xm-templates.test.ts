@@ -4,7 +4,7 @@ import { TFunction } from "i18next";
 import { afterEach, describe, expect, test, vi } from "vitest";
 import { getXMSurveyDefault, getXMTemplates } from "./xm-templates";
 
-vi.mock("@formbricks/logger", () => ({
+vi.mock("@hivecfm/logger", () => ({
   logger: { error: vi.fn() },
 }));
 
@@ -49,7 +49,7 @@ describe("xm-templates", () => {
     const result = getXMTemplates(tMock);
 
     // Dynamically import the mocked logger
-    const { logger } = await import("@formbricks/logger");
+    const { logger } = await import("@hivecfm/logger");
 
     expect(result).toEqual([]);
     expect(logger.error).toHaveBeenCalledWith(

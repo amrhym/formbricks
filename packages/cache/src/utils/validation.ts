@@ -1,5 +1,5 @@
 import type { z } from "zod";
-import { logger } from "@formbricks/logger";
+import { logger } from "@hivecfm/logger";
 import type { CacheError, Result } from "@/types/error";
 import { ErrorCode, err, ok } from "@/types/error";
 

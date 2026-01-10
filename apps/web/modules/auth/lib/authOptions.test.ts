@@ -1,7 +1,7 @@
 import { randomBytes } from "crypto";
 import { Provider } from "next-auth/providers/index";
 import { afterEach, describe, expect, test, vi } from "vitest";
-import { prisma } from "@formbricks/database";
+import { prisma } from "@hivecfm/database";
 import { EMAIL_VERIFICATION_DISABLED } from "@/lib/constants";
 // Import mocked rate limiting functions
 import { applyIPRateLimit } from "@/modules/core/rate-limit/helpers";
@@ -74,7 +74,7 @@ const mockUserId = "cm5yzxcp900000cl78fzocjal";
 const mockPassword = randomBytes(12).toString("hex");
 const mockHashedPassword = await hashPassword(mockPassword);
 
-vi.mock("@formbricks/database", () => ({
+vi.mock("@hivecfm/database", () => ({
   prisma: {
     user: {
       create: vi.fn(),

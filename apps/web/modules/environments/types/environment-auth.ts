@@ -1,10 +1,10 @@
 import { Session } from "next-auth";
 import { z } from "zod";
-import { TEnvironment, ZEnvironment } from "@formbricks/types/environment";
-import { TMembership, ZMembership } from "@formbricks/types/memberships";
-import { TOrganization, ZOrganization } from "@formbricks/types/organizations";
-import { TProject, ZProject } from "@formbricks/types/project";
-import { TUser, ZUser } from "@formbricks/types/user";
+import { TEnvironment, ZEnvironment } from "@hivecfm/types/environment";
+import { TMembership, ZMembership } from "@hivecfm/types/memberships";
+import { TOrganization, ZOrganization } from "@hivecfm/types/organizations";
+import { TProject, ZProject } from "@hivecfm/types/project";
+import { TUser, ZUser } from "@hivecfm/types/user";
 import { TEnterpriseLicenseFeatures } from "@/modules/ee/license-check/types/enterprise-license";
 import { TTeamPermission, ZTeamPermission } from "@/modules/ee/teams/project-teams/types/team";
 

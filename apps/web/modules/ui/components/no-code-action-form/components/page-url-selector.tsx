@@ -17,7 +17,7 @@ import {
   ACTION_CLASS_PAGE_URL_RULES,
   TActionClassInput,
   TActionClassPageUrlRule,
-} from "@formbricks/types/action-classes";
+} from "@hivecfm/types/action-classes";
 import { cn } from "@/lib/cn";
 import { testURLmatch } from "@/lib/utils/url";
 import { Button } from "@/modules/ui/components/button";
@@ -143,7 +143,7 @@ export const PageUrlSelector = ({ form, isReadOnly }: PageUrlSelectorProps) => {
         />
       </div>
       {filterType === "specific" && (
-        <div className="mb-2 mt-4 w-full space-y-3 pe-2">
+        <div className="mt-4 mb-2 w-full space-y-3 pe-2">
           <Label>{t("environments.actions.url")}</Label>
           <UrlInput
             control={form.control}

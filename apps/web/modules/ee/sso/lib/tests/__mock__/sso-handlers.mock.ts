@@ -1,6 +1,6 @@
 import { Organization } from "@prisma/client";
 import type { Account } from "next-auth";
-import type { TUser } from "@formbricks/types/user";
+import type { TUser } from "@hivecfm/types/user";
 
 // Mock user data
 export const mockUser: TUser = {

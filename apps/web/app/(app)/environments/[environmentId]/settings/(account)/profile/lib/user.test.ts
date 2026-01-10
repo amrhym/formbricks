@@ -1,6 +1,6 @@
 import { beforeEach, describe, expect, test, vi } from "vitest";
-import { prisma } from "@formbricks/database";
-import { InvalidInputError, ResourceNotFoundError } from "@formbricks/types/errors";
+import { prisma } from "@hivecfm/database";
+import { InvalidInputError, ResourceNotFoundError } from "@hivecfm/types/errors";
 import { verifyPassword as mockVerifyPasswordImported } from "@/modules/auth/lib/utils";
 import { getIsEmailUnique, verifyUserPassword } from "./user";
 
@@ -8,7 +8,7 @@ vi.mock("@/modules/auth/lib/utils", () => ({
   verifyPassword: vi.fn(),
 }));
 
-vi.mock("@formbricks/database", () => ({
+vi.mock("@hivecfm/database", () => ({
   prisma: {
     user: {
       findUnique: vi.fn(),

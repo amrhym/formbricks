@@ -1,9 +1,9 @@
 "use server";
 
 import { z } from "zod";
-import { ZId, ZUuid } from "@formbricks/types/common";
-import { AuthenticationError, OperationNotAllowedError, ValidationError } from "@formbricks/types/errors";
-import { ZMembershipUpdateInput } from "@formbricks/types/memberships";
+import { ZId, ZUuid } from "@hivecfm/types/common";
+import { AuthenticationError, OperationNotAllowedError, ValidationError } from "@hivecfm/types/errors";
+import { ZMembershipUpdateInput } from "@hivecfm/types/memberships";
 import { IS_FORMBRICKS_CLOUD, USER_MANAGEMENT_MINIMUM_ROLE } from "@/lib/constants";
 import { getMembershipByUserIdOrganizationId } from "@/lib/membership/service";
 import { getUserManagementAccess } from "@/lib/membership/utils";

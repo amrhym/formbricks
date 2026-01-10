@@ -4,8 +4,8 @@ import { DownloadIcon, FileIcon } from "lucide-react";
 import Link from "next/link";
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
-import { TSurvey, TSurveyElementSummaryFileUpload } from "@formbricks/types/surveys/types";
-import { TUserLocale } from "@formbricks/types/user";
+import { TSurvey, TSurveyElementSummaryFileUpload } from "@hivecfm/types/surveys/types";
+import { TUserLocale } from "@hivecfm/types/user";
 import { timeSince } from "@/lib/time";
 import { getContactIdentifier } from "@/lib/utils/contact";
 import { getOriginalFileNameFromUrl } from "@/modules/storage/utils";
@@ -86,7 +86,7 @@ export const FileUploadSummary = ({
                         return (
                           <div className="relative m-2 rounded-lg bg-slate-200" key={fileUrl}>
                             <a href={fileUrl} key={fileUrl} target="_blank" rel="noopener noreferrer">
-                              <div className="absolute right-0 top-0 m-2">
+                              <div className="absolute top-0 right-0 m-2">
                                 <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-slate-50 hover:bg-white">
                                   <DownloadIcon className="h-6 text-slate-500" />
                                 </div>

@@ -1,14 +1,14 @@
 import "server-only";
 import { Prisma } from "@prisma/client";
-import { prisma } from "@formbricks/database";
-import { logger } from "@formbricks/logger";
-import { ZId } from "@formbricks/types/common";
-import { DatabaseError, ResourceNotFoundError } from "@formbricks/types/errors";
+import { prisma } from "@hivecfm/database";
+import { logger } from "@hivecfm/logger";
+import { ZId } from "@hivecfm/types/common";
+import { DatabaseError, ResourceNotFoundError } from "@hivecfm/types/errors";
 import {
   TJsEnvironmentStateActionClass,
   TJsEnvironmentStateProject,
   TJsEnvironmentStateSurvey,
-} from "@formbricks/types/js";
+} from "@hivecfm/types/js";
 import { validateInputs } from "@/lib/utils/validate";
 import { transformPrismaSurvey } from "@/modules/survey/lib/utils";
 

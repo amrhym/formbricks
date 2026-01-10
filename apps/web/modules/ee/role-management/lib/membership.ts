@@ -1,10 +1,10 @@
 import "server-only";
 import { Prisma } from "@prisma/client";
-import { prisma } from "@formbricks/database";
-import { PrismaErrorType } from "@formbricks/database/types/error";
-import { ZString } from "@formbricks/types/common";
-import { ResourceNotFoundError } from "@formbricks/types/errors";
-import { TMembership, TMembershipUpdateInput, ZMembershipUpdateInput } from "@formbricks/types/memberships";
+import { prisma } from "@hivecfm/database";
+import { PrismaErrorType } from "@hivecfm/database/types/error";
+import { ZString } from "@hivecfm/types/common";
+import { ResourceNotFoundError } from "@hivecfm/types/errors";
+import { TMembership, TMembershipUpdateInput, ZMembershipUpdateInput } from "@hivecfm/types/memberships";
 import { validateInputs } from "@/lib/utils/validate";
 
 export const updateMembership = async (

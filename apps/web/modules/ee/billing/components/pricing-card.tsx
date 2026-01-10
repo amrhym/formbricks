@@ -3,7 +3,7 @@
 import { CheckIcon } from "lucide-react";
 import { useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
-import { TOrganization, TOrganizationBillingPeriod } from "@formbricks/types/organizations";
+import { TOrganization, TOrganizationBillingPeriod } from "@hivecfm/types/organizations";
 import { cn } from "@/lib/cn";
 import { Badge } from "@/modules/ui/components/badge";
 import { Button } from "@/modules/ui/components/button";
@@ -140,7 +140,7 @@ export const PricingCard = ({
             id={plan.id}
             className={cn(
               plan.featured ? "text-slate-900" : "text-slate-800",
-              "text-sm font-semibold leading-6"
+              "text-sm leading-6 font-semibold"
             )}>
             {plan.name}
           </h2>
@@ -209,7 +209,7 @@ export const PricingCard = ({
         onConfirm={() => setContactModalOpen(false)}
         buttonText="Close"
         buttonVariant="default"
-        body="To switch your billing rhythm, please reach out to hola@formbricks.com"
+        body="To switch your billing rhythm, please reach out to hola@hivecfm.com"
       />
     </div>
   );

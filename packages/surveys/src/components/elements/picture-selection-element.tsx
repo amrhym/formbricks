@@ -1,8 +1,8 @@
 import { useState } from "preact/hooks";
 import { useTranslation } from "react-i18next";
-import { PictureSelect, type PictureSelectOption } from "@formbricks/survey-ui";
-import { type TResponseData, type TResponseTtc } from "@formbricks/types/responses";
-import type { TSurveyPictureSelectionElement } from "@formbricks/types/surveys/elements";
+import { PictureSelect, type PictureSelectOption } from "@hivecfm/survey-ui";
+import { type TResponseData, type TResponseTtc } from "@hivecfm/types/responses";
+import type { TSurveyPictureSelectionElement } from "@hivecfm/types/surveys/elements";
 import { getLocalizedValue } from "@/lib/i18n";
 import { getOriginalFileNameFromUrl } from "@/lib/storage";
 import { getUpdatedTtc, useTtc } from "@/lib/ttc";

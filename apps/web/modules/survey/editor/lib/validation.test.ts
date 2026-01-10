@@ -1,8 +1,8 @@
 import { TFunction } from "i18next";
 import { toast } from "react-hot-toast";
 import { beforeEach, describe, expect, test, vi } from "vitest";
-import { TI18nString } from "@formbricks/types/i18n";
-import { ZSegmentFilters } from "@formbricks/types/segment";
+import { TI18nString } from "@hivecfm/types/i18n";
+import { ZSegmentFilters } from "@hivecfm/types/segment";
 import {
   TSurveyAddressElement,
   TSurveyCTAElement,
@@ -15,14 +15,14 @@ import {
   TSurveyOpenTextElement,
   TSurveyPictureSelectionElement,
   TSurveyRatingElement,
-} from "@formbricks/types/surveys/elements";
+} from "@hivecfm/types/surveys/elements";
 import {
   TSurvey,
   TSurveyEndScreenCard,
   TSurveyLanguage,
   TSurveyRedirectUrlCard,
   TSurveyWelcomeCard,
-} from "@formbricks/types/surveys/types";
+} from "@hivecfm/types/surveys/types";
 import { checkForEmptyFallBackValue } from "@/lib/utils/recall";
 import * as validation from "./validation";
 

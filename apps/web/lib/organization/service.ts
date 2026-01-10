@@ -1,18 +1,18 @@
 import "server-only";
 import { Prisma } from "@prisma/client";
 import { cache as reactCache } from "react";
-import { prisma } from "@formbricks/database";
-import { PrismaErrorType } from "@formbricks/database/types/error";
-import { logger } from "@formbricks/logger";
-import { ZId, ZOptionalNumber, ZString } from "@formbricks/types/common";
-import { DatabaseError, ResourceNotFoundError } from "@formbricks/types/errors";
+import { prisma } from "@hivecfm/database";
+import { PrismaErrorType } from "@hivecfm/database/types/error";
+import { logger } from "@hivecfm/logger";
+import { ZId, ZOptionalNumber, ZString } from "@hivecfm/types/common";
+import { DatabaseError, ResourceNotFoundError } from "@hivecfm/types/errors";
 import {
   TOrganization,
   TOrganizationCreateInput,
   TOrganizationUpdateInput,
   ZOrganizationCreateInput,
-} from "@formbricks/types/organizations";
-import { TUserNotificationSettings } from "@formbricks/types/user";
+} from "@hivecfm/types/organizations";
+import { TUserNotificationSettings } from "@hivecfm/types/user";
 import { BILLING_LIMITS, ITEMS_PER_PAGE, PROJECT_FEATURE_KEYS } from "@/lib/constants";
 import { getProjects } from "@/lib/project/service";
 import { updateUser } from "@/lib/user/service";

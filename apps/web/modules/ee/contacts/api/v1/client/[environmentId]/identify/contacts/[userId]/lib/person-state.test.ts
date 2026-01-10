@@ -1,8 +1,8 @@
 import { afterEach, beforeEach, describe, expect, test, vi } from "vitest";
-import { prisma } from "@formbricks/database";
-import { TEnvironment } from "@formbricks/types/environment";
-import { ResourceNotFoundError } from "@formbricks/types/errors";
-import { TOrganization } from "@formbricks/types/organizations";
+import { prisma } from "@hivecfm/database";
+import { TEnvironment } from "@hivecfm/types/environment";
+import { ResourceNotFoundError } from "@hivecfm/types/errors";
+import { TOrganization } from "@hivecfm/types/organizations";
 import { getEnvironment } from "@/lib/environment/service";
 import { getOrganizationByEnvironmentId } from "@/lib/organization/service";
 import { getPersonSegmentIds } from "@/modules/ee/contacts/api/v1/client/[environmentId]/user/lib/segments";
@@ -21,7 +21,7 @@ vi.mock("@/modules/ee/contacts/api/v1/client/[environmentId]/identify/contacts/[
   getContactByUserId: vi.fn(),
 }));
 
-vi.mock("@formbricks/database", () => ({
+vi.mock("@hivecfm/database", () => ({
   prisma: {
     contact: {
       create: vi.fn(),

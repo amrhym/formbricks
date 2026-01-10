@@ -1,6 +1,6 @@
 import { getServerSession } from "next-auth";
-import { prisma } from "@formbricks/database";
-import { TUserNotificationSettings } from "@formbricks/types/user";
+import { prisma } from "@hivecfm/database";
+import { TUserNotificationSettings } from "@hivecfm/types/user";
 import { AccountSettingsNavbar } from "@/app/(app)/environments/[environmentId]/settings/(account)/components/AccountSettingsNavbar";
 import { SettingsCard } from "@/app/(app)/environments/[environmentId]/settings/components/SettingsCard";
 import { getUser } from "@/lib/user/service";

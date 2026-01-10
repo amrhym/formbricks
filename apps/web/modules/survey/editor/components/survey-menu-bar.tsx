@@ -7,16 +7,16 @@ import { useRouter } from "next/navigation";
 import { useEffect, useMemo, useRef, useState } from "react";
 import toast from "react-hot-toast";
 import { useTranslation } from "react-i18next";
-import { getLanguageLabel } from "@formbricks/i18n-utils/src/utils";
-import { TSegment } from "@formbricks/types/segment";
-import { TSurveyBlock } from "@formbricks/types/surveys/blocks";
+import { getLanguageLabel } from "@hivecfm/i18n-utils/src/utils";
+import { TSegment } from "@hivecfm/types/segment";
+import { TSurveyBlock } from "@hivecfm/types/surveys/blocks";
 import {
   TSurvey,
   TSurveyEditorTabs,
   ZSurvey,
   ZSurveyEndScreenCard,
   ZSurveyRedirectUrlCard,
-} from "@formbricks/types/surveys/types";
+} from "@hivecfm/types/surveys/types";
 import { getFormattedErrorMessage } from "@/lib/utils/helper";
 import { createSegmentAction } from "@/modules/ee/contacts/segments/actions";
 import { TSurveyDraft } from "@/modules/survey/editor/types/survey";

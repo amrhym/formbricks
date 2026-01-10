@@ -1,17 +1,17 @@
 import { Organization } from "@prisma/client";
 import { describe, expect, test, vi } from "vitest";
-import { prisma } from "@formbricks/database";
-import { logger } from "@formbricks/logger";
+import { prisma } from "@hivecfm/database";
+import { logger } from "@hivecfm/logger";
 import { getOrganizationBillingByEnvironmentId } from "./organization";
 
-vi.mock("@formbricks/database", () => ({
+vi.mock("@hivecfm/database", () => ({
   prisma: {
     organization: {
       findFirst: vi.fn(),
     },
   },
 }));
-vi.mock("@formbricks/logger", () => ({
+vi.mock("@hivecfm/logger", () => ({
   logger: {
     error: vi.fn(),
   },

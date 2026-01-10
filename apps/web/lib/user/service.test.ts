@@ -1,14 +1,14 @@
 import { IdentityProvider, Prisma } from "@prisma/client";
 import { afterEach, describe, expect, test, vi } from "vitest";
-import { prisma } from "@formbricks/database";
-import { PrismaErrorType } from "@formbricks/database/types/error";
-import { DatabaseError, ResourceNotFoundError } from "@formbricks/types/errors";
-import { TOrganization } from "@formbricks/types/organizations";
-import { TUserLocale, TUserUpdateInput } from "@formbricks/types/user";
+import { prisma } from "@hivecfm/database";
+import { PrismaErrorType } from "@hivecfm/database/types/error";
+import { DatabaseError, ResourceNotFoundError } from "@hivecfm/types/errors";
+import { TOrganization } from "@hivecfm/types/organizations";
+import { TUserLocale, TUserUpdateInput } from "@hivecfm/types/user";
 import { deleteOrganization, getOrganizationsWhereUserIsSingleOwner } from "@/lib/organization/service";
 import { deleteUser, getUser, getUserByEmail, getUsersWithOrganization, updateUser } from "./service";
 
-vi.mock("@formbricks/database", () => ({
+vi.mock("@hivecfm/database", () => ({
   prisma: {
     user: {
       findUnique: vi.fn(),

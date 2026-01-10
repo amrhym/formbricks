@@ -1,6 +1,6 @@
 import * as crypto from "node:crypto";
 import { beforeEach, describe, expect, test, vi } from "vitest";
-import { logger } from "@formbricks/logger";
+import { logger } from "@hivecfm/logger";
 // Import after unmocking
 import {
   generateStandardWebhookSignature,
@@ -18,7 +18,7 @@ import {
 vi.unmock("crypto");
 
 // Mock the logger
-vi.mock("@formbricks/logger", () => ({
+vi.mock("@hivecfm/logger", () => ({
   logger: {
     warn: vi.fn(),
   },

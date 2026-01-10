@@ -1,8 +1,8 @@
 "use server";
 
 import { z } from "zod";
-import { OperationNotAllowedError, ResourceNotFoundError } from "@formbricks/types/errors";
-import { ZSurveyFilterCriteria } from "@formbricks/types/surveys/types";
+import { OperationNotAllowedError, ResourceNotFoundError } from "@hivecfm/types/errors";
+import { ZSurveyFilterCriteria } from "@hivecfm/types/surveys/types";
 import { authenticatedActionClient } from "@/lib/utils/action-client";
 import { checkAuthorizationUpdated } from "@/lib/utils/action-client/action-client-middleware";
 import { AuthenticatedActionClientCtx } from "@/lib/utils/action-client/types/context";

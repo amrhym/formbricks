@@ -1,6 +1,6 @@
 import { beforeEach, describe, expect, test, vi } from "vitest";
-import { err, ok } from "@formbricks/types/error-handlers";
-import { TResponseUpdate } from "@formbricks/types/responses";
+import { err, ok } from "@hivecfm/types/error-handlers";
+import { TResponseUpdate } from "@hivecfm/types/responses";
 import { TResponseErrorCodesEnum } from "@/types/response-error-codes";
 import { ResponseQueue, delay } from "./response-queue";
 import { SurveyState } from "./survey-state";

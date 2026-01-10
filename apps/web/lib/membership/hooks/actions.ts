@@ -1,7 +1,7 @@
 "use server";
 
 import "server-only";
-import { AuthorizationError } from "@formbricks/types/errors";
+import { AuthorizationError } from "@hivecfm/types/errors";
 import { getOrganizationByEnvironmentId } from "../../organization/service";
 import { getMembershipByUserIdOrganizationId } from "../service";
 

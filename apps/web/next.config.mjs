@@ -25,7 +25,7 @@ const nextConfig = {
     "/api/auth/**/*": ["../../node_modules/jose/**/*"],
   },
   experimental: {},
-  transpilePackages: ["@formbricks/database"],
+  transpilePackages: ["@hivecfm/database"],
   images: {
     // Optimize image processing to reduce CPU time and prevent timeouts
     deviceSizes: [640, 750, 828, 1080, 1200, 1920], // Removed 3840 to avoid processing huge images

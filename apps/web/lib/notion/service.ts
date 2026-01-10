@@ -2,7 +2,7 @@ import {
   TIntegrationNotion,
   TIntegrationNotionConfig,
   TIntegrationNotionDatabase,
-} from "@formbricks/types/integration/notion";
+} from "@hivecfm/types/integration/notion";
 import { ENCRYPTION_KEY } from "@/lib/constants";
 import { symmetricDecrypt } from "@/lib/crypto";
 import { getIntegrationByType } from "../integration/service";

@@ -10,8 +10,8 @@ import {
   responseInputWithoutTtc,
 } from "./__mocks__/response.mock";
 import { beforeEach, describe, expect, test, vi } from "vitest";
-import { prisma } from "@formbricks/database";
-import { err, ok } from "@formbricks/types/error-handlers";
+import { prisma } from "@hivecfm/database";
+import { err, ok } from "@hivecfm/types/error-handlers";
 import {
   getMonthlyOrganizationResponseCount,
   getOrganizationBilling,
@@ -25,7 +25,7 @@ vi.mock("@/modules/api/v2/management/responses/lib/organization", () => ({
   getMonthlyOrganizationResponseCount: vi.fn(),
 }));
 
-vi.mock("@formbricks/database", () => ({
+vi.mock("@hivecfm/database", () => ({
   prisma: {
     response: {
       create: vi.fn(),

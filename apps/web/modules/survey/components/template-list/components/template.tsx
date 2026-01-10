@@ -2,7 +2,7 @@
 
 import { Project } from "@prisma/client";
 import { useTranslation } from "react-i18next";
-import { TTemplate, TTemplateFilter } from "@formbricks/types/templates";
+import { TTemplate, TTemplateFilter } from "@hivecfm/types/templates";
 import { cn } from "@/lib/cn";
 import { replacePresetPlaceholders } from "@/lib/utils/templates";
 import { Button } from "@/modules/ui/components/button";
@@ -53,7 +53,7 @@ export const Template = ({
   const cardContent = (
     <>
       <TemplateTags template={template} selectedFilter={selectedFilter} />
-      <h3 className="text-md mb-1 mt-3 text-left font-bold text-slate-700">{template.name}</h3>
+      <h3 className="text-md mt-3 mb-1 text-left font-bold text-slate-700">{template.name}</h3>
       <p className="text-left text-xs text-slate-600">{template.description}</p>
       {showCreateSurveyButton && (
         <div className="flex justify-start">

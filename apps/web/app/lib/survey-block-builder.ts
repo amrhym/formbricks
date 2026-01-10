@@ -1,6 +1,6 @@
 import { createId } from "@paralleldrive/cuid2";
 import type { TFunction } from "i18next";
-import type { TSurveyBlock, TSurveyBlockLogic } from "@formbricks/types/surveys/blocks";
+import type { TSurveyBlock, TSurveyBlockLogic } from "@hivecfm/types/surveys/blocks";
 import type {
   TSurveyCTAElement,
   TSurveyConsentElement,
@@ -10,9 +10,9 @@ import type {
   TSurveyOpenTextElement,
   TSurveyOpenTextElementInputType,
   TSurveyRatingElement,
-} from "@formbricks/types/surveys/elements";
-import { TSurveyElementTypeEnum } from "@formbricks/types/surveys/elements";
-import type { TShuffleOption } from "@formbricks/types/surveys/types";
+} from "@hivecfm/types/surveys/elements";
+import { TSurveyElementTypeEnum } from "@hivecfm/types/surveys/elements";
+import type { TShuffleOption } from "@hivecfm/types/surveys/types";
 import { createI18nString } from "@/lib/i18n/utils";
 
 const getDefaultButtonLabel = (label: string | undefined, t: TFunction) =>

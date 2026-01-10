@@ -1,8 +1,8 @@
 // Mock data for email templates to use in React Email preview server
-import { TOrganization } from "@formbricks/types/organizations";
-import { TResponse } from "@formbricks/types/responses";
-import { TSurveyElementTypeEnum } from "@formbricks/types/surveys/elements";
-import { TSurvey } from "@formbricks/types/surveys/types";
+import { TOrganization } from "@hivecfm/types/organizations";
+import { TResponse } from "@hivecfm/types/responses";
+import { TSurveyElementTypeEnum } from "@hivecfm/types/surveys/elements";
+import { TSurvey } from "@hivecfm/types/surveys/types";
 
 export const exampleData = {
   verificationEmail: {

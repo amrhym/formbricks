@@ -1,8 +1,10 @@
 import "server-only";
-import { TUserLocale } from "@formbricks/types/user";
+import { TUserLocale } from "@hivecfm/types/user";
 import { env } from "./env";
 
+// HiveCFM: Cloud mode flag (keep env var for backward compatibility)
 export const IS_FORMBRICKS_CLOUD = env.IS_FORMBRICKS_CLOUD === "1";
+export const IS_HIVECFM_CLOUD = IS_FORMBRICKS_CLOUD;
 
 export const IS_PRODUCTION = env.NODE_ENV === "production";
 
@@ -18,8 +20,17 @@ export const ENCRYPTION_KEY = env.ENCRYPTION_KEY;
 
 // Other
 export const CRON_SECRET = env.CRON_SECRET;
-export const DEFAULT_BRAND_COLOR = "#64748b";
-export const FB_LOGO_URL = `${WEBAPP_URL}/logo-transparent.png`;
+export const DEFAULT_BRAND_COLOR = "#3B82F6"; // HiveCFM blue
+export const FB_LOGO_URL = `${WEBAPP_URL}/hivecfm-logo.svg`;
+export const HIVECFM_LOGO_URL = FB_LOGO_URL;
+
+// HiveCFM: Documentation and external URLs
+// These can be updated when HiveCFM has its own documentation
+export const DOCS_URL = env.DOCS_URL || "https://formbricks.com/docs";
+export const HIVECFM_SUPPORT_EMAIL = "support@hivecfm.xcai.io";
+// HiveCFM: Enterprise is always enabled, but keeping these for code compatibility
+export const UPGRADE_URL = "#"; // Enterprise always enabled in HiveCFM
+export const LEARN_MORE_LICENSE_URL = "#"; // Enterprise always enabled in HiveCFM
 
 export const PRIVACY_URL = env.PRIVACY_URL;
 export const TERMS_URL = env.TERMS_URL;
@@ -52,9 +63,9 @@ export const OIDC_DISPLAY_NAME = env.OIDC_DISPLAY_NAME;
 export const OIDC_SIGNING_ALGORITHM = env.OIDC_SIGNING_ALGORITHM;
 
 export const SAML_DATABASE_URL = env.SAML_DATABASE_URL;
-export const SAML_TENANT = "formbricks.com";
-export const SAML_PRODUCT = "formbricks";
-export const SAML_AUDIENCE = "https://saml.formbricks.com";
+export const SAML_TENANT = "hivecfm.com";
+export const SAML_PRODUCT = "hivecfm";
+export const SAML_AUDIENCE = "https://saml.hivecfm.com";
 export const SAML_PATH = "/api/auth/saml/callback";
 
 export const SIGNUP_ENABLED = IS_FORMBRICKS_CLOUD || IS_DEVELOPMENT || E2E_TESTING;
@@ -189,8 +200,8 @@ export enum PROJECT_FEATURE_KEYS {
 }
 
 export enum STRIPE_PROJECT_NAMES {
-  STARTUP = "Formbricks Startup",
-  CUSTOM = "Formbricks Custom",
+  STARTUP = "HiveCFM Startup",
+  CUSTOM = "HiveCFM Custom",
 }
 
 export enum STRIPE_PRICE_LOOKUP_KEYS {

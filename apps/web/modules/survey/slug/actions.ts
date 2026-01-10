@@ -1,8 +1,8 @@
 "use server";
 
 import { z } from "zod";
-import { OperationNotAllowedError } from "@formbricks/types/errors";
-import { ZSurveySlug } from "@formbricks/types/surveys/types";
+import { OperationNotAllowedError } from "@hivecfm/types/errors";
+import { ZSurveySlug } from "@hivecfm/types/surveys/types";
 import { IS_FORMBRICKS_CLOUD } from "@/lib/constants";
 import { authenticatedActionClient } from "@/lib/utils/action-client";
 import { checkAuthorizationUpdated } from "@/lib/utils/action-client/action-client-middleware";

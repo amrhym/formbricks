@@ -1,8 +1,8 @@
 import { cache as reactCache } from "react";
-import { prisma } from "@formbricks/database";
-import { PrismaErrorType } from "@formbricks/database/types/error";
-import { TContactAttributeKey } from "@formbricks/types/contact-attribute-key";
-import { InvalidInputError, OperationNotAllowedError, ResourceNotFoundError } from "@formbricks/types/errors";
+import { prisma } from "@hivecfm/database";
+import { PrismaErrorType } from "@hivecfm/database/types/error";
+import { TContactAttributeKey } from "@hivecfm/types/contact-attribute-key";
+import { InvalidInputError, OperationNotAllowedError, ResourceNotFoundError } from "@hivecfm/types/errors";
 
 export const getContactAttributeKeys = reactCache(
   async (environmentId: string): Promise<TContactAttributeKey[]> => {

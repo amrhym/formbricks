@@ -1,7 +1,7 @@
 import { Organization } from "@prisma/client";
 import { beforeEach, describe, expect, test, vi } from "vitest";
-import { logger } from "@formbricks/logger";
-import { TSurvey } from "@formbricks/types/surveys/types";
+import { logger } from "@hivecfm/logger";
+import { TSurvey } from "@hivecfm/types/surveys/types";
 import { getOrganizationBillingByEnvironmentId } from "@/app/api/v2/client/[environmentId]/responses/lib/organization";
 import { verifyRecaptchaToken } from "@/app/api/v2/client/[environmentId]/responses/lib/recaptcha";
 import { checkSurveyValidity } from "@/app/api/v2/client/[environmentId]/responses/lib/utils";
@@ -35,7 +35,7 @@ vi.mock("@/app/api/v2/client/[environmentId]/responses/lib/organization", () => 
   getOrganizationBillingByEnvironmentId: vi.fn(),
 }));
 
-vi.mock("@formbricks/logger", () => ({
+vi.mock("@hivecfm/logger", () => ({
   logger: {
     error: vi.fn(),
   },

@@ -2,8 +2,8 @@
 
 import { revalidatePath } from "next/cache";
 import { z } from "zod";
-import { ZId } from "@formbricks/types/common";
-import { ZResponseFilterCriteria } from "@formbricks/types/responses";
+import { ZId } from "@hivecfm/types/common";
+import { ZResponseFilterCriteria } from "@hivecfm/types/responses";
 import { getResponseCountBySurveyId, getResponses } from "@/lib/response/service";
 import { authenticatedActionClient } from "@/lib/utils/action-client";
 import { checkAuthorizationUpdated } from "@/lib/utils/action-client/action-client-middleware";

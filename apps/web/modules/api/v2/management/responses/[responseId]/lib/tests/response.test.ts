@@ -1,10 +1,10 @@
 import { response, responseId, responseInput, survey } from "./__mocks__/response.mock";
 import { Prisma } from "@prisma/client";
 import { beforeEach, describe, expect, test, vi } from "vitest";
-import { prisma } from "@formbricks/database";
-import { PrismaErrorType } from "@formbricks/database/types/error";
-import { ok, okVoid } from "@formbricks/types/error-handlers";
-import { TSurveyQuota } from "@formbricks/types/quota";
+import { prisma } from "@hivecfm/database";
+import { PrismaErrorType } from "@hivecfm/database/types/error";
+import { ok, okVoid } from "@hivecfm/types/error-handlers";
+import { TSurveyQuota } from "@hivecfm/types/quota";
 import { evaluateResponseQuotas } from "@/modules/ee/quotas/lib/evaluation-service";
 import { deleteDisplay } from "../display";
 import {
@@ -50,7 +50,7 @@ vi.mock("@/modules/ee/quotas/lib/evaluation-service", () => ({
   evaluateResponseQuotas: vi.fn(),
 }));
 
-vi.mock("@formbricks/database", () => ({
+vi.mock("@hivecfm/database", () => ({
   prisma: {
     response: {
       findUnique: vi.fn(),

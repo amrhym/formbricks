@@ -1,7 +1,7 @@
 // Add this import for survey-ui CSS variables
-import surveyUiCss from "@formbricks/survey-ui/styles?inline";
-import { type TProjectStyling } from "@formbricks/types/project";
-import { type TSurveyStyling } from "@formbricks/types/surveys/types";
+import surveyUiCss from "@hivecfm/survey-ui/styles?inline";
+import { type TProjectStyling } from "@hivecfm/types/project";
+import { type TSurveyStyling } from "@hivecfm/types/surveys/types";
 import { isLight, mixColor } from "@/lib/color";
 import global from "@/styles/global.css?inline";
 import preflight from "@/styles/preflight.css?inline";

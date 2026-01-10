@@ -2,15 +2,15 @@
 // Import modules after mocks
 import { Prisma } from "@prisma/client";
 import { beforeEach, describe, expect, test, vi } from "vitest";
-import { prisma } from "@formbricks/database";
-import { logger } from "@formbricks/logger";
-import { DatabaseError, ResourceNotFoundError } from "@formbricks/types/errors";
+import { prisma } from "@hivecfm/database";
+import { logger } from "@hivecfm/logger";
+import { DatabaseError, ResourceNotFoundError } from "@hivecfm/types/errors";
 import { validateInputs } from "@/lib/utils/validate";
 import { doesEnvironmentExist, getEnvironment, getProjectIdIfEnvironmentExists } from "./environment";
 
 vi.mock("@/lib/utils/validate");
 
-vi.mock("@formbricks/database", () => ({
+vi.mock("@hivecfm/database", () => ({
   prisma: {
     environment: {
       findUnique: vi.fn(),
@@ -18,7 +18,7 @@ vi.mock("@formbricks/database", () => ({
   },
 }));
 
-vi.mock("@formbricks/logger", () => ({
+vi.mock("@hivecfm/logger", () => ({
   logger: {
     error: vi.fn(),
   },

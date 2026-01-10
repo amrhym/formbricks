@@ -1,8 +1,8 @@
 "use client";
 
 import { useTranslation } from "react-i18next";
-import { TCardArrangementOptions } from "@formbricks/types/styling";
-import { TSurveyType } from "@formbricks/types/surveys/types";
+import { TCardArrangementOptions } from "@hivecfm/types/styling";
+import { TSurveyType } from "@hivecfm/types/surveys/types";
 import { CasualCardArrangementIcon } from "@/modules/ui/components/icons/casual-card-arrangement-icon";
 import { SimpleCardsArrangementIcon } from "@/modules/ui/components/icons/simple-card-arrangement-icon";
 import { StraightCardArrangementIcon } from "@/modules/ui/components/icons/straight-card-arrangement-icon";

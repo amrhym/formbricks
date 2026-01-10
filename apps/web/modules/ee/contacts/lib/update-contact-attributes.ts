@@ -1,7 +1,7 @@
 import "server-only";
-import { TContactAttributes } from "@formbricks/types/contact-attribute";
-import { TContactAttributeKey } from "@formbricks/types/contact-attribute-key";
-import { ResourceNotFoundError } from "@formbricks/types/errors";
+import { TContactAttributes } from "@hivecfm/types/contact-attribute";
+import { TContactAttributeKey } from "@hivecfm/types/contact-attribute-key";
+import { ResourceNotFoundError } from "@hivecfm/types/errors";
 import { updateAttributes } from "./attributes";
 import { getContactAttributeKeys } from "./contact-attribute-keys";
 import { getContactAttributes } from "./contact-attributes";

@@ -3,7 +3,7 @@ import {
   TIntegrationSlackConfig,
   TIntegrationSlackConfigData,
   TIntegrationSlackCredential,
-} from "@formbricks/types/integration/slack";
+} from "@hivecfm/types/integration/slack";
 import { responses } from "@/app/lib/api/response";
 import { withV1ApiWrapper } from "@/app/lib/api/with-api-logging";
 import { SLACK_CLIENT_ID, SLACK_CLIENT_SECRET, WEBAPP_URL } from "@/lib/constants";

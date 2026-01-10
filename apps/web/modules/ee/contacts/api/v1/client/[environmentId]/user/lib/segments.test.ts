@@ -1,8 +1,8 @@
 import { Prisma } from "@prisma/client";
 import { afterEach, beforeEach, describe, expect, test, vi } from "vitest";
-import { prisma } from "@formbricks/database";
-import { DatabaseError } from "@formbricks/types/errors";
-import { TBaseFilter } from "@formbricks/types/segment";
+import { prisma } from "@hivecfm/database";
+import { DatabaseError } from "@hivecfm/types/errors";
+import { TBaseFilter } from "@hivecfm/types/segment";
 import { validateInputs } from "@/lib/utils/validate";
 import { evaluateSegment } from "@/modules/ee/contacts/segments/lib/segments";
 import { getPersonSegmentIds, getSegments } from "./segments";
@@ -22,7 +22,7 @@ vi.mock("@/modules/ee/contacts/segments/lib/segments", () => ({
   evaluateSegment: vi.fn(),
 }));
 
-vi.mock("@formbricks/database", () => ({
+vi.mock("@hivecfm/database", () => ({
   prisma: {
     segment: {
       findMany: vi.fn(),

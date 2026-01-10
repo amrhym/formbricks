@@ -8,8 +8,8 @@ import Link from "next/link";
 import type { FC } from "react";
 import { useEffect, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
-import type { TSurvey, TSurveyLanguage } from "@formbricks/types/surveys/types";
-import { TUserLocale } from "@formbricks/types/user";
+import type { TSurvey, TSurveyLanguage } from "@hivecfm/types/surveys/types";
+import { TUserLocale } from "@hivecfm/types/user";
 import { cn } from "@/lib/cn";
 import { addMultiLanguageLabels, extractLanguageCodes, getEnabledLanguages } from "@/lib/i18n/utils";
 import { AdvancedOptionToggle } from "@/modules/ui/components/advanced-option-toggle";
@@ -242,9 +242,7 @@ export const MultiLanguageCard: FC<MultiLanguageCardProps> = ({
                   },
                   {
                     text: t("common.learn_more"),
-                    href: isFormbricksCloud
-                      ? `/environments/${environmentId}/settings/billing`
-                      : "https://formbricks.com/learn-more-self-hosting-license",
+                    href: isFormbricksCloud ? `/environments/${environmentId}/settings/billing` : "#",
                   },
                 ]}
               />

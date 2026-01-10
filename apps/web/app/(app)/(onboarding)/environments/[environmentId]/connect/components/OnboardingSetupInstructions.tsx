@@ -5,7 +5,7 @@ import "prismjs/themes/prism.css";
 import { useState } from "react";
 import toast from "react-hot-toast";
 import { useTranslation } from "react-i18next";
-import { TProjectConfigChannel } from "@formbricks/types/project";
+import { TProjectConfigChannel } from "@hivecfm/types/project";
 import { Button } from "@/modules/ui/components/button";
 import { CodeBlock } from "@/modules/ui/components/code-block";
 import { Html5Icon, NpmIcon } from "@/modules/ui/components/icons";
@@ -52,7 +52,7 @@ export const OnboardingSetupInstructions = ({
   `;
 
   const npmSnippetForAppSurveys = `
-  import formbricks from "@formbricks/js";
+  import formbricks from "@hivecfm/js";
   
   if (typeof window !== "undefined") {
     formbricks.setup({
@@ -70,7 +70,7 @@ export const OnboardingSetupInstructions = ({
 
   const npmSnippetForWebsiteSurveys = `
   // other imports
-  import formbricks from "@formbricks/js";
+  import formbricks from "@hivecfm/js";
   
   if (typeof window !== "undefined") {
     formbricks.setup({
@@ -102,11 +102,11 @@ export const OnboardingSetupInstructions = ({
         {activeTab === "npm" ? (
           <div className="prose prose-slate w-full">
             <CodeBlock customEditorClass="!bg-white border border-slate-200" language="sh">
-              npm install @formbricks/js
+              npm install @hivecfm/js
             </CodeBlock>
             <p>{t("common.or")}</p>
             <CodeBlock customEditorClass="!bg-white border border-slate-200" language="sh">
-              yarn add @formbricks/js
+              yarn add @hivecfm/js
             </CodeBlock>
             <p className="text-sm text-slate-700">
               {t("environments.connect.import_formbricks_and_initialize_the_widget_in_your_component")}
@@ -125,7 +125,7 @@ export const OnboardingSetupInstructions = ({
           </div>
         ) : activeTab === "html" ? (
           <div className="prose prose-slate">
-            <p className="-mb-1 mt-6 text-sm text-slate-700">
+            <p className="mt-6 -mb-1 text-sm text-slate-700">
               {t("environments.connect.insert_this_code_into_the_head_tag_of_your_website")}
             </p>
             <div>

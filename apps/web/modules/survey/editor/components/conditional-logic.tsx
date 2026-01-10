@@ -13,8 +13,8 @@ import {
 } from "lucide-react";
 import { useEffect, useMemo } from "react";
 import { useTranslation } from "react-i18next";
-import { TSurveyBlock, TSurveyBlockLogic } from "@formbricks/types/surveys/blocks";
-import { TSurvey } from "@formbricks/types/surveys/types";
+import { TSurveyBlock, TSurveyBlockLogic } from "@hivecfm/types/surveys/blocks";
+import { TSurvey } from "@hivecfm/types/surveys/types";
 import { duplicateLogicItem } from "@/lib/surveyLogic/utils";
 import { replaceHeadlineRecall } from "@/lib/utils/recall";
 import { LogicEditor } from "@/modules/survey/editor/components/logic-editor";
@@ -159,7 +159,7 @@ export function ConditionalLogic({
                     <Button
                       variant="secondary"
                       aria-label="More options"
-                      className="absolute right-3 top-3 flex h-10 w-10 items-center justify-center rounded-md">
+                      className="absolute top-3 right-3 flex h-10 w-10 items-center justify-center rounded-md">
                       <EllipsisVerticalIcon className="h-4 w-4 text-slate-700 hover:text-slate-950" />
                     </Button>
                   </DropdownMenuTrigger>

@@ -1,5 +1,5 @@
 import { getServerSession } from "next-auth";
-import { TProject } from "@formbricks/types/project";
+import { TProject } from "@hivecfm/types/project";
 import { getOrganizationByEnvironmentId } from "@/lib/organization/service";
 import { getUserProjects } from "@/lib/project/service";
 import { getTranslate } from "@/lingodotdev/server";

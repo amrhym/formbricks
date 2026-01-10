@@ -1,6 +1,6 @@
-import { TProject } from "@formbricks/types/project";
-import { TSurveyBlock } from "@formbricks/types/surveys/blocks";
-import { TXMTemplate } from "@formbricks/types/templates";
+import { TProject } from "@hivecfm/types/project";
+import { TSurveyBlock } from "@hivecfm/types/surveys/blocks";
+import { TXMTemplate } from "@hivecfm/types/templates";
 import { replaceElementPresetPlaceholders } from "@/lib/utils/templates";
 
 // replace all occurences of projectName with the actual project name in the current template

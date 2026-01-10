@@ -6,8 +6,8 @@ import { CheckIcon, SparklesIcon } from "lucide-react";
 import React from "react";
 import { UseFormReturn } from "react-hook-form";
 import { useTranslation } from "react-i18next";
-import { TProjectStyling } from "@formbricks/types/project";
-import { TSurveyStyling } from "@formbricks/types/surveys/types";
+import { TProjectStyling } from "@hivecfm/types/project";
+import { TSurveyStyling } from "@hivecfm/types/surveys/types";
 import { cn } from "@/lib/cn";
 import { COLOR_DEFAULTS } from "@/lib/styling/constants";
 import { mixColor } from "@/lib/utils/colors";
@@ -88,7 +88,7 @@ export const FormStylingSettings = ({
         )}>
         <div className="inline-flex px-4 py-4">
           {!isSettingsPage && (
-            <div className="flex items-center pl-2 pr-5">
+            <div className="flex items-center pr-5 pl-2">
               <CheckIcon
                 strokeWidth={3}
                 className="h-7 w-7 rounded-full border border-green-300 bg-green-100 p-1.5 text-green-600"

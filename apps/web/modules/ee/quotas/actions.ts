@@ -1,9 +1,9 @@
 "use server";
 
 import { z } from "zod";
-import { ZId } from "@formbricks/types/common";
-import { OperationNotAllowedError } from "@formbricks/types/errors";
-import { ZSurveyQuotaInput } from "@formbricks/types/quota";
+import { ZId } from "@hivecfm/types/common";
+import { OperationNotAllowedError } from "@hivecfm/types/errors";
+import { ZSurveyQuotaInput } from "@hivecfm/types/quota";
 import { authenticatedActionClient } from "@/lib/utils/action-client";
 import { checkAuthorizationUpdated } from "@/lib/utils/action-client/action-client-middleware";
 import { AuthenticatedActionClientCtx } from "@/lib/utils/action-client/types/context";

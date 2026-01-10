@@ -1,7 +1,7 @@
 import { Prisma } from "@prisma/client";
-import { prisma } from "@formbricks/database";
-import { TDisplayCreateInput, ZDisplayCreateInput } from "@formbricks/types/displays";
-import { DatabaseError, ResourceNotFoundError } from "@formbricks/types/errors";
+import { prisma } from "@hivecfm/database";
+import { TDisplayCreateInput, ZDisplayCreateInput } from "@hivecfm/types/displays";
+import { DatabaseError, ResourceNotFoundError } from "@hivecfm/types/errors";
 import { validateInputs } from "@/lib/utils/validate";
 import { getContactByUserId } from "./contact";
 

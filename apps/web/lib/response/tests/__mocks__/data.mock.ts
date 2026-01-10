@@ -1,10 +1,10 @@
 import { Prisma } from "@prisma/client";
 import { isAfter, isBefore, isSameDay } from "date-fns";
-import { TDisplay } from "@formbricks/types/displays";
-import { TSurveyQuota } from "@formbricks/types/quota";
-import { TResponse, TResponseFilterCriteria, TResponseUpdateInput } from "@formbricks/types/responses";
-import { TSurvey, TSurveyQuestionTypeEnum } from "@formbricks/types/surveys/types";
-import { TTag } from "@formbricks/types/tags";
+import { TDisplay } from "@hivecfm/types/displays";
+import { TSurveyQuota } from "@hivecfm/types/quota";
+import { TResponse, TResponseFilterCriteria, TResponseUpdateInput } from "@hivecfm/types/responses";
+import { TSurvey, TSurveyQuestionTypeEnum } from "@hivecfm/types/surveys/types";
+import { TTag } from "@hivecfm/types/tags";
 import { mockWelcomeCard } from "@/lib/i18n/i18n.mock";
 import { responseSelection } from "../../service";
 import { constantsForTests } from "../constants";

@@ -1,7 +1,7 @@
 "use client";
 
 import { useTranslation } from "react-i18next";
-import { TActionClass } from "@formbricks/types/action-classes";
+import { TActionClass } from "@hivecfm/types/action-classes";
 
 interface ActionClassInfoProps {
   actionClass: TActionClass;

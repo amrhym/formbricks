@@ -1,4 +1,4 @@
-import { TResponseDataValue } from "@formbricks/types/responses";
+import { TResponseDataValue } from "@hivecfm/types/responses";
 
 export const isValidValue = (value: TResponseDataValue) => {
   return (

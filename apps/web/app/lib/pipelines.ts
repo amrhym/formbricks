@@ -1,4 +1,4 @@
-import { logger } from "@formbricks/logger";
+import { logger } from "@hivecfm/logger";
 import { TPipelineInput } from "@/app/lib/types/pipelines";
 import { CRON_SECRET, WEBAPP_URL } from "@/lib/constants";
 

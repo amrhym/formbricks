@@ -2,7 +2,7 @@ import { cleanup } from "@testing-library/react";
 import { returnValidationErrors } from "next-safe-action";
 import { afterEach, describe, expect, test, vi } from "vitest";
 import { ZodIssue, z } from "zod";
-import { AuthorizationError } from "@formbricks/types/errors";
+import { AuthorizationError } from "@hivecfm/types/errors";
 import { getMembershipRole } from "@/lib/membership/hooks/actions";
 import { getProjectPermissionByUserId, getTeamRoleByTeamIdUserId } from "@/modules/ee/teams/lib/roles";
 import { checkAuthorizationUpdated, formatErrors } from "./action-client-middleware";

@@ -1,7 +1,7 @@
 "use server";
 
 import { z } from "zod";
-import { ZUserNotificationSettings } from "@formbricks/types/user";
+import { ZUserNotificationSettings } from "@hivecfm/types/user";
 import { getUser, updateUser } from "@/lib/user/service";
 import { authenticatedActionClient } from "@/lib/utils/action-client";
 import { AuthenticatedActionClientCtx } from "@/lib/utils/action-client/types/context";

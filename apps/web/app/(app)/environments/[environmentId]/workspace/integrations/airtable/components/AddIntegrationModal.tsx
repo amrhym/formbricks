@@ -7,16 +7,16 @@ import { useEffect, useMemo, useState } from "react";
 import { Control, Controller, useForm } from "react-hook-form";
 import { toast } from "react-hot-toast";
 import { useTranslation } from "react-i18next";
-import { TIntegrationItem } from "@formbricks/types/integration";
+import { TIntegrationItem } from "@hivecfm/types/integration";
 import {
   TIntegrationAirtable,
   TIntegrationAirtableConfigData,
   TIntegrationAirtableInput,
   TIntegrationAirtableTables,
-} from "@formbricks/types/integration/airtable";
-import { TSurveyElement } from "@formbricks/types/surveys/elements";
-import { TSurvey } from "@formbricks/types/surveys/types";
-import { getTextContent } from "@formbricks/types/surveys/validation";
+} from "@hivecfm/types/integration/airtable";
+import { TSurveyElement } from "@hivecfm/types/surveys/elements";
+import { TSurvey } from "@hivecfm/types/surveys/types";
+import { getTextContent } from "@hivecfm/types/surveys/validation";
 import { createOrUpdateIntegrationAction } from "@/app/(app)/environments/[environmentId]/workspace/integrations/actions";
 import { BaseSelectDropdown } from "@/app/(app)/environments/[environmentId]/workspace/integrations/airtable/components/BaseSelectDropdown";
 import { fetchTables } from "@/app/(app)/environments/[environmentId]/workspace/integrations/airtable/lib/airtable";

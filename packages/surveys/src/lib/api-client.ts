@@ -1,9 +1,9 @@
-import { TDisplayCreateInput } from "@formbricks/types/displays";
-import { Result } from "@formbricks/types/error-handlers";
-import { ApiErrorResponse } from "@formbricks/types/errors";
-import { TSurveyQuotaAction } from "@formbricks/types/quota";
-import { TResponseInput, TResponseUpdateInput } from "@formbricks/types/responses";
-import { TUploadFileConfig, TUploadFileResponse } from "@formbricks/types/storage";
+import { TDisplayCreateInput } from "@hivecfm/types/displays";
+import { Result } from "@hivecfm/types/error-handlers";
+import { ApiErrorResponse } from "@hivecfm/types/errors";
+import { TSurveyQuotaAction } from "@hivecfm/types/quota";
+import { TResponseInput, TResponseUpdateInput } from "@hivecfm/types/responses";
+import { TUploadFileConfig, TUploadFileResponse } from "@hivecfm/types/storage";
 import { makeRequest } from "@/lib/utils";
 
 type TResponseCreateResponseQuotaFull = {

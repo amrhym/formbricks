@@ -1,6 +1,6 @@
 import { z } from "zod";
 import { ZodOpenApiOperationObject } from "zod-openapi";
-import { ZWebhook } from "@formbricks/database/zod/webhooks";
+import { ZWebhook } from "@hivecfm/database/zod/webhooks";
 import { ZWebhookIdSchema } from "@/modules/api/v2/management/webhooks/[webhookId]/types/webhooks";
 import { ZWebhookInput } from "@/modules/api/v2/management/webhooks/types/webhooks";
 import { makePartialSchema } from "@/modules/api/v2/types/openapi-response";

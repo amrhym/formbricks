@@ -5,7 +5,7 @@ import { ChevronDownIcon, ChevronRightIcon, CogIcon, HotelIcon, Loader2, PlusIco
 import { usePathname, useRouter } from "next/navigation";
 import { useEffect, useState, useTransition } from "react";
 import { useTranslation } from "react-i18next";
-import { logger } from "@formbricks/logger";
+import { logger } from "@hivecfm/logger";
 import { getProjectsForSwitcherAction } from "@/app/(app)/environments/[environmentId]/actions";
 import { getFormattedErrorMessage } from "@/lib/utils/helper";
 import { CreateProjectModal } from "@/modules/projects/components/create-project-modal";
@@ -180,9 +180,7 @@ export const ProjectBreadcrumb = ({
     return [
       {
         text: t("environments.settings.billing.upgrade"),
-        href: isLicenseActive
-          ? `/environments/${currentEnvironmentId}/settings/enterprise`
-          : "https://formbricks.com/upgrade-self-hosted-license",
+        href: isLicenseActive ? `/environments/${currentEnvironmentId}/settings/enterprise` : "#",
       },
       {
         text: t("common.cancel"),

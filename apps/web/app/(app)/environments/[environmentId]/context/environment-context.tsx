@@ -1,9 +1,9 @@
 "use client";
 
 import { createContext, useContext, useMemo } from "react";
-import { TEnvironment } from "@formbricks/types/environment";
-import { TOrganization } from "@formbricks/types/organizations";
-import { TProject } from "@formbricks/types/project";
+import { TEnvironment } from "@hivecfm/types/environment";
+import { TOrganization } from "@hivecfm/types/organizations";
+import { TProject } from "@hivecfm/types/project";
 
 export interface EnvironmentContextType {
   environment: TEnvironment;

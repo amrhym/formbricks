@@ -1,4 +1,4 @@
-import { TAccountInput, ZAccountInput } from "@formbricks/types/account";
+import { TAccountInput, ZAccountInput } from "@hivecfm/types/account";
 
 export const filterAccountInputData = (account: any) => {
   const supportedProps = Object.keys(ZAccountInput.shape);

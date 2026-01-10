@@ -1,8 +1,8 @@
 "use client";
 
 import { useTranslation } from "react-i18next";
-import { TMember, TOrganizationRole } from "@formbricks/types/memberships";
-import { TOrganization } from "@formbricks/types/organizations";
+import { TMember, TOrganizationRole } from "@hivecfm/types/memberships";
+import { TOrganization } from "@hivecfm/types/organizations";
 import { getAccessFlags } from "@/lib/membership/utils";
 import { getFormattedDateTimeString } from "@/lib/utils/datetime";
 import { EditMembershipRole } from "@/modules/ee/role-management/components/edit-membership-role";

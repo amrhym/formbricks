@@ -1,10 +1,10 @@
 "use client";
 
 import { useState } from "react";
-import { TIntegrationItem } from "@formbricks/types/integration";
-import { TIntegrationAirtable } from "@formbricks/types/integration/airtable";
-import { TSurvey } from "@formbricks/types/surveys/types";
-import { TUserLocale } from "@formbricks/types/user";
+import { TIntegrationItem } from "@hivecfm/types/integration";
+import { TIntegrationAirtable } from "@hivecfm/types/integration/airtable";
+import { TSurvey } from "@hivecfm/types/surveys/types";
+import { TUserLocale } from "@hivecfm/types/user";
 import { ManageIntegration } from "@/app/(app)/environments/[environmentId]/workspace/integrations/airtable/components/ManageIntegration";
 import { authorize } from "@/app/(app)/environments/[environmentId]/workspace/integrations/airtable/lib/airtable";
 import airtableLogo from "@/images/airtableLogo.svg";

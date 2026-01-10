@@ -1,11 +1,11 @@
 import "server-only";
 import { Prisma } from "@prisma/client";
 import { cache as reactCache } from "react";
-import { prisma } from "@formbricks/database";
-import { PrismaErrorType } from "@formbricks/database/types/error";
-import { ZId } from "@formbricks/types/common";
-import { DatabaseError, InvalidInputError, ResourceNotFoundError } from "@formbricks/types/errors";
-import { TSurveyQuota, TSurveyQuotaInput } from "@formbricks/types/quota";
+import { prisma } from "@hivecfm/database";
+import { PrismaErrorType } from "@hivecfm/database/types/error";
+import { ZId } from "@hivecfm/types/common";
+import { DatabaseError, InvalidInputError, ResourceNotFoundError } from "@hivecfm/types/errors";
+import { TSurveyQuota, TSurveyQuotaInput } from "@hivecfm/types/quota";
 import { validateInputs } from "@/lib/utils/validate";
 
 export const getQuota = reactCache(async (quotaId: string): Promise<TSurveyQuota> => {

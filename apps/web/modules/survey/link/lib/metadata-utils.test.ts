@@ -1,5 +1,5 @@
 import { beforeEach, describe, expect, test, vi } from "vitest";
-import { TSurvey, TSurveyWelcomeCard } from "@formbricks/types/surveys/types";
+import { TSurvey, TSurveyWelcomeCard } from "@hivecfm/types/surveys/types";
 import { getPublicDomain } from "@/lib/getPublicUrl";
 import { COLOR_DEFAULTS } from "@/lib/styling/constants";
 import { getSurvey } from "@/modules/survey/lib/survey";
@@ -38,7 +38,7 @@ vi.mock("@/lib/utils/recall", () => ({
 }));
 
 // Mock text content extraction
-vi.mock("@formbricks/types/surveys/validation", () => ({
+vi.mock("@hivecfm/types/surveys/validation", () => ({
   getTextContent: vi.fn((text) => text),
 }));
 
@@ -185,7 +185,7 @@ describe("Metadata Utils", () => {
     });
 
     test("handles welcome card headline with HTML content", async () => {
-      const { getTextContent } = await import("@formbricks/types/surveys/validation");
+      const { getTextContent } = await import("@hivecfm/types/surveys/validation");
 
       const mockSurvey = {
         id: mockSurveyId,

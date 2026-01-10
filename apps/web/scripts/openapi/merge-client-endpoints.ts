@@ -1,6 +1,6 @@
 import * as fs from "fs";
 import * as yaml from "yaml";
-import { logger } from "@formbricks/logger";
+import { logger } from "@hivecfm/logger";
 
 // Define the v1 (now v2) client endpoints to be merged
 const v1ClientEndpoints = {
@@ -65,7 +65,7 @@ const v1ClientEndpoints = {
       tags: ["Client API - Response"],
       servers: [
         {
-          url: "https://app.formbricks.com/api/v2",
+          url: "#/api/v2",
           description: "Formbricks Client",
         },
       ],
@@ -98,7 +98,7 @@ const v1ClientEndpoints = {
       tags: ["Client API - Response"],
       servers: [
         {
-          url: "https://app.formbricks.com/api/v2",
+          url: "#/api/v2",
           description: "Formbricks Client",
         },
       ],
@@ -148,7 +148,7 @@ const v1ClientEndpoints = {
       tags: ["Client API - Contacts"],
       servers: [
         {
-          url: "https://app.formbricks.com/api/v2",
+          url: "#/api/v2",
           description: "Formbricks Client",
         },
       ],
@@ -178,7 +178,7 @@ const v1ClientEndpoints = {
       tags: ["Client API - Contacts"],
       servers: [
         {
-          url: "https://app.formbricks.com/api/v2",
+          url: "#/api/v2",
           description: "Formbricks Client",
         },
       ],
@@ -211,7 +211,7 @@ const v1ClientEndpoints = {
       tags: ["Client API - Display"],
       servers: [
         {
-          url: "https://app.formbricks.com/api/v2",
+          url: "#/api/v2",
           description: "Formbricks Client",
         },
       ],
@@ -246,7 +246,7 @@ const v1ClientEndpoints = {
       tags: ["Client API - Environment"],
       servers: [
         {
-          url: "https://app.formbricks.com/api/v2",
+          url: "#/api/v2",
           description: "Formbricks Client",
         },
       ],
@@ -279,7 +279,7 @@ const v1ClientEndpoints = {
       tags: ["Client API - User"],
       servers: [
         {
-          url: "https://app.formbricks.com/api/v2",
+          url: "#/api/v2",
           description: "Formbricks Client",
         },
       ],
@@ -375,7 +375,7 @@ const v1ClientEndpoints = {
                     },
                     updatedFileName: "file--fid--b153ba3e-6602-4bb3-bed9-211b5b1ae463.jpg",
                     fileUrl:
-                      "https://app.formbricks.com/storage/cm1ubebtj000614kqe4hs3c67/private/file--fid--b153ba3e-6602-4bb3-bed9-211b5b1ae463.jpg",
+                      "#/storage/cm1ubebtj000614kqe4hs3c67/private/file--fid--b153ba3e-6602-4bb3-bed9-211b5b1ae463.jpg",
                   },
                 },
               },
@@ -423,7 +423,7 @@ const v1ClientEndpoints = {
       },
       servers: [
         {
-          url: "https://app.formbricks.com/api/v2",
+          url: "#/api/v2",
           description: "Formbricks API Server",
         },
       ],

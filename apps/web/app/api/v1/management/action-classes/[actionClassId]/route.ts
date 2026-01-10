@@ -1,7 +1,7 @@
 import { NextRequest } from "next/server";
-import { logger } from "@formbricks/logger";
-import { TActionClass, ZActionClassInput } from "@formbricks/types/action-classes";
-import { TAuthenticationApiKey } from "@formbricks/types/auth";
+import { logger } from "@hivecfm/logger";
+import { TActionClass, ZActionClassInput } from "@hivecfm/types/action-classes";
+import { TAuthenticationApiKey } from "@hivecfm/types/auth";
 import { handleErrorResponse } from "@/app/api/v1/auth";
 import { responses } from "@/app/lib/api/response";
 import { transformErrorToDetails } from "@/app/lib/api/validator";

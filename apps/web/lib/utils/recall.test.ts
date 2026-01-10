@@ -1,6 +1,6 @@
 import { describe, expect, test, vi } from "vitest";
-import { TResponseData, TResponseVariables } from "@formbricks/types/responses";
-import { TSurvey, TSurveyRecallItem } from "@formbricks/types/surveys/types";
+import { TResponseData, TResponseVariables } from "@hivecfm/types/responses";
+import { TSurvey, TSurveyRecallItem } from "@hivecfm/types/surveys/types";
 import { structuredClone } from "@/lib/pollyfills/structuredClone";
 import {
   checkForEmptyFallBackValue,

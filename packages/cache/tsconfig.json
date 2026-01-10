@@ -11,6 +11,6 @@
     "strict": true
   },
   "exclude": ["node_modules"],
-  "extends": "@formbricks/config-typescript/js-library.json",
+  "extends": "@hivecfm/config-typescript/js-library.json",
   "include": ["src", "types", "package.json"]
 }

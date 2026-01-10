@@ -5,7 +5,7 @@ import { CopyIcon, SendIcon } from "lucide-react";
 import { useEffect, useMemo, useState } from "react";
 import toast from "react-hot-toast";
 import { useTranslation } from "react-i18next";
-import { AuthenticationError } from "@formbricks/types/errors";
+import { AuthenticationError } from "@hivecfm/types/errors";
 import { getFormattedErrorMessage } from "@/lib/utils/helper";
 import { Button } from "@/modules/ui/components/button";
 import { CodeBlock } from "@/modules/ui/components/code-block";

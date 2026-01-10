@@ -1,7 +1,7 @@
 import { FingerprintIcon, TagIcon } from "lucide-react";
 import { useTranslation } from "react-i18next";
-import { TContactAttributeKey } from "@formbricks/types/contact-attribute-key";
-import type { TBaseFilter } from "@formbricks/types/segment";
+import { TContactAttributeKey } from "@hivecfm/types/contact-attribute-key";
+import type { TBaseFilter } from "@hivecfm/types/segment";
 import FilterButton from "./filter-button";
 
 interface AttributeTabContentProps {

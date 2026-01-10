@@ -1,11 +1,11 @@
 import "server-only";
 import { Prisma } from "@prisma/client";
-import { prisma } from "@formbricks/database";
-import { TContactAttributes } from "@formbricks/types/contact-attribute";
-import { DatabaseError, ResourceNotFoundError } from "@formbricks/types/errors";
-import { TResponseWithQuotaFull } from "@formbricks/types/quota";
-import { TResponse, ZResponseInput } from "@formbricks/types/responses";
-import { TTag } from "@formbricks/types/tags";
+import { prisma } from "@hivecfm/database";
+import { TContactAttributes } from "@hivecfm/types/contact-attribute";
+import { DatabaseError, ResourceNotFoundError } from "@hivecfm/types/errors";
+import { TResponseWithQuotaFull } from "@hivecfm/types/quota";
+import { TResponse, ZResponseInput } from "@hivecfm/types/responses";
+import { TTag } from "@hivecfm/types/tags";
 import { responseSelection } from "@/app/api/v1/client/[environmentId]/responses/lib/response";
 import { TResponseInputV2 } from "@/app/api/v2/client/[environmentId]/responses/types/response";
 import { getOrganizationByEnvironmentId } from "@/lib/organization/service";

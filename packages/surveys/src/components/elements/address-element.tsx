@@ -1,7 +1,7 @@
 import { useState } from "preact/hooks";
-import { FormField, type FormFieldConfig } from "@formbricks/survey-ui";
-import { type TResponseData, type TResponseTtc } from "@formbricks/types/responses";
-import type { TSurveyAddressElement } from "@formbricks/types/surveys/elements";
+import { FormField, type FormFieldConfig } from "@hivecfm/survey-ui";
+import { type TResponseData, type TResponseTtc } from "@hivecfm/types/responses";
+import type { TSurveyAddressElement } from "@hivecfm/types/surveys/elements";
 import { getLocalizedValue } from "@/lib/i18n";
 import { getUpdatedTtc, useTtc } from "@/lib/ttc";
 

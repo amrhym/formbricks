@@ -1,6 +1,6 @@
 import { describe, expect, test } from "vitest";
-import { TContactAttributes } from "@formbricks/types/contact-attribute";
-import { TResponseContact } from "@formbricks/types/responses";
+import { TContactAttributes } from "@hivecfm/types/contact-attribute";
+import { TResponseContact } from "@hivecfm/types/responses";
 import { getContactIdentifier } from "./contact";
 
 describe("getContactIdentifier", () => {

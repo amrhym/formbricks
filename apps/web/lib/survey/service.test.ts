@@ -2,12 +2,12 @@ import { prisma } from "@/lib/__mocks__/database";
 import { ActionClass, Prisma, Survey } from "@prisma/client";
 import { beforeEach, describe, expect, test, vi } from "vitest";
 import { testInputValidation } from "vitestSetup";
-import { PrismaErrorType } from "@formbricks/database/types/error";
-import { TSurveyFollowUp } from "@formbricks/database/types/survey-follow-up";
-import { TActionClass } from "@formbricks/types/action-classes";
-import { DatabaseError, InvalidInputError, ResourceNotFoundError } from "@formbricks/types/errors";
-import { TSegment } from "@formbricks/types/segment";
-import { TSurvey, TSurveyCreateInput, TSurveyQuestionTypeEnum } from "@formbricks/types/surveys/types";
+import { PrismaErrorType } from "@hivecfm/database/types/error";
+import { TSurveyFollowUp } from "@hivecfm/database/types/survey-follow-up";
+import { TActionClass } from "@hivecfm/types/action-classes";
+import { DatabaseError, InvalidInputError, ResourceNotFoundError } from "@hivecfm/types/errors";
+import { TSegment } from "@hivecfm/types/segment";
+import { TSurvey, TSurveyCreateInput, TSurveyQuestionTypeEnum } from "@hivecfm/types/surveys/types";
 import { getActionClasses } from "@/lib/actionClass/service";
 import {
   getOrganizationByEnvironmentId,

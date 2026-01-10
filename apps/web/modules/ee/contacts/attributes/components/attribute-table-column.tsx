@@ -3,8 +3,8 @@
 import { ColumnDef } from "@tanstack/react-table";
 import { format } from "date-fns";
 import { TFunction } from "i18next";
-import { TContactAttributeKey } from "@formbricks/types/contact-attribute-key";
-import { TUserLocale } from "@formbricks/types/user";
+import { TContactAttributeKey } from "@hivecfm/types/contact-attribute-key";
+import { TUserLocale } from "@hivecfm/types/user";
 import { timeSince } from "@/lib/time";
 import { getSelectionColumn } from "@/modules/ui/components/data-table";
 import { HighlightedText } from "@/modules/ui/components/highlighted-text";

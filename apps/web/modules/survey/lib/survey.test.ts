@@ -1,13 +1,13 @@
 import { Organization, Prisma } from "@prisma/client";
 import { afterEach, describe, expect, test, vi } from "vitest";
-import { prisma } from "@formbricks/database";
-import { PrismaErrorType } from "@formbricks/database/types/error";
-import { DatabaseError, ResourceNotFoundError } from "@formbricks/types/errors";
-import { TSurvey } from "@formbricks/types/surveys/types";
+import { prisma } from "@hivecfm/database";
+import { PrismaErrorType } from "@hivecfm/database/types/error";
+import { DatabaseError, ResourceNotFoundError } from "@hivecfm/types/errors";
+import { TSurvey } from "@hivecfm/types/surveys/types";
 import { getOrganizationBilling, getSurvey } from "./survey";
 
 // Mock prisma
-vi.mock("@formbricks/database", () => ({
+vi.mock("@hivecfm/database", () => ({
   prisma: {
     organization: {
       findFirst: vi.fn(),

@@ -1,6 +1,6 @@
-import { prisma } from "@formbricks/database";
-import { TResponseWithQuotaFull } from "@formbricks/types/quota";
-import { TResponseUpdateInput } from "@formbricks/types/responses";
+import { prisma } from "@hivecfm/database";
+import { TResponseWithQuotaFull } from "@hivecfm/types/quota";
+import { TResponseUpdateInput } from "@hivecfm/types/responses";
 import { updateResponse } from "@/lib/response/service";
 import { evaluateResponseQuotas } from "@/modules/ee/quotas/lib/evaluation-service";
 

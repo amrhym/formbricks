@@ -1,7 +1,7 @@
 import { Prisma } from "@prisma/client";
 import { cache as reactCache } from "react";
-import { logger } from "@formbricks/logger";
-import { err, ok } from "@formbricks/types/error-handlers";
+import { logger } from "@hivecfm/logger";
+import { err, ok } from "@hivecfm/types/error-handlers";
 import {
   TBaseFilters,
   TSegmentAttributeFilter,
@@ -9,7 +9,7 @@ import {
   TSegmentFilter,
   TSegmentPersonFilter,
   TSegmentSegmentFilter,
-} from "@formbricks/types/segment";
+} from "@hivecfm/types/segment";
 import { isResourceFilter } from "@/modules/ee/contacts/segments/lib/utils";
 import { getSegment } from "../segments";
 

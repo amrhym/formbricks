@@ -1,5 +1,5 @@
-import { OrganizationAccessType } from "@formbricks/types/api-key";
-import { TAPIKeyEnvironmentPermission, TAuthenticationApiKey } from "@formbricks/types/auth";
+import { OrganizationAccessType } from "@hivecfm/types/api-key";
+import { TAPIKeyEnvironmentPermission, TAuthenticationApiKey } from "@hivecfm/types/auth";
 
 // Permission level required for different HTTP methods
 const methodPermissionMap = {

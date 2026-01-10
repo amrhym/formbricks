@@ -1,5 +1,5 @@
 import { TFunction } from "i18next";
-import { TIntegrationType } from "@formbricks/types/integration";
+import { TIntegrationType } from "@hivecfm/types/integration";
 
 export const getIntegrationDetails = (integrationType: TIntegrationType, t: TFunction) => {
   switch (integrationType) {

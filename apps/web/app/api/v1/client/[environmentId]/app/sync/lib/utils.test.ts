@@ -1,12 +1,12 @@
 import { describe, expect, test, vi } from "vitest";
-import { TAttributes } from "@formbricks/types/attributes";
-import { TLanguage } from "@formbricks/types/project";
+import { TAttributes } from "@hivecfm/types/attributes";
+import { TLanguage } from "@hivecfm/types/project";
 import {
   TSurvey,
   TSurveyEnding,
   TSurveyQuestion,
   TSurveyQuestionTypeEnum,
-} from "@formbricks/types/surveys/types";
+} from "@hivecfm/types/surveys/types";
 import { parseRecallInfo } from "@/lib/utils/recall";
 import { replaceAttributeRecall } from "./utils";
 

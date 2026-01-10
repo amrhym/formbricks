@@ -1,6 +1,6 @@
 import { beforeEach, describe, expect, test, vi } from "vitest";
-import { logger } from "@formbricks/logger";
-import { err, ok } from "@formbricks/types/error-handlers";
+import { logger } from "@hivecfm/logger";
+import { err, ok } from "@hivecfm/types/error-handlers";
 import { hashString } from "@/lib/hash-string";
 // Import modules after mocking
 import { getClientIpFromHeaders } from "@/lib/utils/client-ip";
@@ -20,7 +20,7 @@ vi.mock("./rate-limit", () => ({
   checkRateLimit: vi.fn(),
 }));
 
-vi.mock("@formbricks/logger", () => ({
+vi.mock("@hivecfm/logger", () => ({
   logger: {
     error: vi.fn(),
   },

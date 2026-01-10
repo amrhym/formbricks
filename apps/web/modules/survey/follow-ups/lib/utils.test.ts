@@ -1,5 +1,5 @@
 import { beforeEach, describe, expect, test, vi } from "vitest";
-import { TOrganizationBillingPlan } from "@formbricks/types/organizations";
+import { TOrganizationBillingPlan } from "@hivecfm/types/organizations";
 import * as constants from "@/lib/constants";
 import { getSurveyFollowUpsPermission } from "./utils";
 

@@ -1,5 +1,5 @@
 import { TFunction } from "i18next";
-import { TActionClassInput } from "@formbricks/types/action-classes";
+import { TActionClassInput } from "@hivecfm/types/action-classes";
 
 export const buildActionObject = (data: TActionClassInput, environmentId: string, t: TFunction) => {
   if (data.type === "noCode") {

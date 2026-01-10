@@ -2,8 +2,8 @@
 
 import { EyeOffIcon } from "lucide-react";
 import { useTranslation } from "react-i18next";
-import { TResponseData } from "@formbricks/types/responses";
-import { TSurveyHiddenFields } from "@formbricks/types/surveys/types";
+import { TResponseData } from "@hivecfm/types/responses";
+import { TSurveyHiddenFields } from "@hivecfm/types/surveys/types";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/modules/ui/components/tooltip";
 
 interface HiddenFieldsProps {

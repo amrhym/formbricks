@@ -1,14 +1,14 @@
 import { createId } from "@paralleldrive/cuid2";
-import { TJsEnvironmentStateSurvey } from "@formbricks/types/js";
-import { TResponseData, TResponseVariables } from "@formbricks/types/responses";
+import { TJsEnvironmentStateSurvey } from "@hivecfm/types/js";
+import { TResponseData, TResponseVariables } from "@hivecfm/types/responses";
 import {
   TSurveyBlockLogic,
   TSurveyBlockLogicAction,
   TSurveyBlockLogicActionObjective,
-} from "@formbricks/types/surveys/blocks";
-import { TSurveyElement, TSurveyElementTypeEnum } from "@formbricks/types/surveys/elements";
-import { TConditionGroup, TSingleCondition } from "@formbricks/types/surveys/logic";
-import { TActionCalculate, TSurveyLogicAction, TSurveyVariable } from "@formbricks/types/surveys/types";
+} from "@hivecfm/types/surveys/blocks";
+import { TSurveyElement, TSurveyElementTypeEnum } from "@hivecfm/types/surveys/elements";
+import { TConditionGroup, TSingleCondition } from "@hivecfm/types/surveys/logic";
+import { TActionCalculate, TSurveyLogicAction, TSurveyVariable } from "@hivecfm/types/surveys/types";
 import { getLocalizedValue } from "@/lib/i18n/utils";
 import { getElementsFromBlocks } from "@/modules/survey/lib/client-utils";
 

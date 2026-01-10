@@ -1,5 +1,5 @@
 import { NextRequest } from "next/server";
-import { logger } from "@formbricks/logger";
+import { logger } from "@hivecfm/logger";
 import { handleErrorResponse } from "@/app/api/v1/auth";
 import { responses } from "@/app/lib/api/response";
 import { transformErrorToDetails } from "@/app/lib/api/validator";

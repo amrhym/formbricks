@@ -1,6 +1,6 @@
 import { Language, Project } from "@prisma/client";
 import { z } from "zod";
-import { ZSurveyStatus } from "@formbricks/types/surveys/types";
+import { ZSurveyStatus } from "@hivecfm/types/surveys/types";
 
 export const ZSurvey = z.object({
   id: z.string(),

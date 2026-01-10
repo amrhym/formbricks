@@ -4,7 +4,7 @@ import { mockDeep, mockReset } from "vitest-mock-extended";
 
 export const prisma = mockDeep<PrismaClient>();
 
-vi.mock("@formbricks/database", () => ({
+vi.mock("@hivecfm/database", () => ({
   __esModule: true,
   prisma,
 }));

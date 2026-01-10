@@ -1,16 +1,16 @@
 import { type JSX } from "preact";
 import { useCallback, useEffect, useMemo, useRef, useState } from "preact/hooks";
-import { SurveyContainerProps } from "@formbricks/types/formbricks-surveys";
-import { type TJsEnvironmentStateSurvey, TJsFileUploadParams } from "@formbricks/types/js";
+import { SurveyContainerProps } from "@hivecfm/types/formbricks-surveys";
+import { type TJsEnvironmentStateSurvey, TJsFileUploadParams } from "@hivecfm/types/js";
 import type {
   TResponseData,
   TResponseTtc,
   TResponseUpdate,
   TResponseVariables,
-} from "@formbricks/types/responses";
-import { TUploadFileConfig } from "@formbricks/types/storage";
-import { TSurveyBlock, TSurveyBlockLogic } from "@formbricks/types/surveys/blocks";
-import { TSurveyElement } from "@formbricks/types/surveys/elements";
+} from "@hivecfm/types/responses";
+import { TUploadFileConfig } from "@hivecfm/types/storage";
+import { TSurveyBlock, TSurveyBlockLogic } from "@hivecfm/types/surveys/blocks";
+import { TSurveyElement } from "@hivecfm/types/surveys/elements";
 import { BlockConditional } from "@/components/general/block-conditional";
 import { EndingCard } from "@/components/general/ending-card";
 import { ErrorComponent } from "@/components/general/error-component";

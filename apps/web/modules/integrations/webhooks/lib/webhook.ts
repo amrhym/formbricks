@@ -1,14 +1,9 @@
 import { Prisma, Webhook } from "@prisma/client";
 import { v7 as uuidv7 } from "uuid";
-import { prisma } from "@formbricks/database";
-import { PrismaErrorType } from "@formbricks/database/types/error";
-import { ZId } from "@formbricks/types/common";
-import {
-  DatabaseError,
-  InvalidInputError,
-  ResourceNotFoundError,
-  UnknownError,
-} from "@formbricks/types/errors";
+import { prisma } from "@hivecfm/database";
+import { PrismaErrorType } from "@hivecfm/database/types/error";
+import { ZId } from "@hivecfm/types/common";
+import { DatabaseError, InvalidInputError, ResourceNotFoundError, UnknownError } from "@hivecfm/types/errors";
 import { generateStandardWebhookSignature, generateWebhookSecret } from "@/lib/crypto";
 import { validateInputs } from "@/lib/utils/validate";
 import { isDiscordWebhook } from "@/modules/integrations/webhooks/lib/utils";

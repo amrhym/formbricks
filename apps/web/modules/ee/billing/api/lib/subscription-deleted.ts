@@ -1,6 +1,6 @@
 import Stripe from "stripe";
-import { logger } from "@formbricks/logger";
-import { ResourceNotFoundError } from "@formbricks/types/errors";
+import { logger } from "@hivecfm/logger";
+import { ResourceNotFoundError } from "@hivecfm/types/errors";
 import { BILLING_LIMITS, PROJECT_FEATURE_KEYS } from "@/lib/constants";
 import { getOrganization, updateOrganization } from "@/lib/organization/service";
 

@@ -1,11 +1,11 @@
 import { Prisma } from "@prisma/client";
 import { beforeEach, describe, expect, test, vi } from "vitest";
-import { prisma } from "@formbricks/database";
-import { logger } from "@formbricks/logger";
-import { StorageErrorCode } from "@formbricks/storage";
-import { TEnvironment } from "@formbricks/types/environment";
-import { DatabaseError, InvalidInputError, ValidationError } from "@formbricks/types/errors";
-import { ZProject } from "@formbricks/types/project";
+import { prisma } from "@hivecfm/database";
+import { logger } from "@hivecfm/logger";
+import { StorageErrorCode } from "@hivecfm/storage";
+import { TEnvironment } from "@hivecfm/types/environment";
+import { DatabaseError, InvalidInputError, ValidationError } from "@hivecfm/types/errors";
+import { ZProject } from "@hivecfm/types/project";
 import { createEnvironment } from "@/lib/environment/service";
 import { deleteFilesByEnvironmentId } from "@/modules/storage/service";
 import { createProject, deleteProject, updateProject } from "./project";
@@ -46,7 +46,7 @@ const baseProject = {
   logo: null,
 };
 
-vi.mock("@formbricks/database", () => ({
+vi.mock("@hivecfm/database", () => ({
   prisma: {
     project: {
       update: vi.fn(),
@@ -59,7 +59,7 @@ vi.mock("@formbricks/database", () => ({
   },
 }));
 
-vi.mock("@formbricks/logger", () => ({
+vi.mock("@hivecfm/logger", () => ({
   logger: {
     error: vi.fn(),
   },

@@ -1,12 +1,12 @@
 import "server-only";
 import { Prisma } from "@prisma/client";
 import { z } from "zod";
-import { prisma } from "@formbricks/database";
-import { PrismaErrorType } from "@formbricks/database/types/error";
-import { logger } from "@formbricks/logger";
-import { ZId, ZString } from "@formbricks/types/common";
-import { DatabaseError, InvalidInputError, ValidationError } from "@formbricks/types/errors";
-import { TProject, TProjectUpdateInput, ZProject, ZProjectUpdateInput } from "@formbricks/types/project";
+import { prisma } from "@hivecfm/database";
+import { PrismaErrorType } from "@hivecfm/database/types/error";
+import { logger } from "@hivecfm/logger";
+import { ZId, ZString } from "@hivecfm/types/common";
+import { DatabaseError, InvalidInputError, ValidationError } from "@hivecfm/types/errors";
+import { TProject, TProjectUpdateInput, ZProject, ZProjectUpdateInput } from "@hivecfm/types/project";
 import { createEnvironment } from "@/lib/environment/service";
 import { validateInputs } from "@/lib/utils/validate";
 import { deleteFilesByEnvironmentId } from "@/modules/storage/service";

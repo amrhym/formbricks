@@ -1,30 +1,30 @@
 import { afterEach, beforeEach, describe, expect, test, vi } from "vitest";
-import { logger } from "@formbricks/logger";
+import { logger } from "@hivecfm/logger";
 import {
   TIntegrationAirtable,
   TIntegrationAirtableConfig,
   TIntegrationAirtableConfigData,
   TIntegrationAirtableCredential,
-} from "@formbricks/types/integration/airtable";
+} from "@hivecfm/types/integration/airtable";
 import {
   TIntegrationGoogleSheets,
   TIntegrationGoogleSheetsConfig,
   TIntegrationGoogleSheetsConfigData,
   TIntegrationGoogleSheetsCredential,
-} from "@formbricks/types/integration/google-sheet";
+} from "@hivecfm/types/integration/google-sheet";
 import {
   TIntegrationNotion,
   TIntegrationNotionConfigData,
   TIntegrationNotionCredential,
-} from "@formbricks/types/integration/notion";
+} from "@hivecfm/types/integration/notion";
 import {
   TIntegrationSlack,
   TIntegrationSlackConfigData,
   TIntegrationSlackCredential,
-} from "@formbricks/types/integration/slack";
-import { TResponse, TResponseMeta } from "@formbricks/types/responses";
-import { TSurveyElementTypeEnum } from "@formbricks/types/surveys/elements";
-import { TSurvey, TSurveyQuestionTypeEnum } from "@formbricks/types/surveys/types";
+} from "@hivecfm/types/integration/slack";
+import { TResponse, TResponseMeta } from "@hivecfm/types/responses";
+import { TSurveyElementTypeEnum } from "@hivecfm/types/surveys/elements";
+import { TSurvey, TSurveyQuestionTypeEnum } from "@hivecfm/types/surveys/types";
 import { TPipelineInput } from "@/app/api/(internal)/pipeline/types/pipelines";
 import { writeData as airtableWriteData } from "@/lib/airtable/service";
 import { writeData as googleSheetWriteData } from "@/lib/googleSheet/service";
@@ -47,7 +47,7 @@ vi.mock("@/lib/slack/service");
 vi.mock("@/lib/utils/datetime");
 vi.mock("@/lib/utils/recall");
 vi.mock("@/lib/utils/strings");
-vi.mock("@formbricks/logger");
+vi.mock("@hivecfm/logger");
 
 // Mock data
 const surveyId = "survey1";

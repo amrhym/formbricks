@@ -1,9 +1,9 @@
 import { createId } from "@paralleldrive/cuid2";
 import type { TFunction } from "i18next";
-import { TSurveyElementTypeEnum } from "@formbricks/types/surveys/elements";
-import type { TSurveyOpenTextElement } from "@formbricks/types/surveys/elements";
-import type { TSurvey } from "@formbricks/types/surveys/types";
-import type { TTemplate } from "@formbricks/types/templates";
+import { TSurveyElementTypeEnum } from "@hivecfm/types/surveys/elements";
+import type { TSurveyOpenTextElement } from "@hivecfm/types/surveys/elements";
+import type { TSurvey } from "@hivecfm/types/surveys/types";
+import type { TTemplate } from "@hivecfm/types/templates";
 import {
   buildBlock,
   buildCTAElement,
@@ -2694,7 +2694,7 @@ const marketSiteClarity = (t: TFunction): TTemplate => {
               headline: t("templates.market_site_clarity_question_3_headline"),
               subheader: "",
               required: false,
-              buttonUrl: "https://app.formbricks.com/auth/signup",
+              buttonUrl: "#/auth/signup",
               buttonExternal: true,
               ctaButtonLabel: t("templates.market_site_clarity_question_3_button_label"),
             }),
@@ -3675,7 +3675,7 @@ const identifySignUpBarriers = (t: TFunction): TTemplate => {
               subheader: t("templates.identify_sign_up_barriers_question_9_html"),
               headline: t("templates.identify_sign_up_barriers_question_9_headline"),
               required: false,
-              buttonUrl: "https://app.formbricks.com/auth/signup",
+              buttonUrl: "#/auth/signup",
               buttonExternal: true,
               ctaButtonLabel: t("templates.identify_sign_up_barriers_question_9_button_label"),
             }),

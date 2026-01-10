@@ -7,14 +7,14 @@ import { useEffect, useMemo, useState } from "react";
 import { useForm } from "react-hook-form";
 import toast from "react-hot-toast";
 import { useTranslation } from "react-i18next";
-import { TIntegrationItem } from "@formbricks/types/integration";
+import { TIntegrationItem } from "@hivecfm/types/integration";
 import {
   TIntegrationSlack,
   TIntegrationSlackConfigData,
   TIntegrationSlackInput,
-} from "@formbricks/types/integration/slack";
-import { TSurvey } from "@formbricks/types/surveys/types";
-import { getTextContent } from "@formbricks/types/surveys/validation";
+} from "@hivecfm/types/integration/slack";
+import { TSurvey } from "@hivecfm/types/surveys/types";
+import { getTextContent } from "@hivecfm/types/surveys/validation";
 import { createOrUpdateIntegrationAction } from "@/app/(app)/environments/[environmentId]/workspace/integrations/actions";
 import SlackLogo from "@/images/slacklogo.png";
 import { recallToHeadline } from "@/lib/utils/recall";

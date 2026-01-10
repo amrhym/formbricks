@@ -3,10 +3,10 @@
 import type { Dispatch, SetStateAction } from "react";
 import { useMemo } from "react";
 import { useTranslation } from "react-i18next";
-import type { TI18nString } from "@formbricks/types/i18n";
-import type { TSurvey, TSurveyLanguage } from "@formbricks/types/surveys/types";
-import { getTextContent, isValidHTML } from "@formbricks/types/surveys/validation";
-import { TUserLocale } from "@formbricks/types/user";
+import type { TI18nString } from "@hivecfm/types/i18n";
+import type { TSurvey, TSurveyLanguage } from "@hivecfm/types/surveys/types";
+import { getTextContent, isValidHTML } from "@hivecfm/types/surveys/validation";
+import { TUserLocale } from "@hivecfm/types/user";
 import { md } from "@/lib/markdownIt";
 import { recallToHeadline } from "@/lib/utils/recall";
 import { isLabelValidForAllLanguages } from "@/modules/survey/editor/lib/validation";

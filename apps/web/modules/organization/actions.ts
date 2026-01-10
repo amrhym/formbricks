@@ -1,8 +1,8 @@
 "use server";
 
 import { z } from "zod";
-import { OperationNotAllowedError } from "@formbricks/types/errors";
-import { TUserNotificationSettings } from "@formbricks/types/user";
+import { OperationNotAllowedError } from "@hivecfm/types/errors";
+import { TUserNotificationSettings } from "@hivecfm/types/user";
 import { createMembership } from "@/lib/membership/service";
 import { createOrganization } from "@/lib/organization/service";
 import { updateUser } from "@/lib/user/service";

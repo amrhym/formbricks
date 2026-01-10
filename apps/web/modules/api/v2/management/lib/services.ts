@@ -1,8 +1,8 @@
 "use server";
 
 import { cache as reactCache } from "react";
-import { prisma } from "@formbricks/database";
-import { err, ok } from "@formbricks/types/error-handlers";
+import { prisma } from "@hivecfm/database";
+import { err, ok } from "@hivecfm/types/error-handlers";
 
 export const fetchEnvironmentId = reactCache(async (id: string, isResponseId: boolean) => {
   try {

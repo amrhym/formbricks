@@ -1,6 +1,6 @@
 import * as Sentry from "@sentry/nextjs";
 import NextAuth from "next-auth";
-import { logger } from "@formbricks/logger";
+import { logger } from "@hivecfm/logger";
 import { IS_PRODUCTION, SENTRY_DSN } from "@/lib/constants";
 import { authOptions as baseAuthOptions } from "@/modules/auth/lib/authOptions";
 import { queueAuditEventBackground } from "@/modules/ee/audit-logs/lib/handler";

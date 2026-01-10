@@ -13,7 +13,7 @@ import { Table } from "@tanstack/react-table";
 import { SettingsIcon } from "lucide-react";
 import { useMemo } from "react";
 import { useTranslation } from "react-i18next";
-import { TSurvey } from "@formbricks/types/surveys/types";
+import { TSurvey } from "@hivecfm/types/surveys/types";
 import {
   Dialog,
   DialogBody,

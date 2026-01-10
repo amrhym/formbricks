@@ -1,8 +1,8 @@
-import { type TI18nString } from "@formbricks/types/i18n";
-import { TResponseData, TResponseDataValue, TResponseVariables } from "@formbricks/types/responses";
-import { TSurveyElement } from "@formbricks/types/surveys/elements";
-import { TSurvey, TSurveyRecallItem } from "@formbricks/types/surveys/types";
-import { getTextContent } from "@formbricks/types/surveys/validation";
+import { type TI18nString } from "@hivecfm/types/i18n";
+import { TResponseData, TResponseDataValue, TResponseVariables } from "@hivecfm/types/responses";
+import { TSurveyElement } from "@hivecfm/types/surveys/elements";
+import { TSurvey, TSurveyRecallItem } from "@hivecfm/types/surveys/types";
+import { getTextContent } from "@hivecfm/types/surveys/validation";
 import { getLocalizedValue } from "@/lib/i18n/utils";
 import { structuredClone } from "@/lib/pollyfills/structuredClone";
 import { getElementsFromBlocks } from "@/modules/survey/lib/client-utils";

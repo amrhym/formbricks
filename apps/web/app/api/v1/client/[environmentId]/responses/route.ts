@@ -1,11 +1,11 @@
 import { headers } from "next/headers";
 import { NextRequest } from "next/server";
 import { UAParser } from "ua-parser-js";
-import { logger } from "@formbricks/logger";
-import { ZEnvironmentId } from "@formbricks/types/environment";
-import { InvalidInputError } from "@formbricks/types/errors";
-import { TResponseWithQuotaFull } from "@formbricks/types/quota";
-import { TResponseInput, ZResponseInput } from "@formbricks/types/responses";
+import { logger } from "@hivecfm/logger";
+import { ZEnvironmentId } from "@hivecfm/types/environment";
+import { InvalidInputError } from "@hivecfm/types/errors";
+import { TResponseWithQuotaFull } from "@hivecfm/types/quota";
+import { TResponseInput, ZResponseInput } from "@hivecfm/types/responses";
 import { responses } from "@/app/lib/api/response";
 import { transformErrorToDetails } from "@/app/lib/api/validator";
 import { withV1ApiWrapper } from "@/app/lib/api/with-api-logging";

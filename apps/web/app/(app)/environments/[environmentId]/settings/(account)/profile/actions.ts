@@ -1,11 +1,11 @@
 "use server";
 
-import { AuthenticationError, AuthorizationError, OperationNotAllowedError } from "@formbricks/types/errors";
+import { AuthenticationError, AuthorizationError, OperationNotAllowedError } from "@hivecfm/types/errors";
 import {
   TUserPersonalInfoUpdateInput,
   TUserUpdateInput,
   ZUserPersonalInfoUpdateInput,
-} from "@formbricks/types/user";
+} from "@hivecfm/types/user";
 import {
   getIsEmailUnique,
   verifyUserPassword,

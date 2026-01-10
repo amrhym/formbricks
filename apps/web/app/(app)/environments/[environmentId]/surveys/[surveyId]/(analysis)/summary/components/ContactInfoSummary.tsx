@@ -2,8 +2,8 @@
 
 import Link from "next/link";
 import { useTranslation } from "react-i18next";
-import { TSurvey, TSurveyElementSummaryContactInfo } from "@formbricks/types/surveys/types";
-import { TUserLocale } from "@formbricks/types/user";
+import { TSurvey, TSurveyElementSummaryContactInfo } from "@hivecfm/types/surveys/types";
+import { TUserLocale } from "@hivecfm/types/user";
 import { timeSince } from "@/lib/time";
 import { getContactIdentifier } from "@/lib/utils/contact";
 import { ArrayResponse } from "@/modules/ui/components/array-response";

@@ -1,9 +1,9 @@
 import { PipelineTriggers, Webhook } from "@prisma/client";
 import { headers } from "next/headers";
 import { v7 as uuidv7 } from "uuid";
-import { prisma } from "@formbricks/database";
-import { logger } from "@formbricks/logger";
-import { ResourceNotFoundError } from "@formbricks/types/errors";
+import { prisma } from "@hivecfm/database";
+import { logger } from "@hivecfm/logger";
+import { ResourceNotFoundError } from "@hivecfm/types/errors";
 import { sendTelemetryEvents } from "@/app/api/(internal)/pipeline/lib/telemetry";
 import { ZPipelineInput } from "@/app/api/(internal)/pipeline/types/pipelines";
 import { responses } from "@/app/lib/api/response";

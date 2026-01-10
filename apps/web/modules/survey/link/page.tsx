@@ -1,8 +1,8 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
-import { logger } from "@formbricks/logger";
-import { ZId } from "@formbricks/types/common";
-import { TSurvey } from "@formbricks/types/surveys/types";
+import { logger } from "@hivecfm/logger";
+import { ZId } from "@hivecfm/types/common";
+import { TSurvey } from "@hivecfm/types/surveys/types";
 import { findMatchingLocale } from "@/lib/utils/locale";
 import { getMultiLanguagePermission } from "@/modules/ee/license-check/lib/utils";
 import { getResponseCountBySurveyId } from "@/modules/survey/lib/response";

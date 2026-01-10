@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation";
 import { useState } from "react";
 import toast from "react-hot-toast";
 import { useTranslation } from "react-i18next";
-import type { TOrganizationRole } from "@formbricks/types/memberships";
+import type { TOrganizationRole } from "@hivecfm/types/memberships";
 import { getAccessFlags } from "@/lib/membership/utils";
 import { Badge } from "@/modules/ui/components/badge";
 import { Button } from "@/modules/ui/components/button";

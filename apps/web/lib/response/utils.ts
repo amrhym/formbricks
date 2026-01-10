@@ -8,15 +8,15 @@ import {
   TResponseWithQuotas,
   TSurveyContactAttributes,
   TSurveyMetaFieldFilter,
-} from "@formbricks/types/responses";
+} from "@hivecfm/types/responses";
 import {
   TSurveyElement,
   TSurveyMultipleChoiceElement,
   TSurveyPictureSelectionElement,
   TSurveyRankingElement,
-} from "@formbricks/types/surveys/elements";
-import { TSurvey } from "@formbricks/types/surveys/types";
-import { getTextContent } from "@formbricks/types/surveys/validation";
+} from "@hivecfm/types/surveys/elements";
+import { TSurvey } from "@hivecfm/types/surveys/types";
+import { getTextContent } from "@hivecfm/types/surveys/validation";
 import { getLocalizedValue } from "@/lib/i18n/utils";
 import { replaceHeadlineRecall } from "@/lib/utils/recall";
 import { getElementsFromBlocks } from "@/modules/survey/lib/client-utils";

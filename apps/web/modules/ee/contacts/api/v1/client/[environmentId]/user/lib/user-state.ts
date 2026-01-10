@@ -1,5 +1,5 @@
-import { prisma } from "@formbricks/database";
-import { TJsPersonState } from "@formbricks/types/js";
+import { prisma } from "@hivecfm/database";
+import { TJsPersonState } from "@hivecfm/types/js";
 import { getPersonSegmentIds } from "./segments";
 
 /**

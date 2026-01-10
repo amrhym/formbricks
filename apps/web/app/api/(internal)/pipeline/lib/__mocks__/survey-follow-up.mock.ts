@@ -1,9 +1,5 @@
-import { TResponse } from "@formbricks/types/responses";
-import {
-  TSurvey,
-  TSurveyContactInfoQuestion,
-  TSurveyQuestionTypeEnum,
-} from "@formbricks/types/surveys/types";
+import { TResponse } from "@hivecfm/types/responses";
+import { TSurvey, TSurveyContactInfoQuestion, TSurveyQuestionTypeEnum } from "@hivecfm/types/surveys/types";
 
 export const mockEndingId1 = "mpkt4n5krsv2ulqetle7b9e7";
 export const mockEndingId2 = "ge0h63htnmgq6kwx1suh9cyi";

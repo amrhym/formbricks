@@ -1,12 +1,12 @@
 import { useEffect, useRef } from "preact/hooks";
-import { type TJsFileUploadParams } from "@formbricks/types/js";
-import { type TResponseData, type TResponseDataValue, type TResponseTtc } from "@formbricks/types/responses";
-import { type TUploadFileConfig } from "@formbricks/types/storage";
+import { type TJsFileUploadParams } from "@hivecfm/types/js";
+import { type TResponseData, type TResponseDataValue, type TResponseTtc } from "@hivecfm/types/responses";
+import { type TUploadFileConfig } from "@hivecfm/types/storage";
 import {
   TSurveyElement,
   TSurveyElementChoice,
   TSurveyElementTypeEnum,
-} from "@formbricks/types/surveys/elements";
+} from "@hivecfm/types/surveys/elements";
 import { AddressElement } from "@/components/elements/address-element";
 import { CalElement } from "@/components/elements/cal-element";
 import { ConsentElement } from "@/components/elements/consent-element";

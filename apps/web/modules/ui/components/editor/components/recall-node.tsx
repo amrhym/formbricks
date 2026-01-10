@@ -3,7 +3,7 @@
 import type { DOMConversionMap, DOMConversionOutput, DOMExportOutput, NodeKey, Spread } from "lexical";
 import { $applyNodeReplacement, DecoratorNode } from "lexical";
 import { ReactNode } from "react";
-import { TSurveyRecallItem } from "@formbricks/types/surveys/types";
+import { TSurveyRecallItem } from "@hivecfm/types/surveys/types";
 import { getTextContentWithRecallTruncated } from "@/lib/utils/recall";
 
 export interface RecallPayload {
@@ -138,7 +138,7 @@ export class RecallNode extends DecoratorNode<ReactNode> {
 
     return (
       <span
-        className="recall-node z-30 inline-flex h-fit justify-center whitespace-nowrap rounded-md bg-slate-100 text-sm text-slate-700"
+        className="recall-node z-30 inline-flex h-fit justify-center rounded-md bg-slate-100 text-sm whitespace-nowrap text-slate-700"
         aria-label={`Recall: ${displayLabel}`}
         title={displayLabel}>
         @{displayLabel}

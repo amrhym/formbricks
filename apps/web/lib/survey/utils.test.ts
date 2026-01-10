@@ -1,10 +1,10 @@
 import { beforeEach, describe, expect, test, vi } from "vitest";
-import { InvalidInputError } from "@formbricks/types/errors";
-import { TJsEnvironmentStateSurvey } from "@formbricks/types/js";
-import { TSegment } from "@formbricks/types/segment";
-import { TSurveyBlock } from "@formbricks/types/surveys/blocks";
-import { TSurveyElement, TSurveyElementTypeEnum } from "@formbricks/types/surveys/elements";
-import { TSurvey, TSurveyQuestion, TSurveyQuestionTypeEnum } from "@formbricks/types/surveys/types";
+import { InvalidInputError } from "@hivecfm/types/errors";
+import { TJsEnvironmentStateSurvey } from "@hivecfm/types/js";
+import { TSegment } from "@hivecfm/types/segment";
+import { TSurveyBlock } from "@hivecfm/types/surveys/blocks";
+import { TSurveyElement, TSurveyElementTypeEnum } from "@hivecfm/types/surveys/elements";
+import { TSurvey, TSurveyQuestion, TSurveyQuestionTypeEnum } from "@hivecfm/types/surveys/types";
 import * as videoValidation from "@/lib/utils/video-upload";
 import * as fileValidation from "@/modules/storage/utils";
 import {

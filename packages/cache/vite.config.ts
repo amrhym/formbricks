@@ -17,7 +17,7 @@ export default defineConfig({
       formats: ["es", "cjs"],
     },
     rollupOptions: {
-      external: ["redis", "@formbricks/logger", "zod"],
+      external: ["redis", "@hivecfm/logger", "zod"],
     },
   },
   test: {

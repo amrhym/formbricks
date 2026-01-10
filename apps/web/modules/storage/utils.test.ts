@@ -1,8 +1,8 @@
 import { beforeEach, describe, expect, test, vi } from "vitest";
-import { StorageErrorCode } from "@formbricks/storage";
-import { TResponseData } from "@formbricks/types/responses";
-import { ZAllowedFileExtension } from "@formbricks/types/storage";
-import { TSurveyQuestion } from "@formbricks/types/surveys/types";
+import { StorageErrorCode } from "@hivecfm/storage";
+import { TResponseData } from "@hivecfm/types/responses";
+import { ZAllowedFileExtension } from "@hivecfm/types/storage";
+import { TSurveyQuestion } from "@hivecfm/types/surveys/types";
 import {
   isAllowedFileExtension,
   isValidFileTypeForExtension,

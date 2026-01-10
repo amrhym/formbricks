@@ -1,4 +1,4 @@
-import { TOrganizationBilling } from "@formbricks/types/organizations";
+import { TOrganizationBilling } from "@hivecfm/types/organizations";
 
 // Function to calculate billing period start date based on organization plan and billing period
 export const getBillingPeriodStartDate = (billing: TOrganizationBilling): Date => {

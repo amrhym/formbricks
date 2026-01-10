@@ -2,8 +2,8 @@
 
 import { Language } from "@prisma/client";
 import { useTranslation } from "react-i18next";
-import type { TSurvey } from "@formbricks/types/surveys/types";
-import { TUserLocale } from "@formbricks/types/user";
+import type { TSurvey } from "@hivecfm/types/surveys/types";
+import { TUserLocale } from "@hivecfm/types/user";
 import { getElementsFromBlocks } from "@/modules/survey/lib/client-utils";
 import { LanguageToggle } from "./language-toggle";
 

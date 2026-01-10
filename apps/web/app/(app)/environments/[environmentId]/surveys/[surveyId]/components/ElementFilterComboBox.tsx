@@ -4,8 +4,8 @@ import clsx from "clsx";
 import { ChevronDown, ChevronUp, X } from "lucide-react";
 import { useMemo, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
-import { TI18nString } from "@formbricks/types/i18n";
-import { TSurveyElementTypeEnum } from "@formbricks/types/surveys/elements";
+import { TI18nString } from "@hivecfm/types/i18n";
+import { TSurveyElementTypeEnum } from "@hivecfm/types/surveys/elements";
 import { OptionsType } from "@/app/(app)/environments/[environmentId]/surveys/[surveyId]/components/ElementsComboBox";
 import { getLocalizedValue } from "@/lib/i18n/utils";
 import { useClickOutside } from "@/lib/utils/hooks/useClickOutside";
@@ -150,7 +150,7 @@ export const ElementFilterComboBox = ({
         <DropdownMenuTrigger
           disabled={disabled}
           className={clsx(
-            "flex h-9 max-w-fit items-center justify-between gap-2 rounded-md rounded-r-none border-r border-slate-300 bg-white px-2 text-sm text-slate-600 focus:outline-transparent focus:ring-0",
+            "flex h-9 max-w-fit items-center justify-between gap-2 rounded-md rounded-r-none border-r border-slate-300 bg-white px-2 text-sm text-slate-600 focus:ring-0 focus:outline-transparent",
             disabled ? "opacity-50" : "cursor-pointer hover:bg-slate-50"
           )}>
           {filterValue ? (
@@ -201,7 +201,7 @@ export const ElementFilterComboBox = ({
       key={`${value}-${index}`}
       type="button"
       onClick={(e) => handleRemoveTag(e, value)}
-      className="flex items-center gap-1 whitespace-nowrap rounded bg-slate-100 px-2 py-1 text-sm text-slate-600 hover:bg-slate-200">
+      className="flex items-center gap-1 rounded bg-slate-100 px-2 py-1 text-sm whitespace-nowrap text-slate-600 hover:bg-slate-200">
       {value}
       <X className="h-3 w-3" />
     </button>

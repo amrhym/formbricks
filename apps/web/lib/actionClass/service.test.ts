@@ -1,7 +1,7 @@
 import { afterEach, describe, expect, test, vi } from "vitest";
-import { prisma } from "@formbricks/database";
-import { TActionClass } from "@formbricks/types/action-classes";
-import { DatabaseError, ResourceNotFoundError } from "@formbricks/types/errors";
+import { prisma } from "@hivecfm/database";
+import { TActionClass } from "@hivecfm/types/action-classes";
+import { DatabaseError, ResourceNotFoundError } from "@hivecfm/types/errors";
 import {
   deleteActionClass,
   getActionClass,
@@ -9,7 +9,7 @@ import {
   getActionClasses,
 } from "./service";
 
-vi.mock("@formbricks/database", () => ({
+vi.mock("@hivecfm/database", () => ({
   prisma: {
     actionClass: {
       findMany: vi.fn(),

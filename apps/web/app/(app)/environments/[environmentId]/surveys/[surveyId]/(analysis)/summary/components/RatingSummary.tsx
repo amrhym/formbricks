@@ -3,9 +3,9 @@
 import { BarChart, BarChartHorizontal, CircleSlash2, SmileIcon, StarIcon } from "lucide-react";
 import { useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
-import { type TI18nString } from "@formbricks/types/i18n";
-import { TSurveyElementTypeEnum } from "@formbricks/types/surveys/elements";
-import { TSurvey, TSurveyElementSummaryRating } from "@formbricks/types/surveys/types";
+import { type TI18nString } from "@hivecfm/types/i18n";
+import { TSurveyElementTypeEnum } from "@hivecfm/types/surveys/elements";
+import { TSurvey, TSurveyElementSummaryRating } from "@hivecfm/types/surveys/types";
 import { convertFloatToNDecimal } from "@/app/(app)/environments/[environmentId]/surveys/[surveyId]/(analysis)/summary/lib/utils";
 import { EmptyState } from "@/modules/ui/components/empty-state";
 import { ProgressBar } from "@/modules/ui/components/progress-bar";
@@ -77,7 +77,7 @@ export const RatingSummary = ({ elementSummary, survey, setFilter }: RatingSumma
         </div>
 
         <TabsContent value="aggregated" className="mt-4">
-          <div className="px-4 pb-6 pt-4 md:px-6">
+          <div className="px-4 pt-4 pb-6 md:px-6">
             {elementSummary.responseCount === 0 ? (
               <>
                 <EmptyState text={t("environments.surveys.summary.no_responses_found")} variant="simple" />
@@ -165,7 +165,7 @@ export const RatingSummary = ({ elementSummary, survey, setFilter }: RatingSumma
         </TabsContent>
 
         <TabsContent value="individual" className="mt-4">
-          <div className="px-4 pb-6 pt-4 md:px-6">
+          <div className="px-4 pt-4 pb-6 md:px-6">
             <div className="space-y-5 text-sm md:text-base">
               {elementSummary.choices.map((result) => (
                 <div key={result.rating}>

@@ -1,7 +1,7 @@
 import { Invite } from "@prisma/client";
 import { z } from "zod";
-import { ZInvite } from "@formbricks/database/zod/invites";
-import { ZUserName } from "@formbricks/types/user";
+import { ZInvite } from "@hivecfm/database/zod/invites";
+import { ZUserName } from "@hivecfm/types/user";
 
 export interface TInvite
   extends Omit<Invite, "deprecatedRole" | "organizationId" | "creatorId" | "acceptorId" | "teamIds"> {}

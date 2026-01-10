@@ -1,16 +1,16 @@
 import { Prisma } from "@prisma/client";
 import { beforeEach, describe, expect, test, vi } from "vitest";
-import { prisma } from "@formbricks/database";
-import { logger } from "@formbricks/logger";
-import { DatabaseError, UnknownError } from "@formbricks/types/errors";
+import { prisma } from "@hivecfm/database";
+import { logger } from "@hivecfm/logger";
+import { DatabaseError, UnknownError } from "@hivecfm/types/errors";
 import { getProjectsByOrganizationId } from "./project";
 
-vi.mock("@formbricks/database", () => ({
+vi.mock("@hivecfm/database", () => ({
   prisma: {
     project: { findMany: vi.fn() },
   },
 }));
-vi.mock("@formbricks/logger", () => ({ logger: { error: vi.fn() } }));
+vi.mock("@hivecfm/logger", () => ({ logger: { error: vi.fn() } }));
 
 const mockProjects = [
   { id: "p1", name: "Project 1" },

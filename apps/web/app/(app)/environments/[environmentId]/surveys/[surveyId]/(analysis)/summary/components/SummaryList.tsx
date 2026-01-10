@@ -2,13 +2,13 @@
 
 import { toast } from "react-hot-toast";
 import { useTranslation } from "react-i18next";
-import { TEnvironment } from "@formbricks/types/environment";
-import { TI18nString } from "@formbricks/types/i18n";
-import { TSurveyElementTypeEnum } from "@formbricks/types/surveys/elements";
-import { TSurveySummary } from "@formbricks/types/surveys/types";
-import { TSurvey } from "@formbricks/types/surveys/types";
-import { getTextContent } from "@formbricks/types/surveys/validation";
-import { TUserLocale } from "@formbricks/types/user";
+import { TEnvironment } from "@hivecfm/types/environment";
+import { TI18nString } from "@hivecfm/types/i18n";
+import { TSurveyElementTypeEnum } from "@hivecfm/types/surveys/elements";
+import { TSurveySummary } from "@hivecfm/types/surveys/types";
+import { TSurvey } from "@hivecfm/types/surveys/types";
+import { getTextContent } from "@hivecfm/types/surveys/validation";
+import { TUserLocale } from "@hivecfm/types/user";
 import { EmptyAppSurveys } from "@/app/(app)/environments/[environmentId]/surveys/[surveyId]/(analysis)/components/EmptyInAppSurveys";
 import {
   SelectedFilterValue,

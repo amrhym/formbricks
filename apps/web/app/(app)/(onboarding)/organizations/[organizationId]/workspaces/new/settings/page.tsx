@@ -1,7 +1,7 @@
 import { XIcon } from "lucide-react";
 import Link from "next/link";
 import { redirect } from "next/navigation";
-import { TProjectConfigChannel, TProjectConfigIndustry, TProjectMode } from "@formbricks/types/project";
+import { TProjectConfigChannel, TProjectConfigIndustry, TProjectMode } from "@hivecfm/types/project";
 import { getTeamsByOrganizationId } from "@/app/(app)/(onboarding)/lib/onboarding";
 import { ProjectSettings } from "@/app/(app)/(onboarding)/organizations/[organizationId]/workspaces/new/settings/components/ProjectSettings";
 import { DEFAULT_BRAND_COLOR } from "@/lib/constants";

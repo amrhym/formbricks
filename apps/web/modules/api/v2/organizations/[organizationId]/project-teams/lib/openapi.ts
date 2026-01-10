@@ -1,6 +1,6 @@
 import { z } from "zod";
 import { ZodOpenApiOperationObject, ZodOpenApiPathsObject } from "zod-openapi";
-import { ZProjectTeam } from "@formbricks/database/zod/project-teams";
+import { ZProjectTeam } from "@hivecfm/database/zod/project-teams";
 import {
   ZGetProjectTeamUpdateFilter,
   ZGetProjectTeamsFilter,

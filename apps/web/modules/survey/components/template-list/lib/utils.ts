@@ -1,6 +1,6 @@
 import { TFunction } from "i18next";
-import { TProjectConfigChannel, TProjectConfigIndustry } from "@formbricks/types/project";
-import { TTemplateRole } from "@formbricks/types/templates";
+import { TProjectConfigChannel, TProjectConfigIndustry } from "@hivecfm/types/project";
+import { TTemplateRole } from "@hivecfm/types/templates";
 
 export const getChannelMapping = (t: TFunction): { value: TProjectConfigChannel; label: string }[] => [
   { value: "website", label: t("common.website_survey") },

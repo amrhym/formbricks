@@ -1,7 +1,7 @@
 import { Prisma } from "@prisma/client";
-import { logger } from "@formbricks/logger";
-import { DatabaseError } from "@formbricks/types/errors";
-import { TIntegrationItem } from "@formbricks/types/integration";
+import { logger } from "@hivecfm/logger";
+import { DatabaseError } from "@hivecfm/types/errors";
+import { TIntegrationItem } from "@hivecfm/types/integration";
 import {
   TIntegrationAirtable,
   TIntegrationAirtableConfigData,
@@ -11,7 +11,7 @@ import {
   ZIntegrationAirtableTables,
   ZIntegrationAirtableTablesWithFields,
   ZIntegrationAirtableTokenSchema,
-} from "@formbricks/types/integration/airtable";
+} from "@hivecfm/types/integration/airtable";
 import { AIRTABLE_CLIENT_ID, AIRTABLE_MESSAGE_LIMIT } from "../constants";
 import { createOrUpdateIntegration, getIntegrationByType } from "../integration/service";
 import { delay } from "../utils/promises";

@@ -1,4 +1,4 @@
-import { logger } from "@formbricks/logger";
+import { logger } from "@hivecfm/logger";
 import type { MigrationScript } from "../../src/scripts/migration-runner";
 
 type Plan = "free" | "startup" | "scale" | "enterprise";

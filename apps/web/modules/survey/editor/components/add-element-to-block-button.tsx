@@ -6,8 +6,8 @@ import { PlusIcon } from "lucide-react";
 import { useState } from "react";
 import toast from "react-hot-toast";
 import { useTranslation } from "react-i18next";
-import { TSurveyBlock } from "@formbricks/types/surveys/blocks";
-import { TSurvey } from "@formbricks/types/surveys/types";
+import { TSurveyBlock } from "@hivecfm/types/surveys/blocks";
+import { TSurvey } from "@hivecfm/types/surveys/types";
 import { addMultiLanguageLabels, extractLanguageCodes } from "@/lib/i18n/utils";
 import { addElementToBlock } from "@/modules/survey/editor/lib/blocks";
 import {

@@ -1,7 +1,7 @@
 import { Organization } from "@prisma/client";
 import { cache as reactCache } from "react";
-import { prisma } from "@formbricks/database";
-import { logger } from "@formbricks/logger";
+import { prisma } from "@hivecfm/database";
+import { logger } from "@hivecfm/logger";
 
 export const getOrganizationBillingByEnvironmentId = reactCache(
   async (environmentId: string): Promise<Organization["billing"] | null> => {

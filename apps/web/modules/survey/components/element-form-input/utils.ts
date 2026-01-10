@@ -1,11 +1,11 @@
 import { TFunction } from "i18next";
-import { type TI18nString } from "@formbricks/types/i18n";
+import { type TI18nString } from "@hivecfm/types/i18n";
 import {
   TSurveyElement,
   TSurveyMatrixElement,
   TSurveyMultipleChoiceElement,
-} from "@formbricks/types/surveys/elements";
-import { TSurvey } from "@formbricks/types/surveys/types";
+} from "@hivecfm/types/surveys/elements";
+import { TSurvey } from "@hivecfm/types/surveys/types";
 import { createI18nString } from "@/lib/i18n/utils";
 import { isLabelValidForAllLanguages } from "@/lib/i18n/utils";
 

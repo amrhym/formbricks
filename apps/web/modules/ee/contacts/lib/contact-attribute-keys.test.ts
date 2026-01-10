@@ -1,7 +1,7 @@
 import { beforeEach, describe, expect, test, vi } from "vitest";
-import { prisma } from "@formbricks/database";
-import { PrismaErrorType } from "@formbricks/database/types/error";
-import { InvalidInputError, OperationNotAllowedError, ResourceNotFoundError } from "@formbricks/types/errors";
+import { prisma } from "@hivecfm/database";
+import { PrismaErrorType } from "@hivecfm/database/types/error";
+import { InvalidInputError, OperationNotAllowedError, ResourceNotFoundError } from "@hivecfm/types/errors";
 import {
   createContactAttributeKey,
   deleteContactAttributeKey,
@@ -10,7 +10,7 @@ import {
   updateContactAttributeKey,
 } from "./contact-attribute-keys";
 
-vi.mock("@formbricks/database", () => ({
+vi.mock("@hivecfm/database", () => ({
   prisma: {
     contactAttributeKey: {
       findMany: vi.fn(),

@@ -1,8 +1,8 @@
 import "@testing-library/jest-dom/vitest";
 import { cleanup } from "@testing-library/react";
 import { afterEach, describe, expect, test } from "vitest";
-import { TProject } from "@formbricks/types/project";
-import { TXMTemplate } from "@formbricks/types/templates";
+import { TProject } from "@hivecfm/types/project";
+import { TXMTemplate } from "@hivecfm/types/templates";
 import { replacePresetPlaceholders } from "./utils";
 
 // Mock data

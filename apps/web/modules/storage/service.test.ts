@@ -1,7 +1,7 @@
 import { randomUUID } from "crypto";
 import { beforeEach, describe, expect, test, vi } from "vitest";
-import { StorageErrorCode } from "@formbricks/storage";
-import { TAccessType } from "@formbricks/types/storage";
+import { StorageErrorCode } from "@hivecfm/storage";
+import { TAccessType } from "@hivecfm/types/storage";
 import {
   deleteFile,
   deleteFilesByEnvironmentId,
@@ -22,13 +22,13 @@ vi.mock("@/lib/getPublicUrl", () => ({
   getPublicDomain: vi.fn(),
 }));
 
-vi.mock("@formbricks/logger", () => ({
+vi.mock("@hivecfm/logger", () => ({
   logger: {
     error: vi.fn(),
   },
 }));
 
-vi.mock("@formbricks/storage", () => ({
+vi.mock("@hivecfm/storage", () => ({
   StorageErrorCode: {
     Unknown: "unknown",
     S3ClientError: "s3_client_error",
@@ -43,14 +43,14 @@ vi.mock("@formbricks/storage", () => ({
 }));
 
 // Import mocked dependencies
-const { logger } = await import("@formbricks/logger");
+const { logger } = await import("@hivecfm/logger");
 const { getPublicDomain } = await import("@/lib/getPublicUrl");
 const {
   deleteFile: deleteFileFromS3,
   deleteFilesByPrefix,
   getSignedDownloadUrl,
   getSignedUploadUrl,
-} = await import("@formbricks/storage");
+} = await import("@hivecfm/storage");
 
 type MockedSignedUploadReturn = Awaited<ReturnType<typeof getSignedUploadUrl>>;
 type MockedSignedDownloadReturn = Awaited<ReturnType<typeof getSignedDownloadUrl>>;

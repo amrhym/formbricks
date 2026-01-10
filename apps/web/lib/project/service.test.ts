@@ -1,8 +1,8 @@
 import { createId } from "@paralleldrive/cuid2";
 import { OrganizationRole, Prisma, WidgetPlacement } from "@prisma/client";
 import { afterEach, describe, expect, test, vi } from "vitest";
-import { prisma } from "@formbricks/database";
-import { DatabaseError, ValidationError } from "@formbricks/types/errors";
+import { prisma } from "@hivecfm/database";
+import { DatabaseError, ValidationError } from "@hivecfm/types/errors";
 import { ITEMS_PER_PAGE } from "../constants";
 import {
   getProject,
@@ -12,7 +12,7 @@ import {
   getUserProjects,
 } from "./service";
 
-vi.mock("@formbricks/database", () => ({
+vi.mock("@hivecfm/database", () => ({
   prisma: {
     project: {
       findUnique: vi.fn(),

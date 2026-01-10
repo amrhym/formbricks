@@ -1,5 +1,5 @@
 import { Organization } from "@prisma/client";
-import { OperationNotAllowedError, ResourceNotFoundError } from "@formbricks/types/errors";
+import { OperationNotAllowedError, ResourceNotFoundError } from "@hivecfm/types/errors";
 import { IS_FORMBRICKS_CLOUD, PROJECT_FEATURE_KEYS } from "@/lib/constants";
 import { getIsSpamProtectionEnabled } from "@/modules/ee/license-check/lib/utils";
 import { getOrganizationBilling } from "@/modules/survey/lib/survey";

@@ -10,6 +10,6 @@
     "resolveJsonModule": true,
     "strict": true
   },
-  "extends": "@formbricks/config-typescript/js-library.json",
+  "extends": "@hivecfm/config-typescript/js-library.json",
   "include": [".", "src", "package.json", "../types/surveys.d.ts", "../database/src/index.ts"]
 }

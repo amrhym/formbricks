@@ -1,9 +1,9 @@
 import { afterEach, describe, expect, test, vi } from "vitest";
-import { logger } from "@formbricks/logger";
+import { logger } from "@hivecfm/logger";
 import { authorize } from "./notion";
 
 // Mock the logger
-vi.mock("@formbricks/logger", () => ({
+vi.mock("@hivecfm/logger", () => ({
   logger: {
     error: vi.fn(),
   },

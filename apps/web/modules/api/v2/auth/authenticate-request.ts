@@ -1,5 +1,5 @@
-import { TAuthenticationApiKey } from "@formbricks/types/auth";
-import { Result, err, ok } from "@formbricks/types/error-handlers";
+import { TAuthenticationApiKey } from "@hivecfm/types/auth";
+import { Result, err, ok } from "@hivecfm/types/error-handlers";
 import { ApiErrorResponseV2 } from "@/modules/api/v2/types/api-error";
 import { getApiKeyWithPermissions } from "@/modules/organization/settings/api-keys/lib/api-key";
 

@@ -1,4 +1,4 @@
-import { TSurveyQuota, TSurveyQuotaAction } from "@formbricks/types/quota";
+import { TSurveyQuota, TSurveyQuotaAction } from "@hivecfm/types/quota";
 
 type QuotaFull =
   | {

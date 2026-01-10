@@ -1,9 +1,9 @@
 "use client";
 
 import { useTranslation } from "react-i18next";
-import { TSurveyBlock, TSurveyBlockLogic } from "@formbricks/types/surveys/blocks";
-import { TConditionGroup } from "@formbricks/types/surveys/logic";
-import { TSurvey } from "@formbricks/types/surveys/types";
+import { TSurveyBlock, TSurveyBlockLogic } from "@hivecfm/types/surveys/blocks";
+import { TConditionGroup } from "@hivecfm/types/surveys/logic";
+import { TSurvey } from "@hivecfm/types/surveys/types";
 import { createSharedConditionsFactory } from "@/modules/survey/editor/lib/shared-conditions-factory";
 import { getDefaultOperatorForElement } from "@/modules/survey/editor/lib/utils";
 import { ConditionsEditor } from "@/modules/ui/components/conditions-editor";

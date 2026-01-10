@@ -1,6 +1,6 @@
 import { z } from "zod";
-import { ZId } from "@formbricks/types/common";
-import { ZResponseInput } from "@formbricks/types/responses";
+import { ZId } from "@hivecfm/types/common";
+import { ZResponseInput } from "@hivecfm/types/responses";
 
 export const ZResponseInputV2 = ZResponseInput.omit({ userId: true }).extend({
   contactId: ZId.nullish(),

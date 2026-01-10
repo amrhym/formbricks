@@ -4,8 +4,8 @@ import { useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
 import { useTranslation } from "react-i18next";
-import { TEnvironment } from "@formbricks/types/environment";
-import { TSurvey } from "@formbricks/types/surveys/types";
+import { TEnvironment } from "@hivecfm/types/environment";
+import { TSurvey } from "@hivecfm/types/surveys/types";
 import { Confetti } from "@/modules/ui/components/confetti";
 
 interface SummaryMetadataProps {

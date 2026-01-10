@@ -8,7 +8,7 @@ import {
   MousePointerClickIcon,
   SmartphoneIcon,
 } from "lucide-react";
-import { TResponseMeta } from "@formbricks/types/responses";
+import { TResponseMeta } from "@hivecfm/types/responses";
 
 export const getAddressFieldLabel = (field: string, t: TFunction) => {
   switch (field) {

@@ -1,5 +1,5 @@
 import { type ZodIssue, z } from "zod";
-import { ZSurveyFollowUp } from "@formbricks/database/types/survey-follow-up";
+import { ZSurveyFollowUp } from "@hivecfm/database/types/survey-follow-up";
 import { ZActionClass, ZActionClassNoCodeConfig } from "../action-classes";
 import { ZColor, ZId, ZPlacement, ZUrl, getZSafeUrl } from "../common";
 import { ZContactAttributes } from "../contact-attribute";

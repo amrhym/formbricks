@@ -1,6 +1,6 @@
 import { act, renderHook } from "@testing-library/preact";
 import { afterEach, beforeEach, describe, expect, test, vi } from "vitest";
-import { TResponseTtc } from "@formbricks/types/responses";
+import { TResponseTtc } from "@hivecfm/types/responses";
 import { getUpdatedTtc, useTtc } from "./ttc";
 
 describe("getUpdatedTtc", () => {

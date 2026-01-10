@@ -1,7 +1,7 @@
 import { getServerSession } from "next-auth";
 import Link from "next/link";
 import { after } from "next/server";
-import { logger } from "@formbricks/logger";
+import { logger } from "@hivecfm/logger";
 import { WEBAPP_URL } from "@/lib/constants";
 import { verifyInviteToken } from "@/lib/jwt";
 import { createMembership } from "@/lib/membership/service";
