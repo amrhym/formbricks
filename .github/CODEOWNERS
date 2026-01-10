@@ -1,0 +1,33 @@
+# HiveCFM Code Owners
+# https://docs.github.com/en/repositories/managing-your-repositorys-settings-and-features/customizing-your-repository/about-code-owners
+#
+# These owners will be automatically requested for review when someone opens
+# a pull request that modifies code they own.
+#
+# Order matters - later patterns override earlier ones.
+
+# Default owner for everything
+* @amrmostafa
+
+# Genesys integration code
+apps/web/app/api/webhooks/genesys/ @amrmostafa
+apps/web/app/api/hivecfm/ @amrmostafa
+packages/lib/hivecfm/ @amrmostafa
+
+# Database schema changes require review
+packages/database/schema.prisma @amrmostafa
+packages/database/migrations/ @amrmostafa
+
+# Infrastructure and deployment
+docker-compose*.yml @amrmostafa
+Dockerfile* @amrmostafa
+nginx/ @amrmostafa
+scripts/ @amrmostafa
+
+# CI/CD configuration
+.github/workflows/ @amrmostafa
+
+# Security-sensitive files
+.env* @amrmostafa
+**/auth/ @amrmostafa
+**/security/ @amrmostafa

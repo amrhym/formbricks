@@ -1,23 +1,198 @@
-# 🚀 Join the Formbricks Tribe! 🧱
+# Contributing to HiveCFM
 
-First and foremost, we're absolutely thrilled that you're considering becoming a part of the Formbricks Tribe! 🤗
+HiveCFM is a white-labeled fork of the Formbricks ecosystem, extended with Genesys Cloud integration for contact center CX survey management.
 
-Discover a myriad of ways to leave your mark on Formbricks — whether it's by squashing bugs, crafting new features, or enhancing our documentation.
+## Repository Structure
 
-## 🐛 Issue Hunters
+HiveCFM consists of 11 forked repositories:
 
-Did you stumble upon a bug? Encountered a hiccup in deployment? Perhaps you have some user feedback to share? Your quickest route to help us out is by [raising an issue](https://github.com/formbricks/formbricks/issues/new/choose). We're on standby to respond swiftly.
+| Repository | Purpose | Upstream |
+|------------|---------|----------|
+| `hivecfm-core` | Core survey platform (Next.js 14) | `formbricks/formbricks` |
+| `hivecfm-js` | JavaScript/Web SDK | `formbricks/js` |
+| `hivecfm-react-native` | React Native SDK | `formbricks/react-native` |
+| `hivecfm-ios` | iOS Native SDK (Swift) | `formbricks/ios` |
+| `hivecfm-android` | Android Native SDK (Kotlin) | `formbricks/android` |
+| `hivecfm-metabase` | Analytics platform | `metabase/metabase` |
+| `hivecfm-superset-hub` | Apache Superset analytics | `formbricks/hub` |
+| `hivecfm-superset-decision` | Decision analytics | `formbricks/decision` |
+| `hivecfm-perf-tests` | Performance testing | `formbricks/performance-test-q2-2025` |
+| `hivecfm-aws-ecs` | AWS ECS infrastructure | `formbricks/AWS-ECS-Deployment` |
 
-## 💡 Feature Architects
+## Branch Strategy
 
-Are you brimming with brilliant ideas? For new features that can elevate Formbricks, create an issue and slap on the "Enhancement" tag. We adore every concept that you throw our way. Just make sure to provide us with the "why" behind your idea. We're all ears!
+### Main Branches
 
-## 🛠 Crafting Pull Requests
+- `hivecfm-main` — The default branch for all HiveCFM development. All white-label modifications and custom integrations go here.
+- `main` — Synced with upstream Formbricks. Used as a reference only; do not commit directly.
 
-For the time being, we don't have the capacity to properly facilitate community contributions. It's a lot of engineering attention often spent on issues which don't follow our prioritization, so we've decided to only facilitate community code contributions in rare exceptions in the coming months.
+### Feature Branches
 
-## 🚀 Aspiring Features
+Create feature branches from `hivecfm-main`:
 
-If you spot a feature that isn't part of our official plan but could propel Formbricks forward, don't hesitate. Raise it as an enhancement issue, and let us know you're ready to take the lead. We'll be quick to respond.
+```bash
+git checkout hivecfm-main
+git pull origin hivecfm-main
+git checkout -b feature/your-feature-name
+```
 
-Together, let's craft the future of Formbricks, making it better, bolder, and more brilliant! 🚀🧱🌟
+### Branch Naming Conventions
+
+- `feature/` — New features
+- `fix/` — Bug fixes
+- `docs/` — Documentation updates
+- `refactor/` — Code refactoring
+- `chore/` — Maintenance tasks
+
+## Upstream Sync Strategy
+
+We periodically sync with upstream Formbricks to get bug fixes and new features.
+
+### Sync Schedule
+
+- **Weekly Review**: Check upstream for security patches
+- **Monthly Sync**: Merge non-breaking changes
+- **Major Releases**: Careful review and staged merge
+
+### How to Sync
+
+1. Use the sync script:
+   ```bash
+   ./scripts/sync-upstream.sh
+   ```
+
+2. Or manually:
+   ```bash
+   git checkout hivecfm-main
+   git fetch upstream
+   git merge upstream/main --no-edit
+   # Resolve any conflicts
+   git push origin hivecfm-main
+   ```
+
+### Handling Conflicts
+
+When syncing, conflicts may occur in these areas:
+
+1. **Package names** — We use `@hivecfm/*` instead of `@formbricks/*`
+2. **Branding** — UI text, logos, colors
+3. **Custom integrations** — Our Genesys webhook handlers
+
+Resolution priority:
+1. Keep HiveCFM customizations
+2. Accept upstream bug fixes
+3. Review new features case-by-case
+
+## Development Workflow
+
+### Prerequisites
+
+- Node.js 18+
+- pnpm 8.x
+- Docker & Docker Compose
+- PostgreSQL 16.x (or use Docker)
+
+### Local Setup
+
+```bash
+# Clone the repository
+git clone git@github.com:YOUR_ORG/hivecfm-core.git
+cd hivecfm-core
+
+# Install dependencies
+pnpm install
+
+# Copy environment template
+cp .env.example .env
+
+# Start development services
+docker compose up -d postgres
+
+# Run database migrations
+pnpm prisma migrate dev
+
+# Start development server
+pnpm dev
+```
+
+### Code Style
+
+- TypeScript with strict mode enabled
+- ESLint + Prettier for formatting
+- Co-located test files (`*.test.ts` next to source)
+
+### Commit Messages
+
+Follow conventional commits:
+
+```
+type(scope): description
+
+feat(genesys): add conversation.end webhook handler
+fix(sms): correct phone number validation
+docs(readme): update setup instructions
+```
+
+## Pull Request Process
+
+1. Create a feature branch from `hivecfm-main`
+2. Implement changes with tests
+3. Run `pnpm lint` and `pnpm test`
+4. Open PR against `hivecfm-main`
+5. Request review from CODEOWNERS
+6. Address review feedback
+7. Squash and merge when approved
+
+### PR Checklist
+
+- [ ] Tests added/updated
+- [ ] Documentation updated (if applicable)
+- [ ] No breaking changes (or noted in PR description)
+- [ ] Follows HiveCFM coding standards
+- [ ] No Formbricks branding (use HiveCFM)
+
+## HiveCFM-Specific Guidelines
+
+### Genesys Integration
+
+All Genesys-related code should:
+- Prefix fields with `genesys` (e.g., `genesysConversationId`)
+- Use the standard API response wrapper
+- Follow error code naming: `GENESYS_WEBHOOK_*`
+
+### API Response Format
+
+All API endpoints must use:
+
+```typescript
+// Success
+return Response.json({
+  success: true,
+  data: { /* response data */ }
+});
+
+// Error
+return Response.json({
+  success: false,
+  error: {
+    code: "DOMAIN_ACTION_REASON",
+    message: "Human-readable message"
+  }
+}, { status: 4xx/5xx });
+```
+
+### Testing
+
+- Co-locate tests with source files
+- Use Vitest for unit/integration tests
+- Follow Arrange-Act-Assert pattern
+
+## Getting Help
+
+- Check existing issues before creating new ones
+- Use discussions for questions
+- Tag issues appropriately (bug, feature, question)
+
+## License
+
+HiveCFM is proprietary software. All rights reserved.
