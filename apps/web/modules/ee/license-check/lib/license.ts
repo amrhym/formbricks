@@ -350,6 +350,37 @@ export const fetchLicense = async (): Promise<TEnterpriseLicenseDetails | null> 
   );
 };
 
+// =============================================================================
+// HiveCFM Enterprise Unlock
+// =============================================================================
+// Version: Tested against Formbricks v3.x (January 2026)
+// Purpose: Bypass license validation to enable all enterprise features
+//
+// NOTE: The original license validation code (validateConfig, getPreviousResult,
+// setPreviousResult, trackFallbackUsage, getFallbackLevel, handleInitialFailure,
+// fetchLicenseFromServerInternal) is intentionally kept in this file for:
+//   1. Easier upstream merge conflict resolution
+//   2. Potential revert capability if needed
+//   3. Smaller patch footprint (only getEnterpriseLicense modified)
+// =============================================================================
+
+const HIVECFM_ENTERPRISE_FEATURES: TEnterpriseLicenseFeatures = {
+  isMultiOrgEnabled: true,
+  projects: null, // unlimited
+  twoFactorAuth: true,
+  sso: true,
+  whitelabel: true,
+  removeBranding: true,
+  contacts: true,
+  ai: true,
+  saml: true,
+  spamProtection: true,
+  auditLogs: true,
+  multiLanguageSurveys: true,
+  accessControl: true,
+  quotas: true,
+};
+
 export const getEnterpriseLicense = reactCache(
   async (): Promise<{
     active: boolean;
@@ -358,61 +389,14 @@ export const getEnterpriseLicense = reactCache(
     isPendingDowngrade: boolean;
     fallbackLevel: FallbackLevel;
   }> => {
-    validateConfig();
-
-    if (!env.ENTERPRISE_LICENSE_KEY || env.ENTERPRISE_LICENSE_KEY.length === 0) {
-      return {
-        active: false,
-        features: null,
-        lastChecked: new Date(),
-        isPendingDowngrade: false,
-        fallbackLevel: "default" as const,
-      };
-    }
-
-    const currentTime = new Date();
-    const liveLicenseDetails = await fetchLicense();
-    const previousResult = await getPreviousResult();
-    const fallbackLevel = getFallbackLevel(liveLicenseDetails, previousResult, currentTime);
-
-    trackFallbackUsage(fallbackLevel);
-
-    let currentLicenseState: TPreviousResult | undefined;
-
-    switch (fallbackLevel) {
-      case "live":
-        if (!liveLicenseDetails) throw new Error("Invalid state: live license expected");
-        currentLicenseState = {
-          active: liveLicenseDetails.status === "active",
-          features: liveLicenseDetails.features,
-          lastChecked: currentTime,
-        };
-        await setPreviousResult(currentLicenseState);
-        return {
-          active: currentLicenseState.active,
-          features: currentLicenseState.features,
-          lastChecked: currentTime,
-          isPendingDowngrade: false,
-          fallbackLevel: "live" as const,
-        };
-
-      case "grace":
-        if (!validateFallback(previousResult)) {
-          return handleInitialFailure(currentTime);
-        }
-        return {
-          active: previousResult.active,
-          features: previousResult.features,
-          lastChecked: previousResult.lastChecked,
-          isPendingDowngrade: true,
-          fallbackLevel: "grace" as const,
-        };
-
-      case "default":
-        return handleInitialFailure(currentTime);
-    }
-
-    return handleInitialFailure(currentTime);
+    // HiveCFM: Always return active enterprise license with all features
+    return {
+      active: true,
+      features: HIVECFM_ENTERPRISE_FEATURES,
+      lastChecked: new Date(),
+      isPendingDowngrade: false,
+      fallbackLevel: "live" as const,
+    };
   }
 );
 

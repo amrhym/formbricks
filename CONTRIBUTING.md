@@ -187,6 +187,45 @@ return Response.json({
 - Use Vitest for unit/integration tests
 - Follow Arrange-Act-Assert pattern
 
+## Patch Management
+
+HiveCFM uses patch files to unlock enterprise features. These patches must be reapplied after upstream merges.
+
+### Patch Files
+
+| Patch | Purpose |
+|-------|---------|
+| `patches/formbricks-enterprise-unlock.patch` | Unlocks all enterprise features |
+
+### Applying Patches
+
+After syncing with upstream, reapply patches:
+
+```bash
+./scripts/apply-patches.sh
+```
+
+The script is idempotent — safe to run multiple times.
+
+### Creating New Patches
+
+If you modify enterprise feature code:
+
+```bash
+# After making changes
+git diff > patches/your-patch-name.patch
+
+# Or for specific files
+git diff path/to/file.ts > patches/specific-patch.patch
+```
+
+### After Upstream Merge
+
+1. Sync with upstream: `./scripts/sync-upstream.sh`
+2. Reapply patches: `./scripts/apply-patches.sh`
+3. Resolve any conflicts manually
+4. Test that enterprise features still work
+
 ## Getting Help
 
 - Check existing issues before creating new ones
