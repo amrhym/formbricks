@@ -1,0 +1,289 @@
+# HiveCFM Docker Compose Configuration
+# Platform Foundation for Customer Feedback Management
+#
+# Usage:
+#   Development: docker compose up
+#   Production:  docker compose -f docker-compose.yml -f docker-compose.prod.yml up
+#
+# Services:
+#   - hivecfm-core (port 3000): Main application
+#   - postgres (port 5432): Database with pgvector extension
+#   - redis (port 6379): Caching and rate limiting
+#   - minio (port 9000/9001): S3-compatible object storage for file uploads
+#   - metabase (port 3001): Analytics dashboard
+#   - superset (port 3002): Advanced analytics
+#
+# Health Monitoring:
+#   Docker healthchecks are configured for all services. For production alerting
+#   on unhealthy services, integrate with external monitoring tools:
+#   - Docker events: docker events --filter event=health_status
+#   - Prometheus: Use cAdvisor or docker_exporter for container health metrics
+#   - Watchtower: For automatic container updates and notifications
+#   - Portainer: Web-based Docker management with alerting capabilities
+
+x-healthcheck-defaults: &healthcheck-defaults
+  interval: 30s
+  timeout: 10s
+  retries: 3
+
+services:
+  # =============================================================================
+  # HiveCFM Core Application
+  # =============================================================================
+  hivecfm-core:
+    build:
+      context: .
+      dockerfile: apps/web/Dockerfile
+    container_name: hivecfm-core
+    ports:
+      # Bind to localhost only - nginx handles external SSL access
+      - "127.0.0.1:${HIVECFM_PORT:-3000}:3000"
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+      minio:
+        condition: service_healthy
+    environment:
+      # Database
+      DATABASE_URL: postgresql://postgres:${POSTGRES_PASSWORD:-postgres}@postgres:5432/hivecfm?schema=public
+      # Redis
+      REDIS_URL: redis://redis:6379
+      # NextAuth
+      NEXTAUTH_URL: ${WEBAPP_URL:-http://localhost:3000}
+      NEXTAUTH_SECRET: ${NEXTAUTH_SECRET}
+      # Application
+      WEBAPP_URL: ${WEBAPP_URL:-http://localhost:3000}
+      ENCRYPTION_KEY: ${ENCRYPTION_KEY}
+      CRON_SECRET: ${CRON_SECRET}
+      # Email (optional - set in .env if needed)
+      MAIL_FROM: ${MAIL_FROM:-noreply@hivecfm.xcai.io}
+      MAIL_FROM_NAME: ${MAIL_FROM_NAME:-HiveCFM}
+      # Feature flags
+      EMAIL_VERIFICATION_DISABLED: ${EMAIL_VERIFICATION_DISABLED:-1}
+      PASSWORD_RESET_DISABLED: ${PASSWORD_RESET_DISABLED:-1}
+      # S3/MinIO Storage (required for file uploads)
+      S3_ACCESS_KEY: ${MINIO_ROOT_USER:-hivecfm}
+      S3_SECRET_KEY: ${MINIO_ROOT_PASSWORD:-hivecfm-secret-key}
+      S3_REGION: ${S3_REGION:-us-east-1}
+      S3_BUCKET_NAME: ${S3_BUCKET_NAME:-hivecfm-uploads}
+      # Public endpoint for signed URLs (browser access via nginx proxy)
+      S3_ENDPOINT_URL: ${S3_ENDPOINT_URL:-https://hivecfm.xcai.io/storage}
+      S3_FORCE_PATH_STYLE: "1"
+      # Internal endpoint for direct container access (optional, for debugging)
+      S3_INTERNAL_ENDPOINT: http://minio:9000
+    env_file:
+      - .env
+    volumes:
+      - hivecfm_uploads:/home/nextjs/apps/web/uploads
+      - hivecfm_saml:/home/nextjs/apps/web/saml-connection
+    healthcheck:
+      <<: *healthcheck-defaults
+      test: ["CMD", "curl", "-f", "http://localhost:3000/health"]
+      start_period: 120s
+    restart: unless-stopped
+    networks:
+      - hivecfm-network
+
+  # =============================================================================
+  # PostgreSQL Database with pgvector
+  # =============================================================================
+  postgres:
+    image: pgvector/pgvector:pg17
+    container_name: hivecfm-postgres
+    environment:
+      POSTGRES_DB: hivecfm
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-postgres}
+      # Passed to init-db.sh for secure user creation
+      METABASE_DB_PASSWORD: ${METABASE_DB_PASSWORD:-metabase}
+      SUPERSET_DB_PASSWORD: ${SUPERSET_DB_PASSWORD:-superset}
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./scripts/init-db.sh:/docker-entrypoint-initdb.d/init-db.sh:ro
+    healthcheck:
+      <<: *healthcheck-defaults
+      test: ["CMD", "pg_isready", "-U", "postgres", "-d", "hivecfm"]
+      interval: 10s
+      start_period: 60s
+      retries: 5
+    restart: unless-stopped
+    networks:
+      - hivecfm-network
+
+  # =============================================================================
+  # Redis/Valkey Cache
+  # =============================================================================
+  redis:
+    image: valkey/valkey:latest
+    container_name: hivecfm-redis
+    command: valkey-server --appendonly yes
+    volumes:
+      - redis_data:/data
+    healthcheck:
+      <<: *healthcheck-defaults
+      test: ["CMD", "valkey-cli", "ping"]
+      interval: 10s
+      start_period: 10s
+    restart: unless-stopped
+    networks:
+      - hivecfm-network
+
+  # =============================================================================
+  # MinIO S3-Compatible Object Storage
+  # Required for file uploads (survey images, attachments, etc.)
+  # =============================================================================
+  minio:
+    image: minio/minio:latest
+    container_name: hivecfm-minio
+    command: server /data --console-address ":9001"
+    ports:
+      # S3 API - bind to localhost, access via nginx
+      - "127.0.0.1:9000:9000"
+      # MinIO Console - bind to localhost for admin access
+      - "127.0.0.1:9001:9001"
+    environment:
+      MINIO_ROOT_USER: ${MINIO_ROOT_USER:-hivecfm}
+      MINIO_ROOT_PASSWORD: ${MINIO_ROOT_PASSWORD:-hivecfm-secret-key}
+    volumes:
+      - minio_data:/data
+    healthcheck:
+      <<: *healthcheck-defaults
+      test: ["CMD", "mc", "ready", "local"]
+      interval: 10s
+      start_period: 30s
+    restart: unless-stopped
+    networks:
+      - hivecfm-network
+
+  # =============================================================================
+  # MinIO Client - Creates initial bucket on startup
+  # =============================================================================
+  minio-init:
+    image: minio/mc:latest
+    container_name: hivecfm-minio-init
+    depends_on:
+      minio:
+        condition: service_healthy
+    entrypoint: >
+      /bin/sh -c "
+      mc alias set hivecfm http://minio:9000 $${MINIO_ROOT_USER} $${MINIO_ROOT_PASSWORD};
+      mc mb hivecfm/$${MINIO_BUCKET_NAME} --ignore-existing;
+      mc anonymous set download hivecfm/$${MINIO_BUCKET_NAME}/public;
+      echo 'MinIO bucket initialized successfully';
+      exit 0;
+      "
+    environment:
+      MINIO_ROOT_USER: ${MINIO_ROOT_USER:-hivecfm}
+      MINIO_ROOT_PASSWORD: ${MINIO_ROOT_PASSWORD:-hivecfm-secret-key}
+      MINIO_BUCKET_NAME: ${S3_BUCKET_NAME:-hivecfm-uploads}
+    networks:
+      - hivecfm-network
+
+  # =============================================================================
+  # Metabase Analytics Dashboard
+  # Build from hivecfm-metabase repository with enterprise patches
+  # =============================================================================
+  metabase:
+    build:
+      context: ../hivecfm-metabase
+      dockerfile: Dockerfile
+    image: hivecfm-metabase:latest
+    container_name: hivecfm-metabase
+    ports:
+      # Bind to localhost only - nginx handles external SSL access on port 3001
+      - "127.0.0.1:${METABASE_PORT:-3001}:3000"
+    depends_on:
+      postgres:
+        condition: service_healthy
+    environment:
+      # Metabase application database (separate from HiveCFM app data)
+      MB_DB_TYPE: postgres
+      MB_DB_DBNAME: metabase_app
+      MB_DB_PORT: 5432
+      MB_DB_USER: metabase
+      MB_DB_PASS: ${METABASE_DB_PASSWORD:-metabase}
+      MB_DB_HOST: postgres
+      # Metabase settings
+      MB_SITE_NAME: HiveCFM Analytics
+      MB_SITE_URL: ${METABASE_URL:-http://localhost:3001}
+      MB_EMBEDDING_SECRET_KEY: ${METABASE_SECRET_KEY}
+      MB_PREMIUM_EMBEDDING_TOKEN: ${METABASE_PREMIUM_TOKEN:-}
+      # Performance
+      JAVA_OPTS: "-Xmx1g"
+    volumes:
+      - metabase_data:/metabase-data
+    healthcheck:
+      <<: *healthcheck-defaults
+      test: ["CMD", "curl", "-f", "http://localhost:3000/api/health"]
+      interval: 15s
+      start_period: 90s
+      retries: 5
+    restart: unless-stopped
+    networks:
+      - hivecfm-network
+
+  # =============================================================================
+  # Apache Superset Analytics
+  # Build from hivecfm-superset-hub repository with HiveCFM configuration
+  # =============================================================================
+  superset:
+    build:
+      context: ../hivecfm-superset-hub/apps/hub
+      dockerfile: Dockerfile
+    image: hivecfm-superset:latest
+    container_name: hivecfm-superset
+    ports:
+      - "${SUPERSET_PORT:-3002}:8080"
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    environment:
+      # Superset Hub configuration
+      SUPERSET_SECRET_KEY: ${SUPERSET_SECRET_KEY}
+      # Database connection URL (required by superset-hub)
+      DATABASE_URL: postgresql://superset_readonly:${SUPERSET_DB_PASSWORD:-superset}@postgres:5432/hivecfm?sslmode=disable
+      # Redis for cache (optional)
+      REDIS_HOST: redis
+      REDIS_PORT: 6379
+    volumes:
+      - superset_data:/app/superset_home
+    healthcheck:
+      <<: *healthcheck-defaults
+      test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:8080/health"]
+      interval: 15s
+      start_period: 30s
+      retries: 5
+    restart: unless-stopped
+    networks:
+      - hivecfm-network
+
+# =============================================================================
+# Networks
+# =============================================================================
+networks:
+  hivecfm-network:
+    driver: bridge
+    name: hivecfm-network
+
+# =============================================================================
+# Volumes
+# =============================================================================
+volumes:
+  postgres_data:
+    name: hivecfm-postgres-data
+  redis_data:
+    name: hivecfm-redis-data
+  minio_data:
+    name: hivecfm-minio-data
+  hivecfm_uploads:
+    name: hivecfm-uploads
+  hivecfm_saml:
+    name: hivecfm-saml
+  metabase_data:
+    name: hivecfm-metabase-data
+  superset_data:
+    name: hivecfm-superset-data

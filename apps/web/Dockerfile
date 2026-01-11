@@ -10,7 +10,7 @@ FROM node:22-alpine3.22 AS base
 # WORKDIR /app
 # RUN yarn global add turbo
 # COPY . .
-# RUN turbo prune @formbricks/web --docker
+# RUN turbo prune @hivecfm/web --docker
 
 #
 ## step 2: Install & build
@@ -59,7 +59,7 @@ RUN touch apps/web/.env
 RUN pnpm install --ignore-scripts
 
 # Build the database package first
-RUN pnpm build --filter=@formbricks/database
+RUN pnpm build --filter=@hivecfm/database
 
 # Build the project using our secret reader script
 # This mounts the secrets only during this build step without storing them in layers
@@ -67,7 +67,7 @@ RUN --mount=type=secret,id=database_url \
     --mount=type=secret,id=encryption_key \
     --mount=type=secret,id=redis_url \
     --mount=type=secret,id=sentry_auth_token \
-    /tmp/read-secrets.sh pnpm build --filter=@formbricks/web...
+    /tmp/read-secrets.sh pnpm build --filter=@hivecfm/web...
 
 # Extract Prisma version
 RUN jq -r '.devDependencies.prisma' packages/database/package.json > /prisma_version.txt

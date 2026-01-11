@@ -1,0 +1,168 @@
+# HiveCFM Production Docker Compose Override
+# Use with: docker compose -f docker-compose.yml -f docker-compose.prod.yml up -d
+#
+# Production optimizations:
+#   - Resource limits for all services
+#   - Reduced port exposure (only essential ports)
+#   - Production logging configuration
+#   - Optimized healthcheck intervals
+#
+# IMPORTANT: Production Access via nginx
+# ======================================
+# In production, all services are accessed through nginx reverse proxy with SSL:
+#   - HiveCFM Core: https://hivecfm.xcai.io (nginx → localhost:3000)
+#   - Metabase:     https://hivecfm.xcai.io:3001 (nginx → localhost:3001)
+#
+# Direct port access is disabled. nginx configuration: /etc/nginx/sites-enabled/hivecfm
+# SSL certificates: /etc/letsencrypt/live/hivecfm.xcai.io/
+
+services:
+  # =============================================================================
+  # HiveCFM Core Application - Production
+  # =============================================================================
+  hivecfm-core:
+    deploy:
+      resources:
+        limits:
+          cpus: '2'
+          memory: 2G
+        reservations:
+          cpus: '0.5'
+          memory: 512M
+      restart_policy:
+        condition: on-failure
+        delay: 5s
+        max_attempts: 3
+        window: 120s
+    environment:
+      NODE_ENV: production
+      LOG_LEVEL: warn
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "50m"
+        max-file: "5"
+    # In production, only expose via nginx reverse proxy (Story 1.6)
+    # ports:
+    #   - "3000:3000"
+
+  # =============================================================================
+  # PostgreSQL Database - Production
+  # =============================================================================
+  postgres:
+    deploy:
+      resources:
+        limits:
+          cpus: '2'
+          memory: 4G
+        reservations:
+          cpus: '0.5'
+          memory: 1G
+    environment:
+      # Use stronger password in production (set via .env)
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+    # Disable direct port access in production
+    ports: []
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "100m"
+        max-file: "10"
+    # Production-optimized PostgreSQL settings
+    command: >
+      postgres
+      -c shared_buffers=1GB
+      -c effective_cache_size=3GB
+      -c maintenance_work_mem=256MB
+      -c checkpoint_completion_target=0.9
+      -c wal_buffers=64MB
+      -c default_statistics_target=100
+      -c random_page_cost=1.1
+      -c effective_io_concurrency=200
+      -c min_wal_size=1GB
+      -c max_wal_size=4GB
+      -c max_worker_processes=4
+      -c max_parallel_workers_per_gather=2
+      -c max_parallel_workers=4
+
+  # =============================================================================
+  # Redis/Valkey Cache - Production
+  # =============================================================================
+  redis:
+    deploy:
+      resources:
+        limits:
+          cpus: '1'
+          memory: 1G
+        reservations:
+          cpus: '0.25'
+          memory: 256M
+    # Disable direct port access in production
+    ports: []
+    command: >
+      valkey-server
+      --appendonly yes
+      --maxmemory 768mb
+      --maxmemory-policy allkeys-lru
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "20m"
+        max-file: "3"
+
+  # =============================================================================
+  # Metabase Analytics - Production
+  # =============================================================================
+  metabase:
+    deploy:
+      resources:
+        limits:
+          cpus: '2'
+          memory: 2G
+        reservations:
+          cpus: '0.5'
+          memory: 512M
+    environment:
+      JAVA_OPTS: "-Xmx1536m -Xms512m"
+      MB_JETTY_PORT: 3000
+    # In production, access via nginx reverse proxy
+    # ports:
+    #   - "3001:3000"
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "50m"
+        max-file: "5"
+
+  # =============================================================================
+  # Apache Superset - Production
+  # =============================================================================
+  superset:
+    deploy:
+      resources:
+        limits:
+          cpus: '2'
+          memory: 2G
+        reservations:
+          cpus: '0.5'
+          memory: 512M
+    environment:
+      SUPERSET_WORKERS: 4
+      SUPERSET_TIMEOUT: 60
+    # In production, access via nginx reverse proxy
+    # ports:
+    #   - "3002:8080"
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "50m"
+        max-file: "5"
+
+# =============================================================================
+# Networks - Production
+# =============================================================================
+networks:
+  hivecfm-network:
+    driver: bridge
+    driver_opts:
+      com.docker.network.bridge.enable_ip_masquerade: "true"
