@@ -50,7 +50,7 @@ export const renderSurvey = (props: SurveyContainerProps) => {
     );
   } else {
     const modalContainer = document.createElement("div");
-    modalContainer.id = "formbricks-modal-container";
+    modalContainer.id = "hivecfm-modal-container";
     document.body.appendChild(modalContainer);
 
     render(
@@ -73,14 +73,14 @@ export const onFilePick = (files: { name: string; type: string; base64: string }
   globalThis.dispatchEvent(fileUploadEvent);
 };
 
-// Initialize the global formbricksSurveys object if it doesn't exist
+// Initialize the global hivecfmSurveys object if it doesn't exist
 if (globalThis.window !== undefined) {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any -- Type definition is in @hivecfm/types package
-  (globalThis.window as any).formbricksSurveys = {
+  (globalThis.window as any).hivecfmSurveys = {
     renderSurveyInline,
     renderSurveyModal,
     renderSurvey,
     onFilePick,
     setNonce: setStyleNonce,
-  } as typeof globalThis.window.formbricksSurveys;
+  } as typeof globalThis.window.hivecfmSurveys;
 }

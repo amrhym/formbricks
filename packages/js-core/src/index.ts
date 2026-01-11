@@ -93,7 +93,7 @@ const setNonce = (nonce: string | undefined): void => {
 
   // Set nonce in surveys package if it's already loaded
   // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition -- Runtime check for surveys package availability
-  globalThis.window.formbricksSurveys?.setNonce?.(nonce);
+  globalThis.window.hivecfmSurveys?.setNonce?.(nonce);
 };
 
 const formbricks = {

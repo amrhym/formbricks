@@ -87,7 +87,7 @@ export const renderWidget = async (
   const darkOverlay = projectOverwrites.darkOverlay ?? project.darkOverlay;
   const placement = projectOverwrites.placement ?? project.placement;
   const isBrandingEnabled = project.inAppSurveyBranding;
-  const formbricksSurveys = await loadFormbricksSurveysExternally();
+  const hivecfmSurveys = await loadHivecfmSurveysExternally();
 
   const recaptchaSiteKey = config.get().environment.data.recaptchaSiteKey;
   const isSpamProtectionEnabled = Boolean(recaptchaSiteKey && survey.recaptcha?.enabled);
@@ -101,7 +101,7 @@ export const renderWidget = async (
   }
 
   const timeoutId = setTimeout(() => {
-    formbricksSurveys.renderSurvey({
+    hivecfmSurveys.renderSurvey({
       appUrl: config.get().appUrl,
       environmentId: config.get().environmentId,
       contactId: config.get().user.data.contactId ?? undefined,
@@ -200,13 +200,13 @@ export const removeWidgetContainer = (): void => {
   document.getElementById(CONTAINER_ID)?.remove();
 };
 
-const loadFormbricksSurveysExternally = (): Promise<typeof globalThis.window.formbricksSurveys> => {
+const loadHivecfmSurveysExternally = (): Promise<typeof globalThis.window.hivecfmSurveys> => {
   const config = Config.getInstance();
 
   return new Promise((resolve, reject) => {
-    // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition -- We need to check if the formbricksSurveys object exists
-    if (globalThis.window.formbricksSurveys) {
-      resolve(globalThis.window.formbricksSurveys);
+    // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition -- We need to check if the hivecfmSurveys object exists
+    if (globalThis.window.hivecfmSurveys) {
+      resolve(globalThis.window.hivecfmSurveys);
     } else {
       const script = document.createElement("script");
       script.src = `${config.get().appUrl}/js/surveys.umd.cjs`;
@@ -215,13 +215,13 @@ const loadFormbricksSurveysExternally = (): Promise<typeof globalThis.window.for
         // Apply stored nonce if it was set before surveys package loaded
         const storedNonce = globalThis.window.__formbricksNonce;
         if (storedNonce) {
-          globalThis.window.formbricksSurveys.setNonce(storedNonce);
+          globalThis.window.hivecfmSurveys.setNonce(storedNonce);
         }
-        resolve(globalThis.window.formbricksSurveys);
+        resolve(globalThis.window.hivecfmSurveys);
       };
       script.onerror = (error) => {
-        console.error("Failed to load Formbricks Surveys library:", error);
-        reject(new Error(`Failed to load Formbricks Surveys library: ${error as string}`));
+        console.error("Failed to load HiveCFM Surveys library:", error);
+        reject(new Error(`Failed to load HiveCFM Surveys library: ${error as string}`));
       };
       document.head.appendChild(script);
     }

@@ -61,7 +61,7 @@ const config = ({ mode }) => {
           },
           {
             format: "umd",
-            name: "formbricksSurveys",
+            name: "hivecfmSurveys",
             entryFileNames: "index.umd.cjs",
             inlineDynamicImports: true,
           },

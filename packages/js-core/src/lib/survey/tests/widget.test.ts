@@ -88,7 +88,7 @@ describe("widget-file", () => {
     expect(mockLogger.debug).toHaveBeenCalledWith("A survey is already running. Skipping.");
   });
 
-  test("renderWidget sets isSurveyRunning, handles delay, loads formbricksSurveys, and calls .renderSurvey", async () => {
+  test("renderWidget sets isSurveyRunning, handles delay, loads hivecfmSurveys, and calls .renderSurvey", async () => {
     const mockConfigValue = {
       get: vi.fn().mockReturnValue({
         appUrl: "https://fake.app",
@@ -122,8 +122,8 @@ describe("widget-file", () => {
     (filterSurveys as Mock).mockReturnValue([]);
     widget.setIsSurveyRunning(false);
 
-    // @ts-expect-error -- mock window.formbricksSurveys
-    window.formbricksSurveys = {
+    // @ts-expect-error -- mock window.hivecfmSurveys
+    window.hivecfmSurveys = {
       renderSurvey: vi.fn(),
     };
 
@@ -137,7 +137,7 @@ describe("widget-file", () => {
 
     vi.advanceTimersByTime(mockSurvey.delay * 1000);
 
-    expect(window.formbricksSurveys.renderSurvey).toHaveBeenCalledWith(
+    expect(window.hivecfmSurveys.renderSurvey).toHaveBeenCalledWith(
       expect.objectContaining({
         survey: mockSurvey,
         appUrl: "https://fake.app",
