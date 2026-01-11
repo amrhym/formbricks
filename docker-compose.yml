@@ -34,6 +34,11 @@ services:
     build:
       context: .
       dockerfile: apps/web/Dockerfile
+      secrets:
+        - database_url
+        - encryption_key
+        - redis_url
+        - sentry_auth_token
     container_name: hivecfm-core
     ports:
       # Bind to localhost only - nginx handles external SSL access
@@ -260,6 +265,19 @@ services:
     restart: unless-stopped
     networks:
       - hivecfm-network
+
+# =============================================================================
+# Secrets (for Docker BuildKit builds)
+# =============================================================================
+secrets:
+  database_url:
+    environment: DATABASE_URL
+  encryption_key:
+    environment: ENCRYPTION_KEY
+  redis_url:
+    environment: REDIS_URL
+  sentry_auth_token:
+    environment: SENTRY_AUTH_TOKEN
 
 # =============================================================================
 # Networks
