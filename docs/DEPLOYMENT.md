@@ -444,10 +444,126 @@ docker image prune -a
 
 5. **Backups**: Implement daily database backups
 
+## Health Check Endpoints
+
+HiveCFM provides multiple health check endpoints for monitoring and orchestration:
+
+### Available Endpoints
+
+| Endpoint | Purpose | Response Format | HTTP Status |
+|----------|---------|-----------------|-------------|
+| `/health` | Simple liveness probe (Docker) | `{"status":"ok"}` | 200 |
+| `/api/health` | Detailed health status | `{success, data: {status, checks, timestamp}}` | 200/503 |
+| `/api/ready` | Readiness probe (Kubernetes) | `{ready: true/false}` | 200/503 |
+| `/api/v2/health` | Legacy detailed health | `{data: {main_database, cache_database}}` | 200/503 |
+
+### `/api/health` - Detailed Health Status
+
+Returns comprehensive health information with database and cache status:
+
+**Healthy Response (HTTP 200):**
+```json
+{
+  "success": true,
+  "data": {
+    "status": "healthy",
+    "checks": {
+      "database": true,
+      "cache": true
+    },
+    "timestamp": "2026-01-11T20:00:00.000Z"
+  }
+}
+```
+
+**Unhealthy Response (HTTP 503):**
+```json
+{
+  "success": false,
+  "data": {
+    "status": "unhealthy",
+    "checks": {
+      "database": false,
+      "cache": true
+    },
+    "timestamp": "2026-01-11T20:00:00.000Z"
+  }
+}
+```
+
+### `/api/ready` - Readiness Probe
+
+Returns simple ready status for load balancer health checks and Kubernetes readiness probes:
+
+**Ready Response (HTTP 200):**
+```json
+{
+  "ready": true
+}
+```
+
+**Not Ready Response (HTTP 503):**
+```json
+{
+  "ready": false,
+  "reason": "database unavailable"
+}
+```
+
+### Monitoring Recommendations
+
+1. **Docker HEALTHCHECK**: Uses `/health` endpoint (already configured in docker-compose.yml)
+   ```yaml
+   healthcheck:
+     test: ["CMD", "curl", "-f", "http://localhost:3000/health"]
+     interval: 30s
+     timeout: 10s
+     retries: 3
+   ```
+
+2. **Kubernetes Probes**: Use `/api/ready` for readiness and `/health` for liveness
+   ```yaml
+   livenessProbe:
+     httpGet:
+       path: /health
+       port: 3000
+     initialDelaySeconds: 120
+     periodSeconds: 30
+   readinessProbe:
+     httpGet:
+       path: /api/ready
+       port: 3000
+     initialDelaySeconds: 10
+     periodSeconds: 10
+   ```
+
+3. **External Monitoring**: Use `/api/health` for detailed status in monitoring dashboards
+   - Alerts on HTTP 503 responses
+   - Track individual component health (database, cache)
+   - Monitor timestamp for freshness
+
+4. **nginx Health Check**: `/nginx-health` endpoint for nginx-level health (if configured)
+
+### Testing Health Endpoints
+
+```bash
+# Simple liveness check (Docker)
+curl http://localhost:3000/health
+
+# Detailed health status
+curl http://localhost:3000/api/health
+
+# Readiness probe
+curl http://localhost:3000/api/ready
+
+# Legacy V2 health
+curl http://localhost:3000/api/v2/health
+```
+
 ## Next Steps
 
 After completing this deployment:
 
-1. **Story 1.6**: Configure nginx reverse proxy with SSL
-2. **Story 1.7**: Implement health check endpoints
-3. Configure DNS to point hivecfm.xcai.io to server IP
+1. Configure DNS to point hivecfm.xcai.io to server IP
+2. Set up external monitoring using `/api/health` endpoint
+3. Configure alerting for unhealthy status responses
