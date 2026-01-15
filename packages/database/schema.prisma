@@ -141,6 +141,20 @@ model Contact {
 /// @property variables - Custom variables used in the response
 /// @property ttc - Time to completion metrics
 /// @property meta - Additional metadata about the response
+/// @property genesysConversationId - Genesys Cloud conversation ID for contact center enrichment
+/// @property genesysAgentId - Genesys agent user ID
+/// @property genesysAgentName - Genesys agent display name
+/// @property genesysQueueId - Genesys queue ID
+/// @property genesysQueueName - Genesys queue name
+/// @property genesysHandleTime - Total handle time in seconds
+/// @property genesysWrapCode - Agent wrap-up code
+/// @property genesysDirection - Call direction (inbound/outbound)
+/// @property genesysAni - Caller phone number (ANI)
+/// @property genesysDnis - Dialed phone number (DNIS)
+/// @property genesysConversationStart - When the conversation started
+/// @property genesysConversationEnd - When the conversation ended
+/// @property surveyDeliveryChannel - Channel used to deliver survey (sms, whatsapp, voice, chat)
+/// @property surveyDeliveredAt - When the survey was sent to customer
 model Response {
   id                String              @id @default(cuid())
   createdAt         DateTime            @default(now()) @map(name: "created_at")
@@ -169,11 +183,32 @@ model Response {
   displayId         String?             @unique
   display           Display?            @relation(fields: [displayId], references: [id])
 
+  // Genesys Cloud Contact Center Context
+  genesysConversationId    String?   @map("genesys_conversation_id")
+  genesysAgentId           String?   @map("genesys_agent_id")
+  genesysAgentName         String?   @map("genesys_agent_name")
+  genesysQueueId           String?   @map("genesys_queue_id")
+  genesysQueueName         String?   @map("genesys_queue_name")
+  genesysHandleTime        Int?      @map("genesys_handle_time")
+  genesysWrapCode          String?   @map("genesys_wrap_code")
+  genesysDirection         String?   @map("genesys_direction")
+  genesysAni               String?   @map("genesys_ani")
+  genesysDnis              String?   @map("genesys_dnis")
+  genesysConversationStart DateTime? @map("genesys_conversation_start")
+  genesysConversationEnd   DateTime? @map("genesys_conversation_end")
+
+  // Survey Delivery Context
+  surveyDeliveryChannel String?   @map("survey_delivery_channel")
+  surveyDeliveredAt     DateTime? @map("survey_delivered_at")
+
   @@unique([surveyId, singleUseId])
   @@index([createdAt])
   @@index([surveyId, createdAt]) // to determine monthly response count
   @@index([contactId, createdAt]) // to determine monthly identified users (persons)
   @@index([surveyId])
+  @@index([genesysConversationId]) // for looking up responses by Genesys conversation
+  @@index([genesysAgentId, createdAt]) // for agent performance reports
+  @@index([genesysQueueId, createdAt]) // for queue performance reports
 }
 
 /// Represents a label that can be applied to survey responses.
