@@ -108,6 +108,50 @@ export const ZResponse = z.object({
   displayId: z.string().nullable().openapi({
     description: "The display ID of the response",
   }),
+  // Genesys Cloud Contact Center Context
+  genesysConversationId: z.string().nullable().openapi({
+    description: "Genesys Cloud conversation ID for contact center enrichment",
+  }),
+  genesysAgentId: z.string().nullable().openapi({
+    description: "Genesys agent user ID",
+  }),
+  genesysAgentName: z.string().nullable().openapi({
+    description: "Genesys agent display name",
+  }),
+  genesysQueueId: z.string().nullable().openapi({
+    description: "Genesys queue ID",
+  }),
+  genesysQueueName: z.string().nullable().openapi({
+    description: "Genesys queue name",
+  }),
+  genesysHandleTime: z.number().int().nullable().openapi({
+    description: "Total handle time in seconds",
+  }),
+  genesysWrapCode: z.string().nullable().openapi({
+    description: "Agent wrap-up code",
+  }),
+  genesysDirection: z.string().nullable().openapi({
+    description: "Call direction (inbound/outbound)",
+  }),
+  genesysAni: z.string().nullable().openapi({
+    description: "Caller phone number (ANI)",
+  }),
+  genesysDnis: z.string().nullable().openapi({
+    description: "Dialed phone number (DNIS)",
+  }),
+  genesysConversationStart: z.coerce.date().nullable().openapi({
+    description: "When the conversation started",
+  }),
+  genesysConversationEnd: z.coerce.date().nullable().openapi({
+    description: "When the conversation ended",
+  }),
+  // Survey delivery tracking
+  surveyDeliveryChannel: z.string().nullable().openapi({
+    description: "Channel used to deliver survey (sms, whatsapp, voice, chat)",
+  }),
+  surveyDeliveredAt: z.coerce.date().nullable().openapi({
+    description: "When the survey was sent to customer",
+  }),
 }) satisfies z.ZodType<Response>;
 
 ZResponse.openapi({
