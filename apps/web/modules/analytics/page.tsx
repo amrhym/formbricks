@@ -11,6 +11,9 @@ import { MetabaseEmbed } from "./components/MetabaseEmbed";
 import { SupersetEmbed } from "./components/SupersetEmbed";
 import { getMetabaseBaseUrl, getMetabaseDashboardUrl } from "./lib/metabase";
 
+const SUPERSET_URL = process.env.NEXT_PUBLIC_SUPERSET_URL || "https://superset.hivecfm.xcai.io";
+const METABASE_URL = process.env.NEXT_PUBLIC_METABASE_URL || "https://metabase.hivecfm.xcai.io";
+
 export const metadata: Metadata = {
   title: "Analytics",
 };
@@ -45,15 +48,14 @@ export const AnalyticsPage = async ({ params: paramsProps }: AnalyticsPageProps)
   }
 
   // Check if Superset is configured
-  const supersetConfigured = true; // Superset is always available via path-based routing
+  const supersetConfigured = true; // Superset available at superset.hivecfm.xcai.io
 
   const AnalyticsButtons = () => {
-    const metabaseUrl = getMetabaseBaseUrl();
     return (
       <div className="flex gap-2">
         {metabaseConfigured && (
           <Button size="sm" variant="secondary" asChild>
-            <Link href={metabaseUrl} target="_blank" rel="noopener noreferrer">
+            <Link href={METABASE_URL} target="_blank" rel="noopener noreferrer">
               Open Metabase
               <ExternalLinkIcon className="ml-2 h-4 w-4" />
             </Link>
@@ -61,7 +63,7 @@ export const AnalyticsPage = async ({ params: paramsProps }: AnalyticsPageProps)
         )}
         {supersetConfigured && (
           <Button size="sm" variant="secondary" asChild>
-            <Link href="/superset/welcome/" target="_blank" rel="noopener noreferrer">
+            <Link href={SUPERSET_URL} target="_blank" rel="noopener noreferrer">
               Open Superset
               <ExternalLinkIcon className="ml-2 h-4 w-4" />
             </Link>
