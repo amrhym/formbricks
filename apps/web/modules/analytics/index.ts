@@ -9,6 +9,7 @@ export { AnalyticsPage } from "./page";
 
 // Embed components
 export { MetabaseEmbed, MetabaseFullPage } from "./components/MetabaseEmbed";
+export { SupersetEmbed, SupersetFullPage } from "./components/SupersetEmbed";
 
 // Utilities
 export {
