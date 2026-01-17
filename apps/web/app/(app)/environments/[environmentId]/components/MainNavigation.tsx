@@ -1,14 +1,13 @@
 "use client";
 
 import {
-  ArrowUpRightIcon,
+  BarChart3Icon,
   ChevronRightIcon,
   Cog,
   LogOutIcon,
   MessageCircle,
   PanelLeftCloseIcon,
   PanelLeftOpenIcon,
-  RocketIcon,
   UserCircleIcon,
   UserIcon,
 } from "lucide-react";
@@ -22,12 +21,10 @@ import { TOrganizationRole } from "@hivecfm/types/memberships";
 import { TOrganization } from "@hivecfm/types/organizations";
 import { TUser } from "@hivecfm/types/user";
 import { NavigationLink } from "@/app/(app)/environments/[environmentId]/components/NavigationLink";
-import { isNewerVersion } from "@/app/(app)/environments/[environmentId]/lib/utils";
-import FBLogo from "@/images/formbricks-wordmark.svg";
+import HiveCFMLogo from "@/images/hivecfm-wordmark.svg";
 import { cn } from "@/lib/cn";
 import { getAccessFlags } from "@/lib/membership/utils";
 import { useSignOut } from "@/modules/auth/hooks/use-sign-out";
-import { getLatestStableFbReleaseAction } from "@/modules/projects/settings/(setup)/app-connection/actions";
 import { ProfileAvatar } from "@/modules/ui/components/avatars";
 import { Button } from "@/modules/ui/components/button";
 import {
@@ -36,7 +33,6 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/modules/ui/components/dropdown-menu";
-import packageJson from "../../../../../package.json";
 
 interface NavigationProps {
   environment: TEnvironment;
@@ -55,8 +51,6 @@ export const MainNavigation = ({
   user,
   project,
   membershipRole,
-  isFormbricksCloud,
-  isDevelopment,
   publicDomain,
 }: NavigationProps) => {
   const router = useRouter();
@@ -64,12 +58,9 @@ export const MainNavigation = ({
   const { t } = useTranslation();
   const [isCollapsed, setIsCollapsed] = useState(false);
   const [isTextVisible, setIsTextVisible] = useState(true);
-  const [latestVersion, setLatestVersion] = useState("");
   const { signOut: signOutWithAudit } = useSignOut({ id: user.id, email: user.email });
 
-  const { isManager, isOwner, isBilling } = getAccessFlags(membershipRole);
-
-  const isOwnerOrManager = isManager || isOwner;
+  const { isBilling } = getAccessFlags(membershipRole);
 
   const toggleSidebar = () => {
     setIsCollapsed(!isCollapsed);
@@ -112,6 +103,12 @@ export const MainNavigation = ({
         isActive: pathname?.includes("/contacts") || pathname?.includes("/segments"),
       },
       {
+        name: t("common.analytics") || "Analytics",
+        href: `/environments/${environment.id}/analytics`,
+        icon: BarChart3Icon,
+        isActive: pathname?.includes("/analytics"),
+      },
+      {
         name: t("common.configuration"),
         href: `/environments/${environment.id}/workspace/general`,
         icon: Cog,
@@ -127,34 +124,7 @@ export const MainNavigation = ({
       href: `/environments/${environment.id}/settings/profile`,
       icon: UserCircleIcon,
     },
-    {
-      label: t("common.documentation"),
-      href: "https://formbricks.com/docs",
-      target: "_blank",
-      icon: ArrowUpRightIcon,
-    },
-    {
-      label: t("common.share_feedback"),
-      href: "https://github.com/formbricks/formbricks/issues",
-      target: "_blank",
-      icon: ArrowUpRightIcon,
-    },
   ];
-
-  useEffect(() => {
-    async function loadReleases() {
-      const res = await getLatestStableFbReleaseAction();
-      if (res?.data) {
-        const latestVersionTag = res.data;
-        const currentVersionTag = `v${packageJson.version}`;
-
-        if (isNewerVersion(currentVersionTag, latestVersionTag)) {
-          setLatestVersion(latestVersionTag);
-        }
-      }
-    }
-    if (isOwnerOrManager) loadReleases();
-  }, [isOwnerOrManager]);
 
   const mainNavigationLink = `/environments/${environment.id}/${isBilling ? "settings/billing/" : "surveys/"}`;
 
@@ -177,7 +147,7 @@ export const MainNavigation = ({
                     "flex items-center justify-center transition-opacity duration-100",
                     isTextVisible ? "opacity-0" : "opacity-100"
                   )}>
-                  <Image src={FBLogo} width={160} height={30} alt={t("environments.formbricks_logo")} />
+                  <Image src={HiveCFMLogo} width={160} height={40} alt="HiveCFM" />
                 </Link>
               )}
               <Button
@@ -217,19 +187,6 @@ export const MainNavigation = ({
           </div>
 
           <div>
-            {/* New Version Available */}
-            {!isCollapsed && isOwnerOrManager && latestVersion && !isFormbricksCloud && !isDevelopment && (
-              <Link
-                href="https://github.com/formbricks/formbricks/releases"
-                target="_blank"
-                className="m-2 flex items-center space-x-4 rounded-lg border border-slate-200 bg-slate-100 p-2 text-sm text-slate-800 hover:border-slate-300 hover:bg-slate-200">
-                <p className="flex items-center justify-center gap-x-2 text-xs">
-                  <RocketIcon strokeWidth={1.5} className="mx-1 h-6 w-6 text-slate-900" />
-                  {t("common.new_version_available", { version: latestVersion })}
-                </p>
-              </Link>
-            )}
-
             {/* User Switch */}
             <div className="flex items-center">
               <DropdownMenu>
@@ -273,12 +230,7 @@ export const MainNavigation = ({
                   {/* Dropdown Items */}
 
                   {dropdownNavigation.map((link) => (
-                    <Link
-                      href={link.href}
-                      target={link.target}
-                      className="flex w-full items-center"
-                      key={link.label}
-                      rel={link.target === "_blank" ? "noopener noreferrer" : undefined}>
+                    <Link href={link.href} className="flex w-full items-center" key={link.label}>
                       <DropdownMenuItem>
                         <link.icon className="mr-2 h-4 w-4" strokeWidth={1.5} />
                         {link.label}
