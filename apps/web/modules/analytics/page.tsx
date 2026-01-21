@@ -7,12 +7,14 @@ import { Button } from "@/modules/ui/components/button";
 import { PageContentWrapper } from "@/modules/ui/components/page-content-wrapper";
 import { PageHeader } from "@/modules/ui/components/page-header";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/modules/ui/components/tabs";
+import { ChannelConfigEmbed } from "./components/ChannelConfigEmbed";
 import { MetabaseEmbed } from "./components/MetabaseEmbed";
 import { SupersetEmbed } from "./components/SupersetEmbed";
 import { getMetabaseBaseUrl, getMetabaseDashboardUrl } from "./lib/metabase";
 
 const SUPERSET_URL = process.env.NEXT_PUBLIC_SUPERSET_URL || "https://superset.hivecfm.xcai.io";
 const METABASE_URL = process.env.NEXT_PUBLIC_METABASE_URL || "https://metabase.hivecfm.xcai.io";
+const GENESYS_ADAPTER_URL = process.env.NEXT_PUBLIC_GENESYS_ADAPTER_URL || "https://hivecfm.xcai.io";
 
 export const metadata: Metadata = {
   title: "Analytics",
@@ -50,9 +52,20 @@ export const AnalyticsPage = async ({ params: paramsProps }: AnalyticsPageProps)
   // Check if Superset is configured
   const supersetConfigured = true; // Superset available at superset.hivecfm.xcai.io
 
+  // Check if Genesys Adapter is configured (always true for now)
+  const channelConfigEnabled = true;
+
   const AnalyticsButtons = () => {
     return (
       <div className="flex gap-2">
+        {channelConfigEnabled && (
+          <Button size="sm" variant="secondary" asChild>
+            <Link href={`${GENESYS_ADAPTER_URL}/admin/`} target="_blank" rel="noopener noreferrer">
+              Open Channel Config
+              <ExternalLinkIcon className="ml-2 h-4 w-4" />
+            </Link>
+          </Button>
+        )}
         {metabaseConfigured && (
           <Button size="sm" variant="secondary" asChild>
             <Link href={METABASE_URL} target="_blank" rel="noopener noreferrer">
@@ -111,11 +124,18 @@ export const AnalyticsPage = async ({ params: paramsProps }: AnalyticsPageProps)
   return (
     <PageContentWrapper>
       <PageHeader pageTitle={t("common.analytics") || "Analytics"} cta={<AnalyticsButtons />} />
-      <Tabs defaultValue="superset" className="w-full">
+      <Tabs defaultValue="channel-config" className="w-full">
         <TabsList className="mb-4">
+          {channelConfigEnabled && <TabsTrigger value="channel-config">Channel Config</TabsTrigger>}
           {supersetConfigured && <TabsTrigger value="superset">Superset</TabsTrigger>}
           {metabaseConfigured && <TabsTrigger value="metabase">Metabase</TabsTrigger>}
         </TabsList>
+
+        {channelConfigEnabled && (
+          <TabsContent value="channel-config" className="h-[calc(100vh-240px)] min-h-[600px]">
+            <ChannelConfigEmbed title="Channel Configuration" height="100%" />
+          </TabsContent>
+        )}
 
         {supersetConfigured && (
           <TabsContent value="superset" className="h-[calc(100vh-240px)] min-h-[600px]">
