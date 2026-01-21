@@ -1,15 +1,13 @@
 /**
  * Analytics Module
  *
- * Provides embedded analytics dashboard capabilities using Metabase, Superset,
- * and HiveCFM Channel Configuration.
+ * Provides embedded analytics dashboard capabilities using Metabase and Superset.
  */
 
 // Page components
 export { AnalyticsPage } from "./page";
 
 // Embed components
-export { ChannelConfigEmbed, ChannelConfigFullPage } from "./components/ChannelConfigEmbed";
 export { MetabaseEmbed, MetabaseFullPage } from "./components/MetabaseEmbed";
 export { SupersetEmbed, SupersetFullPage } from "./components/SupersetEmbed";
 
