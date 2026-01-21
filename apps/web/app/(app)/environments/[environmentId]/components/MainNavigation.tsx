@@ -2,6 +2,7 @@
 
 import {
   BarChart3Icon,
+  BookOpenIcon,
   ChevronRightIcon,
   Cog,
   LogOutIcon,
@@ -114,6 +115,12 @@ export const MainNavigation = ({
         href: `/environments/${environment.id}/integrations`,
         icon: PlugIcon,
         isActive: pathname?.includes("/integrations"),
+      },
+      {
+        name: t("common.api_docs") || "API Docs",
+        href: `/environments/${environment.id}/api-docs`,
+        icon: BookOpenIcon,
+        isActive: pathname?.includes("/api-docs"),
       },
       {
         name: t("common.configuration"),
