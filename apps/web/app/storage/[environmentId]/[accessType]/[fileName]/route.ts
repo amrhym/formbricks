@@ -46,16 +46,36 @@ export const GET = async (
     return errorResponse;
   }
 
-  return new Response(null, {
-    status: 302,
-    headers: {
-      Location: signedUrlResult.data,
-      "Cache-Control":
-        accessType === "private"
-          ? "no-store, no-cache, must-revalidate"
-          : "public, max-age=300, s-maxage=300, stale-while-revalidate=300",
-    },
-  });
+  // Proxy the file through the app instead of redirecting.
+  // The signed URL points to the internal S3 endpoint (e.g. http://minio:9000)
+  // which is not reachable from the browser.
+  try {
+    const s3Response = await fetch(signedUrlResult.data);
+    if (!s3Response.ok) {
+      logger.error(
+        { status: s3Response.status, url: signedUrlResult.data },
+        "Failed to fetch file from storage"
+      );
+      return responses.internalServerErrorResponse("Failed to fetch file from storage");
+    }
+
+    const cacheControl =
+      accessType === "private"
+        ? "no-store, no-cache, must-revalidate"
+        : "public, max-age=300, s-maxage=300, stale-while-revalidate=300";
+
+    const headers = new Headers();
+    const contentType = s3Response.headers.get("Content-Type");
+    if (contentType) headers.set("Content-Type", contentType);
+    const contentLength = s3Response.headers.get("Content-Length");
+    if (contentLength) headers.set("Content-Length", contentLength);
+    headers.set("Cache-Control", cacheControl);
+
+    return new Response(s3Response.body, { status: 200, headers });
+  } catch (fetchError) {
+    logger.error({ error: fetchError }, "Error proxying file from storage");
+    return responses.internalServerErrorResponse("Failed to fetch file from storage");
+  }
 };
 
 export const DELETE = async (
