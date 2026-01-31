@@ -1,3 +1,4 @@
+import { getChannel } from "@/lib/channel/service";
 import {
   DEFAULT_LOCALE,
   IS_FORMBRICKS_CLOUD,
@@ -108,6 +109,18 @@ export const SurveyEditorPage = async (props) => {
   const isCxMode = searchParams.mode === "cx";
   const publicDomain = getPublicDomain();
 
+  // Determine if this survey belongs to a voice or messaging channel
+  let isVoiceChannel = false;
+  let isMessagingChannel = false;
+  if (survey.channelId) {
+    const channel = await getChannel(survey.channelId);
+    if (channel?.type === "voice") {
+      isVoiceChannel = true;
+    } else if (channel?.type === "whatsapp" || channel?.type === "sms") {
+      isMessagingChannel = true;
+    }
+  }
+
   return (
     <SurveyEditor
       survey={survey}
@@ -127,6 +140,8 @@ export const SurveyEditorPage = async (props) => {
       isFormbricksCloud={IS_FORMBRICKS_CLOUD}
       isUnsplashConfigured={!!UNSPLASH_ACCESS_KEY}
       isCxMode={isCxMode}
+      isVoiceChannel={isVoiceChannel}
+      isMessagingChannel={isMessagingChannel}
       locale={locale ?? DEFAULT_LOCALE}
       mailFrom={MAIL_FROM ?? "hola@hivecfm.com"}
       isSurveyFollowUpsAllowed={isSurveyFollowUpsAllowed}

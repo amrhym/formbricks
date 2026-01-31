@@ -70,6 +70,8 @@ interface ElementsViewProps {
   isStorageConfigured: boolean;
   quotas: TSurveyQuota[];
   isExternalUrlsAllowed: boolean;
+  isVoiceChannel?: boolean;
+  isMessagingChannel?: boolean;
 }
 
 export const ElementsView = ({
@@ -92,6 +94,8 @@ export const ElementsView = ({
   isStorageConfigured = true,
   quotas,
   isExternalUrlsAllowed,
+  isVoiceChannel,
+  isMessagingChannel,
 }: ElementsViewProps) => {
   const { t } = useTranslation();
 
@@ -847,10 +851,18 @@ export const ElementsView = ({
           moveBlock={moveBlockById}
           addElementToBlock={_addElementToBlock}
           moveElementToBlock={moveElementToBlock}
+          isVoiceChannel={isVoiceChannel}
+          isMessagingChannel={isMessagingChannel}
         />
       </DndContext>
 
-      <AddElementButton addElement={addElement} project={project} isCxMode={isCxMode} />
+      <AddElementButton
+        addElement={addElement}
+        project={project}
+        isCxMode={isCxMode}
+        isVoiceChannel={isVoiceChannel}
+        isMessagingChannel={isMessagingChannel}
+      />
       <div className="mt-5 flex flex-col gap-5" ref={parent}>
         <hr className="border-t border-dashed" />
         <DndContext

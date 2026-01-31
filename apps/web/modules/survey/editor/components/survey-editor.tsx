@@ -14,10 +14,12 @@ import { TTeamPermission } from "@/modules/ee/teams/project-teams/types/team";
 import { EditPublicSurveyAlertDialog } from "@/modules/survey/components/edit-public-survey-alert-dialog";
 import { ElementsView } from "@/modules/survey/editor/components/elements-view";
 import { LoadingSkeleton } from "@/modules/survey/editor/components/loading-skeleton";
+import { MessagingPreviewPanel } from "@/modules/survey/editor/components/messaging-preview-panel";
 import { SettingsView } from "@/modules/survey/editor/components/settings-view";
 import { StylingView } from "@/modules/survey/editor/components/styling-view";
 import { SurveyEditorTabs } from "@/modules/survey/editor/components/survey-editor-tabs";
 import { SurveyMenuBar } from "@/modules/survey/editor/components/survey-menu-bar";
+import { VoicePreviewPanel } from "@/modules/survey/editor/components/voice-preview-panel";
 import { TFollowUpEmailToUser } from "@/modules/survey/editor/types/survey-follow-up";
 import { FollowUpsView } from "@/modules/survey/follow-ups/components/follow-ups-view";
 import { PreviewSurvey } from "@/modules/ui/components/preview-survey";
@@ -40,6 +42,8 @@ interface SurveyEditorProps {
   isUnsplashConfigured: boolean;
   isQuotasAllowed: boolean;
   isCxMode: boolean;
+  isVoiceChannel: boolean;
+  isMessagingChannel: boolean;
   locale: TUserLocale;
   projectPermission: TTeamPermission | null;
   mailFrom: string;
@@ -71,6 +75,8 @@ export const SurveyEditor = ({
   isUnsplashConfigured,
   isQuotasAllowed,
   isCxMode = false,
+  isVoiceChannel = false,
+  isMessagingChannel = false,
   locale,
   projectPermission,
   mailFrom,
@@ -206,6 +212,8 @@ export const SurveyEditor = ({
               isMultiLanguageAllowed={isMultiLanguageAllowed}
               isFormbricksCloud={isFormbricksCloud}
               isCxMode={isCxMode}
+              isVoiceChannel={isVoiceChannel}
+              isMessagingChannel={isMessagingChannel}
               locale={locale}
               responseCount={responseCount}
               setIsCautionDialogOpen={setIsCautionDialogOpen}
@@ -266,16 +274,30 @@ export const SurveyEditor = ({
         </main>
 
         <aside className="group hidden w-1/3 flex-shrink-0 items-center justify-center overflow-hidden border-l border-slate-200 bg-slate-100 shadow-inner md:flex md:flex-col">
-          <PreviewSurvey
-            survey={localSurvey}
-            elementId={activeElementId}
-            project={localProject}
-            environment={environment}
-            previewType={localSurvey.type === "app" ? "modal" : "fullwidth"}
-            languageCode={selectedLanguageCode}
-            isSpamProtectionAllowed={isSpamProtectionAllowed}
-            publicDomain={publicDomain}
-          />
+          {isVoiceChannel ? (
+            <VoicePreviewPanel
+              survey={localSurvey}
+              activeElementId={activeElementId}
+              languageCode={selectedLanguageCode}
+            />
+          ) : isMessagingChannel ? (
+            <MessagingPreviewPanel
+              survey={localSurvey}
+              activeElementId={activeElementId}
+              languageCode={selectedLanguageCode}
+            />
+          ) : (
+            <PreviewSurvey
+              survey={localSurvey}
+              elementId={activeElementId}
+              project={localProject}
+              environment={environment}
+              previewType={localSurvey.type === "app" ? "modal" : "fullwidth"}
+              languageCode={selectedLanguageCode}
+              isSpamProtectionAllowed={isSpamProtectionAllowed}
+              publicDomain={publicDomain}
+            />
+          )}
         </aside>
       </div>
       <EditPublicSurveyAlertDialog open={isCautionDialogOpen} setOpen={setIsCautionDialogOpen} />

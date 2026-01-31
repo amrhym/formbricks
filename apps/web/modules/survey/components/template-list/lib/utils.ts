@@ -6,11 +6,16 @@ export const getChannelMapping = (t: TFunction): { value: TProjectConfigChannel;
   { value: "website", label: t("common.website_survey") },
   { value: "app", label: t("common.app_survey") },
   { value: "link", label: t("common.link_survey") },
+  { value: "voice", label: t("common.voice_survey", "Voice (IVR)") },
+  { value: "whatsapp", label: t("common.whatsapp_survey", "WhatsApp") },
+  { value: "sms", label: t("common.sms_survey", "SMS") },
 ];
 
 export const getIndustryMapping = (t: TFunction): { value: TProjectConfigIndustry; label: string }[] => [
   { value: "eCommerce", label: t("common.e_commerce") },
   { value: "saas", label: t("common.saas") },
+  { value: "banking", label: t("common.banking", "Banking") },
+  { value: "telecom", label: t("common.telecom", "Telecom") },
   { value: "other", label: t("common.other") },
 ];
 

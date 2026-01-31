@@ -9,6 +9,7 @@ import { type JSX, useEffect, useMemo, useRef, useState } from "react";
 import toast from "react-hot-toast";
 import { useTranslation } from "react-i18next";
 import { getLanguageLabel } from "@hivecfm/i18n-utils/src/utils";
+import { VOICE_MAX_MULTIPLE_CHOICE_OPTIONS } from "@hivecfm/types/channel";
 import { TI18nString } from "@hivecfm/types/i18n";
 import { TSurveyElementTypeEnum, TSurveyMultipleChoiceElement } from "@hivecfm/types/surveys/elements";
 import { TShuffleOption, TSurvey } from "@hivecfm/types/surveys/types";
@@ -33,6 +34,7 @@ interface MultipleChoiceElementFormProps {
   locale: TUserLocale;
   isStorageConfigured: boolean;
   isExternalUrlsAllowed?: boolean;
+  isVoiceChannel?: boolean;
 }
 
 export const MultipleChoiceElementForm = ({
@@ -46,6 +48,7 @@ export const MultipleChoiceElementForm = ({
   locale,
   isStorageConfigured = true,
   isExternalUrlsAllowed,
+  isVoiceChannel,
 }: MultipleChoiceElementFormProps): JSX.Element => {
   const { t } = useTranslation();
   const lastChoiceRef = useRef<HTMLInputElement>(null);
@@ -121,6 +124,20 @@ export const MultipleChoiceElementForm = ({
   };
 
   const addChoice = (choiceIdx?: number) => {
+    // Enforce max 9 options for voice channels (DTMF keys 1-9)
+    if (isVoiceChannel) {
+      const regularCount = element.choices.filter((c) => c.id !== "other" && c.id !== "none").length;
+      if (regularCount >= VOICE_MAX_MULTIPLE_CHOICE_OPTIONS) {
+        toast.error(
+          t("environments.surveys.edit.voice_max_options", {
+            max: VOICE_MAX_MULTIPLE_CHOICE_OPTIONS,
+            defaultValue: `Voice channels support a maximum of ${VOICE_MAX_MULTIPLE_CHOICE_OPTIONS} options (DTMF keys 1-9)`,
+          })
+        );
+        return;
+      }
+    }
+
     setIsNew(false);
 
     const newChoice = {
@@ -276,6 +293,21 @@ export const MultipleChoiceElementForm = ({
 
       <div className="mt-3">
         <Label htmlFor="choices">Options*</Label>
+        {isVoiceChannel && (
+          <div className="mt-1 mb-2 flex items-center gap-2 rounded-md border border-orange-200 bg-orange-50 px-3 py-2 text-xs text-orange-700">
+            <span className="font-semibold">IVR:</span>
+            <span>
+              {t("environments.surveys.edit.voice_dtmf_hint", {
+                max: VOICE_MAX_MULTIPLE_CHOICE_OPTIONS,
+                defaultValue: `Options map to DTMF keys 1-${VOICE_MAX_MULTIPLE_CHOICE_OPTIONS}. Callers press the number to select.`,
+              })}
+            </span>
+            <span className="ml-auto font-medium">
+              {element.choices.filter((c) => c.id !== "other" && c.id !== "none").length}/
+              {VOICE_MAX_MULTIPLE_CHOICE_OPTIONS}
+            </span>
+          </div>
+        )}
         <div className="mt-2" id="choices">
           <DndContext
             id="multi-choice-choices"
@@ -308,25 +340,33 @@ export const MultipleChoiceElementForm = ({
             <SortableContext items={element.choices} strategy={verticalListSortingStrategy}>
               <div className="flex max-h-[25dvh] flex-col gap-2 overflow-y-auto py-1 pr-1" ref={parent}>
                 {element.choices?.map((choice, choiceIdx) => (
-                  <ElementOptionChoice
-                    key={choice.id}
-                    choice={choice}
-                    choiceIdx={choiceIdx}
-                    elementIdx={elementIdx}
-                    updateChoice={updateChoice}
-                    deleteChoice={deleteChoice}
-                    addChoice={addChoice}
-                    isInvalid={isInvalid}
-                    localSurvey={localSurvey}
-                    selectedLanguageCode={selectedLanguageCode}
-                    setSelectedLanguageCode={setSelectedLanguageCode}
-                    surveyLanguages={surveyLanguages}
-                    element={element}
-                    updateElement={updateElement}
-                    surveyLanguageCodes={surveyLanguageCodes}
-                    locale={locale}
-                    isStorageConfigured={isStorageConfigured}
-                  />
+                  <div key={choice.id} className="flex items-center gap-1.5">
+                    {isVoiceChannel && choice.id !== "other" && choice.id !== "none" && (
+                      <div className="flex h-6 w-6 flex-shrink-0 items-center justify-center rounded bg-slate-700 text-xs font-bold text-white">
+                        {choiceIdx + 1}
+                      </div>
+                    )}
+                    <div className="flex-1">
+                      <ElementOptionChoice
+                        choice={choice}
+                        choiceIdx={choiceIdx}
+                        elementIdx={elementIdx}
+                        updateChoice={updateChoice}
+                        deleteChoice={deleteChoice}
+                        addChoice={addChoice}
+                        isInvalid={isInvalid}
+                        localSurvey={localSurvey}
+                        selectedLanguageCode={selectedLanguageCode}
+                        setSelectedLanguageCode={setSelectedLanguageCode}
+                        surveyLanguages={surveyLanguages}
+                        element={element}
+                        updateElement={updateElement}
+                        surveyLanguageCodes={surveyLanguageCodes}
+                        locale={locale}
+                        isStorageConfigured={isStorageConfigured}
+                      />
+                    </div>
+                  </div>
                 ))}
               </div>
             </SortableContext>

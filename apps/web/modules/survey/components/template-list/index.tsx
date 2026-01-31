@@ -5,12 +5,16 @@ import { useRouter } from "next/navigation";
 import { useMemo, useState } from "react";
 import toast from "react-hot-toast";
 import { useTranslation } from "react-i18next";
-import { ZProjectConfigChannel, ZProjectConfigIndustry } from "@hivecfm/types/project";
+import { TIntegrationMethod } from "@hivecfm/types/channel";
+import { channelTypeToSurveyType } from "@hivecfm/types/channel";
+import { ZProjectConfigIndustry } from "@hivecfm/types/project";
 import { TSurveyCreateInput, TSurveyType } from "@hivecfm/types/surveys/types";
 import { TTemplate, TTemplateFilter, ZTemplateRole } from "@hivecfm/types/templates";
 import { templates } from "@/app/lib/templates";
 import { getFormattedErrorMessage } from "@/lib/utils/helper";
 import { createSurveyAction } from "./actions";
+import { ChannelSelection, ChannelSelector } from "./components/channel-selector";
+import { IntegrationMethodSelector } from "./components/integration-method-selector";
 import { StartFromScratchTemplate } from "./components/start-from-scratch-template";
 import { Template } from "./components/template";
 import { TemplateFilters } from "./components/template-filters";
@@ -25,6 +29,16 @@ interface TemplateListProps {
   noPreview?: boolean; // single click to create survey
 }
 
+// Maps channel selector values to template channel filter values
+const channelToTemplateChannels: Record<string, string[]> = {
+  web: ["website", "app"],
+  mobile: ["app"],
+  link: ["link"],
+  voice: ["voice"],
+  whatsapp: ["whatsapp"],
+  sms: ["sms"],
+};
+
 export const TemplateList = ({
   userId,
   project,
@@ -38,18 +52,25 @@ export const TemplateList = ({
   const router = useRouter();
   const [activeTemplate, setActiveTemplate] = useState<TTemplate | null>(null);
   const [loading, setLoading] = useState(false);
-  const [selectedFilter, setSelectedFilter] = useState<TTemplateFilter[]>([null, null, null]);
+  const [selectedChannel, setSelectedChannel] = useState<ChannelSelection>(null);
+  const [selectedIntegrationMethod, setSelectedIntegrationMethod] = useState<TIntegrationMethod | null>(null);
+  // Filter state: [industry, role] (channel is now separate via ChannelSelector)
+  const [selectedFilter, setSelectedFilter] = useState<TTemplateFilter[]>([null, null]);
+
   const surveyType: TSurveyType = useMemo(() => {
+    // Derive survey type from selected channel
+    if (selectedChannel) {
+      return channelTypeToSurveyType(selectedChannel);
+    }
+    // Fallback to project config
     if (project.config.channel) {
       if (project.config.channel === "website") {
         return "app";
       }
-
       return project.config.channel;
     }
-
     return "link";
-  }, [project.config.channel]);
+  }, [selectedChannel, project.config.channel]);
 
   const createSurvey = async (activeTemplate: TTemplate) => {
     setLoading(true);
@@ -77,24 +98,26 @@ export const TemplateList = ({
         return template.name.toLowerCase().includes(templateSearch.toLowerCase());
       }
 
-      // Parse and validate the filters
-      const channelParseResult = ZProjectConfigChannel.nullable().safeParse(selectedFilter[0]);
-      const industryParseResult = ZProjectConfigIndustry.nullable().safeParse(selectedFilter[1]);
-      const roleParseResult = ZTemplateRole.nullable().safeParse(selectedFilter[2]);
-
-      // Ensure all validations are successful
-      if (!channelParseResult.success || !industryParseResult.success || !roleParseResult.success) {
-        // If any validation fails, skip this template
-        return true;
+      // Channel filter from ChannelSelector
+      let channelMatch = true;
+      if (selectedChannel) {
+        const matchingChannels = channelToTemplateChannels[selectedChannel] || [];
+        channelMatch = template.channels
+          ? template.channels.some((ch) => matchingChannels.includes(ch))
+          : false;
       }
 
-      // Access the validated data from the parse results
-      const validatedChannel = channelParseResult.data;
+      // Industry and role filters
+      const industryParseResult = ZProjectConfigIndustry.nullable().safeParse(selectedFilter[0]);
+      const roleParseResult = ZTemplateRole.nullable().safeParse(selectedFilter[1]);
+
+      if (!industryParseResult.success || !roleParseResult.success) {
+        return channelMatch;
+      }
+
       const validatedIndustry = industryParseResult.data;
       const validatedRole = roleParseResult.data;
 
-      // Perform the filtering
-      const channelMatch = validatedChannel === null || template.channels?.includes(validatedChannel);
       const industryMatch = validatedIndustry === null || template.industries?.includes(validatedIndustry);
       const roleMatch = validatedRole === null || template.role === validatedRole;
 
@@ -102,14 +125,29 @@ export const TemplateList = ({
     });
   };
 
+  // For TemplateFilters, we pass a 3-element array for backward compat but index 0 is unused (channel is separate now)
+  const filterForFilters: TTemplateFilter[] = [null, selectedFilter[0], selectedFilter[1]];
+  const setFilterForFilters = (newFilter: TTemplateFilter[]) => {
+    // Only take industry (index 1) and role (index 2)
+    setSelectedFilter([newFilter[1], newFilter[2]]);
+  };
+
   return (
     <main className="relative z-0 flex-1 overflow-y-auto px-6 pt-2 pb-6 focus:outline-none">
       {showFilters && !templateSearch && (
-        <TemplateFilters
-          selectedFilter={selectedFilter}
-          setSelectedFilter={setSelectedFilter}
-          templateSearch={templateSearch}
-        />
+        <>
+          <ChannelSelector selectedChannel={selectedChannel} onChannelSelect={setSelectedChannel} />
+          <IntegrationMethodSelector
+            selectedChannel={selectedChannel}
+            selectedMethod={selectedIntegrationMethod}
+            onMethodSelect={setSelectedIntegrationMethod}
+          />
+          <TemplateFilters
+            selectedFilter={filterForFilters}
+            setSelectedFilter={setFilterForFilters}
+            templateSearch={templateSearch}
+          />
+        </>
       )}
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
         <StartFromScratchTemplate
@@ -133,7 +171,7 @@ export const TemplateList = ({
                 project={project}
                 createSurvey={createSurvey}
                 loading={loading}
-                selectedFilter={selectedFilter}
+                selectedFilter={filterForFilters}
                 noPreview={noPreview}
               />
             );

@@ -41,6 +41,8 @@ interface BlocksDroppableProps {
   moveBlock: (blockId: string, direction: "up" | "down") => void;
   addElementToBlock: (element: TSurveyElement, blockId: string, afterElementIdx: number) => void;
   moveElementToBlock?: (elementId: string, targetBlockId: string) => void;
+  isVoiceChannel?: boolean;
+  isMessagingChannel?: boolean;
 }
 
 export const BlocksDroppable = ({
@@ -72,6 +74,8 @@ export const BlocksDroppable = ({
   moveBlock,
   addElementToBlock,
   moveElementToBlock,
+  isVoiceChannel,
+  isMessagingChannel,
 }: BlocksDroppableProps) => {
   const [parent] = useAutoAnimate();
 
@@ -119,6 +123,8 @@ export const BlocksDroppable = ({
               addElementToBlock={addElementToBlock}
               moveElementToBlock={moveElementToBlock}
               totalBlocks={localSurvey.blocks.length}
+              isVoiceChannel={isVoiceChannel}
+              isMessagingChannel={isMessagingChannel}
             />
           );
         })}

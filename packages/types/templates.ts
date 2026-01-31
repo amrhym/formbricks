@@ -17,8 +17,8 @@ export const ZTemplate = z.object({
   description: z.string(),
   icon: z.any().optional(),
   role: ZTemplateRole.optional(),
-  channels: z.array(z.enum(["link", "app", "website"])).optional(),
-  industries: z.array(z.enum(["eCommerce", "saas", "other"])).optional(),
+  channels: z.array(z.enum(["link", "app", "website", "voice", "whatsapp", "sms"])).optional(),
+  industries: z.array(z.enum(["eCommerce", "saas", "banking", "telecom", "other"])).optional(),
   preset: z.object({
     name: z.string(),
     welcomeCard: ZSurveyWelcomeCard,

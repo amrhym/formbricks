@@ -20,6 +20,7 @@ import {
   StarIcon,
 } from "lucide-react";
 import type { JSX } from "react";
+import { MESSAGING_COMPATIBLE_ELEMENT_TYPES, VOICE_COMPATIBLE_ELEMENT_TYPES } from "@hivecfm/types/channel";
 import { TSurveyElementTypeEnum } from "@hivecfm/types/surveys/elements";
 import { createI18nString } from "@/lib/i18n/utils";
 import { replaceElementPresetPlaceholders } from "@/lib/utils/templates";
@@ -287,6 +288,34 @@ export const VARIABLES_ICON_MAP = {
 
 export const getCXElementNameMap = (t: TFunction) =>
   getCXElementTypes(t).reduce(
+    (prev, curr) => ({
+      ...prev,
+      [curr.id]: curr.label,
+    }),
+    {}
+  ) as Record<TSurveyElementTypeEnum, string>;
+
+export const getVoiceElementTypes = (t: TFunction) =>
+  getElementTypes(t).filter((elementType) => {
+    return VOICE_COMPATIBLE_ELEMENT_TYPES.includes(elementType.id as TSurveyElementTypeEnum);
+  });
+
+export const getVoiceElementNameMap = (t: TFunction) =>
+  getVoiceElementTypes(t).reduce(
+    (prev, curr) => ({
+      ...prev,
+      [curr.id]: curr.label,
+    }),
+    {}
+  ) as Record<TSurveyElementTypeEnum, string>;
+
+export const getMessagingElementTypes = (t: TFunction) =>
+  getElementTypes(t).filter((elementType) => {
+    return MESSAGING_COMPATIBLE_ELEMENT_TYPES.includes(elementType.id as TSurveyElementTypeEnum);
+  });
+
+export const getMessagingElementNameMap = (t: TFunction) =>
+  getMessagingElementTypes(t).reduce(
     (prev, curr) => ({
       ...prev,
       [curr.id]: curr.label,

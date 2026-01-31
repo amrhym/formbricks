@@ -1,7 +1,7 @@
 "use client";
 
 import { TFunction } from "i18next";
-import { SplitIcon } from "lucide-react";
+import { PhoneIcon, SplitIcon } from "lucide-react";
 import { useMemo } from "react";
 import { useTranslation } from "react-i18next";
 import { TProjectConfigChannel, TProjectConfigIndustry } from "@hivecfm/types/project";
@@ -49,20 +49,12 @@ const getChannelTag = (channels: NonNullabeChannel[] | undefined, t: TFunction):
 
   const removeSurveySuffix = (label: string | undefined) => label?.replace(" Survey", "");
 
-  switch (channels.length) {
-    case 1:
-      return labels[0];
-
-    case 2:
-      // Return labels for two channels concatenated with "or", removing "Survey"
-      return labels.map(removeSurveySuffix).join(" " + t("common.or") + " ");
-
-    case 3:
-      return t("environments.surveys.templates.all_channels");
-
-    default:
-      return undefined;
+  if (channels.length === 0) return undefined;
+  if (channels.length === 1) return labels[0];
+  if (channels.length === 2) {
+    return labels.map(removeSurveySuffix).join(" " + t("common.or") + " ");
   }
+  return t("environments.surveys.templates.all_channels");
 };
 
 export const TemplateTags = ({ template, selectedFilter }: TemplateTagsProps) => {
@@ -108,6 +100,11 @@ export const TemplateTags = ({ template, selectedFilter }: TemplateTagsProps) =>
           )}>
           {channelTag}
         </div>
+      )}
+      {template.channels?.includes("voice") && (
+        <TooltipRenderer tooltipContent="Voice / IVR compatible" shouldRender={true}>
+          <PhoneIcon className="h-5 w-5 rounded border border-orange-300 bg-orange-50 p-0.5 text-orange-500" />
+        </TooltipRenderer>
       )}
       {template.preset.blocks.some((block) => block.logic && block.logic.length > 0) && (
         <TooltipRenderer

@@ -78,6 +78,8 @@ interface BlockCardProps {
   addElementToBlock: (element: TSurveyElement, blockId: string, afterElementIdx: number) => void;
   moveElementToBlock?: (elementId: string, targetBlockId: string) => void;
   totalBlocks: number;
+  isVoiceChannel?: boolean;
+  isMessagingChannel?: boolean;
 }
 
 export const BlockCard = ({
@@ -114,6 +116,8 @@ export const BlockCard = ({
   addElementToBlock,
   moveElementToBlock,
   totalBlocks,
+  isVoiceChannel,
+  isMessagingChannel,
 }: BlockCardProps) => {
   const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({
     id: block.id,
@@ -239,6 +243,14 @@ export const BlockCard = ({
     if (element.type === TSurveyElementTypeEnum.FileUpload) {
       additionalProps.project = project;
       additionalProps.isFormbricksCloud = isFormbricksCloud;
+    }
+
+    // MultipleChoice needs voice channel flag for DTMF mapping
+    if (
+      element.type === TSurveyElementTypeEnum.MultipleChoiceSingle ||
+      element.type === TSurveyElementTypeEnum.MultipleChoiceMulti
+    ) {
+      additionalProps.isVoiceChannel = isVoiceChannel;
     }
 
     // @ts-expect-error - These props should cover everything
@@ -469,6 +481,8 @@ export const BlockCard = ({
                 block={block}
                 project={project}
                 isCxMode={isCxMode}
+                isVoiceChannel={isVoiceChannel}
+                isMessagingChannel={isMessagingChannel}
               />
             </div>
 

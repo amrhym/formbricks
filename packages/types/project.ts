@@ -9,10 +9,12 @@ export const ZProjectStyling = ZBaseStyling.extend({
 
 export type TProjectStyling = z.infer<typeof ZProjectStyling>;
 
-export const ZProjectConfigIndustry = z.enum(["eCommerce", "saas", "other"]).nullable();
+export const ZProjectConfigIndustry = z.enum(["eCommerce", "saas", "banking", "telecom", "other"]).nullable();
 export type TProjectConfigIndustry = z.infer<typeof ZProjectConfigIndustry>;
 
-export const ZProjectConfigChannel = z.enum(["link", "app", "website"]).nullable();
+export const ZProjectConfigChannel = z
+  .enum(["link", "app", "website", "voice", "whatsapp", "sms"])
+  .nullable();
 export type TProjectConfigChannel = z.infer<typeof ZProjectConfigChannel>;
 
 export const ZProjectMode = z.enum(["surveys", "cx"]);

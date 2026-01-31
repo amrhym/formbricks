@@ -341,6 +341,15 @@ enum SurveyType {
   app
 }
 
+enum ChannelType {
+  web
+  mobile
+  link
+  voice
+  whatsapp
+  sms
+}
+
 enum displayOptions {
   displayOnce
   displayMultiple
@@ -376,6 +385,8 @@ model Survey {
   type                SurveyType              @default(app)
   environment         Environment             @relation(fields: [environmentId], references: [id], onDelete: Cascade)
   environmentId       String
+  channel             Channel?                @relation(fields: [channelId], references: [id])
+  channelId           String?                 @map("channel_id")
   creator             User?                   @relation(fields: [createdBy], references: [id])
   createdBy           String?
   status              SurveyStatus            @default(draft)
@@ -439,6 +450,7 @@ model Survey {
 
   @@index([environmentId, updatedAt])
   @@index([segmentId])
+  @@index([channelId])
 }
 
 /// Represents a quota configuration for a survey.
@@ -605,6 +617,24 @@ model DataMigration {
 /// @property contacts - Collection of contacts/users tracked
 /// @property actionClasses - Defined actions that can trigger surveys
 /// @property attributeKeys - Custom attributes configuration
+model Channel {
+  id            String      @id @default(cuid())
+  createdAt     DateTime    @default(now()) @map("created_at")
+  updatedAt     DateTime    @updatedAt @map("updated_at")
+  name          String
+  type          ChannelType
+  description   String?
+  environment   Environment @relation(fields: [environmentId], references: [id], onDelete: Cascade)
+  environmentId String      @map("environment_id")
+  /// [ChannelConfig]
+  config        Json        @default("{}")
+  surveys       Survey[]
+
+  @@unique([environmentId, name])
+  @@index([environmentId])
+  @@map("channels")
+}
+
 model Environment {
   id                String                @id @default(cuid())
   createdAt         DateTime              @default(now()) @map(name: "created_at")
@@ -614,6 +644,7 @@ model Environment {
   projectId         String
   appSetupCompleted Boolean               @default(false)
   surveys           Survey[]
+  channels          Channel[]
   contacts          Contact[]
   actionClasses     ActionClass[]
   attributeKeys     ContactAttributeKey[]

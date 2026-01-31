@@ -122,8 +122,8 @@ export const getDefaultSurveyPreset = (t: TFunction): TTemplate["preset"] => {
 export const buildSurvey = (
   config: {
     name: string;
-    industries: ("eCommerce" | "saas" | "other")[];
-    channels: ("link" | "app" | "website")[];
+    industries: ("eCommerce" | "saas" | "banking" | "telecom" | "other")[];
+    channels: ("link" | "app" | "website" | "voice" | "whatsapp" | "sms")[];
     role: TTemplateRole;
     description: string;
     blocks: TSurveyBlock[];

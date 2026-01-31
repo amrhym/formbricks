@@ -12,6 +12,8 @@ import {
   getCXElementTypes,
   getElementDefaults,
   getElementTypes,
+  getMessagingElementTypes,
+  getVoiceElementTypes,
   universalElementPresets,
 } from "@/modules/survey/lib/elements";
 
@@ -19,13 +21,27 @@ interface AddElementButtonProps {
   addElement: (element: any) => void;
   project: Project;
   isCxMode: boolean;
+  isVoiceChannel?: boolean;
+  isMessagingChannel?: boolean;
 }
 
-export const AddElementButton = ({ addElement, project, isCxMode }: AddElementButtonProps) => {
+export const AddElementButton = ({
+  addElement,
+  project,
+  isCxMode,
+  isVoiceChannel,
+  isMessagingChannel,
+}: AddElementButtonProps) => {
   const { t } = useTranslation();
   const [open, setOpen] = useState(false);
   const [hoveredElementId, setHoveredElementId] = useState<string | null>(null);
-  const availableElementTypes = isCxMode ? getCXElementTypes(t) : getElementTypes(t);
+  const availableElementTypes = isVoiceChannel
+    ? getVoiceElementTypes(t)
+    : isMessagingChannel
+      ? getMessagingElementTypes(t)
+      : isCxMode
+        ? getCXElementTypes(t)
+        : getElementTypes(t);
   const [parent] = useAutoAnimate();
 
   return (
@@ -38,7 +54,7 @@ export const AddElementButton = ({ addElement, project, isCxMode }: AddElementBu
       )}>
       <Collapsible.CollapsibleTrigger asChild className="group h-full w-full">
         <div className="inline-flex">
-          <div className="bg-brand-dark flex w-10 items-center justify-center rounded-l-lg group-aria-expanded:rounded-bl-none group-aria-expanded:rounded-br">
+          <div className="bg-brand-dark flex w-10 items-center justify-center rounded-l-lg group-aria-expanded:rounded-br group-aria-expanded:rounded-bl-none">
             <PlusIcon className="h-5 w-5 text-white" />
           </div>
           <div className="px-4 py-3">
@@ -67,7 +83,7 @@ export const AddElementButton = ({ addElement, project, isCxMode }: AddElementBu
             onMouseEnter={() => setHoveredElementId(elementType.id)}
             onMouseLeave={() => setHoveredElementId(null)}>
             <div className="flex items-center">
-              <elementType.icon className="text-brand-dark -ml-0.5 mr-2 h-4 w-4" aria-hidden="true" />
+              <elementType.icon className="text-brand-dark mr-2 -ml-0.5 h-4 w-4" aria-hidden="true" />
               {elementType.label}
             </div>
             <div

@@ -15,6 +15,8 @@ import {
   getElementDefaults,
   getElementIconMap,
   getElementNameMap,
+  getMessagingElementNameMap,
+  getVoiceElementNameMap,
   universalElementPresets,
 } from "@/modules/survey/lib/elements";
 import { Button } from "@/modules/ui/components/button";
@@ -32,6 +34,8 @@ interface AddElementToBlockButtonProps {
   setActiveElementId: (elementId: string) => void;
   project: Project;
   isCxMode: boolean;
+  isVoiceChannel?: boolean;
+  isMessagingChannel?: boolean;
 }
 
 export const AddElementToBlockButton = ({
@@ -41,10 +45,18 @@ export const AddElementToBlockButton = ({
   setActiveElementId,
   project,
   isCxMode,
+  isVoiceChannel,
+  isMessagingChannel,
 }: AddElementToBlockButtonProps) => {
   const { t } = useTranslation();
   const [open, setOpen] = useState(false);
-  const availableElementTypes = isCxMode ? getCXElementNameMap(t) : getElementNameMap(t);
+  const availableElementTypes = isVoiceChannel
+    ? getVoiceElementNameMap(t)
+    : isMessagingChannel
+      ? getMessagingElementNameMap(t)
+      : isCxMode
+        ? getCXElementNameMap(t)
+        : getElementNameMap(t);
   const ELEMENTS_ICON_MAP = getElementIconMap(t);
 
   const handleAddElement = (elementType: string) => {

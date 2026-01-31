@@ -4731,6 +4731,760 @@ const supportiveWorkCulture = (t: TFunction): TTemplate => {
   );
 };
 
+// ==========================================
+// Banking Industry Templates
+// ==========================================
+
+const branchSatisfactionSurvey = (t: TFunction): TTemplate => {
+  const localSurvey = getDefaultSurveyPreset(t);
+  return buildSurvey(
+    {
+      name: "Branch Satisfaction Survey",
+      role: "customerSuccess",
+      industries: ["banking"],
+      channels: ["link", "voice"],
+      description:
+        "Measure customer satisfaction after a branch visit with CSAT rating and follow-up questions.",
+      endings: localSurvey.endings,
+      hiddenFields: hiddenFieldsDefault,
+      blocks: [
+        buildBlock({
+          name: "Block 1",
+          elements: [
+            buildRatingElement({
+              headline: "How would you rate your recent branch visit experience?",
+              required: true,
+              scale: "star",
+              range: 5,
+              lowerLabel: "Very Poor",
+              upperLabel: "Excellent",
+            }),
+          ],
+          t,
+        }),
+        buildBlock({
+          name: "Block 2",
+          elements: [
+            buildMultipleChoiceElement({
+              headline: "What was the primary reason for your visit?",
+              type: TSurveyElementTypeEnum.MultipleChoiceSingle,
+              choices: [
+                "Account inquiry",
+                "Loan application",
+                "Card services",
+                "Cash deposit/withdrawal",
+                "Investment consultation",
+              ],
+              containsOther: true,
+            }),
+          ],
+          t,
+        }),
+        buildBlock({
+          name: "Block 3",
+          elements: [
+            buildNPSElement({
+              headline: "How likely are you to recommend our branch to a friend or colleague?",
+              required: true,
+              lowerLabel: "Not likely",
+              upperLabel: "Very likely",
+            }),
+          ],
+          t,
+        }),
+      ],
+    },
+    t
+  );
+};
+
+const postCallBankingNPS = (t: TFunction): TTemplate => {
+  const localSurvey = getDefaultSurveyPreset(t);
+  return buildSurvey(
+    {
+      name: "Post-Call Banking NPS",
+      role: "customerSuccess",
+      industries: ["banking"],
+      channels: ["voice", "link"],
+      description: "Net Promoter Score survey delivered after banking call center interactions.",
+      endings: localSurvey.endings,
+      hiddenFields: hiddenFieldsDefault,
+      blocks: [
+        buildBlock({
+          name: "Block 1",
+          elements: [
+            buildNPSElement({
+              headline: "Based on your recent call, how likely are you to recommend our banking services?",
+              required: true,
+              lowerLabel: "Not at all likely",
+              upperLabel: "Extremely likely",
+            }),
+          ],
+          t,
+        }),
+        buildBlock({
+          name: "Block 2",
+          elements: [
+            buildRatingElement({
+              headline: "How would you rate the service provided by our agent?",
+              required: true,
+              scale: "number",
+              range: 5,
+              lowerLabel: "Poor",
+              upperLabel: "Excellent",
+            }),
+          ],
+          t,
+        }),
+      ],
+    },
+    t
+  );
+};
+
+const loanApplicationFeedback = (t: TFunction): TTemplate => {
+  const localSurvey = getDefaultSurveyPreset(t);
+  return buildSurvey(
+    {
+      name: "Loan Application Feedback",
+      role: "productManager",
+      industries: ["banking"],
+      channels: ["app", "website", "link"],
+      description: "Gather feedback on the loan application process to identify friction points.",
+      endings: localSurvey.endings,
+      hiddenFields: hiddenFieldsDefault,
+      blocks: [
+        buildBlock({
+          name: "Block 1",
+          elements: [
+            buildRatingElement({
+              headline: "How easy was the loan application process?",
+              required: true,
+              scale: "number",
+              range: 5,
+              lowerLabel: "Very difficult",
+              upperLabel: "Very easy",
+            }),
+          ],
+          t,
+        }),
+        buildBlock({
+          name: "Block 2",
+          elements: [
+            buildMultipleChoiceElement({
+              headline: "Which part of the process was most challenging?",
+              type: TSurveyElementTypeEnum.MultipleChoiceSingle,
+              choices: [
+                "Document upload",
+                "Identity verification",
+                "Understanding terms",
+                "Long wait times",
+                "None - it was smooth",
+              ],
+            }),
+          ],
+          t,
+        }),
+        buildBlock({
+          name: "Block 3",
+          elements: [
+            buildOpenTextElement({
+              headline: "Any suggestions to improve the process?",
+              required: false,
+              inputType: "text",
+              longAnswer: true,
+            }),
+          ],
+          t,
+        }),
+      ],
+    },
+    t
+  );
+};
+
+const mobileBankingUXSurvey = (t: TFunction): TTemplate => {
+  const localSurvey = getDefaultSurveyPreset(t);
+  return buildSurvey(
+    {
+      name: "Mobile Banking UX Survey",
+      role: "productManager",
+      industries: ["banking"],
+      channels: ["app"],
+      description: "Evaluate the usability and experience of your mobile banking application.",
+      endings: localSurvey.endings,
+      hiddenFields: hiddenFieldsDefault,
+      blocks: [
+        buildBlock({
+          name: "Block 1",
+          elements: [
+            buildRatingElement({
+              headline: "How satisfied are you with the mobile banking app?",
+              required: true,
+              scale: "star",
+              range: 5,
+              lowerLabel: "Very unsatisfied",
+              upperLabel: "Very satisfied",
+            }),
+          ],
+          t,
+        }),
+        buildBlock({
+          name: "Block 2",
+          elements: [
+            buildMultipleChoiceElement({
+              headline: "Which features do you use most frequently?",
+              type: TSurveyElementTypeEnum.MultipleChoiceMulti,
+              choices: [
+                "Balance check",
+                "Fund transfers",
+                "Bill payments",
+                "Card management",
+                "Investment tracking",
+                "Loan management",
+              ],
+            }),
+          ],
+          t,
+        }),
+        buildBlock({
+          name: "Block 3",
+          elements: [
+            buildNPSElement({
+              headline: "How likely are you to recommend our mobile app to others?",
+              required: true,
+              lowerLabel: "Not likely",
+              upperLabel: "Very likely",
+            }),
+          ],
+          t,
+        }),
+      ],
+    },
+    t
+  );
+};
+
+// ==========================================
+// Telecom Industry Templates
+// ==========================================
+
+const postCallTelecomNPS = (t: TFunction): TTemplate => {
+  const localSurvey = getDefaultSurveyPreset(t);
+  return buildSurvey(
+    {
+      name: "Post-Call Telecom NPS",
+      role: "customerSuccess",
+      industries: ["telecom"],
+      channels: ["voice", "link"],
+      description: "Post-call NPS survey for telecom support interactions via IVR or link.",
+      endings: localSurvey.endings,
+      hiddenFields: hiddenFieldsDefault,
+      blocks: [
+        buildBlock({
+          name: "Block 1",
+          elements: [
+            buildNPSElement({
+              headline: "How likely are you to recommend our service based on this call?",
+              required: true,
+              lowerLabel: "Not at all likely",
+              upperLabel: "Extremely likely",
+            }),
+          ],
+          t,
+        }),
+        buildBlock({
+          name: "Block 2",
+          elements: [
+            buildRatingElement({
+              headline: "How would you rate the support agent's helpfulness?",
+              required: true,
+              scale: "number",
+              range: 5,
+              lowerLabel: "Not helpful",
+              upperLabel: "Very helpful",
+            }),
+          ],
+          t,
+        }),
+      ],
+    },
+    t
+  );
+};
+
+const networkSatisfactionSurvey = (t: TFunction): TTemplate => {
+  const localSurvey = getDefaultSurveyPreset(t);
+  return buildSurvey(
+    {
+      name: "Network Satisfaction Survey",
+      role: "productManager",
+      industries: ["telecom"],
+      channels: ["app", "link"],
+      description: "Measure customer satisfaction with network quality, coverage, and speed.",
+      endings: localSurvey.endings,
+      hiddenFields: hiddenFieldsDefault,
+      blocks: [
+        buildBlock({
+          name: "Block 1",
+          elements: [
+            buildRatingElement({
+              headline: "How would you rate your overall network experience?",
+              required: true,
+              scale: "star",
+              range: 5,
+              lowerLabel: "Very poor",
+              upperLabel: "Excellent",
+            }),
+          ],
+          t,
+        }),
+        buildBlock({
+          name: "Block 2",
+          elements: [
+            buildMultipleChoiceElement({
+              headline: "What network issue do you experience most frequently?",
+              type: TSurveyElementTypeEnum.MultipleChoiceSingle,
+              choices: [
+                "Slow data speed",
+                "Call drops",
+                "Poor indoor coverage",
+                "No signal in certain areas",
+                "No issues",
+              ],
+            }),
+          ],
+          t,
+        }),
+        buildBlock({
+          name: "Block 3",
+          elements: [
+            buildNPSElement({
+              headline: "How likely are you to recommend our network to others?",
+              required: true,
+              lowerLabel: "Not likely",
+              upperLabel: "Very likely",
+            }),
+          ],
+          t,
+        }),
+      ],
+    },
+    t
+  );
+};
+
+const planChangeSatisfaction = (t: TFunction): TTemplate => {
+  const localSurvey = getDefaultSurveyPreset(t);
+  return buildSurvey(
+    {
+      name: "Plan Change Satisfaction",
+      role: "sales",
+      industries: ["telecom"],
+      channels: ["app", "website", "link"],
+      description: "Gather feedback after a customer upgrades or changes their telecom plan.",
+      endings: localSurvey.endings,
+      hiddenFields: hiddenFieldsDefault,
+      blocks: [
+        buildBlock({
+          name: "Block 1",
+          elements: [
+            buildRatingElement({
+              headline: "How satisfied are you with your new plan?",
+              required: true,
+              scale: "star",
+              range: 5,
+              lowerLabel: "Very unsatisfied",
+              upperLabel: "Very satisfied",
+            }),
+          ],
+          t,
+        }),
+        buildBlock({
+          name: "Block 2",
+          elements: [
+            buildMultipleChoiceElement({
+              headline: "What was the main reason for changing your plan?",
+              type: TSurveyElementTypeEnum.MultipleChoiceSingle,
+              choices: [
+                "Better data allowance",
+                "Lower price",
+                "More international minutes",
+                "Better device offer",
+                "Recommended by someone",
+              ],
+              containsOther: true,
+            }),
+          ],
+          t,
+        }),
+      ],
+    },
+    t
+  );
+};
+
+const technicalSupportCSAT = (t: TFunction): TTemplate => {
+  const localSurvey = getDefaultSurveyPreset(t);
+  return buildSurvey(
+    {
+      name: "Technical Support CSAT (IVR)",
+      role: "customerSuccess",
+      industries: ["telecom"],
+      channels: ["voice"],
+      description: "Quick IVR satisfaction survey after technical support calls.",
+      endings: localSurvey.endings,
+      hiddenFields: hiddenFieldsDefault,
+      blocks: [
+        buildBlock({
+          name: "Block 1",
+          elements: [
+            buildRatingElement({
+              headline: "How satisfied are you with the technical support you received?",
+              required: true,
+              scale: "number",
+              range: 5,
+              lowerLabel: "Very unsatisfied",
+              upperLabel: "Very satisfied",
+            }),
+          ],
+          t,
+        }),
+        buildBlock({
+          name: "Block 2",
+          elements: [
+            buildMultipleChoiceElement({
+              headline: "Was your issue resolved?",
+              type: TSurveyElementTypeEnum.MultipleChoiceSingle,
+              choices: ["Yes, fully resolved", "Partially resolved", "No, not resolved"],
+            }),
+          ],
+          t,
+        }),
+      ],
+    },
+    t
+  );
+};
+
+// ==========================================
+// Voice (IVR) Cross-Industry Templates
+// ==========================================
+
+const ivrPostCallCSAT = (t: TFunction): TTemplate => {
+  const localSurvey = getDefaultSurveyPreset(t);
+  return buildSurvey(
+    {
+      name: "IVR Post-Call CSAT",
+      role: "customerSuccess",
+      industries: ["banking", "telecom", "other"],
+      channels: ["voice"],
+      description: "Single-question CSAT via IVR after any customer service call. Press 1-5 on keypad.",
+      endings: localSurvey.endings,
+      hiddenFields: hiddenFieldsDefault,
+      blocks: [
+        buildBlock({
+          name: "Block 1",
+          elements: [
+            buildRatingElement({
+              headline: "How satisfied are you with the service you received today?",
+              required: true,
+              scale: "number",
+              range: 5,
+              lowerLabel: "Very unsatisfied",
+              upperLabel: "Very satisfied",
+            }),
+          ],
+          t,
+        }),
+      ],
+    },
+    t
+  );
+};
+
+const ivrNPSSurvey = (t: TFunction): TTemplate => {
+  const localSurvey = getDefaultSurveyPreset(t);
+  return buildSurvey(
+    {
+      name: "IVR NPS Survey",
+      role: "customerSuccess",
+      industries: ["banking", "telecom", "other"],
+      channels: ["voice"],
+      description: "Net Promoter Score survey via phone IVR. Callers press 0-10 on their keypad.",
+      endings: localSurvey.endings,
+      hiddenFields: hiddenFieldsDefault,
+      blocks: [
+        buildBlock({
+          name: "Block 1",
+          elements: [
+            buildNPSElement({
+              headline: "How likely are you to recommend us to a friend or colleague?",
+              required: true,
+              lowerLabel: "Not at all likely",
+              upperLabel: "Extremely likely",
+            }),
+          ],
+          t,
+        }),
+      ],
+    },
+    t
+  );
+};
+
+const ivrServiceRating = (t: TFunction): TTemplate => {
+  const localSurvey = getDefaultSurveyPreset(t);
+  return buildSurvey(
+    {
+      name: "IVR Service Rating",
+      role: "customerSuccess",
+      industries: ["banking", "telecom", "other"],
+      channels: ["voice"],
+      description: "Quick 1-5 star service rating via phone keypad. Ideal for post-interaction feedback.",
+      endings: localSurvey.endings,
+      hiddenFields: hiddenFieldsDefault,
+      blocks: [
+        buildBlock({
+          name: "Block 1",
+          elements: [
+            buildRatingElement({
+              headline: "Please rate the service you received today on a scale of 1 to 5.",
+              required: true,
+              scale: "number",
+              range: 5,
+              lowerLabel: "Poor",
+              upperLabel: "Excellent",
+            }),
+          ],
+          t,
+        }),
+      ],
+    },
+    t
+  );
+};
+
+const storeVisitFeedback = (t: TFunction): TTemplate => {
+  const localSurvey = getDefaultSurveyPreset(t);
+  return buildSurvey(
+    {
+      name: "Store Visit Feedback",
+      role: "sales",
+      industries: ["telecom"],
+      channels: ["link"],
+      description: "Collect feedback after telecom store visits via SMS link.",
+      endings: localSurvey.endings,
+      hiddenFields: hiddenFieldsDefault,
+      blocks: [
+        buildBlock({
+          name: "Block 1",
+          elements: [
+            buildRatingElement({
+              headline: "How would you rate your store visit experience?",
+              required: true,
+              scale: "star",
+              range: 5,
+              lowerLabel: "Poor",
+              upperLabel: "Excellent",
+            }),
+          ],
+          t,
+        }),
+        buildBlock({
+          name: "Block 2",
+          elements: [
+            buildMultipleChoiceElement({
+              headline: "What was the purpose of your visit?",
+              type: TSurveyElementTypeEnum.MultipleChoiceSingle,
+              choices: [
+                "New subscription",
+                "Device purchase",
+                "Plan change",
+                "Technical support",
+                "Bill payment",
+              ],
+              containsOther: true,
+            }),
+          ],
+          t,
+        }),
+        buildBlock({
+          name: "Block 3",
+          elements: [
+            buildNPSElement({
+              headline: "How likely are you to visit this store again?",
+              required: true,
+              lowerLabel: "Not likely",
+              upperLabel: "Very likely",
+            }),
+          ],
+          t,
+        }),
+      ],
+    },
+    t
+  );
+};
+
+// WhatsApp & SMS Messaging Templates
+
+const whatsappCSAT = (t: TFunction): TTemplate => {
+  const localSurvey = getDefaultSurveyPreset(t);
+  return buildSurvey(
+    {
+      name: "WhatsApp CSAT Survey",
+      role: "customerSuccess",
+      industries: ["banking", "telecom", "eCommerce", "other"],
+      channels: ["whatsapp"],
+      description: "Customer satisfaction survey delivered via WhatsApp after a service interaction.",
+      endings: localSurvey.endings,
+      hiddenFields: hiddenFieldsDefault,
+      blocks: [
+        buildBlock({
+          name: "Block 1",
+          elements: [
+            buildRatingElement({
+              headline: "How satisfied are you with the support you received?",
+              required: true,
+              scale: "number",
+              range: 5,
+              lowerLabel: "Very dissatisfied",
+              upperLabel: "Very satisfied",
+            }),
+          ],
+          t,
+        }),
+        buildBlock({
+          name: "Block 2",
+          elements: [
+            buildOpenTextElement({
+              headline: "What could we have done better?",
+              required: false,
+              inputType: "text",
+            }),
+          ],
+          t,
+        }),
+      ],
+    },
+    t
+  );
+};
+
+const smsNPS = (t: TFunction): TTemplate => {
+  const localSurvey = getDefaultSurveyPreset(t);
+  return buildSurvey(
+    {
+      name: "SMS NPS Survey",
+      role: "customerSuccess",
+      industries: ["banking", "telecom", "eCommerce", "other"],
+      channels: ["sms"],
+      description: "Short NPS survey via SMS. Customers reply with a number 0-10.",
+      endings: localSurvey.endings,
+      hiddenFields: hiddenFieldsDefault,
+      blocks: [
+        buildBlock({
+          name: "Block 1",
+          elements: [
+            buildNPSElement({
+              headline: "How likely are you to recommend us? Reply 0-10.",
+              required: true,
+              lowerLabel: "Not at all likely",
+              upperLabel: "Extremely likely",
+            }),
+          ],
+          t,
+        }),
+      ],
+    },
+    t
+  );
+};
+
+const whatsappPostChat = (t: TFunction): TTemplate => {
+  const localSurvey = getDefaultSurveyPreset(t);
+  return buildSurvey(
+    {
+      name: "WhatsApp Post-Chat Feedback",
+      role: "customerSuccess",
+      industries: ["banking", "telecom", "eCommerce", "saas", "other"],
+      channels: ["whatsapp"],
+      description: "Collect feedback after a live chat or support conversation via WhatsApp.",
+      endings: localSurvey.endings,
+      hiddenFields: hiddenFieldsDefault,
+      blocks: [
+        buildBlock({
+          name: "Block 1",
+          elements: [
+            buildMultipleChoiceElement({
+              headline: "Was your issue resolved?",
+              type: TSurveyElementTypeEnum.MultipleChoiceSingle,
+              choices: ["Yes, completely", "Partially", "No, not at all"],
+            }),
+          ],
+          t,
+        }),
+        buildBlock({
+          name: "Block 2",
+          elements: [
+            buildRatingElement({
+              headline: "How would you rate your agent's helpfulness?",
+              required: true,
+              scale: "number",
+              range: 5,
+              lowerLabel: "Not helpful",
+              upperLabel: "Very helpful",
+            }),
+          ],
+          t,
+        }),
+        buildBlock({
+          name: "Block 3",
+          elements: [
+            buildOpenTextElement({
+              headline: "Any additional comments?",
+              required: false,
+              inputType: "text",
+            }),
+          ],
+          t,
+        }),
+      ],
+    },
+    t
+  );
+};
+
+const smsQuickFeedback = (t: TFunction): TTemplate => {
+  const localSurvey = getDefaultSurveyPreset(t);
+  return buildSurvey(
+    {
+      name: "SMS Quick Feedback",
+      role: "customerSuccess",
+      industries: ["banking", "telecom", "eCommerce", "other"],
+      channels: ["sms"],
+      description: "One-question satisfaction check via SMS. Quick and easy for customers.",
+      endings: localSurvey.endings,
+      hiddenFields: hiddenFieldsDefault,
+      blocks: [
+        buildBlock({
+          name: "Block 1",
+          elements: [
+            buildMultipleChoiceElement({
+              headline: "How was your experience today?",
+              type: TSurveyElementTypeEnum.MultipleChoiceSingle,
+              choices: ["Great", "Good", "Okay", "Poor"],
+            }),
+          ],
+          t,
+        }),
+      ],
+    },
+    t
+  );
+};
+
 export const templates = (t: TFunction): TTemplate[] => [
   cartAbandonmentSurvey(t),
   siteAbandonmentSurvey(t),
@@ -4781,6 +5535,26 @@ export const templates = (t: TFunction): TTemplate[] => [
   professionalDevelopmentGrowth(t),
   professionalDevelopmentSurvey(t),
   careerDevelopmentSurvey(t),
+  // Banking
+  branchSatisfactionSurvey(t),
+  postCallBankingNPS(t),
+  loanApplicationFeedback(t),
+  mobileBankingUXSurvey(t),
+  // Telecom
+  postCallTelecomNPS(t),
+  networkSatisfactionSurvey(t),
+  planChangeSatisfaction(t),
+  technicalSupportCSAT(t),
+  storeVisitFeedback(t),
+  // Voice (IVR) Cross-Industry
+  ivrPostCallCSAT(t),
+  ivrNPSSurvey(t),
+  ivrServiceRating(t),
+  // Messaging (WhatsApp & SMS)
+  whatsappCSAT(t),
+  smsNPS(t),
+  whatsappPostChat(t),
+  smsQuickFeedback(t),
 ];
 
 export const customSurveyTemplate = (t: TFunction): TTemplate => {

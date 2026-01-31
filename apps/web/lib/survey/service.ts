@@ -3,9 +3,16 @@ import { ActionClass, Prisma } from "@prisma/client";
 import { cache as reactCache } from "react";
 import { prisma } from "@hivecfm/database";
 import { logger } from "@hivecfm/logger";
+import {
+  VOICE_MAX_MULTIPLE_CHOICE_OPTIONS,
+  isElementMessagingCompatible,
+  isElementVoiceCompatible,
+  isMessagingChannelType,
+} from "@hivecfm/types/channel";
 import { ZId, ZOptionalNumber } from "@hivecfm/types/common";
 import { DatabaseError, InvalidInputError, ResourceNotFoundError } from "@hivecfm/types/errors";
 import { TSegment, ZSegmentFilters } from "@hivecfm/types/segment";
+import { TSurveyElementTypeEnum } from "@hivecfm/types/surveys/elements";
 import { TSurvey, TSurveyCreateInput, ZSurvey, ZSurveyCreateInput } from "@hivecfm/types/surveys/types";
 import {
   getOrganizationByEnvironmentId,
@@ -21,6 +28,65 @@ import {
   transformPrismaSurvey,
   validateMediaAndPrepareBlocks,
 } from "./utils";
+
+/**
+ * Validates that all elements in a survey's blocks are compatible with restricted channels.
+ * Voice channels only support question types answerable via DTMF keypad input.
+ * Messaging channels (WhatsApp, SMS) only support text-compatible question types.
+ * Also enforces max 9 options for MultipleChoiceSingle in voice mode.
+ */
+const validateRestrictedChannelElements = async (
+  channelId: string | null | undefined,
+  blocks: any[]
+): Promise<void> => {
+  if (!channelId || !blocks?.length) return;
+
+  const channel = await prisma.channel.findUnique({
+    where: { id: channelId },
+    select: { type: true },
+  });
+
+  if (!channel) return;
+
+  // Voice channel validation
+  if (channel.type === "voice") {
+    for (const block of blocks) {
+      if (!block.elements?.length) continue;
+      for (const element of block.elements) {
+        if (!isElementVoiceCompatible(element.type as TSurveyElementTypeEnum)) {
+          throw new InvalidInputError(
+            `Element type "${element.type}" is not compatible with voice (IVR) channels. Only NPS, Rating, Single Select, and CTA are supported.`
+          );
+        }
+
+        // Enforce max 9 choices for MultipleChoiceSingle on voice channels
+        if (
+          element.type === TSurveyElementTypeEnum.MultipleChoiceSingle &&
+          element.choices?.length > VOICE_MAX_MULTIPLE_CHOICE_OPTIONS
+        ) {
+          throw new InvalidInputError(
+            `Multiple choice questions on voice channels can have at most ${VOICE_MAX_MULTIPLE_CHOICE_OPTIONS} options (DTMF keys 1-9). Found ${element.choices.length}.`
+          );
+        }
+      }
+    }
+    return;
+  }
+
+  // Messaging channel validation (WhatsApp, SMS)
+  if (isMessagingChannelType(channel.type)) {
+    for (const block of blocks) {
+      if (!block.elements?.length) continue;
+      for (const element of block.elements) {
+        if (!isElementMessagingCompatible(element.type as TSurveyElementTypeEnum)) {
+          throw new InvalidInputError(
+            `Element type "${element.type}" is not compatible with ${channel.type} channels. Only NPS, Rating, Single/Multi Select, Open Text, CTA, and Consent are supported.`
+          );
+        }
+      }
+    }
+  }
+};
 
 interface TriggerUpdate {
   create?: Array<{ actionClassId: string }>;
@@ -38,6 +104,7 @@ export const selectSurvey = {
   name: true,
   type: true,
   environmentId: true,
+  channelId: true,
   createdBy: true,
   status: true,
   welcomeCard: true,
@@ -534,6 +601,14 @@ export const updateSurveyInternal = async (
       data.blocks = stripIsDraftFromBlocks(updatedSurvey.blocks);
     }
 
+    // Validate voice channel element compatibility
+    if (!skipValidation) {
+      await validateRestrictedChannelElements(
+        updatedSurvey.channelId ?? currentSurvey.channelId,
+        updatedSurvey.blocks
+      );
+    }
+
     const organization = await getOrganizationByEnvironmentId(environmentId);
     if (!organization) {
       throw new ResourceNotFoundError("Organization", null);
@@ -599,7 +674,7 @@ export const createSurvey = async (
   );
 
   try {
-    const { createdBy, ...restSurveyBody } = parsedSurveyBody;
+    const { createdBy, channelId, ...restSurveyBody } = parsedSurveyBody;
 
     // empty languages array
     if (!restSurveyBody.languages?.length) {
@@ -622,6 +697,14 @@ export const createSurvey = async (
       data.creator = {
         connect: {
           id: createdBy,
+        },
+      };
+    }
+
+    if (channelId) {
+      data.channel = {
+        connect: {
+          id: channelId,
         },
       };
     }
@@ -652,6 +735,9 @@ export const createSurvey = async (
     if (data.blocks && data.blocks.length > 0) {
       data.blocks = validateMediaAndPrepareBlocks(data.blocks);
     }
+
+    // Validate voice channel element compatibility
+    await validateRestrictedChannelElements(channelId, data.blocks);
 
     const survey = await prisma.survey.create({
       data: {
