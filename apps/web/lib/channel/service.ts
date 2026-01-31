@@ -7,7 +7,6 @@ import {
   type TChannel,
   type TChannelCreateInput,
   type TChannelUpdateInput,
-  ZChannel,
   ZChannelCreateInput,
   ZChannelUpdateInput,
   getDefaultChannelConfig,

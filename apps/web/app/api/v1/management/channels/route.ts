@@ -8,19 +8,13 @@ import { createChannel, getChannelsByEnvironmentId } from "@/lib/channel/service
 import { hasPermission } from "@/modules/organization/settings/api-keys/lib/utils";
 
 export const GET = withV1ApiWrapper({
-  handler: async ({
-    req,
-    authentication,
-  }: {
-    req: NextRequest;
-    authentication: NonNullable<TApiKeyAuthentication>;
-  }) => {
+  handler: async ({ authentication }: { authentication: NonNullable<TApiKeyAuthentication> }) => {
     try {
       const environmentIds = authentication.environmentPermissions.map(
         (permission) => permission.environmentId
       );
 
-      const allChannels = [];
+      const allChannels: Awaited<ReturnType<typeof getChannelsByEnvironmentId>> = [];
       for (const environmentId of environmentIds) {
         const channels = await getChannelsByEnvironmentId(environmentId);
         allChannels.push(...channels);
