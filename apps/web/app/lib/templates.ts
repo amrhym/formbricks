@@ -5597,6 +5597,7 @@ export const previewSurvey = (projectName: string, t: TFunction): TSurvey => {
     name: t("templates.preview_survey_name"),
     type: "link" as const,
     environmentId: "cltwumfcz0009echxg02fh7oa",
+    channelId: null,
     createdBy: "cltwumfbz0000echxysz6ptvq",
     status: "inProgress" as const,
     welcomeCard: {
