@@ -99,7 +99,7 @@ export const SurveyLoadingAnimation = ({
       });
     });
 
-    const targetNode = document.getElementById("formbricks-survey-container");
+    const targetNode = document.getElementById("hivecfm-survey-container");
     if (targetNode) {
       observer.observe(targetNode, { childList: true });
     }
