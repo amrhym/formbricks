@@ -1,5 +1,4 @@
 import { NextRequest } from "next/server";
-import { logger } from "@hivecfm/logger";
 import { ZChannelCreateInput } from "@hivecfm/types/channel";
 import { DatabaseError, InvalidInputError } from "@hivecfm/types/errors";
 import { responses } from "@/app/lib/api/response";
