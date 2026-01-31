@@ -250,6 +250,7 @@ export const mockOrganizationOutput: TOrganization = {
 export const mockSyncSurveyOutput: SurveyMock = {
   type: "app",
   status: "inProgress",
+  channelId: null,
   displayOption: "respondMultiple",
   triggers: [{ actionClass: mockActionClass }],
   projectOverwrites: null,
@@ -276,6 +277,7 @@ export const mockSyncSurveyOutput: SurveyMock = {
 export const mockSurveyOutput: SurveyMock = {
   type: "link",
   status: "inProgress",
+  channelId: null,
   displayOption: "respondMultiple",
   metadata: {},
   triggers: [{ actionClass: mockActionClass }],
@@ -309,6 +311,7 @@ export const createSurveyInput: TSurveyCreateInput = {
 export const updateSurveyInput: TSurvey = {
   type: "link",
   status: "inProgress",
+  channelId: null,
   displayOption: "respondMultiple",
   metadata: {},
   triggers: [{ actionClass: mockActionClass }],

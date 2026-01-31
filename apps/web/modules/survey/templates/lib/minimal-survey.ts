@@ -9,6 +9,7 @@ export const getMinimalSurvey = (t: TFunction): TSurvey => ({
   name: "Minimal Survey",
   type: "app",
   environmentId: "someEnvId1",
+  channelId: null,
   createdBy: null,
   status: "draft",
   displayOption: "displayOnce",

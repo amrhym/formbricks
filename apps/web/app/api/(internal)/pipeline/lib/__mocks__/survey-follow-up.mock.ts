@@ -84,6 +84,7 @@ export const mockSurvey: TSurvey = {
   name: "Start from scratch‌‌‍‍‌‍‍‌‌‌‌‍‍‍‌‌‌‌‌‌‌‌‍‌‍‌‌",
   type: "link",
   environmentId: "cm98djl8e000919hpzi6a80zp",
+  channelId: null,
   createdBy: "cm98dg3xm000019hpubj39vfi",
   status: "inProgress",
   welcomeCard: {
@@ -150,6 +151,7 @@ export const mockSurvey: TSurvey = {
   isVerifyEmailEnabled: false,
   isSingleResponsePerEmailEnabled: false,
   isBackButtonHidden: false,
+  isCaptureIpEnabled: false,
   recaptcha: null,
   projectOverwrites: null,
   styling: null,
@@ -164,7 +166,9 @@ export const mockSurvey: TSurvey = {
   triggers: [],
   segment: null,
   followUps: mockFollowUps,
+  blocks: [],
   metadata: {},
+  slug: null,
 };
 
 export const mockContactQuestion: TSurveyContactInfoQuestion = {

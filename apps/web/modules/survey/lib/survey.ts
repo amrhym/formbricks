@@ -12,6 +12,7 @@ export const selectSurvey = {
   name: true,
   type: true,
   environmentId: true,
+  channelId: true,
   createdBy: true,
   status: true,
   welcomeCard: true,

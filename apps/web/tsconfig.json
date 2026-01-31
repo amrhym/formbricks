@@ -15,7 +15,19 @@
     "skipLibCheck": true,
     "strictNullChecks": true
   },
-  "exclude": ["../../.env", "node_modules"],
+  "exclude": [
+    "../../.env",
+    "node_modules",
+    "**/*.test.ts",
+    "**/*.test.tsx",
+    "**/*.spec.ts",
+    "**/*.spec.tsx",
+    "**/__mocks__/**",
+    "**/__mock__/**",
+    "**/stories.tsx",
+    "**/stories.ts",
+    "playwright/**"
+  ],
   "extends": "@hivecfm/config-typescript/nextjs.json",
   "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts", "../../packages/types/*.d.ts"]
 }
