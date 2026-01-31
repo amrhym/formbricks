@@ -45,4 +45,7 @@ export const getMinimalSurvey = (t: TFunction): TSurvey => ({
   metadata: {},
   slug: null,
   isCaptureIpEnabled: false,
+  reviewNote: null,
+  reviewedBy: null,
+  reviewedAt: null,
 });

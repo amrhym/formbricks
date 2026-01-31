@@ -19,6 +19,7 @@ import { SettingsView } from "@/modules/survey/editor/components/settings-view";
 import { StylingView } from "@/modules/survey/editor/components/styling-view";
 import { SurveyEditorTabs } from "@/modules/survey/editor/components/survey-editor-tabs";
 import { SurveyMenuBar } from "@/modules/survey/editor/components/survey-menu-bar";
+import { SurveyReviewPanel } from "@/modules/survey/editor/components/survey-review-panel";
 import { VoicePreviewPanel } from "@/modules/survey/editor/components/voice-preview-panel";
 import { TFollowUpEmailToUser } from "@/modules/survey/editor/types/survey-follow-up";
 import { FollowUpsView } from "@/modules/survey/follow-ups/components/follow-ups-view";
@@ -184,7 +185,12 @@ export const SurveyEditor = ({
         locale={locale}
         setIsCautionDialogOpen={setIsCautionDialogOpen}
         isStorageConfigured={isStorageConfigured}
+        membershipRole={membershipRole}
       />
+      {localSurvey.status === "underReview" &&
+        (membershipRole === "owner" || membershipRole === "manager") && (
+          <SurveyReviewPanel surveyId={localSurvey.id} environmentId={environment.id} />
+        )}
       <div className="relative z-0 flex flex-1 overflow-hidden">
         <main
           className="relative z-0 w-full overflow-y-auto bg-slate-50 focus:outline-none md:w-2/3"

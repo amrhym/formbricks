@@ -59,6 +59,11 @@ export const SurveyStatusDropdown = ({
         <div className="flex items-center">
           <p className="text-sm text-slate-600 italic">{t("common.draft")}</p>
         </div>
+      ) : survey.status === "underReview" ? (
+        <div className="flex items-center gap-1.5">
+          <SurveyStatusIndicator status="underReview" />
+          <p className="text-sm font-medium text-amber-700">{t("common.under_review")}</p>
+        </div>
       ) : (
         <Select
           value={survey.status}

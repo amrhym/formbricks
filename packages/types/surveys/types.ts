@@ -793,7 +793,7 @@ export const ZSurveyType = z.enum(["link", "app"]);
 
 export type TSurveyType = z.infer<typeof ZSurveyType>;
 
-export const ZSurveyStatus = z.enum(["draft", "inProgress", "paused", "completed"]);
+export const ZSurveyStatus = z.enum(["draft", "underReview", "inProgress", "paused", "completed"]);
 
 export type TSurveyStatus = z.infer<typeof ZSurveyStatus>;
 
@@ -904,6 +904,9 @@ export const ZSurvey = z
     slug: ZSurveySlug.nullable(),
     customHeadScripts: z.string().nullish(),
     customHeadScriptsMode: z.enum(["add", "replace"]).nullish(),
+    reviewNote: z.string().nullable(),
+    reviewedBy: z.string().nullable(),
+    reviewedAt: z.date().nullable(),
   })
   .superRefine((survey, ctx) => {
     const { questions, blocks, languages, welcomeCard, endings, isBackButtonHidden } = survey;
@@ -3858,6 +3861,18 @@ export const ZSurveyCreateInput = makeSchemaOptional(ZSurvey.innerType())
   });
 
 export type TSurvey = z.infer<typeof ZSurvey>;
+
+export const ZSubmitForReviewInput = z.object({ surveyId: z.string().cuid2() });
+export type TSubmitForReviewInput = z.infer<typeof ZSubmitForReviewInput>;
+
+export const ZApproveSurveyInput = z.object({ surveyId: z.string().cuid2() });
+export type TApproveSurveyInput = z.infer<typeof ZApproveSurveyInput>;
+
+export const ZRejectSurveyInput = z.object({
+  surveyId: z.string().cuid2(),
+  reviewNote: z.string().min(1, "Rejection reason is required"),
+});
+export type TRejectSurveyInput = z.infer<typeof ZRejectSurveyInput>;
 
 export const ZSurveyCreateInputWithEnvironmentId = makeSchemaOptional(ZSurvey.innerType())
   .omit({

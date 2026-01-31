@@ -10,7 +10,7 @@ export const getMetadataForLinkSurvey = async (
 ): Promise<Metadata> => {
   const survey = await getSurveyWithMetadata(surveyId);
 
-  if (!survey || survey?.type !== "link" || survey?.status === "draft") {
+  if (!survey || survey?.type !== "link" || survey?.status === "draft" || survey?.status === "underReview") {
     notFound();
   }
 

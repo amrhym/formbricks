@@ -4,8 +4,15 @@ import { revalidatePath } from "next/cache";
 import { z } from "zod";
 import { ZActionClassInput } from "@hivecfm/types/action-classes";
 import { OperationNotAllowedError, ResourceNotFoundError } from "@hivecfm/types/errors";
-import { TSurvey, ZSurvey } from "@hivecfm/types/surveys/types";
+import {
+  TSurvey,
+  ZApproveSurveyInput,
+  ZRejectSurveyInput,
+  ZSubmitForReviewInput,
+  ZSurvey,
+} from "@hivecfm/types/surveys/types";
 import { UNSPLASH_ACCESS_KEY, UNSPLASH_ALLOWED_DOMAINS } from "@/lib/constants";
+import { getMembershipByUserIdOrganizationId } from "@/lib/membership/service";
 import { actionClient, authenticatedActionClient } from "@/lib/utils/action-client";
 import { checkAuthorizationUpdated } from "@/lib/utils/action-client/action-client-middleware";
 import { AuthenticatedActionClientCtx } from "@/lib/utils/action-client/types/context";
@@ -20,6 +27,7 @@ import { withAuditLogging } from "@/modules/ee/audit-logs/lib/handler";
 import { checkMultiLanguagePermission } from "@/modules/ee/multi-language-surveys/lib/actions";
 import { createActionClass } from "@/modules/survey/editor/lib/action-class";
 import { checkExternalUrlsPermission } from "@/modules/survey/editor/lib/check-external-urls-permission";
+import { validateStatusTransition } from "@/modules/survey/editor/lib/status-transitions";
 import { updateSurvey, updateSurveyDraft } from "@/modules/survey/editor/lib/survey";
 import { TSurveyDraft, ZSurveyDraft } from "@/modules/survey/editor/types/survey";
 import { getSurveyFollowUpsPermission } from "@/modules/survey/follow-ups/lib/utils";
@@ -125,6 +133,17 @@ export const updateSurveyAction = authenticatedActionClient.schema(ZSurvey).acti
         ],
       });
 
+      // Fetch current survey once for status validation and audit logging
+      const oldObject = await getSurvey(parsedInput.id);
+
+      // Validate status transitions based on user role
+      if (oldObject && parsedInput.status !== oldObject.status) {
+        const membership = await getMembershipByUserIdOrganizationId(ctx.user.id, organizationId);
+        if (membership) {
+          validateStatusTransition(oldObject.status, parsedInput.status, membership.role);
+        }
+      }
+
       if (parsedInput.recaptcha?.enabled) {
         await checkSpamProtectionPermission(organizationId);
       }
@@ -139,7 +158,6 @@ export const updateSurveyAction = authenticatedActionClient.schema(ZSurvey).acti
 
       ctx.auditLoggingCtx.organizationId = organizationId;
       ctx.auditLoggingCtx.surveyId = parsedInput.id;
-      const oldObject = await getSurvey(parsedInput.id);
 
       // Check external URLs permission (with grandfathering)
       await checkExternalUrlsPermission(organizationId, parsedInput, oldObject);
@@ -147,6 +165,169 @@ export const updateSurveyAction = authenticatedActionClient.schema(ZSurvey).acti
       ctx.auditLoggingCtx.oldObject = oldObject;
       ctx.auditLoggingCtx.newObject = result;
 
+      revalidatePath(`/environments/${result.environmentId}/surveys/${result.id}`);
+
+      return result;
+    }
+  )
+);
+
+export const submitForReviewAction = authenticatedActionClient.schema(ZSubmitForReviewInput).action(
+  withAuditLogging(
+    "updated",
+    "survey",
+    async ({
+      ctx,
+      parsedInput,
+    }: {
+      ctx: AuthenticatedActionClientCtx;
+      parsedInput: { surveyId: string };
+    }) => {
+      const organizationId = await getOrganizationIdFromSurveyId(parsedInput.surveyId);
+      await checkAuthorizationUpdated({
+        userId: ctx.user.id,
+        organizationId,
+        access: [
+          {
+            type: "organization",
+            roles: ["owner", "manager"],
+          },
+          {
+            type: "projectTeam",
+            projectId: await getProjectIdFromSurveyId(parsedInput.surveyId),
+            minPermission: "readWrite",
+          },
+        ],
+      });
+
+      const currentSurvey = await getSurvey(parsedInput.surveyId);
+      if (!currentSurvey) {
+        throw new ResourceNotFoundError("Survey", parsedInput.surveyId);
+      }
+
+      const membership = await getMembershipByUserIdOrganizationId(ctx.user.id, organizationId);
+      if (membership) {
+        validateStatusTransition(currentSurvey.status, "underReview", membership.role);
+      }
+
+      ctx.auditLoggingCtx.organizationId = organizationId;
+      ctx.auditLoggingCtx.surveyId = parsedInput.surveyId;
+      ctx.auditLoggingCtx.oldObject = currentSurvey;
+
+      const result = await updateSurvey({
+        ...currentSurvey,
+        status: "underReview",
+        reviewNote: null,
+        reviewedBy: null,
+        reviewedAt: null,
+      });
+
+      ctx.auditLoggingCtx.newObject = result;
+      revalidatePath(`/environments/${result.environmentId}/surveys/${result.id}`);
+
+      return result;
+    }
+  )
+);
+
+export const approveSurveyAction = authenticatedActionClient.schema(ZApproveSurveyInput).action(
+  withAuditLogging(
+    "updated",
+    "survey",
+    async ({
+      ctx,
+      parsedInput,
+    }: {
+      ctx: AuthenticatedActionClientCtx;
+      parsedInput: { surveyId: string };
+    }) => {
+      const organizationId = await getOrganizationIdFromSurveyId(parsedInput.surveyId);
+      await checkAuthorizationUpdated({
+        userId: ctx.user.id,
+        organizationId,
+        access: [
+          {
+            type: "organization",
+            roles: ["owner", "manager"],
+          },
+        ],
+      });
+
+      const currentSurvey = await getSurvey(parsedInput.surveyId);
+      if (!currentSurvey) {
+        throw new ResourceNotFoundError("Survey", parsedInput.surveyId);
+      }
+
+      const membership = await getMembershipByUserIdOrganizationId(ctx.user.id, organizationId);
+      if (membership) {
+        validateStatusTransition(currentSurvey.status, "inProgress", membership.role);
+      }
+
+      ctx.auditLoggingCtx.organizationId = organizationId;
+      ctx.auditLoggingCtx.surveyId = parsedInput.surveyId;
+      ctx.auditLoggingCtx.oldObject = currentSurvey;
+
+      const result = await updateSurvey({
+        ...currentSurvey,
+        status: "inProgress",
+        reviewedBy: ctx.user.id,
+        reviewedAt: new Date(),
+      });
+
+      ctx.auditLoggingCtx.newObject = result;
+      revalidatePath(`/environments/${result.environmentId}/surveys/${result.id}`);
+
+      return result;
+    }
+  )
+);
+
+export const rejectSurveyAction = authenticatedActionClient.schema(ZRejectSurveyInput).action(
+  withAuditLogging(
+    "updated",
+    "survey",
+    async ({
+      ctx,
+      parsedInput,
+    }: {
+      ctx: AuthenticatedActionClientCtx;
+      parsedInput: { surveyId: string; reviewNote: string };
+    }) => {
+      const organizationId = await getOrganizationIdFromSurveyId(parsedInput.surveyId);
+      await checkAuthorizationUpdated({
+        userId: ctx.user.id,
+        organizationId,
+        access: [
+          {
+            type: "organization",
+            roles: ["owner", "manager"],
+          },
+        ],
+      });
+
+      const currentSurvey = await getSurvey(parsedInput.surveyId);
+      if (!currentSurvey) {
+        throw new ResourceNotFoundError("Survey", parsedInput.surveyId);
+      }
+
+      const membership = await getMembershipByUserIdOrganizationId(ctx.user.id, organizationId);
+      if (membership) {
+        validateStatusTransition(currentSurvey.status, "draft", membership.role);
+      }
+
+      ctx.auditLoggingCtx.organizationId = organizationId;
+      ctx.auditLoggingCtx.surveyId = parsedInput.surveyId;
+      ctx.auditLoggingCtx.oldObject = currentSurvey;
+
+      const result = await updateSurvey({
+        ...currentSurvey,
+        status: "draft",
+        reviewNote: parsedInput.reviewNote,
+        reviewedBy: ctx.user.id,
+        reviewedAt: new Date(),
+      });
+
+      ctx.auditLoggingCtx.newObject = result;
       revalidatePath(`/environments/${result.environmentId}/surveys/${result.id}`);
 
       return result;

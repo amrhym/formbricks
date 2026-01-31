@@ -1,8 +1,8 @@
 "use client";
 
-import { Project } from "@prisma/client";
+import { OrganizationRole, Project } from "@prisma/client";
 import { isEqual } from "lodash";
-import { ArrowLeftIcon, SettingsIcon } from "lucide-react";
+import { AlertTriangleIcon, ArrowLeftIcon, ClockIcon, SettingsIcon } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useEffect, useMemo, useRef, useState } from "react";
 import toast from "react-hot-toast";
@@ -24,7 +24,7 @@ import { Alert, AlertButton, AlertTitle } from "@/modules/ui/components/alert";
 import { AlertDialog } from "@/modules/ui/components/alert-dialog";
 import { Button } from "@/modules/ui/components/button";
 import { Input } from "@/modules/ui/components/input";
-import { updateSurveyAction, updateSurveyDraftAction } from "../actions";
+import { submitForReviewAction, updateSurveyAction, updateSurveyDraftAction } from "../actions";
 import { isSurveyValid } from "../lib/validation";
 
 interface SurveyMenuBarProps {
@@ -43,6 +43,7 @@ interface SurveyMenuBarProps {
   locale: string;
   setIsCautionDialogOpen: (open: boolean) => void;
   isStorageConfigured: boolean;
+  membershipRole?: OrganizationRole;
 }
 
 export const SurveyMenuBar = ({
@@ -60,8 +61,10 @@ export const SurveyMenuBar = ({
   locale,
   setIsCautionDialogOpen,
   isStorageConfigured = true,
+  membershipRole,
 }: SurveyMenuBarProps) => {
   const { t } = useTranslation();
+  const isAdmin = membershipRole === "owner" || membershipRole === "manager";
   const router = useRouter();
   const [audiencePrompt, setAudiencePrompt] = useState(true);
   const [isLinkSurvey, setIsLinkSurvey] = useState(true);
@@ -127,7 +130,8 @@ export const SurveyMenuBar = ({
   const disableSave = useMemo(() => {
     if (isSurveySaving) return true;
 
-    if (localSurvey.status !== "draft" && containsEmptyTriggers) return true;
+    if (localSurvey.status !== "draft" && localSurvey.status !== "underReview" && containsEmptyTriggers)
+      return true;
   }, [containsEmptyTriggers, isSurveySaving, localSurvey.status]);
 
   const handleBack = () => {
@@ -374,6 +378,50 @@ export const SurveyMenuBar = ({
     }
   };
 
+  const handleSubmitForReview = async () => {
+    setIsSurveyPublishing(true);
+
+    const isSurveyValidatedWithZod = validateSurveyWithZod();
+    if (!isSurveyValidatedWithZod) {
+      setIsSurveyPublishing(false);
+      return;
+    }
+
+    try {
+      const isSurveyValidResult = isSurveyValid(localSurvey, selectedLanguageCode, t, responseCount);
+      if (!isSurveyValidResult) {
+        setIsSurveyPublishing(false);
+        return;
+      }
+
+      // Save the draft first
+      const segment = await handleSegmentUpdate();
+      clearSurveyLocalStorage();
+      await updateSurveyDraftAction({
+        ...localSurvey,
+        segment,
+      } as unknown as TSurveyDraft);
+
+      // Submit for review
+      const result = await submitForReviewAction({ surveyId: localSurvey.id });
+
+      setIsSurveyPublishing(false);
+
+      if (result?.data) {
+        toast.success(t("environments.surveys.edit.submitted_for_review"));
+        isSuccessfullySavedRef.current = true;
+        router.push(`/environments/${environmentId}/surveys/${localSurvey.id}/summary`);
+      } else {
+        const errorMessage = getFormattedErrorMessage(result);
+        toast.error(errorMessage);
+      }
+    } catch (error) {
+      console.error(error);
+      toast.error(t("environments.surveys.edit.error_publishing_survey"));
+      setIsSurveyPublishing(false);
+    }
+  };
+
   return (
     <div className="border-b border-slate-200 bg-white px-5 py-2.5 sm:flex sm:items-center sm:justify-between">
       <div className="flex h-full items-center space-x-2 whitespace-nowrap">
@@ -425,7 +473,22 @@ export const SurveyMenuBar = ({
             </Alert>
           </div>
         )}
-        {!isCxMode && (
+        {/* Rejection reason banner */}
+        {localSurvey.status === "draft" && localSurvey.reviewNote && (
+          <div className="flex items-center gap-2 rounded-md border border-amber-200 bg-amber-50 px-3 py-1.5 text-sm text-amber-800">
+            <AlertTriangleIcon className="h-4 w-4 shrink-0" />
+            <span className="max-w-xs truncate">{localSurvey.reviewNote}</span>
+          </div>
+        )}
+        {/* Under Review badge */}
+        {localSurvey.status === "underReview" && (
+          <div className="flex items-center gap-1.5 rounded-full bg-amber-100 px-3 py-1 text-sm font-medium text-amber-800">
+            <ClockIcon className="h-3.5 w-3.5" />
+            {t("environments.surveys.edit.under_review")}
+          </div>
+        )}
+        {/* Save button: show for draft and non-underReview statuses for non-admin members */}
+        {!isCxMode && localSurvey.status !== "underReview" && (
           <Button
             disabled={disableSave}
             variant="secondary"
@@ -436,7 +499,7 @@ export const SurveyMenuBar = ({
             {localSurvey.status === "draft" ? t("common.save_as_draft") : t("common.save")}
           </Button>
         )}
-        {localSurvey.status !== "draft" && (
+        {localSurvey.status !== "draft" && localSurvey.status !== "underReview" && (
           <Button
             disabled={disableSave}
             className="mr-3"
@@ -457,16 +520,18 @@ export const SurveyMenuBar = ({
             <SettingsIcon />
           </Button>
         )}
-        {/* Always display Publish button for link surveys for better CR */}
+        {/* Publish / Submit for Review button based on role */}
         {localSurvey.status === "draft" && (!audiencePrompt || isLinkSurvey) && (
           <Button
             size="sm"
             disabled={isSurveySaving || containsEmptyTriggers}
             loading={isSurveyPublishing}
-            onClick={handleSurveyPublish}>
+            onClick={isAdmin ? handleSurveyPublish : handleSubmitForReview}>
             {isCxMode
               ? t("environments.surveys.edit.save_and_close")
-              : t("environments.surveys.edit.publish")}
+              : isAdmin
+                ? t("environments.surveys.edit.publish")
+                : t("environments.surveys.edit.submit_for_review")}
           </Button>
         )}
       </div>

@@ -5,6 +5,7 @@ import { ZId } from "@hivecfm/types/common";
 import { OperationNotAllowedError, ResourceNotFoundError } from "@hivecfm/types/errors";
 import { ZResponseFilterCriteria } from "@hivecfm/types/responses";
 import { TSurvey, ZSurvey } from "@hivecfm/types/surveys/types";
+import { getMembershipByUserIdOrganizationId } from "@/lib/membership/service";
 import { getOrganization } from "@/lib/organization/service";
 import { getResponseDownloadFile, getResponseFilteringValues } from "@/lib/response/service";
 import { getSurvey, updateSurvey } from "@/lib/survey/service";
@@ -17,6 +18,7 @@ import { withAuditLogging } from "@/modules/ee/audit-logs/lib/handler";
 import { getIsQuotasEnabled } from "@/modules/ee/license-check/lib/utils";
 import { checkMultiLanguagePermission } from "@/modules/ee/multi-language-surveys/lib/actions";
 import { getQuotas } from "@/modules/ee/quotas/lib/quotas";
+import { validateStatusTransition } from "@/modules/survey/editor/lib/status-transitions";
 import { getSurveyFollowUpsPermission } from "@/modules/survey/follow-ups/lib/utils";
 import { checkSpamProtectionPermission } from "@/modules/survey/lib/permission";
 import { getOrganizationBilling } from "@/modules/survey/lib/survey";
@@ -146,6 +148,14 @@ export const updateSurveyAction = authenticatedActionClient.schema(ZSurvey).acti
       const { followUps } = parsedInput;
 
       const oldSurvey = await getSurvey(parsedInput.id);
+
+      // Validate status transitions based on user role
+      if (oldSurvey && parsedInput.status !== oldSurvey.status) {
+        const membership = await getMembershipByUserIdOrganizationId(ctx.user?.id ?? "", organizationId);
+        if (membership) {
+          validateStatusTransition(oldSurvey.status, parsedInput.status, membership.role);
+        }
+      }
 
       if (parsedInput.recaptcha?.enabled) {
         await checkSpamProtectionPermission(organizationId);

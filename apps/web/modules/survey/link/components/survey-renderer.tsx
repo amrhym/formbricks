@@ -76,9 +76,11 @@ export const renderSurvey = async ({
   const isSpamProtectionEnabled = Boolean(IS_RECAPTCHA_CONFIGURED && survey.recaptcha?.enabled);
 
   if (survey.status !== "inProgress") {
+    // Treat underReview surveys as paused for end users
+    const inactiveStatus = survey.status === "underReview" ? "paused" : survey.status;
     return (
       <SurveyInactive
-        status={survey.status}
+        status={inactiveStatus}
         surveyClosedMessage={survey.surveyClosedMessage}
         project={project}
       />

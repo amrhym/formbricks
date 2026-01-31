@@ -11,7 +11,7 @@ export const ZSurveyDraft = z
   .object({
     // Essential fields - strictly validated
     id: ZId,
-    status: z.literal("draft"),
+    status: z.enum(["draft", "underReview"]),
     environmentId: ZId,
     type: ZSurveyType,
     name: z.string().min(1, "Survey name is required"),
@@ -21,6 +21,11 @@ export const ZSurveyDraft = z
     triggers: z.array(z.record(z.unknown())).optional(),
     endings: z.array(z.record(z.unknown())).optional(),
     segment: z.record(z.unknown()).nullable().optional(),
+
+    // Review fields
+    reviewNote: z.string().nullable().optional(),
+    reviewedBy: z.string().nullable().optional(),
+    reviewedAt: z.date().nullable().optional(),
   })
   .passthrough(); // Allow all other fields without validation
 

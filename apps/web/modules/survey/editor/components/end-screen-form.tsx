@@ -117,8 +117,8 @@ export const EndScreenForm = ({
                 updateSurvey({ buttonLabel: undefined, buttonLink: undefined });
               } else {
                 updateSurvey({
-                  buttonLabel: { default: t("environments.surveys.edit.create_your_own_survey") },
-                  buttonLink: "https://formbricks.com",
+                  buttonLabel: { default: t("environments.surveys.edit.default_button_label") },
+                  buttonLink: "https://www.yourwebsite.com",
                 });
               }
               setshowEndingCardCTA(!showEndingCardCTA);
@@ -141,7 +141,7 @@ export const EndScreenForm = ({
               <ElementFormInput
                 id="buttonLabel"
                 label={t("environments.surveys.edit.button_label")}
-                placeholder={t("environments.surveys.edit.create_your_own_survey")}
+                placeholder={t("environments.surveys.edit.default_button_label")}
                 className="rounded-md"
                 value={endingCard.buttonLabel}
                 localSurvey={localSurvey}

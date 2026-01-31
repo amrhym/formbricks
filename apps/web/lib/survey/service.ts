@@ -135,6 +135,9 @@ export const selectSurvey = {
   metadata: true,
   customHeadScripts: true,
   customHeadScriptsMode: true,
+  reviewNote: true,
+  reviewedBy: true,
+  reviewedAt: true,
   languages: {
     select: {
       default: true,

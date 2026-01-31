@@ -248,6 +248,7 @@ model TagsOnResponses {
 
 enum SurveyStatus {
   draft
+  underReview
   inProgress
   paused
   completed
@@ -444,6 +445,10 @@ model Survey {
   metadata                        Json             @default("{}")
 
   slug String? @unique
+
+  reviewNote String?
+  reviewedBy String?
+  reviewedAt DateTime?
 
   customHeadScripts     String?
   customHeadScriptsMode SurveyScriptMode? @default(add)

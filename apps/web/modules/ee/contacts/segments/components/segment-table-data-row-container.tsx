@@ -25,7 +25,9 @@ export const SegmentTableDataRowContainer = async ({
     : [];
 
   const inactiveSurveys = surveys?.length
-    ? surveys.filter((survey) => ["draft", "paused"].includes(survey.status)).map((survey) => survey.name)
+    ? surveys
+        .filter((survey) => ["draft", "paused", "underReview"].includes(survey.status))
+        .map((survey) => survey.name)
     : [];
 
   const filteredSegments = segments.filter((segment) => segment.id !== currentSegment.id);

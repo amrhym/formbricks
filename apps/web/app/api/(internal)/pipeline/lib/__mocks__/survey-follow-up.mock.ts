@@ -130,9 +130,9 @@ export const mockSurvey: TSurvey = {
       subheader: {
         default: "We appreciate your feedback.‌‌‍‍‌‍‍‍‌‌‌‍‍‌‍‌‌‌‌‌‌‌‍‌‍‌‌",
       },
-      buttonLink: "https://formbricks.com",
+      buttonLink: "https://www.yourwebsite.com",
       buttonLabel: {
-        default: "Create your own Survey‌‌‍‍‌‍‍‍‌‌‌‍‍‌‍‌‍‌‌‌‌‌‍‌‍‌‌",
+        default: "Visit our website‌‌‍‍‌‍‍‍‌‌‌‍‍‌‍‌‍‌‌‌‌‌‍‌‍‌‌",
       },
     },
   ],
@@ -169,6 +169,9 @@ export const mockSurvey: TSurvey = {
   blocks: [],
   metadata: {},
   slug: null,
+  reviewNote: null,
+  reviewedBy: null,
+  reviewedAt: null,
 };
 
 export const mockContactQuestion: TSurveyContactInfoQuestion = {

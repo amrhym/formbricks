@@ -1,6 +1,6 @@
 "use client";
 
-import { CheckIcon, PauseIcon, PencilIcon } from "lucide-react";
+import { CheckIcon, ClockIcon, PauseIcon, PencilIcon } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { TSurvey } from "@hivecfm/types/surveys/types";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/modules/ui/components/tooltip";
@@ -38,6 +38,11 @@ export const SurveyStatusIndicator = ({ status, tooltip }: SurveyStatusIndicator
                 <CheckIcon className="h-3 w-3 text-slate-600" />
               </div>
             )}
+            {status === "underReview" && (
+              <div className="rounded-full bg-amber-200 p-1">
+                <ClockIcon className="h-3 w-3 text-amber-700" />
+              </div>
+            )}
           </TooltipTrigger>
           <TooltipContent>
             <div className="flex items-center space-x-2">
@@ -61,6 +66,13 @@ export const SurveyStatusIndicator = ({ status, tooltip }: SurveyStatusIndicator
                   <span>{t("common.survey_completed")}</span>
                   <div className="rounded-full bg-slate-200 p-1">
                     <CheckIcon className="h-3 w-3 text-slate-600" />
+                  </div>
+                </div>
+              ) : status === "underReview" ? (
+                <div className="flex items-center space-x-2">
+                  <span>{t("common.under_review")}</span>
+                  <div className="rounded-full bg-amber-200 p-1">
+                    <ClockIcon className="h-3 w-3 text-amber-700" />
                   </div>
                 </div>
               ) : null}
@@ -91,6 +103,11 @@ export const SurveyStatusIndicator = ({ status, tooltip }: SurveyStatusIndicator
         {status === "draft" && (
           <div className="rounded-full bg-slate-300 p-1">
             <PencilIcon className="h-3 w-3 text-slate-600" />
+          </div>
+        )}
+        {status === "underReview" && (
+          <div className="rounded-full bg-amber-200 p-1">
+            <ClockIcon className="h-3 w-3 text-amber-700" />
           </div>
         )}
       </span>
