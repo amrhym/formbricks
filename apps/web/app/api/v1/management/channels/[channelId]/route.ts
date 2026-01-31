@@ -13,11 +13,12 @@ export const GET = withV1ApiWrapper({
     props,
     authentication,
   }: {
-    props: { params: { channelId: string } };
+    props: { params: Promise<{ channelId: string }> };
     authentication: NonNullable<TApiKeyAuthentication>;
   }) => {
+    const params = await props.params;
     try {
-      const channel = await getChannel(props.params.channelId);
+      const channel = await getChannel(params.channelId);
 
       if (!hasPermission(authentication.environmentPermissions, channel.environmentId, "GET")) {
         return { response: responses.unauthorizedResponse() };
@@ -26,7 +27,7 @@ export const GET = withV1ApiWrapper({
       return { response: responses.successResponse(channel) };
     } catch (error) {
       if (error instanceof ResourceNotFoundError) {
-        return { response: responses.notFoundResponse("Channel", props.params.channelId) };
+        return { response: responses.notFoundResponse("Channel", params.channelId) };
       }
       if (error instanceof DatabaseError) {
         return { response: responses.badRequestResponse(error.message) };
@@ -43,12 +44,13 @@ export const PUT = withV1ApiWrapper({
     authentication,
   }: {
     req: NextRequest;
-    props: { params: { channelId: string } };
+    props: { params: Promise<{ channelId: string }> };
     authentication: NonNullable<TApiKeyAuthentication>;
   }) => {
+    const params = await props.params;
     try {
       // Verify channel exists and check permissions
-      const existingChannel = await getChannel(props.params.channelId);
+      const existingChannel = await getChannel(params.channelId);
 
       if (!hasPermission(authentication.environmentPermissions, existingChannel.environmentId, "PUT")) {
         return { response: responses.unauthorizedResponse() };
@@ -66,12 +68,12 @@ export const PUT = withV1ApiWrapper({
         };
       }
 
-      const channel = await updateChannel(props.params.channelId, parseResult.data);
+      const channel = await updateChannel(params.channelId, parseResult.data);
 
       return { response: responses.successResponse(channel) };
     } catch (error) {
       if (error instanceof ResourceNotFoundError) {
-        return { response: responses.notFoundResponse("Channel", props.params.channelId) };
+        return { response: responses.notFoundResponse("Channel", params.channelId) };
       }
       if (error instanceof InvalidInputError) {
         return { response: responses.badRequestResponse(error.message) };
@@ -91,22 +93,23 @@ export const DELETE = withV1ApiWrapper({
     props,
     authentication,
   }: {
-    props: { params: { channelId: string } };
+    props: { params: Promise<{ channelId: string }> };
     authentication: NonNullable<TApiKeyAuthentication>;
   }) => {
+    const params = await props.params;
     try {
-      const existingChannel = await getChannel(props.params.channelId);
+      const existingChannel = await getChannel(params.channelId);
 
       if (!hasPermission(authentication.environmentPermissions, existingChannel.environmentId, "DELETE")) {
         return { response: responses.unauthorizedResponse() };
       }
 
-      const channel = await deleteChannel(props.params.channelId);
+      const channel = await deleteChannel(params.channelId);
 
       return { response: responses.successResponse(channel) };
     } catch (error) {
       if (error instanceof ResourceNotFoundError) {
-        return { response: responses.notFoundResponse("Channel", props.params.channelId) };
+        return { response: responses.notFoundResponse("Channel", params.channelId) };
       }
       if (error instanceof InvalidInputError) {
         return { response: responses.badRequestResponse(error.message) };
