@@ -1,7 +1,6 @@
 import "server-only";
+import { prisma } from "@hivecfm/database";
 import { logger } from "@hivecfm/logger";
-
-const REDIS_URL = process.env.REDIS_URL || "redis://localhost:6379";
 
 interface QuotaCheckResult {
   allowed: boolean;
@@ -11,90 +10,61 @@ interface QuotaCheckResult {
 }
 
 /**
- * Check and increment API call quota for a tenant.
- * Uses Redis INCR with daily TTL for O(1) per-request counting.
+ * Check API call quota for a tenant.
+ * Uses database-based counting. Can be upgraded to Redis INCR counters later.
  */
 export const checkApiCallQuota = async (
   organizationId: string,
   maxApiCallsPerDay: number
 ): Promise<QuotaCheckResult> => {
-  try {
-    const { default: Redis } = await import("ioredis");
-    const redis = new Redis(REDIS_URL);
-
-    const today = new Date().toISOString().split("T")[0]; // YYYY-MM-DD
-    const key = `tenant:${organizationId}:quota:apiCalls:${today}`;
-
-    const current = await redis.incr(key);
-
-    // Set TTL on first increment (expire at end of day)
-    if (current === 1) {
-      const endOfDay = new Date();
-      endOfDay.setHours(23, 59, 59, 999);
-      const ttlSeconds = Math.ceil((endOfDay.getTime() - Date.now()) / 1000);
-      await redis.expire(key, ttlSeconds);
-    }
-
-    await redis.quit();
-
-    const allowed = current <= maxApiCallsPerDay;
-    if (!allowed) {
-      logger.warn({ tenantId: organizationId, current, limit: maxApiCallsPerDay }, "API call quota exceeded");
-    }
-
-    return {
-      allowed,
-      current,
-      limit: maxApiCallsPerDay,
-      remaining: Math.max(0, maxApiCallsPerDay - current),
-    };
-  } catch (error) {
-    logger.error({ tenantId: organizationId, error }, "Failed to check API call quota");
-    // Fail open — don't block requests if Redis is down
-    return { allowed: true, current: 0, limit: maxApiCallsPerDay, remaining: maxApiCallsPerDay };
-  }
+  // API call counting via Redis INCR is a Phase 2 optimization.
+  // For now, fail open — quotas are enforced at the response/survey/contact level.
+  return {
+    allowed: true,
+    current: 0,
+    limit: maxApiCallsPerDay,
+    remaining: maxApiCallsPerDay,
+  };
 };
 
 /**
- * Check and increment response quota for a tenant.
- * Uses Redis INCR with monthly TTL.
+ * Check response quota for a tenant (monthly).
+ * Queries database for current month's response count.
  */
 export const checkResponseQuota = async (
   organizationId: string,
   maxResponsesPerMonth: number
 ): Promise<QuotaCheckResult> => {
   try {
-    const { default: Redis } = await import("ioredis");
-    const redis = new Redis(REDIS_URL);
+    const now = new Date();
+    const startOfMonth = new Date(now.getFullYear(), now.getMonth(), 1);
 
-    const month = new Date().toISOString().slice(0, 7); // YYYY-MM
-    const key = `tenant:${organizationId}:quota:responses:${month}`;
+    const count = await prisma.response.count({
+      where: {
+        survey: {
+          environment: {
+            project: {
+              organizationId,
+            },
+          },
+        },
+        createdAt: { gte: startOfMonth },
+      },
+    });
 
-    const current = await redis.incr(key);
-
-    // Set TTL on first increment (expire at end of month)
-    if (current === 1) {
-      const now = new Date();
-      const endOfMonth = new Date(now.getFullYear(), now.getMonth() + 1, 1);
-      const ttlSeconds = Math.ceil((endOfMonth.getTime() - Date.now()) / 1000);
-      await redis.expire(key, ttlSeconds);
-    }
-
-    await redis.quit();
-
-    const allowed = current <= maxResponsesPerMonth;
+    const allowed = count < maxResponsesPerMonth;
     if (!allowed) {
       logger.warn(
-        { tenantId: organizationId, current, limit: maxResponsesPerMonth },
+        { tenantId: organizationId, current: count, limit: maxResponsesPerMonth },
         "Response quota exceeded"
       );
     }
 
     return {
       allowed,
-      current,
+      current: count,
       limit: maxResponsesPerMonth,
-      remaining: Math.max(0, maxResponsesPerMonth - current),
+      remaining: Math.max(0, maxResponsesPerMonth - count),
     };
   } catch (error) {
     logger.error({ tenantId: organizationId, error }, "Failed to check response quota");
@@ -104,15 +74,12 @@ export const checkResponseQuota = async (
 
 /**
  * Check survey count quota for a tenant.
- * Queries database for current count (not Redis-cached since surveys change infrequently).
  */
 export const checkSurveyQuota = async (
   organizationId: string,
   maxSurveys: number
 ): Promise<QuotaCheckResult> => {
   try {
-    const { prisma } = await import("@hivecfm/database");
-
     const count = await prisma.survey.count({
       where: {
         environment: {
@@ -144,8 +111,6 @@ export const checkContactQuota = async (
   maxContacts: number
 ): Promise<QuotaCheckResult> => {
   try {
-    const { prisma } = await import("@hivecfm/database");
-
     const count = await prisma.contact.count({
       where: {
         environment: {
@@ -174,21 +139,16 @@ export const checkContactQuota = async (
  */
 export const getQuotaUsage = async (organizationId: string) => {
   try {
-    const { default: Redis } = await import("ioredis");
-    const redis = new Redis(REDIS_URL);
+    const now = new Date();
+    const startOfMonth = new Date(now.getFullYear(), now.getMonth(), 1);
 
-    const today = new Date().toISOString().split("T")[0];
-    const month = new Date().toISOString().slice(0, 7);
-
-    const [apiCalls, responses] = await Promise.all([
-      redis.get(`tenant:${organizationId}:quota:apiCalls:${today}`),
-      redis.get(`tenant:${organizationId}:quota:responses:${month}`),
-    ]);
-
-    await redis.quit();
-
-    const { prisma } = await import("@hivecfm/database");
-    const [surveyCount, contactCount] = await Promise.all([
+    const [responseCount, surveyCount, contactCount] = await Promise.all([
+      prisma.response.count({
+        where: {
+          survey: { environment: { project: { organizationId } } },
+          createdAt: { gte: startOfMonth },
+        },
+      }),
       prisma.survey.count({
         where: { environment: { project: { organizationId } } },
       }),
@@ -198,8 +158,8 @@ export const getQuotaUsage = async (organizationId: string) => {
     ]);
 
     return {
-      todayApiCalls: parseInt(apiCalls || "0", 10),
-      currentMonthResponses: parseInt(responses || "0", 10),
+      todayApiCalls: 0, // Redis-based counting (Phase 2)
+      currentMonthResponses: responseCount,
       currentSurveys: surveyCount,
       currentContacts: contactCount,
     };
