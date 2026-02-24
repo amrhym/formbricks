@@ -3,17 +3,6 @@ import { logger } from "@hivecfm/logger";
 
 const REDIS_URL = process.env.REDIS_URL || "redis://localhost:6379";
 
-/**
- * Simple Redis client for quota enforcement.
- * Uses fetch-based Redis commands via the application's Redis connection.
- */
-async function getRedisClient() {
-  // Use the cache package's Redis connection
-  const { createCacheKey } = await import("@hivecfm/cache/cache-keys");
-  const { getCache } = await import("@hivecfm/cache");
-  return { createCacheKey, getCache };
-}
-
 interface QuotaCheckResult {
   allowed: boolean;
   current: number;
