@@ -54,5 +54,16 @@ echo "🗃️ Running SAML database setup..."
 run_with_timeout 60 "SAML database setup" sh -c '(cd packages/database && npm run db:create-saml-database:deploy)'
 
 echo "✅ Database setup completed"
+
+# Apply RLS policies for multi-tenant isolation (idempotent, safe to run on every start)
+if [ -f "scripts/rls/enable-rls.sql" ]; then
+  echo "🔒 Applying Row Level Security policies..."
+  run_with_timeout 60 "RLS enable" sh -c 'psql "$DATABASE_URL" -f scripts/rls/enable-rls.sql'
+  run_with_timeout 60 "RLS policies" sh -c 'psql "$DATABASE_URL" -f scripts/rls/create-policies.sql'
+  echo "✅ RLS policies applied"
+else
+  echo "⚠️ RLS scripts not found, skipping"
+fi
+
 echo "🚀 Starting Next.js server..."
 exec node apps/web/server.js

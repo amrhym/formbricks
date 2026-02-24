@@ -735,6 +735,80 @@ model Organization {
   isAIEnabled Boolean      @default(false)
   teams       Team[]
   apiKeys     ApiKey[]
+
+  tenantQuota          TenantQuota?
+  organizationBranding OrganizationBranding?
+  provisioningLogs     TenantProvisioningLog[]
+}
+
+model TenantQuota {
+  id                   String       @id @default(cuid())
+  organization         Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  organizationId       String       @unique
+  maxSurveys           Int          @default(100)
+  maxResponsesPerMonth Int          @default(10000) @map(name: "max_responses_per_month")
+  maxStorageMB         Int          @default(5120) @map(name: "max_storage_mb")
+  maxApiCallsPerDay    Int          @default(50000) @map(name: "max_api_calls_per_day")
+  maxContacts          Int          @default(50000) @map(name: "max_contacts")
+  createdAt            DateTime     @default(now()) @map(name: "created_at")
+  updatedAt            DateTime     @updatedAt @map(name: "updated_at")
+
+  @@map("tenant_quota")
+}
+
+model OrganizationBranding {
+  id              String       @id @default(cuid())
+  organization    Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  organizationId  String       @unique
+  logoUrl         String?      @map(name: "logo_url")
+  faviconUrl      String?      @map(name: "favicon_url")
+  primaryColor    String       @default("#0F172A") @map(name: "primary_color")
+  accentColor     String       @default("#3B82F6") @map(name: "accent_color")
+  customCss       String?      @map(name: "custom_css")
+  emailHeaderHtml String?      @map(name: "email_header_html")
+  createdAt       DateTime     @default(now()) @map(name: "created_at")
+  updatedAt       DateTime     @updatedAt @map(name: "updated_at")
+
+  @@map("organization_branding")
+}
+
+model TenantProvisioningLog {
+  id             String       @id @default(cuid())
+  organization   Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  organizationId String
+  step           String
+  status         String
+  details        Json?
+  createdAt      DateTime     @default(now()) @map(name: "created_at")
+  updatedAt      DateTime     @updatedAt @map(name: "updated_at")
+
+  @@index([organizationId, createdAt])
+  @@map("tenant_provisioning_log")
+}
+
+model DashboardTemplate {
+  id                  String   @id @default(cuid())
+  name                String   @unique
+  supersetDashboardId String   @map(name: "superset_dashboard_id")
+  description         String?
+  isDefault           Boolean  @default(true) @map(name: "is_default")
+  createdAt           DateTime @default(now()) @map(name: "created_at")
+  updatedAt           DateTime @updatedAt @map(name: "updated_at")
+
+  @@map("dashboard_template")
+}
+
+model WorkflowTemplate {
+  id          String   @id @default(cuid())
+  name        String   @unique
+  n8nWorkflow Json     @map(name: "n8n_workflow")
+  eventType   String   @map(name: "event_type")
+  description String?
+  isDefault   Boolean  @default(true) @map(name: "is_default")
+  createdAt   DateTime @default(now()) @map(name: "created_at")
+  updatedAt   DateTime @updatedAt @map(name: "updated_at")
+
+  @@map("workflow_template")
 }
 
 enum OrganizationRole {

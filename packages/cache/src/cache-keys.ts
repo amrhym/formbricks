@@ -27,6 +27,19 @@ export const createCacheKey = {
     billing: (organizationId: string): CacheKey => makeCacheKey("org", organizationId, "billing"),
   },
 
+  // Tenant-related keys
+  tenant: {
+    quota: (organizationId: string): CacheKey => makeCacheKey("tenant", organizationId, "quota"),
+    branding: (organizationId: string): CacheKey => makeCacheKey("tenant", organizationId, "branding"),
+    apiCalls: (organizationId: string): CacheKey => makeCacheKey("tenant", organizationId, "apiCalls"),
+    responses: (organizationId: string): CacheKey => makeCacheKey("tenant", organizationId, "responses"),
+  },
+
+  // Superset integration keys
+  superset: {
+    adminToken: (): CacheKey => makeCacheKey("superset", "admin", "token"),
+  },
+
   // License and enterprise features
   license: {
     status: (organizationId: string): CacheKey => makeCacheKey("license", organizationId, "status"),

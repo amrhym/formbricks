@@ -128,6 +128,10 @@ RUN chmod -R 755 ./node_modules/@noble/hashes
 COPY --from=installer /app/node_modules/zod ./node_modules/zod
 RUN chmod -R 755 ./node_modules/zod
 
+# Copy RLS scripts for multi-tenant database isolation
+COPY --from=installer /app/scripts/rls ./scripts/rls
+RUN chown -R nextjs:nextjs ./scripts/rls && chmod -R 755 ./scripts/rls
+
 RUN npm install -g prisma@6
 
 # Create a startup script to handle the conditional logic

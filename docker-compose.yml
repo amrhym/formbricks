@@ -81,6 +81,22 @@ services:
       # Analytics embedding
       METABASE_SECRET_KEY: ${METABASE_SECRET_KEY}
       METABASE_URL: ${METABASE_URL:-http://localhost:3001}
+      # Superset Integration
+      SUPERSET_BASE_URL: ${SUPERSET_BASE_URL:-http://hivecfm-superset:8088}
+      SUPERSET_ADMIN_USERNAME: ${SUPERSET_ADMIN_USERNAME:-admin}
+      SUPERSET_ADMIN_PASSWORD: ${SUPERSET_ADMIN_PASSWORD}
+      GUEST_TOKEN_JWT_SECRET: ${GUEST_TOKEN_JWT_SECRET}
+      NEXT_PUBLIC_SUPERSET_BASE_URL: ${NEXT_PUBLIC_SUPERSET_BASE_URL:-https://hivecfm.xcai.io:3002}
+      # n8n Integration
+      N8N_BASE_URL: ${N8N_BASE_URL:-http://hivecfm-n8n:5678}
+      N8N_API_KEY: ${N8N_API_KEY}
+      N8N_WEBHOOK_BASE_URL: ${N8N_WEBHOOK_BASE_URL:-https://n8n.hivecfm.xcai.io}
+      # OIDC Provider
+      OIDC_ISSUER_URL: ${OIDC_ISSUER_URL:-https://hivecfm.xcai.io/api/oidc}
+      OIDC_SUPERSET_CLIENT_ID: ${OIDC_SUPERSET_CLIENT_ID:-superset-client}
+      OIDC_SUPERSET_CLIENT_SECRET: ${OIDC_SUPERSET_CLIENT_SECRET}
+      OIDC_N8N_CLIENT_ID: ${OIDC_N8N_CLIENT_ID:-n8n-client}
+      OIDC_N8N_CLIENT_SECRET: ${OIDC_N8N_CLIENT_SECRET}
     env_file:
       - .env
     volumes:
@@ -228,6 +244,27 @@ services:
       interval: 15s
       start_period: 90s
       retries: 5
+    restart: unless-stopped
+    networks:
+      - hivecfm-network
+
+  # =============================================================================
+  # Mock Salesforce CRM (JSON Server)
+  # Simulates Salesforce case management for closed-loop feedback routing
+  # =============================================================================
+  mock-salesforce:
+    image: node:22-alpine
+    container_name: hivecfm-mock-salesforce
+    working_dir: /data
+    command: sh -c "npm install -g json-server@0.17.4 && json-server --watch db.json --host 0.0.0.0 --port 3000"
+    ports:
+      - "127.0.0.1:3003:3000"
+    volumes:
+      - ./mock-salesforce/db.json:/data/db.json
+    healthcheck:
+      <<: *healthcheck-defaults
+      test: ["CMD-SHELL", "node -e \"require('http').get('http://localhost:3000/cases', r => process.exit(r.statusCode === 200 ? 0 : 1)).on('error', () => process.exit(1))\""]
+      start_period: 30s
     restart: unless-stopped
     networks:
       - hivecfm-network

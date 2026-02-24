@@ -25,6 +25,10 @@ export const ZAuditTarget = z.enum([
   "integration",
   "file",
   "quota",
+  "tenant",
+  "tenantQuota",
+  "tenantBranding",
+  "workflow",
 ]);
 export const ZAuditAction = z.enum([
   "created",
