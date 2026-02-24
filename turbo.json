@@ -248,7 +248,20 @@
         "UNSPLASH_ACCESS_KEY",
         "PROMETHEUS_ENABLED",
         "PROMETHEUS_EXPORTER_PORT",
-        "USER_MANAGEMENT_MINIMUM_ROLE"
+        "USER_MANAGEMENT_MINIMUM_ROLE",
+        "GUEST_TOKEN_JWT_SECRET",
+        "N8N_API_KEY",
+        "N8N_BASE_URL",
+        "N8N_WEBHOOK_BASE_URL",
+        "NEXT_PUBLIC_SUPERSET_BASE_URL",
+        "OIDC_ISSUER_URL",
+        "OIDC_N8N_CLIENT_ID",
+        "OIDC_N8N_CLIENT_SECRET",
+        "OIDC_SUPERSET_CLIENT_ID",
+        "OIDC_SUPERSET_CLIENT_SECRET",
+        "SUPERSET_ADMIN_PASSWORD",
+        "SUPERSET_ADMIN_USERNAME",
+        "SUPERSET_BASE_URL"
       ],
       "outputs": ["dist/**", ".next/**"]
     },
