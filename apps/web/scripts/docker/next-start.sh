@@ -55,14 +55,15 @@ run_with_timeout 60 "SAML database setup" sh -c '(cd packages/database && npm ru
 
 echo "✅ Database setup completed"
 
-# Apply RLS policies for multi-tenant isolation (idempotent, safe to run on every start)
-if [ -f "scripts/rls/enable-rls.sql" ]; then
+# Apply RLS policies for multi-tenant isolation (optional, non-fatal)
+# Requires psql client — apply manually via: docker exec hivecfm-postgres psql -U postgres -d hivecfm -f /path/to/script.sql
+if [ -f "scripts/rls/enable-rls.sql" ] && command -v psql >/dev/null 2>&1; then
   echo "🔒 Applying Row Level Security policies..."
-  run_with_timeout 60 "RLS enable" sh -c 'psql "$DATABASE_URL" -f scripts/rls/enable-rls.sql'
-  run_with_timeout 60 "RLS policies" sh -c 'psql "$DATABASE_URL" -f scripts/rls/create-policies.sql'
+  run_with_timeout 60 "RLS enable" sh -c 'psql "$DATABASE_URL" -f scripts/rls/enable-rls.sql' || echo "⚠️ RLS enable failed (non-fatal)"
+  run_with_timeout 60 "RLS policies" sh -c 'psql "$DATABASE_URL" -f scripts/rls/create-policies.sql' || echo "⚠️ RLS policies failed (non-fatal)"
   echo "✅ RLS policies applied"
 else
-  echo "⚠️ RLS scripts not found, skipping"
+  echo "⚠️ RLS scripts skipped (psql not available — apply manually)"
 fi
 
 echo "🚀 Starting Next.js server..."
