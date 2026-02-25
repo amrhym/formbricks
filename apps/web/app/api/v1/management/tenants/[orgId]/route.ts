@@ -9,7 +9,6 @@ import { deactivateTenant, getTenant } from "@/lib/tenant/service";
 
 export const GET = withV1ApiWrapper({
   handler: async ({
-    authentication,
     props,
   }: {
     authentication: NonNullable<TApiKeyAuthentication>;
@@ -35,7 +34,6 @@ export const PATCH = withV1ApiWrapper({
   handler: async ({
     req,
     auditLog,
-    authentication,
     props,
   }: {
     req: NextRequest;
@@ -93,7 +91,6 @@ export const PATCH = withV1ApiWrapper({
 export const DELETE = withV1ApiWrapper({
   handler: async ({
     auditLog,
-    authentication,
     props,
   }: {
     auditLog: TApiAuditLog;

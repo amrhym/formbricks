@@ -7,7 +7,6 @@ import { TApiAuditLog, TApiKeyAuthentication, withV1ApiWrapper } from "@/app/lib
 
 export const GET = withV1ApiWrapper({
   handler: async ({
-    authentication,
     props,
   }: {
     authentication: NonNullable<TApiKeyAuthentication>;
@@ -43,7 +42,6 @@ export const POST = withV1ApiWrapper({
   handler: async ({
     req,
     auditLog,
-    authentication,
     props,
   }: {
     req: NextRequest;

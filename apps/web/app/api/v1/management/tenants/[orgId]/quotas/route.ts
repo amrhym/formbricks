@@ -10,7 +10,6 @@ import { getTenantQuota, updateTenantQuota } from "@/lib/tenant/service";
 
 export const GET = withV1ApiWrapper({
   handler: async ({
-    authentication,
     props,
   }: {
     authentication: NonNullable<TApiKeyAuthentication>;
@@ -45,7 +44,6 @@ export const PATCH = withV1ApiWrapper({
   handler: async ({
     req,
     auditLog,
-    authentication,
     props,
   }: {
     req: NextRequest;

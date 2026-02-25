@@ -5,7 +5,6 @@ import { TApiAuditLog, TApiKeyAuthentication, withV1ApiWrapper } from "@/app/lib
 export const DELETE = withV1ApiWrapper({
   handler: async ({
     auditLog,
-    authentication,
     props,
   }: {
     auditLog: TApiAuditLog;

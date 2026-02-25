@@ -8,7 +8,7 @@ import { TApiAuditLog, TApiKeyAuthentication, withV1ApiWrapper } from "@/app/lib
 import { createTenant, listTenants } from "@/lib/tenant/service";
 
 export const GET = withV1ApiWrapper({
-  handler: async ({ authentication }: { authentication: NonNullable<TApiKeyAuthentication> }) => {
+  handler: async (_args: { authentication: NonNullable<TApiKeyAuthentication> }) => {
     try {
       const tenants = await listTenants();
       return {
@@ -27,7 +27,6 @@ export const POST = withV1ApiWrapper({
   handler: async ({
     req,
     auditLog,
-    authentication,
   }: {
     req: NextRequest;
     auditLog: TApiAuditLog;
