@@ -14,7 +14,17 @@ export async function mapSessionToClaims(session: Session): Promise<OIDCClaims |
   }
 
   try {
-    // Get the user's primary organization membership (first one with owner/manager role)
+    // Get the user's info and primary organization membership
+    const user = await prisma.user.findUnique({
+      where: { id: session.user.id },
+      select: { id: true, email: true, name: true },
+    });
+
+    if (!user) {
+      logger.warn({ userId: session.user.id }, "User not found for OIDC claims");
+      return null;
+    }
+
     const membership = await prisma.membership.findFirst({
       where: {
         userId: session.user.id,
@@ -24,7 +34,6 @@ export async function mapSessionToClaims(session: Session): Promise<OIDCClaims |
         organizationId: true,
         role: true,
       },
-      orderBy: { createdAt: "asc" },
     });
 
     if (!membership) {
@@ -34,8 +43,8 @@ export async function mapSessionToClaims(session: Session): Promise<OIDCClaims |
 
     return {
       sub: session.user.id,
-      email: session.user.email || "",
-      name: session.user.name || "",
+      email: user.email,
+      name: user.name || "",
       organizationId: membership.organizationId,
       role: membership.role,
     };

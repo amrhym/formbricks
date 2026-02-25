@@ -14,7 +14,7 @@ interface QuotaCheckResult {
  * Uses database-based counting. Can be upgraded to Redis INCR counters later.
  */
 export const checkApiCallQuota = async (
-  organizationId: string,
+  _organizationId: string,
   maxApiCallsPerDay: number
 ): Promise<QuotaCheckResult> => {
   // API call counting via Redis INCR is a Phase 2 optimization.

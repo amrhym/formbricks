@@ -2,7 +2,7 @@ import "server-only";
 import { Prisma } from "@prisma/client";
 import { prisma } from "@hivecfm/database";
 import { logger } from "@hivecfm/logger";
-import { ZId, ZString } from "@hivecfm/types/common";
+import { ZId } from "@hivecfm/types/common";
 import { DatabaseError, ResourceNotFoundError } from "@hivecfm/types/errors";
 import {
   TBrandingUpdate,
@@ -87,8 +87,8 @@ export const createTenant = async (input: TTenantCreateInput) => {
           organizationId: organization.id,
           environments: {
             create: [
-              { type: "production", widgetSetupCompleted: false },
-              { type: "development", widgetSetupCompleted: false },
+              { type: "production", appSetupCompleted: false },
+              { type: "development", appSetupCompleted: false },
             ],
           },
         },

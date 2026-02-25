@@ -36,7 +36,7 @@ export class N8nClient {
         "Content-Type": "application/json",
         "X-N8N-API-KEY": this.apiKey,
       },
-      ...(body && { body: JSON.stringify(body) }),
+      ...(body ? { body: JSON.stringify(body) } : {}),
     });
 
     if (!response.ok) {

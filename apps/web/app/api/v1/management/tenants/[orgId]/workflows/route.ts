@@ -6,15 +6,11 @@ import { responses } from "@/app/lib/api/response";
 import { TApiAuditLog, TApiKeyAuthentication, withV1ApiWrapper } from "@/app/lib/api/with-api-logging";
 
 export const GET = withV1ApiWrapper({
-  handler: async ({
-    props,
-  }: {
+  handler: async (_args: {
     authentication: NonNullable<TApiKeyAuthentication>;
     props: { params: Promise<{ orgId: string }> };
   }) => {
     try {
-      const { orgId } = await props.params;
-
       // List workflow templates available to this tenant
       const templates = await prisma.workflowTemplate.findMany({
         select: {

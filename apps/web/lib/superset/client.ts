@@ -96,7 +96,7 @@ export class SupersetAdminClient {
         "Content-Type": "application/json",
         Authorization: `Bearer ${adminToken}`,
       },
-      ...(body && { body: JSON.stringify(body) }),
+      ...(body ? { body: JSON.stringify(body) } : {}),
     });
 
     if (!response.ok) {
