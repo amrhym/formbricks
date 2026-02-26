@@ -9,7 +9,6 @@ import {
   MessageCircle,
   PanelLeftCloseIcon,
   PanelLeftOpenIcon,
-  PlugIcon,
   UserCircleIcon,
   UserIcon,
 } from "lucide-react";
@@ -109,12 +108,6 @@ export const MainNavigation = ({
         href: `/environments/${environment.id}/analytics`,
         icon: BarChart3Icon,
         isActive: pathname?.includes("/analytics"),
-      },
-      {
-        name: t("common.integrations") || "Integrations",
-        href: `/environments/${environment.id}/integrations`,
-        icon: PlugIcon,
-        isActive: pathname?.includes("/integrations"),
       },
       {
         name: t("common.api_docs") || "API Docs",
