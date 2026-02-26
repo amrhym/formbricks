@@ -10,7 +10,6 @@
 #   - postgres (port 5432): Database with pgvector extension
 #   - redis (port 6379): Caching and rate limiting
 #   - minio (port 9000/9001): S3-compatible object storage for file uploads
-#   - metabase (port 3001): Analytics dashboard
 #   - superset (port 3002): Advanced analytics
 #
 # Health Monitoring:
@@ -78,9 +77,6 @@ services:
       S3_FORCE_PATH_STYLE: "1"
       # Internal endpoint for direct container access (optional, for debugging)
       S3_INTERNAL_ENDPOINT: http://minio:9000
-      # Analytics embedding
-      METABASE_SECRET_KEY: ${METABASE_SECRET_KEY}
-      METABASE_URL: ${METABASE_URL:-http://localhost:3001}
       # Superset Integration
       SUPERSET_BASE_URL: ${SUPERSET_BASE_URL:-http://hivecfm-superset:8088}
       SUPERSET_ADMIN_USERNAME: ${SUPERSET_ADMIN_USERNAME:-admin}
@@ -121,7 +117,6 @@ services:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-postgres}
       # Passed to init-db.sh for secure user creation
-      METABASE_DB_PASSWORD: ${METABASE_DB_PASSWORD:-metabase}
       SUPERSET_DB_PASSWORD: ${SUPERSET_DB_PASSWORD:-superset}
     volumes:
       - postgres_data:/var/lib/postgresql/data
@@ -202,49 +197,6 @@ services:
       MINIO_ROOT_USER: ${MINIO_ROOT_USER:-hivecfm}
       MINIO_ROOT_PASSWORD: ${MINIO_ROOT_PASSWORD:-hivecfm-secret-key}
       MINIO_BUCKET_NAME: ${S3_BUCKET_NAME:-hivecfm-uploads}
-    networks:
-      - hivecfm-network
-
-  # =============================================================================
-  # Metabase Analytics Dashboard
-  # Build from hivecfm-metabase repository with enterprise patches
-  # =============================================================================
-  metabase:
-    build:
-      context: ../hivecfm-metabase
-      dockerfile: Dockerfile
-    image: hivecfm-metabase:latest
-    container_name: hivecfm-metabase
-    ports:
-      # Bind to localhost only - nginx handles external SSL access on port 3001
-      - "127.0.0.1:${METABASE_PORT:-3001}:3000"
-    depends_on:
-      postgres:
-        condition: service_healthy
-    environment:
-      # Metabase application database (separate from HiveCFM app data)
-      MB_DB_TYPE: postgres
-      MB_DB_DBNAME: metabase_app
-      MB_DB_PORT: 5432
-      MB_DB_USER: metabase
-      MB_DB_PASS: ${METABASE_DB_PASSWORD:-metabase}
-      MB_DB_HOST: postgres
-      # Metabase settings
-      MB_SITE_NAME: HiveCFM Analytics
-      MB_SITE_URL: ${METABASE_URL:-http://localhost:3001}
-      MB_EMBEDDING_SECRET_KEY: ${METABASE_SECRET_KEY}
-      MB_PREMIUM_EMBEDDING_TOKEN: ${METABASE_PREMIUM_TOKEN:-}
-      # Performance
-      JAVA_OPTS: "-Xmx1g"
-    volumes:
-      - metabase_data:/metabase-data
-    healthcheck:
-      <<: *healthcheck-defaults
-      test: ["CMD", "curl", "-f", "http://localhost:3000/api/health"]
-      interval: 15s
-      start_period: 90s
-      retries: 5
-    restart: unless-stopped
     networks:
       - hivecfm-network
 
@@ -338,7 +290,5 @@ volumes:
     name: hivecfm-uploads
   hivecfm_saml:
     name: hivecfm-saml
-  metabase_data:
-    name: hivecfm-metabase-data
   superset_data:
     name: hivecfm-superset-data
