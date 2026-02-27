@@ -8,11 +8,17 @@ import type { TI18nString } from "@hivecfm/types/i18n";
 import { TSurveyQuestionTypeEnum } from "@hivecfm/types/surveys/types";
 import type { TBotReplyContent, TBotReplyMessage } from "./types";
 
+/** Strip HTML tags from a string, returning plain text */
+function stripHtml(html: string): string {
+  return html.replace(/<[^>]*>/g, "").trim();
+}
+
 /** Extract text from i18n string, falling back to "default" key */
 function getText(i18nStr: TI18nString | string | undefined, language: string = "default"): string {
   if (!i18nStr) return "";
-  if (typeof i18nStr === "string") return i18nStr;
-  return i18nStr[language] || i18nStr["default"] || Object.values(i18nStr)[0] || "";
+  if (typeof i18nStr === "string") return stripHtml(i18nStr);
+  const raw = i18nStr[language] || i18nStr["default"] || Object.values(i18nStr)[0] || "";
+  return stripHtml(raw);
 }
 
 /**
