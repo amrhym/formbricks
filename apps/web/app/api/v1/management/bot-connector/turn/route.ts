@@ -76,13 +76,13 @@ export const POST = withV1ApiWrapper({
     }
 
     // Debug: log the raw request from Genesys to understand the format
-    logger.info({ rawBody: JSON.stringify(jsonInput) }, "Bot connector raw request body");
+    logger.error({ rawBody: JSON.stringify(jsonInput) }, "BOT_DEBUG: raw request body");
 
     const parseResult = ZBotConnectorRequest.safeParse(jsonInput);
     if (!parseResult.success) {
-      logger.warn(
+      logger.error(
         { errors: parseResult.error.issues, rawBody: JSON.stringify(jsonInput) },
-        "Invalid bot connector request"
+        "BOT_DEBUG: Invalid bot connector request"
       );
       return {
         response: Response.json(
