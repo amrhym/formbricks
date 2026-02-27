@@ -1,4 +1,3 @@
-import { NextRequest } from "next/server";
 import { TApiKeyAuthentication, withV1ApiWrapper } from "@/app/lib/api/with-api-logging";
 
 /**
