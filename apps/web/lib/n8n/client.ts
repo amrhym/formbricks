@@ -90,12 +90,34 @@ export class N8nClient {
     return this.request<N8nCredential>("POST", "/credentials", credential);
   }
 
+  async updateCredential(
+    credentialId: string,
+    credential: { name?: string; type?: string; data?: Record<string, unknown> }
+  ): Promise<N8nCredential> {
+    return this.request<N8nCredential>("PATCH", `/credentials/${credentialId}`, credential);
+  }
+
   async deleteCredential(credentialId: string): Promise<void> {
     await this.request<void>("DELETE", `/credentials/${credentialId}`);
   }
 
   async listCredentials(): Promise<{ data: N8nCredential[] }> {
     return this.request<{ data: N8nCredential[] }>("GET", "/credentials");
+  }
+
+  /**
+   * Check if n8n is reachable by calling a lightweight endpoint.
+   */
+  async healthCheck(): Promise<boolean> {
+    try {
+      const response = await fetch(`${this.baseUrl}/healthz`, {
+        method: "GET",
+        signal: AbortSignal.timeout(5000),
+      });
+      return response.ok;
+    } catch {
+      return false;
+    }
   }
 
   // Tags

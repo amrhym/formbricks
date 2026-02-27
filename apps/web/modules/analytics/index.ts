@@ -8,4 +8,4 @@
 export { AnalyticsPage } from "./page";
 
 // Embed components
-export { SupersetEmbed, SupersetFullPage } from "./components/SupersetEmbed";
+export { SupersetEmbed } from "./components/SupersetEmbed";

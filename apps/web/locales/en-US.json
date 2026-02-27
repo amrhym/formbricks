@@ -353,6 +353,7 @@
     "response": "Response",
     "responses": "Responses",
     "restart": "Restart",
+    "review": "Review",
     "role": "Role",
     "saas": "SaaS",
     "sales": "Sales",
@@ -424,6 +425,7 @@
     "try_again": "Try again",
     "type": "Type",
     "under_review": "Under Review",
+    "unknown": "Unknown",
     "unlock_more_workspaces_with_a_higher_plan": "Unlock more workspaces with a higher plan.",
     "update": "Update",
     "updated": "Updated",
@@ -1123,6 +1125,12 @@
     "surveys": {
       "all_set_time_to_create_first_survey": "You're all set! Time to create your first survey",
       "alphabetical": "Alphabetical",
+      "approval_queue": {
+        "no_surveys_pending": "No surveys pending review",
+        "no_surveys_pending_description": "All surveys have been reviewed. New submissions will appear here.",
+        "submitted_by": "Submitted by",
+        "title": "Approval Queue"
+      },
       "copy_survey": "Copy survey",
       "copy_survey_description": "Copy this survey to another environment",
       "copy_survey_error": "Failed to copy survey",

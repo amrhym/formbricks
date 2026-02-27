@@ -310,6 +310,23 @@ export const getContact = reactCache(async (contactId: string): Promise<{ enviro
   }
 });
 
+export const getChannel = reactCache(async (channelId: string): Promise<{ environmentId: string } | null> => {
+  validateInputs([channelId, ZId]);
+
+  try {
+    const channel = await prisma.channel.findUnique({
+      where: { id: channelId },
+      select: { environmentId: true },
+    });
+    return channel;
+  } catch (error) {
+    if (error instanceof Prisma.PrismaClientKnownRequestError) {
+      throw new DatabaseError(error.message);
+    }
+    throw error;
+  }
+});
+
 export const getSegment = reactCache(async (segmentId: string): Promise<{ environmentId: string } | null> => {
   validateInputs([segmentId, ZId]);
   try {

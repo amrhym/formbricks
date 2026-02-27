@@ -248,6 +248,18 @@ export const deactivateTenant = async (organizationId: string) => {
   validateInputs([organizationId, ZId]);
 
   try {
+    // Revoke n8n credentials and API key (best-effort, don't fail deactivation)
+    try {
+      const { revokeTenantCredentials, removeTenantWorkflows } = await import("@/lib/n8n/service");
+      await removeTenantWorkflows(organizationId);
+      await revokeTenantCredentials(organizationId);
+    } catch (err) {
+      logger.error(
+        { tenantId: organizationId, error: err },
+        "Failed to revoke n8n credentials during deactivation (continuing)"
+      );
+    }
+
     // Soft-deactivate by updating billing plan
     const organization = await prisma.organization.update({
       where: { id: organizationId },

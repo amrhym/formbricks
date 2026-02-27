@@ -9,9 +9,11 @@ interface SupersetClient {
 }
 
 interface N8nClient {
-  deployWorkflowTemplates(organizationId: string): Promise<void>;
-  createTenantCredentials(organizationId: string): Promise<void>;
+  checkN8nHealth(): Promise<boolean>;
+  deployWorkflowTemplates(organizationId: string, credentialId?: string): Promise<void>;
+  createTenantCredentials(organizationId: string): Promise<{ n8nCredentialId: string; apiKeyId: string }>;
   removeTenantWorkflows(organizationId: string): Promise<void>;
+  revokeTenantCredentials(organizationId: string): Promise<void>;
 }
 
 interface ProvisioningStep {
@@ -87,15 +89,37 @@ export class TenantProvisioner {
       {
         name: "N8N_CONFIGURED",
         execute: async () => {
-          await this.n8nClient.createTenantCredentials(this.organizationId);
-          await this.n8nClient.deployWorkflowTemplates(this.organizationId);
-          await this.logStep("N8N_CONFIGURED", "COMPLETED");
+          // Health check: if n8n is down, log warning but don't fail provisioning
+          const n8nHealthy = await this.n8nClient.checkN8nHealth();
+          if (!n8nHealthy) {
+            logger.warn(
+              { tenantId: this.organizationId },
+              "n8n is not reachable, skipping n8n configuration (graceful degradation)"
+            );
+            await this.logStep("N8N_CONFIGURED", "COMPLETED", {
+              skipped: true,
+              reason: "n8n unreachable",
+            });
+            return;
+          }
+
+          const { n8nCredentialId } = await this.n8nClient.createTenantCredentials(this.organizationId);
+          await this.n8nClient.deployWorkflowTemplates(this.organizationId, n8nCredentialId);
+          await this.logStep("N8N_CONFIGURED", "COMPLETED", { n8nCredentialId });
         },
         compensate: async () => {
           try {
             await this.n8nClient.removeTenantWorkflows(this.organizationId);
           } catch (err) {
-            logger.error({ tenantId: this.organizationId, error: err }, "Failed to compensate n8n");
+            logger.error({ tenantId: this.organizationId, error: err }, "Failed to compensate n8n workflows");
+          }
+          try {
+            await this.n8nClient.revokeTenantCredentials(this.organizationId);
+          } catch (err) {
+            logger.error(
+              { tenantId: this.organizationId, error: err },
+              "Failed to compensate n8n credentials"
+            );
           }
           await this.logStep("N8N_CONFIGURED", "COMPENSATED");
         },

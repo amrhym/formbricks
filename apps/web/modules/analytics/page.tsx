@@ -31,7 +31,7 @@ export const AnalyticsPage = async ({ params: paramsProps }: AnalyticsPageProps)
       <div className="flex gap-2">
         <Button size="sm" variant="secondary" asChild>
           <Link href={SUPERSET_URL} target="_blank" rel="noopener noreferrer">
-            Open Superset
+            Open in new tab
             <ExternalLinkIcon className="ml-2 h-4 w-4" />
           </Link>
         </Button>
@@ -60,7 +60,7 @@ export const AnalyticsPage = async ({ params: paramsProps }: AnalyticsPageProps)
     <PageContentWrapper>
       <PageHeader pageTitle={t("common.analytics") || "Analytics"} cta={<AnalyticsButtons />} />
       <div className="h-[calc(100vh-200px)] min-h-[600px]">
-        <SupersetEmbed title="Superset Analytics" height="100%" />
+        <SupersetEmbed environmentId={params.environmentId} height="100%" />
       </div>
     </PageContentWrapper>
   );

@@ -16,6 +16,7 @@ import {
 import { generateSurveySingleUseIds } from "@/lib/utils/single-use-surveys";
 import { withAuditLogging } from "@/modules/ee/audit-logs/lib/handler";
 import { getProjectIdIfEnvironmentExists } from "@/modules/survey/list/lib/environment";
+import { getEnvironmentSurveyMetrics } from "@/modules/survey/list/lib/metrics";
 import { getUserProjects } from "@/modules/survey/list/lib/project";
 import {
   copySurveyToOtherEnvironment,
@@ -262,4 +263,30 @@ export const getSurveysAction = authenticatedActionClient
       parsedInput.offset,
       parsedInput.filterCriteria
     );
+  });
+
+const ZGetEnvironmentSurveyMetricsAction = z.object({
+  environmentId: z.string().cuid2(),
+});
+
+export const getEnvironmentSurveyMetricsAction = authenticatedActionClient
+  .schema(ZGetEnvironmentSurveyMetricsAction)
+  .action(async ({ ctx, parsedInput }) => {
+    await checkAuthorizationUpdated({
+      userId: ctx.user.id,
+      organizationId: await getOrganizationIdFromEnvironmentId(parsedInput.environmentId),
+      access: [
+        {
+          type: "organization",
+          roles: ["owner", "manager"],
+        },
+        {
+          type: "projectTeam",
+          minPermission: "read",
+          projectId: await getProjectIdFromEnvironmentId(parsedInput.environmentId),
+        },
+      ],
+    });
+
+    return await getEnvironmentSurveyMetrics(parsedInput.environmentId);
   });

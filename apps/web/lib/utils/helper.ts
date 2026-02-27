@@ -2,6 +2,7 @@ import { ResourceNotFoundError } from "@hivecfm/types/errors";
 import {
   getActionClass,
   getApiKey,
+  getChannel,
   getContact,
   getEnvironment,
   getIntegration,
@@ -132,6 +133,15 @@ export const getOrganizationIdFromIntegrationId = async (integrationId: string) 
   }
 
   return await getOrganizationIdFromEnvironmentId(integration.environmentId);
+};
+
+export const getOrganizationIdFromChannelId = async (channelId: string) => {
+  const channel = await getChannel(channelId);
+  if (!channel) {
+    throw new ResourceNotFoundError("channel", channelId);
+  }
+
+  return await getOrganizationIdFromEnvironmentId(channel.environmentId);
 };
 
 export const getOrganizationIdFromWebhookId = async (webhookId: string) => {

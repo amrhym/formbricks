@@ -1,4 +1,4 @@
-import { PlusIcon } from "lucide-react";
+import { ClipboardCheckIcon, PlusIcon } from "lucide-react";
 import { Metadata } from "next";
 import Link from "next/link";
 import { redirect } from "next/navigation";
@@ -8,6 +8,7 @@ import { getUserLocale } from "@/lib/user/service";
 import { getTranslate } from "@/lingodotdev/server";
 import { getEnvironmentAuth } from "@/modules/environments/lib/utils";
 import { getProjectWithTeamIdsByEnvironmentId } from "@/modules/survey/lib/project";
+import { EnvironmentMetricsDashboard } from "@/modules/survey/list/components/environment-metrics-dashboard";
 import { SurveysList } from "@/modules/survey/list/components/survey-list";
 import { getSurveyCount } from "@/modules/survey/list/lib/survey";
 import { TemplateContainerWithPreview } from "@/modules/survey/templates/components/template-container";
@@ -36,7 +37,9 @@ export const SurveysPage = async ({ params: paramsProps }: SurveyTemplateProps) 
     throw new Error(t("common.workspace_not_found"));
   }
 
-  const { session, isBilling, environment, isReadOnly } = await getEnvironmentAuth(params.environmentId);
+  const { session, isBilling, environment, isReadOnly, isOwner, isManager } = await getEnvironmentAuth(
+    params.environmentId
+  );
 
   if (isBilling) {
     return redirect(`/environments/${params.environmentId}/settings/billing`);
@@ -46,14 +49,26 @@ export const SurveysPage = async ({ params: paramsProps }: SurveyTemplateProps) 
 
   const currentProjectChannel = project.config.channel ?? null;
   const locale = (await getUserLocale(session.user.id)) ?? DEFAULT_LOCALE;
-  const CreateSurveyButton = () => {
+  const isAdmin = isOwner || isManager;
+
+  const HeaderButtons = () => {
     return (
-      <Button size="sm" asChild>
-        <Link href={`/environments/${environment.id}/surveys/templates`}>
-          {t("environments.surveys.new_survey")}
-          <PlusIcon />
-        </Link>
-      </Button>
+      <div className="flex items-center gap-2">
+        {isAdmin && (
+          <Button size="sm" variant="secondary" asChild>
+            <Link href={`/environments/${environment.id}/surveys/approval-queue`}>
+              <ClipboardCheckIcon />
+              {t("environments.surveys.approval_queue.title")}
+            </Link>
+          </Button>
+        )}
+        <Button size="sm" asChild>
+          <Link href={`/environments/${environment.id}/surveys/templates`}>
+            {t("environments.surveys.new_survey")}
+            <PlusIcon />
+          </Link>
+        </Button>
+      </div>
     );
   };
 
@@ -78,7 +93,8 @@ export const SurveysPage = async ({ params: paramsProps }: SurveyTemplateProps) 
   if (surveyCount > 0) {
     content = (
       <>
-        <PageHeader pageTitle={t("common.surveys")} cta={isReadOnly ? <></> : <CreateSurveyButton />} />
+        <PageHeader pageTitle={t("common.surveys")} cta={isReadOnly ? <></> : <HeaderButtons />} />
+        <EnvironmentMetricsDashboard environmentId={environment.id} />
         <SurveysList
           environmentId={environment.id}
           isReadOnly={isReadOnly}

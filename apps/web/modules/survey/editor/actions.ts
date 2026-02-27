@@ -32,6 +32,7 @@ import { updateSurvey, updateSurveyDraft } from "@/modules/survey/editor/lib/sur
 import { TSurveyDraft, ZSurveyDraft } from "@/modules/survey/editor/types/survey";
 import { getSurveyFollowUpsPermission } from "@/modules/survey/follow-ups/lib/utils";
 import { checkSpamProtectionPermission } from "@/modules/survey/lib/permission";
+import { createReviewLog } from "@/modules/survey/lib/review-log";
 import { getOrganizationBilling, getSurvey } from "@/modules/survey/lib/survey";
 import { getProject } from "./lib/project";
 
@@ -214,6 +215,9 @@ export const submitForReviewAction = authenticatedActionClient.schema(ZSubmitFor
       ctx.auditLoggingCtx.surveyId = parsedInput.surveyId;
       ctx.auditLoggingCtx.oldObject = currentSurvey;
 
+      // Determine if this is a first submission or resubmission
+      const isResubmission = currentSurvey.reviewNote !== null;
+
       const result = await updateSurvey({
         ...currentSurvey,
         status: "underReview",
@@ -221,6 +225,9 @@ export const submitForReviewAction = authenticatedActionClient.schema(ZSubmitFor
         reviewedBy: null,
         reviewedAt: null,
       });
+
+      // Log to SurveyReviewLog
+      await createReviewLog(parsedInput.surveyId, ctx.user.id, isResubmission ? "RESUBMITTED" : "SUBMITTED");
 
       ctx.auditLoggingCtx.newObject = result;
       revalidatePath(`/environments/${result.environmentId}/surveys/${result.id}`);
@@ -274,6 +281,9 @@ export const approveSurveyAction = authenticatedActionClient.schema(ZApproveSurv
         reviewedAt: new Date(),
       });
 
+      // Log to SurveyReviewLog
+      await createReviewLog(parsedInput.surveyId, ctx.user.id, "APPROVED");
+
       ctx.auditLoggingCtx.newObject = result;
       revalidatePath(`/environments/${result.environmentId}/surveys/${result.id}`);
 
@@ -326,6 +336,9 @@ export const rejectSurveyAction = authenticatedActionClient.schema(ZRejectSurvey
         reviewedBy: ctx.user.id,
         reviewedAt: new Date(),
       });
+
+      // Log to SurveyReviewLog
+      await createReviewLog(parsedInput.surveyId, ctx.user.id, "REJECTED", parsedInput.reviewNote);
 
       ctx.auditLoggingCtx.newObject = result;
       revalidatePath(`/environments/${result.environmentId}/surveys/${result.id}`);
