@@ -14,12 +14,20 @@ import {
 } from "@/modules/ui/components/dialog";
 import { TabToggle } from "@/modules/ui/components/tab-toggle";
 import { BulkInviteTab } from "./bulk-invite-tab";
+import { CreateMemberTab } from "./create-member-tab";
 import { IndividualInviteTab } from "./individual-invite-tab";
 
 interface InviteMemberModalProps {
   open: boolean;
   setOpen: (v: boolean) => void;
   onSubmit: (data: { name: string; email: string; role: TOrganizationRole }[]) => void;
+  onCreateMember: (data: {
+    name: string;
+    email: string;
+    password: string;
+    role: TOrganizationRole;
+    teamIds: string[];
+  }) => void;
   teams: TOrganizationTeam[];
   isAccessControlAllowed: boolean;
   isFormbricksCloud: boolean;
@@ -35,6 +43,7 @@ export const InviteMemberModal = ({
   open,
   setOpen,
   onSubmit,
+  onCreateMember,
   teams,
   isAccessControlAllowed,
   isFormbricksCloud,
@@ -45,7 +54,7 @@ export const InviteMemberModal = ({
   isTeamAdmin,
   userAdminTeamIds,
 }: InviteMemberModalProps) => {
-  const [type, setType] = useState<"individual" | "bulk">("individual");
+  const [type, setType] = useState<"individual" | "bulk" | "create">("individual");
 
   const { t } = useTranslation();
 
@@ -78,6 +87,18 @@ export const InviteMemberModal = ({
         isStorageConfigured={isStorageConfigured}
       />
     ),
+    create: (
+      <CreateMemberTab
+        setOpen={setOpen}
+        environmentId={environmentId}
+        onSubmit={onCreateMember}
+        isAccessControlAllowed={isAccessControlAllowed}
+        isFormbricksCloud={isFormbricksCloud}
+        teams={filteredTeams}
+        membershipRole={membershipRole}
+        showTeamAdminRestrictions={showTeamAdminRestrictions}
+      />
+    ),
   };
 
   return (
@@ -95,6 +116,7 @@ export const InviteMemberModal = ({
               options={[
                 { value: "individual", label: t("environments.settings.teams.individual") },
                 { value: "bulk", label: t("environments.settings.teams.bulk_invite") },
+                { value: "create", label: t("environments.settings.teams.create_member") },
               ]}
               onChange={(inviteType) => setType(inviteType)}
               defaultSelected={type}

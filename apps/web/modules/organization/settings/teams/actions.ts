@@ -5,6 +5,7 @@ import { z } from "zod";
 import { ZId, ZUuid } from "@hivecfm/types/common";
 import { AuthenticationError, OperationNotAllowedError, ValidationError } from "@hivecfm/types/errors";
 import { TOrganizationRole, ZOrganizationRole } from "@hivecfm/types/memberships";
+import { ZUserPassword } from "@hivecfm/types/user";
 import { INVITE_DISABLED, IS_FORMBRICKS_CLOUD } from "@/lib/constants";
 import { createInviteToken } from "@/lib/jwt";
 import { getMembershipByUserIdOrganizationId } from "@/lib/membership/service";
@@ -23,6 +24,7 @@ import {
   getMembershipsByUserId,
   getOrganizationOwnerCount,
 } from "@/modules/organization/settings/teams/lib/membership";
+import { createMemberDirectly } from "./lib/create-member";
 import { deleteInvite, getInvite, inviteUser, resendInvite } from "./lib/invite";
 
 const ZDeleteInviteAction = z.object({
@@ -330,6 +332,102 @@ export const inviteUserAction = authenticatedActionClient.schema(ZInviteUserActi
       }
 
       return inviteId;
+    }
+  )
+);
+
+const ZCreateMemberAction = z.object({
+  organizationId: ZId,
+  email: z.string().email(),
+  name: z.string().trim().min(1, "Name is required"),
+  password: ZUserPassword,
+  role: ZOrganizationRole,
+  teamIds: z.array(ZId),
+});
+
+export const createMemberAction = authenticatedActionClient.schema(ZCreateMemberAction).action(
+  withAuditLogging(
+    "created",
+    "membership",
+    async ({
+      ctx,
+      parsedInput,
+    }: {
+      ctx: AuthenticatedActionClientCtx;
+      parsedInput: z.infer<typeof ZCreateMemberAction>;
+    }) => {
+      if (!IS_FORMBRICKS_CLOUD && parsedInput.role === OrganizationRole.billing) {
+        throw new ValidationError("Billing role is not allowed");
+      }
+
+      const currentUserMembership = await getMembershipByUserIdOrganizationId(
+        ctx.user.id,
+        parsedInput.organizationId
+      );
+      if (!currentUserMembership) {
+        throw new AuthenticationError("User not a member of this organization");
+      }
+
+      const isOrgOwnerOrManager =
+        currentUserMembership.role === "owner" || currentUserMembership.role === "manager";
+
+      const userAdminTeams = isOrgOwnerOrManager
+        ? []
+        : await getTeamsWhereUserIsAdmin(ctx.user.id, parsedInput.organizationId);
+
+      const isTeamAdmin = userAdminTeams.length > 0;
+
+      if (!isOrgOwnerOrManager && !isTeamAdmin) {
+        throw new AuthenticationError("Not authorized to create members");
+      }
+
+      if (isOrgOwnerOrManager) {
+        await checkAuthorizationUpdated({
+          userId: ctx.user.id,
+          organizationId: parsedInput.organizationId,
+          access: [
+            {
+              type: "organization",
+              roles: ["owner", "manager"],
+            },
+          ],
+        });
+      }
+
+      validateTeamAdminInvitePermissions(
+        currentUserMembership.role,
+        userAdminTeams,
+        parsedInput.role,
+        parsedInput.teamIds
+      );
+
+      if (currentUserMembership.role === "manager" && parsedInput.role !== "member") {
+        throw new OperationNotAllowedError("Managers can only create users as members");
+      }
+
+      if (parsedInput.role !== "owner" || parsedInput.teamIds.length > 0) {
+        await checkRoleManagementPermission(parsedInput.organizationId);
+      }
+
+      const userId = await createMemberDirectly({
+        organizationId: parsedInput.organizationId,
+        name: parsedInput.name,
+        email: parsedInput.email,
+        password: parsedInput.password,
+        role: parsedInput.role,
+        teamIds: parsedInput.teamIds,
+      });
+
+      ctx.auditLoggingCtx.organizationId = parsedInput.organizationId;
+      ctx.auditLoggingCtx.membershipId = `${userId}-${parsedInput.organizationId}`;
+      ctx.auditLoggingCtx.newObject = {
+        email: parsedInput.email,
+        name: parsedInput.name,
+        role: parsedInput.role,
+        teamIds: parsedInput.teamIds,
+      };
+
+      return userId;
     }
   )
 );

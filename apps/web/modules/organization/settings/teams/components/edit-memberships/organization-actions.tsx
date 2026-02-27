@@ -11,7 +11,11 @@ import { FORMBRICKS_ENVIRONMENT_ID_LS } from "@/lib/localStorage";
 import { getAccessFlags } from "@/lib/membership/utils";
 import { getFormattedErrorMessage } from "@/lib/utils/helper";
 import { TOrganizationTeam } from "@/modules/ee/teams/team-list/types/team";
-import { inviteUserAction, leaveOrganizationAction } from "@/modules/organization/settings/teams/actions";
+import {
+  createMemberAction,
+  inviteUserAction,
+  leaveOrganizationAction,
+} from "@/modules/organization/settings/teams/actions";
 import { InviteMemberModal } from "@/modules/organization/settings/teams/components/invite-member/invite-member-modal";
 import { TInvitee } from "@/modules/organization/settings/teams/types/invites";
 import { Button } from "@/modules/ui/components/button";
@@ -136,6 +140,30 @@ export const OrganizationActions = ({
     }
   };
 
+  const handleCreateMember = async (data: {
+    name: string;
+    email: string;
+    password: string;
+    role: TOrganizationRole;
+    teamIds: string[];
+  }) => {
+    const result = await createMemberAction({
+      organizationId: organization.id,
+      email: data.email.toLowerCase(),
+      name: data.name,
+      password: data.password,
+      role: data.role,
+      teamIds: data.teamIds,
+    });
+    if (result?.data) {
+      router.refresh();
+      toast.success(t("environments.settings.general.member_created_successfully"));
+    } else {
+      const errorMessage = getFormattedErrorMessage(result);
+      toast.error(errorMessage);
+    }
+  };
+
   return (
     <>
       <div className="mb-4 flex justify-end space-x-2 text-right">
@@ -161,6 +189,7 @@ export const OrganizationActions = ({
         open={isInviteMemberModalOpen}
         setOpen={setIsInviteMemberModalOpen}
         onSubmit={handleAddMembers}
+        onCreateMember={handleCreateMember}
         membershipRole={membershipRole}
         isAccessControlAllowed={isAccessControlAllowed}
         isFormbricksCloud={isFormbricksCloud}
