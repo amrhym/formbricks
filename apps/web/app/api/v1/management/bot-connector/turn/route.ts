@@ -165,8 +165,12 @@ async function handleFirstTurn(
     };
   }
 
-  // Get questions (use legacy questions array from survey)
+  // Get questions from survey
   const questions = survey.questions || [];
+  logger.info(
+    { surveyId, questionCount: questions.length, questionTypes: questions.map((q) => q.type) },
+    "Bot connector: survey questions loaded"
+  );
   const chatQuestions = questions.filter((q) => isSupportedInChat(q.type));
 
   if (chatQuestions.length === 0) {
