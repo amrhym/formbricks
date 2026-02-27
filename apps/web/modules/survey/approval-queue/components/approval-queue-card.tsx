@@ -6,6 +6,7 @@ import { useState } from "react";
 import toast from "react-hot-toast";
 import { useTranslation } from "react-i18next";
 import { getFormattedErrorMessage } from "@/lib/utils/helper";
+import { approveSurveyAction, rejectSurveyAction } from "@/modules/survey/editor/actions";
 import { Button } from "@/modules/ui/components/button";
 import {
   Dialog,
@@ -15,7 +16,6 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/modules/ui/components/dialog";
-import { approveSurveyAction, rejectSurveyAction } from "../actions";
 import { TApprovalQueueSurvey } from "../lib/survey";
 
 interface ApprovalQueueCardProps {
