@@ -17,6 +17,17 @@ import {
   ZBotConnectorRequest,
 } from "../lib/types";
 
+// ─── Helper: extract elements from blocks (questions migrated to blocks) ────
+
+function getElementsFromSurvey(survey: any): any[] {
+  // New format: questions live inside blocks[].elements[]
+  if (survey.blocks && Array.isArray(survey.blocks) && survey.blocks.length > 0) {
+    return survey.blocks.flatMap((block: any) => block.elements || []);
+  }
+  // Legacy fallback: questions array directly on survey
+  return survey.questions || [];
+}
+
 // ─── Opt-out keywords ───────────────────────────────────────────────────────
 
 const OPT_OUT_KEYWORDS = new Set(["stop", "quit", "cancel", "unsubscribe", "opt out", "optout", "no thanks"]);
@@ -165,12 +176,8 @@ async function handleFirstTurn(
     };
   }
 
-  // Get questions from survey
-  const questions = survey.questions || [];
-  logger.info(
-    { surveyId, questionCount: questions.length, questionTypes: questions.map((q) => q.type) },
-    "Bot connector: survey questions loaded"
-  );
+  // Get questions/elements from survey (blocks format or legacy questions)
+  const questions = getElementsFromSurvey(survey);
   const chatQuestions = questions.filter((q) => isSupportedInChat(q.type));
 
   if (chatQuestions.length === 0) {
@@ -280,7 +287,7 @@ async function handleSubsequentTurn(
     };
   }
 
-  const allQuestions = survey.questions || [];
+  const allQuestions = getElementsFromSurvey(survey);
   const language = body.languageCode?.split("-")[0] || "default";
 
   // Get current question
