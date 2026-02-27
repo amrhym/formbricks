@@ -75,15 +75,9 @@ export const POST = withV1ApiWrapper({
       };
     }
 
-    // Debug: log the raw request from Genesys to understand the format
-    logger.error({ rawBody: JSON.stringify(jsonInput) }, "BOT_DEBUG: raw request body");
-
     const parseResult = ZBotConnectorRequest.safeParse(jsonInput);
     if (!parseResult.success) {
-      logger.error(
-        { errors: parseResult.error.issues, rawBody: JSON.stringify(jsonInput) },
-        "BOT_DEBUG: Invalid bot connector request"
-      );
+      logger.warn({ errors: parseResult.error.issues }, "Invalid bot connector request");
       return {
         response: Response.json(
           botResponse(null, [textReply("Invalid request format")], BOT_INTENTS.SURVEY_ERROR),
@@ -93,13 +87,14 @@ export const POST = withV1ApiWrapper({
     }
 
     const body = parseResult.data;
+    const utterance = body.inputMessage?.text ?? "";
     const isFirstTurn = !body.botState || body.botState === "" || body.botState === "{}";
 
     try {
       if (isFirstTurn) {
-        return await handleFirstTurn(body, authentication);
+        return await handleFirstTurn(body, utterance, authentication);
       } else {
-        return await handleSubsequentTurn(body, authentication);
+        return await handleSubsequentTurn(body, utterance, authentication);
       }
     } catch (error) {
       logger.error({ error: (error as Error).message }, "Bot connector handler error");
@@ -123,10 +118,11 @@ export const POST = withV1ApiWrapper({
 
 async function handleFirstTurn(
   body: ReturnType<typeof ZBotConnectorRequest.parse>,
+  _utterance: string,
   authentication: NonNullable<TApiKeyAuthentication>
 ) {
-  const surveyId = body.inputParameters?.surveyId;
-  const environmentId = body.inputParameters?.environmentId;
+  const surveyId = body.parameters?.surveyId;
+  const environmentId = body.parameters?.environmentId;
 
   if (!surveyId) {
     return {
@@ -227,7 +223,7 @@ async function handleFirstTurn(
     currentQuestionIndex: 0,
     questionIds: chatQuestions.map((q) => q.id),
     answers: {},
-    genesysConversationId: body.inputParameters?.conversationId,
+    genesysConversationId: body.genesysConversationId || body.parameters?.conversationId,
   };
 
   // Return first question
@@ -245,6 +241,7 @@ async function handleFirstTurn(
 
 async function handleSubsequentTurn(
   body: ReturnType<typeof ZBotConnectorRequest.parse>,
+  utterance: string,
   authentication: NonNullable<TApiKeyAuthentication>
 ) {
   // Deserialize session state
@@ -268,8 +265,8 @@ async function handleSubsequentTurn(
   }
 
   // Check for opt-out
-  if (isOptOut(body.utterance)) {
-    logger.info({ responseId, utterance: body.utterance }, "Customer opted out via bot connector");
+  if (isOptOut(utterance)) {
+    logger.info({ responseId, utterance }, "Customer opted out via bot connector");
     return {
       response: Response.json(
         botResponse(
@@ -306,7 +303,7 @@ async function handleSubsequentTurn(
   }
 
   // Parse the answer
-  const answer = parseAnswer(currentQuestion, body.utterance, language);
+  const answer = parseAnswer(currentQuestion, utterance, language);
   sessionState.answers[currentQuestionId] = answer;
 
   // Move to next question

@@ -8,17 +8,54 @@ import { z } from "zod";
 
 // ─── Request Types (from Genesys) ───────────────────────────────────────────
 
+/**
+ * Actual Genesys Bot Connector v1 request format.
+ *
+ * Example payload from Genesys:
+ * {
+ *   "botId": "HiveCFM Survey Bot",
+ *   "botVersion": "1.0",
+ *   "botSessionId": "uuid",
+ *   "inputMessage": { "type": "Text", "text": "hi" },
+ *   "languageCode": "en-us",
+ *   "botSessionTimeout": 4320,
+ *   "chatBot": { "id": "hivecfm-survey-bot", "name": "HiveCFM Survey Bot" },
+ *   "genesysConversationId": "uuid",
+ *   "parameters": { "surveyId": "...", "environmentId": "..." },
+ *   "botState": "{...}"  // only on subsequent turns
+ * }
+ */
 export const ZBotConnectorRequest = z.object({
   /** Unique session ID for this bot conversation */
   botSessionId: z.string(),
-  /** Customer's message text (empty string on first turn) */
-  utterance: z.string().default(""),
-  /** Serialized state from previous turn (empty string on first turn) */
+  /** Bot identifier */
+  botId: z.string().optional(),
+  /** Bot version */
+  botVersion: z.string().optional(),
+  /** Customer's message — Genesys wraps it in inputMessage.text */
+  inputMessage: z
+    .object({
+      type: z.string().optional(),
+      text: z.string().default(""),
+    })
+    .optional(),
+  /** Serialized state from previous turn (absent or empty on first turn) */
   botState: z.string().default(""),
-  /** Parameters passed from Architect flow (conversationId, agentId, surveyId, environmentId, etc.) */
-  inputParameters: z.record(z.string(), z.string()).optional().default({}),
-  /** Language code (e.g., "en-US") */
+  /** Parameters passed from Architect flow (surveyId, environmentId, conversationId) */
+  parameters: z.record(z.string(), z.string()).optional().default({}),
+  /** Language code (e.g., "en-us") */
   languageCode: z.string().optional().default("en-US"),
+  /** Session timeout in minutes */
+  botSessionTimeout: z.number().optional(),
+  /** Chat bot metadata */
+  chatBot: z
+    .object({
+      id: z.string().optional(),
+      name: z.string().optional(),
+    })
+    .optional(),
+  /** Genesys conversation ID */
+  genesysConversationId: z.string().optional(),
 });
 
 export type TBotConnectorRequest = z.infer<typeof ZBotConnectorRequest>;
