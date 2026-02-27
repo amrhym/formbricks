@@ -75,6 +75,35 @@ export const POST = withV1ApiWrapper({
       };
     }
 
+    // TEMPORARY DEBUG: Return the simplest possible response to test Genesys compatibility
+    const debugMode = true;
+    if (debugMode) {
+      return {
+        response: Response.json(
+          {
+            botState: "debug",
+            replyMessages: [
+              {
+                type: "Structured",
+                content: [
+                  {
+                    contentType: "Text",
+                    text: "Hello! This is a test response from HiveCFM bot.",
+                  },
+                ],
+              },
+            ],
+            intent: {
+              name: "survey_complete",
+              confidence: 1.0,
+              slots: {},
+            },
+          },
+          { status: 200 }
+        ),
+      };
+    }
+
     const parseResult = ZBotConnectorRequest.safeParse(jsonInput);
     if (!parseResult.success) {
       logger.warn({ errors: parseResult.error.issues }, "Invalid bot connector request");
