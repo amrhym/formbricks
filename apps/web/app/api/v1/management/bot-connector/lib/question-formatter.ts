@@ -115,7 +115,10 @@ export function formatQuestionAsReply(question: any, language: string = "default
   }
 
   // Include top-level "text" as fallback for clients that don't support Structured content
-  return { type: "Structured", text: headline, content };
+  // Use runtime assignment to prevent the Next.js minifier from stripping the text property
+  const reply: TBotReplyMessage = { type: "Structured", content };
+  reply.text = headline;
+  return reply;
 }
 
 /**

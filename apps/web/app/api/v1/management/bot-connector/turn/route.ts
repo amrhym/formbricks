@@ -80,8 +80,11 @@ function isOptOut(utterance: string): boolean {
 
 // ─── Response builders ──────────────────────────────────────────────────────
 
-function textReply(text: string): TBotReplyMessage {
-  return { type: "Structured", text, content: [{ contentType: "Text", text }] };
+function textReply(msg: string): TBotReplyMessage {
+  const reply: TBotReplyMessage = { type: "Structured", content: [{ contentType: "Text" }] };
+  reply.text = msg;
+  reply.content[0].text = msg;
+  return reply;
 }
 
 function botResponse(
