@@ -11,7 +11,6 @@ import { hasPermission } from "@/modules/organization/settings/api-keys/lib/util
 import { formatQuestionAsReply, isSupportedInChat, parseAnswer } from "../lib/question-formatter";
 import {
   BOT_INTENTS,
-  type TBotConnectorResponse,
   type TBotReplyMessage,
   type TBotSessionState,
   type TBotState,
