@@ -114,7 +114,8 @@ export function formatQuestionAsReply(question: any, language: string = "default
       break;
   }
 
-  return { type: "Structured", content };
+  // Include top-level "text" as fallback for clients that don't support Structured content
+  return { type: "Structured", text: headline, content };
 }
 
 /**

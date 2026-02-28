@@ -83,6 +83,8 @@ export interface TBotReplyContent {
 
 export interface TBotReplyMessage {
   type: "Structured";
+  /** Fallback text for clients that don't support Structured content */
+  text?: string;
   content: TBotReplyContent[];
 }
 
