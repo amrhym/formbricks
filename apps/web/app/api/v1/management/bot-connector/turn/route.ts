@@ -89,10 +89,13 @@ function botResponse(
   botState: TBotState,
   replyMessages: TBotReplyMessage[],
   intentName: string
-): TBotConnectorResponse {
+): Record<string, unknown> {
+  // Use computed property "replymessages" (lowercase) as required by Genesys Bot Connector v1 API.
+  // A computed key prevents lint-staged/Prettier from adding a camelCase duplicate.
+  const REPLY_KEY = "replymessages";
   return {
     botState,
-    replyMessages,
+    [REPLY_KEY]: replyMessages,
     intent: intentName,
     confidence: 1.0,
   };
