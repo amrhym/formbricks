@@ -34,7 +34,7 @@ export function formatQuestionAsReply(question: any, language: string = "default
       for (let i = 1; i <= range; i++) {
         content.push({
           contentType: "QuickReply",
-          quickReply: { text: String(i), payload: String(i), action: "Message" },
+          quickReply: { text: String(i), payload: String(i) },
         });
       }
       break;
@@ -45,7 +45,7 @@ export function formatQuestionAsReply(question: any, language: string = "default
       for (const val of [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10]) {
         content.push({
           contentType: "QuickReply",
-          quickReply: { text: String(val), payload: String(val), action: "Message" },
+          quickReply: { text: String(val), payload: String(val) },
         });
       }
       break;
@@ -58,7 +58,7 @@ export function formatQuestionAsReply(question: any, language: string = "default
         const label = getText(choice.label, language);
         content.push({
           contentType: "QuickReply",
-          quickReply: { text: label, payload: choice.id, action: "Message" },
+          quickReply: { text: label, payload: choice.id },
         });
       }
       break;
@@ -68,13 +68,13 @@ export function formatQuestionAsReply(question: any, language: string = "default
       const buttonLabel = getText(question.buttonLabel, language) || "Continue";
       content.push({
         contentType: "QuickReply",
-        quickReply: { text: buttonLabel, payload: "clicked", action: "Message" },
+        quickReply: { text: buttonLabel, payload: "clicked" },
       });
       if (question.dismissButtonLabel) {
         const dismissLabel = getText(question.dismissButtonLabel, language);
         content.push({
           contentType: "QuickReply",
-          quickReply: { text: dismissLabel, payload: "dismissed", action: "Message" },
+          quickReply: { text: dismissLabel, payload: "dismissed" },
         });
       }
       break;
@@ -83,11 +83,11 @@ export function formatQuestionAsReply(question: any, language: string = "default
     case TSurveyQuestionTypeEnum.Consent: {
       content.push({
         contentType: "QuickReply",
-        quickReply: { text: "Yes", payload: "accepted", action: "Message" },
+        quickReply: { text: "Yes", payload: "accepted" },
       });
       content.push({
         contentType: "QuickReply",
-        quickReply: { text: "No", payload: "dismissed", action: "Message" },
+        quickReply: { text: "No", payload: "dismissed" },
       });
       break;
     }

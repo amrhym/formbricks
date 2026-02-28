@@ -14,8 +14,51 @@ import {
   type TBotConnectorResponse,
   type TBotReplyMessage,
   type TBotSessionState,
+  type TBotState,
   ZBotConnectorRequest,
 } from "../lib/types";
+
+// ─── In-memory session store (keyed by botSessionId) ────────────────────────
+// Genesys Bot Connector v1 uses botState for status ("MoreData"/"Complete"/"Failed"),
+// NOT for storing session data. Session state must be managed server-side.
+
+const SESSION_TTL_MS = 60 * 60 * 1000; // 1 hour
+
+interface SessionEntry {
+  state: TBotSessionState;
+  expiresAt: number;
+}
+
+const sessionStore = new Map<string, SessionEntry>();
+
+function getSession(botSessionId: string): TBotSessionState | null {
+  const entry = sessionStore.get(botSessionId);
+  if (!entry) return null;
+  if (Date.now() > entry.expiresAt) {
+    sessionStore.delete(botSessionId);
+    return null;
+  }
+  return entry.state;
+}
+
+function setSession(botSessionId: string, state: TBotSessionState): void {
+  sessionStore.set(botSessionId, { state, expiresAt: Date.now() + SESSION_TTL_MS });
+}
+
+function deleteSession(botSessionId: string): void {
+  sessionStore.delete(botSessionId);
+}
+
+// Periodic cleanup of expired sessions (every 10 minutes)
+setInterval(
+  () => {
+    const now = Date.now();
+    for (const [key, entry] of sessionStore) {
+      if (now > entry.expiresAt) sessionStore.delete(key);
+    }
+  },
+  10 * 60 * 1000
+);
 
 // ─── Helper: extract elements from blocks (questions migrated to blocks) ────
 
@@ -43,14 +86,15 @@ function textReply(text: string): TBotReplyMessage {
 }
 
 function botResponse(
-  state: TBotSessionState | null,
+  botState: TBotState,
   replyMessages: TBotReplyMessage[],
   intentName: string
 ): TBotConnectorResponse {
   return {
-    botState: state ? JSON.stringify(state) : "",
-    replyMessages,
-    intent: { name: intentName, confidence: 1.0, slots: {} },
+    botState,
+    replymessages: replyMessages,
+    intent: intentName,
+    confidence: 1.0,
   };
 }
 
@@ -69,37 +113,11 @@ export const POST = withV1ApiWrapper({
       jsonInput = await req.json();
     } catch {
       return {
-        response: Response.json(botResponse(null, [textReply("Invalid request")], BOT_INTENTS.SURVEY_ERROR), {
-          status: 400,
-        }),
-      };
-    }
-
-    // TEMPORARY DEBUG: Return the simplest possible response to test Genesys compatibility
-    const debugMode = true;
-    if (debugMode) {
-      return {
         response: Response.json(
+          botResponse("Failed", [textReply("Invalid request")], BOT_INTENTS.SURVEY_ERROR),
           {
-            botState: "debug",
-            replyMessages: [
-              {
-                type: "Structured",
-                content: [
-                  {
-                    contentType: "Text",
-                    text: "Hello! This is a test response from HiveCFM bot.",
-                  },
-                ],
-              },
-            ],
-            intent: {
-              name: "survey_complete",
-              confidence: 1.0,
-              slots: {},
-            },
-          },
-          { status: 200 }
+            status: 400,
+          }
         ),
       };
     }
@@ -109,7 +127,7 @@ export const POST = withV1ApiWrapper({
       logger.warn({ errors: parseResult.error.issues }, "Invalid bot connector request");
       return {
         response: Response.json(
-          botResponse(null, [textReply("Invalid request format")], BOT_INTENTS.SURVEY_ERROR),
+          botResponse("Failed", [textReply("Invalid request format")], BOT_INTENTS.SURVEY_ERROR),
           { status: 400 }
         ),
       };
@@ -117,20 +135,24 @@ export const POST = withV1ApiWrapper({
 
     const body = parseResult.data;
     const utterance = body.inputMessage?.text ?? "";
-    const isFirstTurn = !body.botState || body.botState === "" || body.botState === "{}";
+    const botSessionId = body.botSessionId;
+
+    // Check if we have an existing session for this botSessionId
+    const existingSession = getSession(botSessionId);
+    const isFirstTurn = !existingSession;
 
     try {
       if (isFirstTurn) {
-        return await handleFirstTurn(body, utterance, authentication);
+        return await handleFirstTurn(body, utterance, authentication, botSessionId);
       } else {
-        return await handleSubsequentTurn(body, utterance, authentication);
+        return await handleSubsequentTurn(body, utterance, authentication, botSessionId, existingSession);
       }
     } catch (error) {
       logger.error({ error: (error as Error).message }, "Bot connector handler error");
       return {
         response: Response.json(
           botResponse(
-            null,
+            "Failed",
             [textReply("An error occurred. Please try again later.")],
             BOT_INTENTS.SURVEY_ERROR
           ),
@@ -148,7 +170,8 @@ export const POST = withV1ApiWrapper({
 async function handleFirstTurn(
   body: ReturnType<typeof ZBotConnectorRequest.parse>,
   _utterance: string,
-  authentication: NonNullable<TApiKeyAuthentication>
+  authentication: NonNullable<TApiKeyAuthentication>,
+  botSessionId: string
 ) {
   const surveyId = body.parameters?.surveyId;
   const environmentId = body.parameters?.environmentId;
@@ -157,7 +180,7 @@ async function handleFirstTurn(
     return {
       response: Response.json(
         botResponse(
-          null,
+          "Failed",
           [textReply("Survey ID not provided. Pass surveyId in inputParameters.")],
           BOT_INTENTS.SURVEY_ERROR
         ),
@@ -170,7 +193,7 @@ async function handleFirstTurn(
     return {
       response: Response.json(
         botResponse(
-          null,
+          "Failed",
           [textReply("Environment ID not provided. Pass environmentId in inputParameters.")],
           BOT_INTENTS.SURVEY_ERROR
         ),
@@ -188,9 +211,10 @@ async function handleFirstTurn(
   const survey = await getSurvey(surveyId);
   if (!survey) {
     return {
-      response: Response.json(botResponse(null, [textReply("Survey not found")], BOT_INTENTS.SURVEY_ERROR), {
-        status: 404,
-      }),
+      response: Response.json(
+        botResponse("Failed", [textReply("Survey not found")], BOT_INTENTS.SURVEY_ERROR),
+        { status: 404 }
+      ),
     };
   }
 
@@ -198,7 +222,7 @@ async function handleFirstTurn(
     return {
       response: Response.json(
         botResponse(
-          null,
+          "Failed",
           [textReply("Survey does not belong to this environment")],
           BOT_INTENTS.SURVEY_ERROR
         ),
@@ -215,7 +239,7 @@ async function handleFirstTurn(
     return {
       response: Response.json(
         botResponse(
-          null,
+          "Failed",
           [textReply("This survey has no chat-compatible questions")],
           BOT_INTENTS.SURVEY_ERROR
         ),
@@ -244,7 +268,7 @@ async function handleFirstTurn(
     response: hivecfmResponse,
   });
 
-  // Build session state
+  // Build session state and store server-side
   const sessionState: TBotSessionState = {
     responseId: hivecfmResponse.id,
     surveyId,
@@ -255,12 +279,14 @@ async function handleFirstTurn(
     genesysConversationId: body.genesysConversationId || body.parameters?.conversationId,
   };
 
+  setSession(botSessionId, sessionState);
+
   // Return first question
   const firstQuestion = chatQuestions[0];
   const replyMsg = formatQuestionAsReply(firstQuestion, language);
 
   return {
-    response: Response.json(botResponse(sessionState, [replyMsg], BOT_INTENTS.SURVEY_IN_PROGRESS), {
+    response: Response.json(botResponse("MoreData", [replyMsg], BOT_INTENTS.SURVEY_IN_PROGRESS), {
       status: 200,
     }),
   };
@@ -271,21 +297,10 @@ async function handleFirstTurn(
 async function handleSubsequentTurn(
   body: ReturnType<typeof ZBotConnectorRequest.parse>,
   utterance: string,
-  authentication: NonNullable<TApiKeyAuthentication>
+  authentication: NonNullable<TApiKeyAuthentication>,
+  botSessionId: string,
+  sessionState: TBotSessionState
 ) {
-  // Deserialize session state
-  let sessionState: TBotSessionState;
-  try {
-    sessionState = JSON.parse(body.botState);
-  } catch {
-    return {
-      response: Response.json(
-        botResponse(null, [textReply("Invalid session state")], BOT_INTENTS.SURVEY_ERROR),
-        { status: 400 }
-      ),
-    };
-  }
-
   const { surveyId, environmentId, responseId, questionIds } = sessionState;
 
   // Verify permissions
@@ -295,11 +310,12 @@ async function handleSubsequentTurn(
 
   // Check for opt-out
   if (isOptOut(utterance)) {
-    logger.info({ responseId, utterance }, "Customer opted out via bot connector");
+    logger.warn({ responseId, utterance }, "Customer opted out via bot connector");
+    deleteSession(botSessionId);
     return {
       response: Response.json(
         botResponse(
-          sessionState,
+          "Complete",
           [textReply("No problem! You've been opted out. You won't receive further survey messages.")],
           BOT_INTENTS.SURVEY_OPTED_OUT
         ),
@@ -311,9 +327,10 @@ async function handleSubsequentTurn(
   // Fetch survey for question metadata
   const survey = await getSurvey(surveyId);
   if (!survey) {
+    deleteSession(botSessionId);
     return {
       response: Response.json(
-        botResponse(null, [textReply("Survey no longer available")], BOT_INTENTS.SURVEY_ERROR),
+        botResponse("Failed", [textReply("Survey no longer available")], BOT_INTENTS.SURVEY_ERROR),
         { status: 404 }
       ),
     };
@@ -327,8 +344,7 @@ async function handleSubsequentTurn(
   const currentQuestion = allQuestions.find((q) => q.id === currentQuestionId);
 
   if (!currentQuestion) {
-    // No more questions - this shouldn't happen but handle gracefully
-    return await completeSurvey(sessionState, survey, authentication);
+    return await completeSurvey(sessionState, survey, botSessionId);
   }
 
   // Parse the answer
@@ -340,9 +356,11 @@ async function handleSubsequentTurn(
 
   // Check if there are more questions
   if (sessionState.currentQuestionIndex >= questionIds.length) {
-    // All questions answered - complete the survey
-    return await completeSurvey(sessionState, survey, authentication);
+    return await completeSurvey(sessionState, survey, botSessionId);
   }
+
+  // Update session state in store
+  setSession(botSessionId, sessionState);
 
   // Update HiveCFM response with answer so far (partial save)
   try {
@@ -359,13 +377,13 @@ async function handleSubsequentTurn(
   const nextQuestion = allQuestions.find((q) => q.id === nextQuestionId);
 
   if (!nextQuestion) {
-    return await completeSurvey(sessionState, survey, authentication);
+    return await completeSurvey(sessionState, survey, botSessionId);
   }
 
   const replyMsg = formatQuestionAsReply(nextQuestion, language);
 
   return {
-    response: Response.json(botResponse(sessionState, [replyMsg], BOT_INTENTS.SURVEY_IN_PROGRESS), {
+    response: Response.json(botResponse("MoreData", [replyMsg], BOT_INTENTS.SURVEY_IN_PROGRESS), {
       status: 200,
     }),
   };
@@ -373,12 +391,11 @@ async function handleSubsequentTurn(
 
 // ─── Complete Survey ────────────────────────────────────────────────────────
 
-async function completeSurvey(
-  sessionState: TBotSessionState,
-  survey: any,
-  _authentication: NonNullable<TApiKeyAuthentication>
-) {
+async function completeSurvey(sessionState: TBotSessionState, survey: any, botSessionId: string) {
   const { responseId, environmentId, surveyId, answers } = sessionState;
+
+  // Clean up session
+  deleteSession(botSessionId);
 
   // Final update: mark response as finished with all answers
   try {
@@ -416,7 +433,7 @@ async function completeSurvey(
 
   return {
     response: Response.json(
-      botResponse(sessionState, [textReply(thankYouMessage)], BOT_INTENTS.SURVEY_COMPLETE),
+      botResponse("Complete", [textReply(thankYouMessage)], BOT_INTENTS.SURVEY_COMPLETE),
       { status: 200 }
     ),
   };

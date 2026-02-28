@@ -61,6 +61,16 @@ export const ZBotConnectorRequest = z.object({
 export type TBotConnectorRequest = z.infer<typeof ZBotConnectorRequest>;
 
 // ─── Response Types (to Genesys) ────────────────────────────────────────────
+//
+// The Genesys Bot Connector v1 postUtterance response format uses:
+// - botState: "MoreData" | "Complete" | "Failed" (NOT serialized session state)
+// - intent: plain string (NOT an object)
+// - confidence: top-level number
+// - replymessages: array of message objects (lowercase 'm')
+// - slotValues: top-level object for extracted slot values
+//
+// Session state must be managed server-side (keyed by botSessionId).
+// @see https://github.com/GenesysCloudBlueprints/bot-connector-for-ms-power-virtual-agent
 
 export interface TBotReplyContent {
   contentType: "Text" | "QuickReply";
@@ -68,7 +78,6 @@ export interface TBotReplyContent {
   quickReply?: {
     text: string;
     payload: string;
-    action: "Message";
   };
 }
 
@@ -77,16 +86,14 @@ export interface TBotReplyMessage {
   content: TBotReplyContent[];
 }
 
-export interface TBotIntent {
-  name: string;
-  confidence: number;
-  slots: Record<string, unknown>;
-}
+export type TBotState = "MoreData" | "Complete" | "Failed";
 
 export interface TBotConnectorResponse {
-  botState: string;
-  replyMessages: TBotReplyMessage[];
-  intent: TBotIntent;
+  botState: TBotState;
+  replymessages: TBotReplyMessage[];
+  intent: string;
+  confidence: number;
+  slotValues?: Record<string, unknown>;
 }
 
 // ─── Bot State (serialized between turns) ───────────────────────────────────
