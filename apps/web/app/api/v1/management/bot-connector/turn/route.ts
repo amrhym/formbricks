@@ -87,24 +87,19 @@ function isOptOut(utterance: string): boolean {
 
 // ─── Response builders ──────────────────────────────────────────────────────
 
-function textReply(msg: string): TBotReplyMessage {
-  const reply: TBotReplyMessage = { type: "Structured", content: [{ contentType: "Text" }] };
-  reply.text = msg;
-  reply.content[0].text = msg;
-  return reply;
+function textReply(msg: string): Record<string, unknown> {
+  // Genesys Bot Connector v1 uses lowercase "text" type for plain text messages
+  return { type: "text", text: msg };
 }
 
-function botResponse(
-  botState: TBotState,
-  msgs: TBotReplyMessage[],
-  intentName: string
-): Record<string, unknown> {
+function botResponse(botState: TBotState, msgs: unknown[], intentName: string): Record<string, unknown> {
   const resp: Record<string, unknown> = {
     botState,
     intent: intentName,
     confidence: 1.0,
   };
-  resp["replyMessages"] = msgs;
+  // Genesys Bot Connector v1 uses lowercase "replymessages" (not camelCase)
+  resp["replymessages"] = msgs;
   return resp;
 }
 
