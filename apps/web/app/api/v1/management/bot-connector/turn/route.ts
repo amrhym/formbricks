@@ -86,17 +86,16 @@ function textReply(text: string): TBotReplyMessage {
 
 function botResponse(
   botState: TBotState,
-  replyMessages: TBotReplyMessage[],
+  msgs: TBotReplyMessage[],
   intentName: string
 ): Record<string, unknown> {
-  // Use computed property key to prevent lint-staged from adding a shorthand duplicate.
-  const REPLY_KEY = "replyMessages";
-  return {
+  const resp: Record<string, unknown> = {
     botState,
-    [REPLY_KEY]: replyMessages,
     intent: intentName,
     confidence: 1.0,
   };
+  resp["replyMessages"] = msgs;
+  return resp;
 }
 
 // ─── POST /api/v1/management/bot-connector/turn ─────────────────────────────
