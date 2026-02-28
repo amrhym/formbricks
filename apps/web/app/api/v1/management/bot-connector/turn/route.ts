@@ -59,6 +59,13 @@ setInterval(
   10 * 60 * 1000
 );
 
+// ─── Helper: strip HTML tags for plain text chat ────────────────────────────
+
+function stripHtmlTags(html: string): string {
+  const result = html.replace(/<[^>]*>/g, "");
+  return result.trim();
+}
+
 // ─── Helper: extract elements from blocks (questions migrated to blocks) ────
 
 function getElementsFromSurvey(survey: any): any[] {
@@ -430,7 +437,7 @@ async function completeSurvey(sessionState: TBotSessionState, survey: any, botSe
     const ending = survey.endings[0];
     if (ending.headline) {
       const raw = typeof ending.headline === "string" ? ending.headline : ending.headline["default"];
-      if (raw) thankYouMessage = raw.replace(/<[^>]*>/g, "").trim();
+      if (raw) thankYouMessage = stripHtmlTags(raw);
     }
   }
 
