@@ -9,13 +9,7 @@ import { sendToPipeline } from "@/app/lib/pipelines";
 import { getSurvey } from "@/lib/survey/service";
 import { hasPermission } from "@/modules/organization/settings/api-keys/lib/utils";
 import { formatQuestionAsReply, isSupportedInChat, parseAnswer } from "../lib/question-formatter";
-import {
-  BOT_INTENTS,
-  type TBotReplyMessage,
-  type TBotSessionState,
-  type TBotState,
-  ZBotConnectorRequest,
-} from "../lib/types";
+import { BOT_INTENTS, type TBotSessionState, type TBotState, ZBotConnectorRequest } from "../lib/types";
 
 // ─── In-memory session store (keyed by botSessionId) ────────────────────────
 // Genesys Bot Connector v1 uses botState for status ("MoreData"/"Complete"/"Failed"),
