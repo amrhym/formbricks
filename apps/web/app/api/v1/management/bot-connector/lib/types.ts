@@ -90,6 +90,7 @@ export type TBotState = "MoreData" | "Complete" | "Failed";
 
 export interface TBotConnectorResponse {
   botState: TBotState;
+  replymessages: TBotReplyMessage[];
   replyMessages: TBotReplyMessage[];
   intent: string;
   confidence: number;

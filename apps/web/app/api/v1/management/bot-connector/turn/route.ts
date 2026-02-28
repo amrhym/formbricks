@@ -92,6 +92,7 @@ function botResponse(
 ): TBotConnectorResponse {
   return {
     botState,
+    replymessages: replyMessages,
     replyMessages: replyMessages,
     intent: intentName,
     confidence: 1.0,
