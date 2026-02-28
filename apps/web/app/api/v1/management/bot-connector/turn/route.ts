@@ -424,13 +424,13 @@ async function completeSurvey(sessionState: TBotSessionState, survey: any, botSe
     logger.error({ error: (error as Error).message, responseId }, "Failed to finalize response in HiveCFM");
   }
 
-  // Get thank you message from survey endings
+  // Get thank you message from survey endings (strip HTML tags for plain text chat)
   let thankYouMessage = "Thank you for your feedback! Your responses have been recorded.";
   if (survey.endings && survey.endings.length > 0) {
     const ending = survey.endings[0];
     if (ending.headline) {
-      const text = typeof ending.headline === "string" ? ending.headline : ending.headline["default"];
-      if (text) thankYouMessage = text;
+      const raw = typeof ending.headline === "string" ? ending.headline : ending.headline["default"];
+      if (raw) thankYouMessage = raw.replace(/<[^>]*>/g, "").trim();
     }
   }
 
