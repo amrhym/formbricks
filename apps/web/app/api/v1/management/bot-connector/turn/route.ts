@@ -294,7 +294,8 @@ async function handleFirstTurn(
   // Return first question
   const firstQuestion = chatQuestions[0];
   const replyMsg = formatQuestionAsReply(firstQuestion, language);
-  const responseBody = botResponse("MoreData", [replyMsg], BOT_INTENTS.SURVEY_IN_PROGRESS);
+  // Use q0 suffix to start the varying intent pattern
+  const responseBody = botResponse("MoreData", [replyMsg], `${BOT_INTENTS.SURVEY_IN_PROGRESS}_q0`);
 
   logger.warn(
     { botSessionId, totalQuestions: chatQuestions.length, responseBody: JSON.stringify(responseBody) },
@@ -410,7 +411,9 @@ async function handleSubsequentTurn(
   );
 
   const replyMsg = formatQuestionAsReply(nextQuestion, language);
-  const responseBody = botResponse("MoreData", [replyMsg], BOT_INTENTS.SURVEY_IN_PROGRESS);
+  // Vary the intent on each turn to avoid Genesys "unchanged intent" safety limit (4 consecutive same intents → Failure)
+  const turnIntent = `${BOT_INTENTS.SURVEY_IN_PROGRESS}_q${sessionState.currentQuestionIndex}`;
+  const responseBody = botResponse("MoreData", [replyMsg], turnIntent);
 
   logger.warn({ botSessionId, responseBody: JSON.stringify(responseBody) }, "Bot connector response body");
 
