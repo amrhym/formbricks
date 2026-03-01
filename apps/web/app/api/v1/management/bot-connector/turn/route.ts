@@ -71,6 +71,34 @@ function getElementsFromSurvey(survey: any): any[] {
   return survey.questions || [];
 }
 
+// ─── Helper: extract utterance from Genesys inputMessage ─────────────────────
+// Plain text: inputMessage.text
+// Button click: inputMessage.content[].buttonResponse.payload (or .text as fallback)
+
+function extractUtterance(
+  inputMessage:
+    | {
+        type?: string;
+        text?: string;
+        content?: Array<{
+          contentType?: string;
+          buttonResponse?: { type?: string; text?: string; payload?: string };
+        }>;
+      }
+    | undefined
+): string {
+  if (!inputMessage) return "";
+  // For Structured messages (QuickReply button clicks), extract from buttonResponse
+  if (inputMessage.type === "Structured" && inputMessage.content && inputMessage.content.length > 0) {
+    const btn = inputMessage.content[0].buttonResponse;
+    if (btn) {
+      return btn.payload || btn.text || "";
+    }
+  }
+  // For plain text messages
+  return inputMessage.text || "";
+}
+
 // ─── Opt-out keywords ───────────────────────────────────────────────────────
 
 const OPT_OUT_KEYWORDS = new Set(["stop", "quit", "cancel", "unsubscribe", "opt out", "optout", "no thanks"]);
@@ -133,7 +161,8 @@ export const POST = withV1ApiWrapper({
     }
 
     const body = parseResult.data;
-    const utterance = body.inputMessage?.text ?? "";
+    // Extract utterance: plain text from inputMessage.text, or button click from inputMessage.content[].buttonResponse
+    const utterance = extractUtterance(body.inputMessage);
     const botSessionId = body.botSessionId;
 
     // Check if we have an existing session for this botSessionId

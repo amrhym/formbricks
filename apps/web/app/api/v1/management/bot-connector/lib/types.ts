@@ -32,11 +32,25 @@ export const ZBotConnectorRequest = z.object({
   botId: z.string().optional(),
   /** Bot version */
   botVersion: z.string().optional(),
-  /** Customer's message — Genesys wraps it in inputMessage.text */
+  /** Customer's message — plain text in inputMessage.text, button clicks in inputMessage.content[] */
   inputMessage: z
     .object({
       type: z.string().optional(),
-      text: z.string().default(""),
+      text: z.string().optional(),
+      content: z
+        .array(
+          z.object({
+            contentType: z.string().optional(),
+            buttonResponse: z
+              .object({
+                type: z.string().optional(),
+                text: z.string().optional(),
+                payload: z.string().optional(),
+              })
+              .optional(),
+          })
+        )
+        .optional(),
     })
     .optional(),
   /** Serialized state from previous turn (absent or empty on first turn) */
