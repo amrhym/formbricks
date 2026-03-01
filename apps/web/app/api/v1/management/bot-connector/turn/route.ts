@@ -147,6 +147,7 @@ export const POST = withV1ApiWrapper({
         utterance,
         questionIndex: existingSession?.currentQuestionIndex ?? 0,
         sessionExists: !!existingSession,
+        rawBody: JSON.stringify(jsonInput),
       },
       "Bot connector turn received"
     );
