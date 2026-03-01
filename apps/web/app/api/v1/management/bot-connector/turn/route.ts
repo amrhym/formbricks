@@ -294,11 +294,15 @@ async function handleFirstTurn(
   // Return first question
   const firstQuestion = chatQuestions[0];
   const replyMsg = formatQuestionAsReply(firstQuestion, language);
+  const responseBody = botResponse("MoreData", [replyMsg], BOT_INTENTS.SURVEY_IN_PROGRESS);
+
+  logger.warn(
+    { botSessionId, totalQuestions: chatQuestions.length, responseBody: JSON.stringify(responseBody) },
+    "Bot connector first turn response"
+  );
 
   return {
-    response: Response.json(botResponse("MoreData", [replyMsg], BOT_INTENTS.SURVEY_IN_PROGRESS), {
-      status: 200,
-    }),
+    response: Response.json(responseBody, { status: 200 }),
   };
 }
 
@@ -406,11 +410,12 @@ async function handleSubsequentTurn(
   );
 
   const replyMsg = formatQuestionAsReply(nextQuestion, language);
+  const responseBody = botResponse("MoreData", [replyMsg], BOT_INTENTS.SURVEY_IN_PROGRESS);
+
+  logger.warn({ botSessionId, responseBody: JSON.stringify(responseBody) }, "Bot connector response body");
 
   return {
-    response: Response.json(botResponse("MoreData", [replyMsg], BOT_INTENTS.SURVEY_IN_PROGRESS), {
-      status: 200,
-    }),
+    response: Response.json(responseBody, { status: 200 }),
   };
 }
 
