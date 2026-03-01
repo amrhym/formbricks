@@ -140,6 +140,17 @@ export const POST = withV1ApiWrapper({
     const existingSession = getSession(botSessionId);
     const isFirstTurn = !existingSession;
 
+    logger.info(
+      {
+        botSessionId,
+        isFirstTurn,
+        utterance,
+        questionIndex: existingSession?.currentQuestionIndex ?? 0,
+        sessionExists: !!existingSession,
+      },
+      "Bot connector turn received"
+    );
+
     try {
       if (isFirstTurn) {
         return await handleFirstTurn(body, utterance, authentication, botSessionId);
@@ -147,7 +158,7 @@ export const POST = withV1ApiWrapper({
         return await handleSubsequentTurn(body, utterance, authentication, botSessionId, existingSession);
       }
     } catch (error) {
-      logger.error({ error: (error as Error).message }, "Bot connector handler error");
+      logger.error({ error: (error as Error).message, botSessionId }, "Bot connector handler error");
       return {
         response: Response.json(
           botResponse(
@@ -376,8 +387,23 @@ async function handleSubsequentTurn(
   const nextQuestion = allQuestions.find((q) => q.id === nextQuestionId);
 
   if (!nextQuestion) {
+    logger.info(
+      { botSessionId, questionIndex: sessionState.currentQuestionIndex },
+      "No more questions, completing survey"
+    );
     return await completeSurvey(sessionState, survey, botSessionId);
   }
+
+  logger.info(
+    {
+      botSessionId,
+      questionIndex: sessionState.currentQuestionIndex,
+      questionId: nextQuestionId,
+      questionType: nextQuestion.type,
+      totalQuestions: questionIds.length,
+    },
+    "Serving next question"
+  );
 
   const replyMsg = formatQuestionAsReply(nextQuestion, language);
 
