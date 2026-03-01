@@ -140,7 +140,7 @@ export const POST = withV1ApiWrapper({
     const existingSession = getSession(botSessionId);
     const isFirstTurn = !existingSession;
 
-    logger.info(
+    logger.warn(
       {
         botSessionId,
         isFirstTurn,
@@ -387,14 +387,14 @@ async function handleSubsequentTurn(
   const nextQuestion = allQuestions.find((q) => q.id === nextQuestionId);
 
   if (!nextQuestion) {
-    logger.info(
+    logger.warn(
       { botSessionId, questionIndex: sessionState.currentQuestionIndex },
       "No more questions, completing survey"
     );
     return await completeSurvey(sessionState, survey, botSessionId);
   }
 
-  logger.info(
+  logger.warn(
     {
       botSessionId,
       questionIndex: sessionState.currentQuestionIndex,
