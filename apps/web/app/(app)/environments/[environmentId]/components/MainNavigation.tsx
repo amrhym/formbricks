@@ -10,6 +10,7 @@ import {
   PanelLeftCloseIcon,
   PanelLeftOpenIcon,
   PhoneIcon,
+  SendIcon,
   UserCircleIcon,
   UserIcon,
 } from "lucide-react";
@@ -115,6 +116,12 @@ export const MainNavigation = ({
         href: `/environments/${environment.id}/channels`,
         icon: PhoneIcon,
         isActive: pathname?.includes("/channels"),
+      },
+      {
+        name: t("common.campaigns") || "Campaigns",
+        href: `/environments/${environment.id}/campaigns`,
+        icon: SendIcon,
+        isActive: pathname?.includes("/campaigns"),
       },
       {
         name: t("common.api_docs") || "API Docs",

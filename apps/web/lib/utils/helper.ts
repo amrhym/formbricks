@@ -2,6 +2,7 @@ import { ResourceNotFoundError } from "@hivecfm/types/errors";
 import {
   getActionClass,
   getApiKey,
+  getCampaign,
   getChannel,
   getContact,
   getEnvironment,
@@ -142,6 +143,33 @@ export const getOrganizationIdFromChannelId = async (channelId: string) => {
   }
 
   return await getOrganizationIdFromEnvironmentId(channel.environmentId);
+};
+
+export const getOrganizationIdFromCampaignId = async (campaignId: string) => {
+  const campaign = await getCampaign(campaignId);
+  if (!campaign) {
+    throw new ResourceNotFoundError("campaign", campaignId);
+  }
+
+  return await getOrganizationIdFromEnvironmentId(campaign.environmentId);
+};
+
+export const getProjectIdFromCampaignId = async (campaignId: string) => {
+  const campaign = await getCampaign(campaignId);
+  if (!campaign) {
+    throw new ResourceNotFoundError("campaign", campaignId);
+  }
+
+  return await getProjectIdFromEnvironmentId(campaign.environmentId);
+};
+
+export const getEnvironmentIdFromCampaignId = async (campaignId: string) => {
+  const campaign = await getCampaign(campaignId);
+  if (!campaign) {
+    throw new ResourceNotFoundError("campaign", campaignId);
+  }
+
+  return campaign.environmentId;
 };
 
 export const getOrganizationIdFromWebhookId = async (webhookId: string) => {

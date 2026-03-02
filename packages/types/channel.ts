@@ -14,7 +14,7 @@ export const ZIntegrationMethod = z.enum([
 export type TIntegrationMethod = z.infer<typeof ZIntegrationMethod>;
 
 // Channel Type Enum
-export const ZChannelType = z.enum(["web", "mobile", "link", "voice", "whatsapp", "sms"]);
+export const ZChannelType = z.enum(["web", "mobile", "link", "voice", "whatsapp", "sms", "email"]);
 export type TChannelType = z.infer<typeof ZChannelType>;
 
 // Type-specific configuration schemas
@@ -73,6 +73,13 @@ export const ZSmsChannelConfig = z.object({
   thankYouMessage: z.string().optional(),
 });
 
+export const ZEmailChannelConfig = z.object({
+  type: z.literal("email"),
+  integrationMethod: ZIntegrationMethod.optional(),
+  fromName: z.string().optional(),
+  replyTo: z.string().email().optional(),
+});
+
 // Discriminated union for channel config
 export const ZChannelConfig = z.discriminatedUnion("type", [
   ZWebChannelConfig,
@@ -81,6 +88,7 @@ export const ZChannelConfig = z.discriminatedUnion("type", [
   ZVoiceChannelConfig,
   ZWhatsAppChannelConfig,
   ZSmsChannelConfig,
+  ZEmailChannelConfig,
 ]);
 
 export type TChannelConfig = z.infer<typeof ZChannelConfig>;
@@ -175,6 +183,7 @@ export const RECOMMENDED_INTEGRATIONS: Record<TChannelType, TIntegrationMethod[]
   voice: ["api"],
   whatsapp: ["meta", "api"],
   sms: ["api"],
+  email: ["api"],
 };
 
 /**
@@ -210,6 +219,10 @@ export const getDefaultChannelConfig = (type: TChannelType): TChannelConfig => {
         provider: "twilio",
         maxMessageLength: 160,
       };
+    case "email":
+      return {
+        type: "email",
+      };
   }
 };
 
@@ -225,6 +238,7 @@ export const channelTypeToSurveyType = (channelType: TChannelType): "link" | "ap
     case "voice":
     case "whatsapp":
     case "sms":
+    case "email":
       return "link";
   }
 };

@@ -126,6 +126,7 @@ model Contact {
   responses     Response[]
   attributes    ContactAttribute[]
   displays      Display[]
+  campaignSends CampaignSend[]
 
   @@index([environmentId])
 }
@@ -349,6 +350,21 @@ enum ChannelType {
   voice
   whatsapp
   sms
+  email
+}
+
+enum CampaignStatus {
+  draft
+  sending
+  sent
+  failed
+}
+
+enum CampaignSendStatus {
+  pending
+  sent
+  failed
+  bounced
 }
 
 enum displayOptions {
@@ -453,6 +469,7 @@ model Survey {
 
   customHeadScripts     String?
   customHeadScriptsMode SurveyScriptMode? @default(add)
+  campaigns             Campaign[]
 
   @@index([environmentId, updatedAt])
   @@index([segmentId])
@@ -635,6 +652,7 @@ model Channel {
   /// [ChannelConfig]
   config        Json        @default("{}")
   surveys       Survey[]
+  campaigns     Campaign[]
 
   @@unique([environmentId, name])
   @@index([environmentId])
@@ -659,6 +677,7 @@ model Environment {
   segments          Segment[]
   integration       Integration[]
   ApiKeyEnvironment ApiKeyEnvironment[]
+  campaigns         Campaign[]
 
   @@index([projectId])
 }
@@ -1031,6 +1050,7 @@ model Segment {
   environmentId String
   environment   Environment @relation(fields: [environmentId], references: [id], onDelete: Cascade)
   surveys       Survey[]
+  campaigns     Campaign[]
 
   @@unique([environmentId, title])
   @@index([environmentId])
@@ -1173,4 +1193,45 @@ model SurveyReviewLog {
 
   @@index([surveyId])
   @@index([userId])
+}
+
+model Campaign {
+  id            String         @id @default(cuid())
+  createdAt     DateTime       @default(now()) @map("created_at")
+  updatedAt     DateTime       @updatedAt @map("updated_at")
+  name          String
+  status        CampaignStatus @default(draft)
+  subject       String
+  survey        Survey         @relation(fields: [surveyId], references: [id], onDelete: Cascade)
+  surveyId      String         @map("survey_id")
+  segment       Segment?       @relation(fields: [segmentId], references: [id], onDelete: SetNull)
+  segmentId     String?        @map("segment_id")
+  channel       Channel        @relation(fields: [channelId], references: [id], onDelete: Cascade)
+  channelId     String         @map("channel_id")
+  environment   Environment    @relation(fields: [environmentId], references: [id], onDelete: Cascade)
+  environmentId String         @map("environment_id")
+  sentAt        DateTime?      @map("sent_at")
+  sentCount     Int            @default(0) @map("sent_count")
+  failedCount   Int            @default(0) @map("failed_count")
+  totalCount    Int            @default(0) @map("total_count")
+  sends         CampaignSend[]
+
+  @@index([environmentId])
+  @@index([surveyId])
+}
+
+model CampaignSend {
+  id         String             @id @default(cuid())
+  createdAt  DateTime           @default(now()) @map("created_at")
+  campaign   Campaign           @relation(fields: [campaignId], references: [id], onDelete: Cascade)
+  campaignId String             @map("campaign_id")
+  contact    Contact            @relation(fields: [contactId], references: [id], onDelete: Cascade)
+  contactId  String             @map("contact_id")
+  email      String
+  status     CampaignSendStatus @default(pending)
+  error      String?
+  sentAt     DateTime?          @map("sent_at")
+
+  @@index([campaignId])
+  @@index([contactId])
 }

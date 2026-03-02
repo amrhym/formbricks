@@ -327,6 +327,25 @@ export const getChannel = reactCache(async (channelId: string): Promise<{ enviro
   }
 });
 
+export const getCampaign = reactCache(
+  async (campaignId: string): Promise<{ environmentId: string } | null> => {
+    validateInputs([campaignId, ZId]);
+
+    try {
+      const campaign = await prisma.campaign.findUnique({
+        where: { id: campaignId },
+        select: { environmentId: true },
+      });
+      return campaign;
+    } catch (error) {
+      if (error instanceof Prisma.PrismaClientKnownRequestError) {
+        throw new DatabaseError(error.message);
+      }
+      throw error;
+    }
+  }
+);
+
 export const getSegment = reactCache(async (segmentId: string): Promise<{ environmentId: string } | null> => {
   validateInputs([segmentId, ZId]);
   try {
