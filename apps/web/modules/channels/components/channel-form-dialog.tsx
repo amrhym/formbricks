@@ -1,6 +1,6 @@
 "use client";
 
-import { MessageSquareIcon, MicIcon, PhoneIcon } from "lucide-react";
+import { MailIcon, MessageSquareIcon, MicIcon, PhoneIcon } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import toast from "react-hot-toast";
@@ -63,6 +63,13 @@ const CHANNEL_TYPES: Array<{
     description: "Interactive voice response surveys",
     icon: <MicIcon className="h-6 w-6" />,
     color: "bg-orange-50 text-orange-600 ring-orange-200",
+  },
+  {
+    type: "email",
+    label: "Email",
+    description: "Send surveys via email campaigns",
+    icon: <MailIcon className="h-6 w-6" />,
+    color: "bg-violet-50 text-violet-600 ring-violet-200",
   },
 ];
 
@@ -128,7 +135,8 @@ export const ChannelFormDialog = ({ open, setOpen, environmentId, channel }: Cha
       const typeLabel = CHANNEL_TYPES.find((ct) => ct.type === type)?.label ?? type;
       setChannelName(`${typeLabel} Channel`);
     }
-    setStep("provider");
+    // Email doesn't need a provider selection step
+    setStep(type === "email" ? "config" : "provider");
   };
 
   const handleProviderSelect = (provider: string) => {
@@ -451,6 +459,36 @@ export const ChannelFormDialog = ({ open, setOpen, environmentId, channel }: Cha
                 </div>
               )}
 
+              {/* Email Config */}
+              {config.type === "email" && (
+                <div className="space-y-4">
+                  <h3 className="text-sm font-medium text-slate-700">Email Configuration</h3>
+                  <p className="text-sm text-slate-500">
+                    Email campaigns use the globally configured SMTP settings. You can optionally customize
+                    the sender name and reply-to address.
+                  </p>
+                  <div>
+                    <Label htmlFor="fromName">From Name (optional)</Label>
+                    <Input
+                      id="fromName"
+                      value={config.fromName ?? ""}
+                      onChange={(e) => setConfig({ ...config, fromName: e.target.value })}
+                      placeholder="e.g. HiveCFM Surveys"
+                    />
+                  </div>
+                  <div>
+                    <Label htmlFor="replyTo">Reply-To Email (optional)</Label>
+                    <Input
+                      id="replyTo"
+                      type="email"
+                      value={config.replyTo ?? ""}
+                      onChange={(e) => setConfig({ ...config, replyTo: e.target.value })}
+                      placeholder="e.g. feedback@yourcompany.com"
+                    />
+                  </div>
+                </div>
+              )}
+
               {/* Voice Config */}
               {config.type === "voice" && (
                 <div className="space-y-4">
@@ -582,14 +620,16 @@ export const ChannelFormDialog = ({ open, setOpen, environmentId, channel }: Cha
                       <dd className="text-sm text-slate-900">{description}</dd>
                     </div>
                   )}
-                  <div className="flex justify-between">
-                    <dt className="text-sm font-medium text-slate-500">Provider / Engine</dt>
-                    <dd className="text-sm text-slate-900">
-                      {config.type === "whatsapp" && config.provider}
-                      {config.type === "sms" && config.provider}
-                      {config.type === "voice" && config.ttsEngine}
-                    </dd>
-                  </div>
+                  {config.type !== "email" && (
+                    <div className="flex justify-between">
+                      <dt className="text-sm font-medium text-slate-500">Provider / Engine</dt>
+                      <dd className="text-sm text-slate-900">
+                        {config.type === "whatsapp" && config.provider}
+                        {config.type === "sms" && config.provider}
+                        {config.type === "voice" && config.ttsEngine}
+                      </dd>
+                    </div>
+                  )}
                 </dl>
               </div>
             </div>
@@ -603,7 +643,7 @@ export const ChannelFormDialog = ({ open, setOpen, environmentId, channel }: Cha
               variant="secondary"
               onClick={() => {
                 if (step === "provider") setStep("type");
-                else if (step === "config") setStep("provider");
+                else if (step === "config") setStep(channelType === "email" ? "type" : "provider");
                 else if (step === "review") setStep("config");
               }}>
               Back

@@ -1,6 +1,14 @@
 "use client";
 
-import { MessageSquareIcon, MicIcon, PencilIcon, PhoneIcon, PlusIcon, TrashIcon } from "lucide-react";
+import {
+  MailIcon,
+  MessageSquareIcon,
+  MicIcon,
+  PencilIcon,
+  PhoneIcon,
+  PlusIcon,
+  TrashIcon,
+} from "lucide-react";
 import { useState } from "react";
 import { type TChannel } from "@hivecfm/types/channel";
 import { Badge } from "@/modules/ui/components/badge";
@@ -48,6 +56,12 @@ const CHANNEL_TYPE_META: Record<
     color: "bg-purple-50 text-purple-600",
     badgeType: "success",
   },
+  email: {
+    label: "Email",
+    icon: <MailIcon className="h-5 w-5" />,
+    color: "bg-violet-50 text-violet-600",
+    badgeType: "success",
+  },
 };
 
 function getProviderLabel(channel: TChannel): string {
@@ -69,7 +83,7 @@ export const ChannelList = ({ channels, environmentId, isReadOnly }: ChannelList
   const [deletingChannel, setDeletingChannel] = useState<TChannel | null>(null);
 
   // Filter to show only whatsapp, sms, voice channels in the configurable section
-  const configurableChannels = channels.filter((c) => ["whatsapp", "sms", "voice"].includes(c.type));
+  const configurableChannels = channels.filter((c) => ["whatsapp", "sms", "voice", "email"].includes(c.type));
 
   return (
     <div className="space-y-6">
@@ -79,7 +93,7 @@ export const ChannelList = ({ channels, environmentId, isReadOnly }: ChannelList
           <PhoneIcon className="h-12 w-12 text-slate-300" />
           <h3 className="mt-4 text-lg font-medium text-slate-700">No channels configured</h3>
           <p className="mt-2 text-sm text-slate-500">
-            Create a WhatsApp, SMS, or Voice channel to collect feedback.
+            Create a WhatsApp, SMS, Voice, or Email channel to collect feedback.
           </p>
           {!isReadOnly && (
             <Button className="mt-4" onClick={() => setCreateDialogOpen(true)}>

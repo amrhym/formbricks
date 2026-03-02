@@ -245,6 +245,7 @@ services:
       REDIS_PORT: 6379
     volumes:
       - superset_data:/app/superset_home
+      - ./superset/superset_config.py:/app/pythonpath/superset_config.py:ro
     healthcheck:
       <<: *healthcheck-defaults
       test: ["CMD", "curl", "-f", "http://localhost:8088/health"]
