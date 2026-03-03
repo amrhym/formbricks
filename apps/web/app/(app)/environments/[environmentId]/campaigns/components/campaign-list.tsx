@@ -146,12 +146,14 @@ export const CampaignList = ({
                     </td>
                     <td className="px-4 py-3 text-sm text-slate-600">{formatDate(campaign.createdAt)}</td>
                     <td className="px-4 py-3 text-right">
-                      {!isReadOnly && campaign.status === "draft" && (
+                      {!isReadOnly && (
                         <div className="flex items-center justify-end gap-2">
-                          <Button size="sm" variant="secondary" onClick={() => setSendCampaign(campaign)}>
-                            <SendIcon className="mr-1 h-3 w-3" />
-                            {t("environments.campaigns.send_campaign")}
-                          </Button>
+                          {(campaign.status === "draft" || campaign.status === "scheduled") && (
+                            <Button size="sm" variant="secondary" onClick={() => setSendCampaign(campaign)}>
+                              <SendIcon className="mr-1 h-3 w-3" />
+                              {t("environments.campaigns.send_campaign")}
+                            </Button>
+                          )}
                           <Button
                             size="sm"
                             variant="ghost"

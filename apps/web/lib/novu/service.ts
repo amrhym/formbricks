@@ -158,6 +158,7 @@ export async function createEmailWorkflow(
           {
             template: {
               type: "email",
+              contentType: "customHtml",
               content: htmlContent,
               subject,
             },

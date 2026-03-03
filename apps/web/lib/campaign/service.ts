@@ -118,9 +118,10 @@ export const deleteCampaign = async (campaignId: string): Promise<TCampaignWithR
       throw new ResourceNotFoundError("Campaign", campaignId);
     }
 
-    if (!["draft", "scheduled"].includes(existing.status)) {
-      throw new InvalidInputError("Only draft and scheduled campaigns can be deleted");
-    }
+    // Delete associated CampaignSend records first
+    await prisma.campaignSend.deleteMany({
+      where: { campaignId },
+    });
 
     const campaign = await prisma.campaign.delete({
       where: { id: campaignId },
