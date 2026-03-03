@@ -183,6 +183,8 @@
         "CHATWOOT_WEBSITE_TOKEN",
         "CHATWOOT_BASE_URL",
         "LOG_LEVEL",
+        "NOVU_API_KEY",
+        "NOVU_API_URL",
         "MAIL_FROM",
         "MAIL_FROM_NAME",
         "NEXT_PUBLIC_LAYER_API_KEY",
