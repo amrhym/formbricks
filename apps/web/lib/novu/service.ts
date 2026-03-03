@@ -85,22 +85,6 @@ async function getRequiredNovuConfig(environmentId: string): Promise<NovuConfig>
   return config;
 }
 
-/**
- * Fetch the first notification group ID from Novu.
- * Novu requires a notificationGroupId when creating workflows.
- */
-async function getDefaultNotificationGroupId(config: NovuConfig): Promise<string> {
-  const response = (await novuApiRequest("GET", "/v1/notification-groups", undefined, config)) as {
-    data: Array<{ _id: string; name: string }>;
-  };
-
-  if (!response.data || response.data.length === 0) {
-    throw new Error("No notification groups found in Novu. Please create one first.");
-  }
-
-  return response.data[0]._id;
-}
-
 // ---------------------------------------------------------------------------
 // Public API
 // ---------------------------------------------------------------------------
@@ -134,8 +118,8 @@ export async function listActiveIntegrations(
 }
 
 /**
- * Create an email workflow with HTML content in Novu.
- * Returns the workflow trigger identifier (used to trigger the workflow).
+ * Create an email workflow with HTML content in Novu (v2 API).
+ * Returns the workflowId (used to trigger the workflow).
  */
 export async function createEmailWorkflow(
   environmentId: string,
@@ -146,39 +130,33 @@ export async function createEmailWorkflow(
   const config = await getRequiredNovuConfig(environmentId);
 
   try {
-    const notificationGroupId = await getDefaultNotificationGroupId(config);
-
     const response = (await novuApiRequest(
       "POST",
-      "/v1/workflows",
+      "/v2/workflows",
       {
         name: workflowName,
-        notificationGroupId,
+        workflowId: workflowName,
         steps: [
           {
-            template: {
-              type: "email",
-              contentType: "customHtml",
-              content: htmlContent,
+            name: "send-email",
+            type: "email",
+            controlValues: {
               subject,
+              body: htmlContent,
+              editorType: "html",
+              disableOutputSanitization: true,
             },
-            active: true,
           },
         ],
-        active: true,
       },
       config
-    )) as { data: { _id: string; triggers: Array<{ identifier: string }> } };
+    )) as { data: { workflowId: string } };
 
-    // Use the trigger identifier, not the _id — the trigger API needs the identifier
-    const triggerId = response.data.triggers?.[0]?.identifier ?? workflowName;
+    const workflowId = response.data.workflowId;
 
-    logger.info(
-      { environmentId, workflowName, workflowId: response.data._id, triggerId },
-      "Created email workflow in Novu"
-    );
+    logger.info({ environmentId, workflowName, workflowId }, "Created email workflow in Novu (v2)");
 
-    return triggerId;
+    return workflowId;
   } catch (error) {
     logger.error(
       { environmentId, workflowName, error: error instanceof Error ? error.message : String(error) },
@@ -189,8 +167,8 @@ export async function createEmailWorkflow(
 }
 
 /**
- * Create an SMS workflow in Novu.
- * Returns the workflow trigger identifier (used to trigger the workflow).
+ * Create an SMS workflow in Novu (v2 API).
+ * Returns the workflowId (used to trigger the workflow).
  */
 export async function createSmsWorkflow(
   environmentId: string,
@@ -200,36 +178,30 @@ export async function createSmsWorkflow(
   const config = await getRequiredNovuConfig(environmentId);
 
   try {
-    const notificationGroupId = await getDefaultNotificationGroupId(config);
-
     const response = (await novuApiRequest(
       "POST",
-      "/v1/workflows",
+      "/v2/workflows",
       {
         name: workflowName,
-        notificationGroupId,
+        workflowId: workflowName,
         steps: [
           {
-            template: {
-              type: "sms",
-              content: messageText,
+            name: "send-sms",
+            type: "sms",
+            controlValues: {
+              body: messageText,
             },
-            active: true,
           },
         ],
-        active: true,
       },
       config
-    )) as { data: { _id: string; triggers: Array<{ identifier: string }> } };
+    )) as { data: { workflowId: string } };
 
-    const triggerId = response.data.triggers?.[0]?.identifier ?? workflowName;
+    const workflowId = response.data.workflowId;
 
-    logger.info(
-      { environmentId, workflowName, workflowId: response.data._id, triggerId },
-      "Created SMS workflow in Novu"
-    );
+    logger.info({ environmentId, workflowName, workflowId }, "Created SMS workflow in Novu (v2)");
 
-    return triggerId;
+    return workflowId;
   } catch (error) {
     logger.error(
       { environmentId, workflowName, error: error instanceof Error ? error.message : String(error) },
@@ -321,13 +293,13 @@ export async function triggerBulkWorkflow(
 }
 
 /**
- * Delete a workflow from Novu.
+ * Delete a workflow from Novu (v2 API).
  */
 export async function deleteWorkflow(environmentId: string, workflowId: string): Promise<void> {
   const config = await getRequiredNovuConfig(environmentId);
 
   try {
-    await novuApiRequest("DELETE", `/v1/workflows/${encodeURIComponent(workflowId)}`, undefined, config);
+    await novuApiRequest("DELETE", `/v2/workflows/${encodeURIComponent(workflowId)}`, undefined, config);
 
     logger.info({ environmentId, workflowId }, "Deleted Novu workflow");
   } catch (error) {
