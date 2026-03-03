@@ -158,9 +158,13 @@ async function sendEmailCampaign(campaignId: string): Promise<void> {
           });
 
           // Trigger Novu workflow for this subscriber (use email as subscriberId)
-          await triggerWorkflow(campaign.environmentId, novuWorkflowId, contact.attributes.email, {
-            surveyUrl,
-          });
+          await triggerWorkflow(
+            campaign.environmentId,
+            novuWorkflowId,
+            contact.attributes.email,
+            { surveyUrl },
+            { email: contact.attributes.email }
+          );
 
           sentCount++;
           await prisma.campaignSend.updateMany({

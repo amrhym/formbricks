@@ -246,7 +246,8 @@ export async function triggerWorkflow(
   environmentId: string,
   workflowId: string,
   subscriberId: string,
-  payload?: Record<string, unknown>
+  payload?: Record<string, unknown>,
+  overrides?: { email?: string; phone?: string }
 ): Promise<void> {
   const config = await getRequiredNovuConfig(environmentId);
 
@@ -256,7 +257,7 @@ export async function triggerWorkflow(
       "/v1/events/trigger",
       {
         name: workflowId,
-        to: { subscriberId },
+        to: { subscriberId, ...overrides },
         payload: payload || {},
       },
       config
