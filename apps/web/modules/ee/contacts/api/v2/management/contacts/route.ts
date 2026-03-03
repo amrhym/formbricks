@@ -3,6 +3,7 @@ import { authenticatedApiClient } from "@/modules/api/v2/auth/authenticated-api-
 import { responses } from "@/modules/api/v2/lib/response";
 import { handleApiError } from "@/modules/api/v2/lib/utils";
 import { createContact } from "@/modules/ee/contacts/api/v2/management/contacts/lib/contact";
+import { syncContactToNovu } from "@/modules/ee/contacts/lib/novu-sync";
 import { ZContactCreateRequest } from "@/modules/ee/contacts/types/contact";
 import { getIsContactsEnabled } from "@/modules/ee/license-check/lib/utils";
 import { hasPermission } from "@/modules/organization/settings/api-keys/lib/utils";
@@ -53,6 +54,9 @@ export const POST = async (request: NextRequest) =>
       }
 
       const createdContact = createContactResult.data;
+
+      // Novu subscriber sync (best-effort, non-blocking)
+      await syncContactToNovu(createdContact, environmentId);
 
       if (auditLog) {
         auditLog.targetId = createdContact.id;

@@ -1,6 +1,7 @@
 import { handleErrorResponse } from "@/app/api/v1/auth";
 import { responses } from "@/app/lib/api/response";
 import { TApiAuditLog, TApiKeyAuthentication, withV1ApiWrapper } from "@/app/lib/api/with-api-logging";
+import { deleteSubscriberFromNovu } from "@/modules/ee/contacts/lib/novu-sync";
 import { getIsContactsEnabled } from "@/modules/ee/license-check/lib/utils";
 import { hasPermission } from "@/modules/organization/settings/api-keys/lib/utils";
 import { deleteContact, getContact } from "./lib/contact";
@@ -102,7 +103,22 @@ export const DELETE = withV1ApiWrapper({
       }
       auditLog.oldObject = result.contact;
 
-      await deleteContact(params.contactId);
+      const deletedContact = await deleteContact(params.contactId);
+
+      // Novu subscriber delete (best-effort)
+      if (deletedContact) {
+        try {
+          const attrs: Record<string, string> = {};
+          for (const attr of deletedContact.attributes) {
+            attrs[attr.attributeKey.key] = attr.value;
+          }
+          const subscriberId = attrs.userId || attrs.email;
+          await deleteSubscriberFromNovu(subscriberId, deletedContact.environmentId);
+        } catch {
+          // best-effort, don't fail the API response
+        }
+      }
+
       return {
         response: responses.successResponse({ success: "Contact deleted successfully" }),
       };

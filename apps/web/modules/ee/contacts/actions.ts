@@ -14,7 +14,9 @@ import {
 } from "@/lib/utils/helper";
 import { withAuditLogging } from "@/modules/ee/audit-logs/lib/handler";
 import { createContactsFromCSV, deleteContact, getContact, getContacts } from "./lib/contacts";
+import { deleteSubscriberFromNovu, syncCSVContactsToNovu } from "./lib/novu-sync";
 import { updateContactAttributes } from "./lib/update-contact-attributes";
+import { transformPrismaContact } from "./lib/utils";
 import {
   ZContactCSVAttributeMap,
   ZContactCSVDuplicateAction,
@@ -80,9 +82,24 @@ export const deleteContactAction = authenticatedActionClient.schema(ZContactDele
       ctx.auditLoggingCtx.organizationId = organizationId;
       ctx.auditLoggingCtx.contactId = parsedInput.contactId;
 
+      // Get contact before deletion for Novu subscriber sync
+      const contactForNovu = await getContact(parsedInput.contactId);
+
       const result = await deleteContact(parsedInput.contactId);
 
       ctx.auditLoggingCtx.oldObject = result;
+
+      // Novu subscriber delete (best-effort)
+      if (contactForNovu) {
+        try {
+          const contactWithAttrs = transformPrismaContact(contactForNovu as any);
+          const subscriberId = contactWithAttrs.attributes.userId || contactWithAttrs.attributes.email;
+          await deleteSubscriberFromNovu(subscriberId, contactWithAttrs.environmentId);
+        } catch {
+          // best-effort, don't fail the delete action
+        }
+      }
+
       return result;
     }
   )
@@ -127,6 +144,23 @@ export const createContactsFromCSVAction = authenticatedActionClient.schema(ZCre
       ctx.auditLoggingCtx.newObject = {
         contacts: result,
       };
+
+      // Novu subscriber sync for CSV contacts (best-effort)
+      if (result && result.length > 0) {
+        try {
+          // Use CSV data directly — it already has flat key-value attributes
+          const csvContactsForNovu = parsedInput.csvData.map((record: Record<string, string>) => ({
+            id: "",
+            createdAt: new Date(),
+            environmentId: parsedInput.environmentId,
+            attributes: record,
+          }));
+          await syncCSVContactsToNovu(csvContactsForNovu, parsedInput.environmentId);
+        } catch {
+          // best-effort, don't fail the CSV upload
+        }
+      }
+
       return result;
     }
   )

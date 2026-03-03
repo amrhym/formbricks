@@ -2,6 +2,7 @@ import { authenticatedApiClient } from "@/modules/api/v2/auth/authenticated-api-
 import { responses } from "@/modules/api/v2/lib/response";
 import { handleApiError } from "@/modules/api/v2/lib/utils";
 import { upsertBulkContacts } from "@/modules/ee/contacts/api/v2/management/contacts/bulk/lib/contact";
+import { syncBulkContactsToNovu } from "@/modules/ee/contacts/lib/novu-sync";
 import { ZContactBulkUploadRequest } from "@/modules/ee/contacts/types/contact";
 import { getIsContactsEnabled } from "@/modules/ee/license-check/lib/utils";
 import { hasPermission } from "@/modules/organization/settings/api-keys/lib/utils";
@@ -65,6 +66,9 @@ export const PUT = async (request: Request) =>
       if (!upsertBulkContactsResult.ok) {
         return handleApiError(request, upsertBulkContactsResult.error, auditLog);
       }
+
+      // Novu subscriber bulk sync (best-effort, non-blocking)
+      await syncBulkContactsToNovu(contacts, environmentId);
 
       const { contactIdxWithConflictingUserIds } = upsertBulkContactsResult.data;
 

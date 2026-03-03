@@ -586,6 +586,7 @@ enum IntegrationType {
   notion
   airtable
   slack
+  novu
 }
 
 /// Represents third-party service integrations.

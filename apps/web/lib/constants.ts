@@ -166,6 +166,10 @@ export const RATE_LIMITING_DISABLED = env.RATE_LIMITING_DISABLED === "1";
 export const BREVO_API_KEY = env.BREVO_API_KEY;
 export const BREVO_LIST_ID = env.BREVO_LIST_ID;
 
+export const NOVU_API_KEY = env.NOVU_API_KEY;
+export const NOVU_API_URL = env.NOVU_API_URL ?? "https://novu.xcai.io/api";
+export const IS_NOVU_CONFIGURED = Boolean(NOVU_API_KEY && NOVU_API_URL);
+
 export const UNSPLASH_ACCESS_KEY = env.UNSPLASH_ACCESS_KEY;
 export const UNSPLASH_ALLOWED_DOMAINS = ["api.unsplash.com"];
 

@@ -10,6 +10,7 @@ import JsLogo from "@/images/jslogo.png";
 import MakeLogo from "@/images/make-small.png";
 import n8nLogo from "@/images/n8n.png";
 import notionLogo from "@/images/notion.png";
+import NovuLogo from "@/images/novuLogo.svg";
 import SlackLogo from "@/images/slacklogo.png";
 import WebhookLogo from "@/images/webhook.png";
 import ZapierLogo from "@/images/zapier-small.png";
@@ -61,6 +62,7 @@ const Page = async (props) => {
   const isAirtableIntegrationConnected = isIntegrationConnected("airtable");
   const isN8nIntegrationConnected = isIntegrationConnected("n8n");
   const isSlackIntegrationConnected = isIntegrationConnected("slack");
+  const isNovuIntegrationConnected = isIntegrationConnected("novu");
 
   const appSetupCompleted = !!environment?.appSetupCompleted;
   const integrationCards = [
@@ -132,6 +134,20 @@ const Page = async (props) => {
       icon: <Image src={SlackLogo} alt="Slack Logo" />,
       connected: isSlackIntegrationConnected,
       statusText: isSlackIntegrationConnected ? t("common.connected") : t("common.not_connected"),
+      disabled: isReadOnly,
+    },
+    {
+      connectHref: `/environments/${params.environmentId}/workspace/integrations/novu`,
+      connectText: `${isNovuIntegrationConnected ? t("common.manage") : t("common.connect")}`,
+      connectNewTab: false,
+      docsHref: "https://docs.novu.co",
+      docsText: t("common.docs"),
+      docsNewTab: true,
+      label: "Novu",
+      description: "Sync contacts as Novu subscribers for notifications",
+      icon: <Image src={NovuLogo} alt="Novu Logo" />,
+      connected: isNovuIntegrationConnected,
+      statusText: isNovuIntegrationConnected ? t("common.connected") : t("common.not_connected"),
       disabled: isReadOnly,
     },
     {

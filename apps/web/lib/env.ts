@@ -128,6 +128,8 @@ export const env = createEnv({
       .transform((val) => parseInt(val))
       .optional(),
     SENTRY_ENVIRONMENT: z.string().optional(),
+    NOVU_API_KEY: z.string().optional(),
+    NOVU_API_URL: z.string().url().optional(),
   },
 
   /*
@@ -223,5 +225,7 @@ export const env = createEnv({
     AUDIT_LOG_GET_USER_IP: process.env.AUDIT_LOG_GET_USER_IP,
     SESSION_MAX_AGE: process.env.SESSION_MAX_AGE,
     SENTRY_ENVIRONMENT: process.env.SENTRY_ENVIRONMENT,
+    NOVU_API_KEY: process.env.NOVU_API_KEY,
+    NOVU_API_URL: process.env.NOVU_API_URL,
   },
 });

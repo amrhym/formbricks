@@ -99,17 +99,23 @@ export const getEnvironmentSurveyMetrics = async (
       ? Math.round(((responsesThisMonth - responsesLastMonth) / responsesLastMonth) * 100)
       : 0;
 
-  // Response rate: responses / displays (impressions)
-  const [totalResponses, totalDisplays] = await Promise.all([
+  // Response rate: responses (with a display) / total displays (impressions)
+  // Only count responses that have an associated display to avoid >100% rates.
+  // Responses without a display (e.g. via API or link surveys) are excluded.
+  const [responsesWithDisplay, totalDisplays, totalResponses] = await Promise.all([
     prisma.response.count({
-      where: { surveyId: { in: surveyIds } },
+      where: { surveyId: { in: surveyIds }, displayId: { not: null } },
     }),
     prisma.display.count({
       where: { surveyId: { in: surveyIds } },
     }),
+    prisma.response.count({
+      where: { surveyId: { in: surveyIds } },
+    }),
   ]);
 
-  const averageResponseRate = totalDisplays > 0 ? Math.round((totalResponses / totalDisplays) * 100) : 0;
+  const averageResponseRate =
+    totalDisplays > 0 ? Math.round((responsesWithDisplay / totalDisplays) * 100) : 0;
 
   // Completion rate: finished / total responses
   const finishedResponses = await prisma.response.count({

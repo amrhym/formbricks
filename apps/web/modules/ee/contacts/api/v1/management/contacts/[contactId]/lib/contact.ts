@@ -28,11 +28,11 @@ export const getContact = reactCache(async (contactId: string): Promise<TContact
   }
 });
 
-export const deleteContact = async (contactId: string): Promise<void> => {
+export const deleteContact = async (contactId: string) => {
   validateInputs([contactId, ZId]);
 
   try {
-    await prisma.contact.delete({
+    const deletedContact = await prisma.contact.delete({
       where: { id: contactId },
       select: {
         id: true,
@@ -40,6 +40,7 @@ export const deleteContact = async (contactId: string): Promise<void> => {
         attributes: { select: { attributeKey: { select: { key: true } }, value: true } },
       },
     });
+    return deletedContact;
   } catch (error) {
     if (error instanceof Prisma.PrismaClientKnownRequestError) {
       throw new DatabaseError(error.message);
