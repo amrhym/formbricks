@@ -135,7 +135,7 @@ export async function listActiveIntegrations(
 
 /**
  * Create an email workflow with HTML content in Novu.
- * Returns the workflow ID (_id).
+ * Returns the workflow trigger identifier (used to trigger the workflow).
  */
 export async function createEmailWorkflow(
   environmentId: string,
@@ -167,14 +167,17 @@ export async function createEmailWorkflow(
         active: true,
       },
       config
-    )) as { data: { _id: string } };
+    )) as { data: { _id: string; triggers: Array<{ identifier: string }> } };
+
+    // Use the trigger identifier, not the _id — the trigger API needs the identifier
+    const triggerId = response.data.triggers?.[0]?.identifier ?? workflowName;
 
     logger.info(
-      { environmentId, workflowName, workflowId: response.data._id },
+      { environmentId, workflowName, workflowId: response.data._id, triggerId },
       "Created email workflow in Novu"
     );
 
-    return response.data._id;
+    return triggerId;
   } catch (error) {
     logger.error(
       { environmentId, workflowName, error: error instanceof Error ? error.message : String(error) },
@@ -186,7 +189,7 @@ export async function createEmailWorkflow(
 
 /**
  * Create an SMS workflow in Novu.
- * Returns the workflow ID (_id).
+ * Returns the workflow trigger identifier (used to trigger the workflow).
  */
 export async function createSmsWorkflow(
   environmentId: string,
@@ -216,14 +219,16 @@ export async function createSmsWorkflow(
         active: true,
       },
       config
-    )) as { data: { _id: string } };
+    )) as { data: { _id: string; triggers: Array<{ identifier: string }> } };
+
+    const triggerId = response.data.triggers?.[0]?.identifier ?? workflowName;
 
     logger.info(
-      { environmentId, workflowName, workflowId: response.data._id },
+      { environmentId, workflowName, workflowId: response.data._id, triggerId },
       "Created SMS workflow in Novu"
     );
 
-    return response.data._id;
+    return triggerId;
   } catch (error) {
     logger.error(
       { environmentId, workflowName, error: error instanceof Error ? error.message : String(error) },
