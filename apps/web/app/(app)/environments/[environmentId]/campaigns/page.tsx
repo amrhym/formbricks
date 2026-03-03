@@ -1,7 +1,6 @@
 import { Metadata } from "next";
 import { redirect } from "next/navigation";
 import { getCampaignsByEnvironmentId } from "@/lib/campaign/service";
-import { getChannelsByEnvironmentId } from "@/lib/channel/service";
 import { getSurveys } from "@/lib/survey/service";
 import { getTranslate } from "@/lingodotdev/server";
 import { getSegments } from "@/modules/ee/contacts/segments/lib/segments";
@@ -30,14 +29,11 @@ const CampaignsPage = async ({ params: paramsProps }: CampaignsPageProps) => {
     return redirect(`/environments/${params.environmentId}/settings/billing`);
   }
 
-  const [campaigns, surveys, segments, channels] = await Promise.all([
+  const [campaigns, surveys, segments] = await Promise.all([
     getCampaignsByEnvironmentId(params.environmentId),
     getSurveys(params.environmentId),
     getSegments(params.environmentId),
-    getChannelsByEnvironmentId(params.environmentId),
   ]);
-
-  const emailChannels = channels.filter((c) => c.type === "email");
 
   return (
     <PageContentWrapper>
@@ -47,7 +43,6 @@ const CampaignsPage = async ({ params: paramsProps }: CampaignsPageProps) => {
         initialCampaigns={campaigns}
         surveys={surveys.map((s) => ({ id: s.id, name: s.name }))}
         segments={segments.map((s) => ({ id: s.id, title: s.title }))}
-        emailChannels={emailChannels.map((c) => ({ id: c.id, name: c.name }))}
         isReadOnly={isReadOnly}
       />
     </PageContentWrapper>

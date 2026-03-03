@@ -1,17 +1,20 @@
 import { z } from "zod";
 
-export const ZCampaignStatus = z.enum(["draft", "sending", "sent", "failed"]);
+export const ZCampaignStatus = z.enum(["draft", "scheduled", "sending", "sent", "failed"]);
 export type TCampaignStatus = z.infer<typeof ZCampaignStatus>;
 
 export const ZCampaignSendStatus = z.enum(["pending", "sent", "failed", "bounced"]);
 export type TCampaignSendStatus = z.infer<typeof ZCampaignSendStatus>;
 
+export const ZCampaignProviderType = z.enum(["email", "sms"]);
+export type TCampaignProviderType = z.infer<typeof ZCampaignProviderType>;
+
 export const ZCampaignCreateInput = z.object({
   name: z.string().min(1).max(200),
-  subject: z.string().min(1).max(500),
   surveyId: z.string().cuid(),
   segmentId: z.string().cuid(),
-  channelId: z.string().cuid(),
+  providerType: ZCampaignProviderType.default("email"),
+  scheduledAt: z.coerce.date().optional().nullable(),
 });
 
 export type TCampaignCreateInput = z.infer<typeof ZCampaignCreateInput>;
@@ -23,9 +26,11 @@ export const ZCampaign = z.object({
   name: z.string(),
   status: ZCampaignStatus,
   subject: z.string(),
+  providerType: z.string(),
+  novuWorkflowId: z.string().nullable(),
+  scheduledAt: z.date().nullable(),
   surveyId: z.string(),
   segmentId: z.string().nullable(),
-  channelId: z.string(),
   environmentId: z.string(),
   sentAt: z.date().nullable(),
   sentCount: z.number(),
@@ -38,7 +43,6 @@ export type TCampaign = z.infer<typeof ZCampaign>;
 export const ZCampaignWithRelations = ZCampaign.extend({
   survey: z.object({ id: z.string(), name: z.string() }),
   segment: z.object({ id: z.string(), title: z.string() }).nullable(),
-  channel: z.object({ id: z.string(), name: z.string() }),
 });
 
 export type TCampaignWithRelations = z.infer<typeof ZCampaignWithRelations>;
@@ -48,7 +52,7 @@ export const ZCampaignSend = z.object({
   createdAt: z.date(),
   campaignId: z.string(),
   contactId: z.string(),
-  email: z.string(),
+  recipient: z.string(),
   status: ZCampaignSendStatus,
   error: z.string().nullable(),
   sentAt: z.date().nullable(),

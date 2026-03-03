@@ -2,6 +2,7 @@
 
 import { z } from "zod";
 import { ZId } from "@hivecfm/types/common";
+import { listActiveIntegrations } from "@/lib/novu/service";
 import { authenticatedActionClient } from "@/lib/utils/action-client";
 import { checkAuthorizationUpdated } from "@/lib/utils/action-client/action-client-middleware";
 import { getOrganizationIdFromEnvironmentId, getProjectIdFromEnvironmentId } from "@/lib/utils/helper";
@@ -46,4 +47,32 @@ export const testNovuConnectionAction = authenticatedActionClient
     }
 
     return { success: true };
+  });
+
+const ZListNovuIntegrationsAction = z.object({
+  environmentId: ZId,
+});
+
+export const listNovuIntegrationsAction = authenticatedActionClient
+  .schema(ZListNovuIntegrationsAction)
+  .action(async ({ ctx, parsedInput }) => {
+    const organizationId = await getOrganizationIdFromEnvironmentId(parsedInput.environmentId);
+
+    await checkAuthorizationUpdated({
+      userId: ctx.user.id,
+      organizationId,
+      access: [
+        {
+          type: "organization",
+          roles: ["owner", "manager"],
+        },
+        {
+          type: "projectTeam",
+          minPermission: "readWrite",
+          projectId: await getProjectIdFromEnvironmentId(parsedInput.environmentId),
+        },
+      ],
+    });
+
+    return await listActiveIntegrations(parsedInput.environmentId);
   });

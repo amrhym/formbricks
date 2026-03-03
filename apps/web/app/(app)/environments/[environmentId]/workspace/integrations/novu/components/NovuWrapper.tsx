@@ -1,17 +1,29 @@
 "use client";
 
-import { useState } from "react";
+import { BellIcon, MailIcon, MessageSquareIcon, SmartphoneIcon } from "lucide-react";
+import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
 import { TIntegrationNovu } from "@hivecfm/types/integration/novu";
 import {
   createOrUpdateIntegrationAction,
   deleteIntegrationAction,
 } from "@/app/(app)/environments/[environmentId]/workspace/integrations/actions";
-import { testNovuConnectionAction } from "@/app/(app)/environments/[environmentId]/workspace/integrations/novu/actions";
+import {
+  listNovuIntegrationsAction,
+  testNovuConnectionAction,
+} from "@/app/(app)/environments/[environmentId]/workspace/integrations/novu/actions";
 import { getFormattedErrorMessage } from "@/lib/utils/helper";
 import { Button } from "@/modules/ui/components/button";
 import { Input } from "@/modules/ui/components/input";
 import { Label } from "@/modules/ui/components/label";
+
+const channelIcons: Record<string, React.ElementType> = {
+  email: MailIcon,
+  sms: MessageSquareIcon,
+  push: BellIcon,
+  chat: MessageSquareIcon,
+  in_app: SmartphoneIcon,
+};
 
 interface NovuWrapperProps {
   environmentId: string;
@@ -28,6 +40,25 @@ export const NovuWrapper = ({ environmentId, novuIntegration }: NovuWrapperProps
   const [isTesting, setIsTesting] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
   const [isDeleting, setIsDeleting] = useState(false);
+  const [activeChannels, setActiveChannels] = useState<
+    Array<{ channel: string; providerId: string; name: string; active: boolean }>
+  >([]);
+  const [isLoadingChannels, setIsLoadingChannels] = useState(false);
+
+  useEffect(() => {
+    if (!isConnected) return;
+    setIsLoadingChannels(true);
+    listNovuIntegrationsAction({ environmentId })
+      .then((result) => {
+        if (result?.data) {
+          setActiveChannels(result.data);
+        }
+      })
+      .catch(() => {
+        // Silently fail, channels section is informational
+      })
+      .finally(() => setIsLoadingChannels(false));
+  }, [isConnected, environmentId]);
 
   const handleTestConnection = async () => {
     if (!apiKey.trim()) {
@@ -144,6 +175,43 @@ export const NovuWrapper = ({ environmentId, novuIntegration }: NovuWrapperProps
           <Button variant="destructive" onClick={handleDisconnect} loading={isDeleting}>
             Disconnect
           </Button>
+        </div>
+
+        {/* Active Channels Section */}
+        <div className="mt-8 border-t border-slate-200 pt-6">
+          <h4 className="mb-4 text-sm font-medium text-slate-900">Active Channels</h4>
+          {isLoadingChannels ? (
+            <p className="text-sm text-slate-500">Loading channels...</p>
+          ) : activeChannels.length === 0 ? (
+            <p className="text-sm text-slate-500">
+              No active channels found. Configure providers in your Novu dashboard.
+            </p>
+          ) : (
+            <div className="space-y-3">
+              {activeChannels.map((integration, index) => {
+                const Icon = channelIcons[integration.channel] || BellIcon;
+                return (
+                  <div
+                    key={index}
+                    className="flex items-center justify-between rounded-md border border-slate-200 px-4 py-3">
+                    <div className="flex items-center gap-3">
+                      <Icon className="h-5 w-5 text-slate-500" />
+                      <div>
+                        <p className="text-sm font-medium text-slate-900">
+                          {integration.name || integration.providerId}
+                        </p>
+                        <p className="text-xs text-slate-500 capitalize">{integration.channel}</p>
+                      </div>
+                    </div>
+                    <span className="inline-flex items-center rounded-full bg-green-100 px-2 py-0.5 text-xs font-medium text-green-800">
+                      Active
+                    </span>
+                  </div>
+                );
+              })}
+            </div>
+          )}
+          <p className="mt-3 text-xs text-slate-400">Channels are managed in your Novu dashboard.</p>
         </div>
       </div>
     );

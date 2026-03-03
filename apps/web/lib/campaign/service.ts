@@ -18,7 +18,9 @@ const selectCampaign = {
   subject: true,
   surveyId: true,
   segmentId: true,
-  channelId: true,
+  providerType: true,
+  novuWorkflowId: true,
+  scheduledAt: true,
   environmentId: true,
   sentAt: true,
   sentCount: true,
@@ -29,9 +31,6 @@ const selectCampaign = {
   },
   segment: {
     select: { id: true, title: true },
-  },
-  channel: {
-    select: { id: true, name: true },
   },
 } satisfies Prisma.CampaignSelect;
 
@@ -80,13 +79,20 @@ export const createCampaign = async (
   validateInputs([environmentId, ZId], [campaignInput, ZCampaignCreateInput]);
 
   try {
+    const survey = await prisma.survey.findUnique({
+      where: { id: campaignInput.surveyId },
+      select: { name: true },
+    });
+    const subject = survey?.name || campaignInput.name;
+
     const campaign = await prisma.campaign.create({
       data: {
         name: campaignInput.name,
-        subject: campaignInput.subject,
+        subject,
         surveyId: campaignInput.surveyId,
         segmentId: campaignInput.segmentId,
-        channelId: campaignInput.channelId,
+        providerType: campaignInput.providerType || "email",
+        scheduledAt: campaignInput.scheduledAt || null,
         environmentId,
       },
       select: selectCampaign,
@@ -112,8 +118,8 @@ export const deleteCampaign = async (campaignId: string): Promise<TCampaignWithR
       throw new ResourceNotFoundError("Campaign", campaignId);
     }
 
-    if (existing.status !== "draft") {
-      throw new InvalidInputError("Only draft campaigns can be deleted");
+    if (!["draft", "scheduled"].includes(existing.status)) {
+      throw new InvalidInputError("Only draft and scheduled campaigns can be deleted");
     }
 
     const campaign = await prisma.campaign.delete({

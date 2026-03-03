@@ -27,7 +27,6 @@ interface CreateCampaignDialogProps {
   environmentId: string;
   surveys: { id: string; name: string }[];
   segments: { id: string; title: string }[];
-  emailChannels: { id: string; name: string }[];
   open: boolean;
   setOpen: (open: boolean) => void;
   onCreated: () => void;
@@ -37,32 +36,38 @@ export const CreateCampaignDialog = ({
   environmentId,
   surveys,
   segments,
-  emailChannels,
   open,
   setOpen,
   onCreated,
 }: CreateCampaignDialogProps) => {
   const { t } = useTranslation();
   const [name, setName] = useState("");
-  const [subject, setSubject] = useState("");
   const [surveyId, setSurveyId] = useState("");
   const [segmentId, setSegmentId] = useState("");
-  const [channelId, setChannelId] = useState("");
+  const [providerType, setProviderType] = useState<"email" | "sms">("email");
+  const [scheduleType, setScheduleType] = useState<"immediate" | "scheduled">("immediate");
+  const [scheduledAt, setScheduledAt] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
   const resetForm = () => {
     setName("");
-    setSubject("");
     setSurveyId("");
     setSegmentId("");
-    setChannelId("");
+    setProviderType("email");
+    setScheduleType("immediate");
+    setScheduledAt("");
     setError(null);
   };
 
   const handleSubmit = async () => {
-    if (!name || !subject || !surveyId || !segmentId || !channelId) {
-      setError("All fields are required");
+    if (!name || !surveyId || !segmentId) {
+      setError("Name, Survey, and Segment are required");
+      return;
+    }
+
+    if (scheduleType === "scheduled" && !scheduledAt) {
+      setError("Scheduled date and time is required");
       return;
     }
 
@@ -72,7 +77,13 @@ export const CreateCampaignDialog = ({
     try {
       const result = await createCampaignAction({
         environmentId,
-        data: { name, subject, surveyId, segmentId, channelId },
+        data: {
+          name,
+          surveyId,
+          segmentId,
+          providerType,
+          scheduledAt: scheduleType === "scheduled" ? new Date(scheduledAt) : null,
+        },
       });
 
       if (result?.data) {
@@ -89,6 +100,8 @@ export const CreateCampaignDialog = ({
     }
   };
 
+  const isFormValid = name && surveyId && segmentId && (scheduleType === "immediate" || scheduledAt);
+
   return (
     <Dialog
       open={open}
@@ -99,9 +112,7 @@ export const CreateCampaignDialog = ({
       <DialogContent>
         <DialogHeader>
           <DialogTitle>{t("environments.campaigns.create_campaign")}</DialogTitle>
-          <DialogDescription>
-            Create a new email campaign to send a survey to your contacts.
-          </DialogDescription>
+          <DialogDescription>Create a new campaign to send a survey to your contacts.</DialogDescription>
         </DialogHeader>
 
         <div className="space-y-4 py-4">
@@ -112,16 +123,6 @@ export const CreateCampaignDialog = ({
               placeholder="Campaign name"
               value={name}
               onChange={(e) => setName(e.target.value)}
-            />
-          </div>
-
-          <div className="space-y-2">
-            <Label htmlFor="campaign-subject">{t("environments.campaigns.email_subject")}</Label>
-            <Input
-              id="campaign-subject"
-              placeholder="Email subject line"
-              value={subject}
-              onChange={(e) => setSubject(e.target.value)}
             />
           </div>
 
@@ -166,23 +167,64 @@ export const CreateCampaignDialog = ({
           </div>
 
           <div className="space-y-2">
-            <Label>{t("environments.campaigns.select_channel")}</Label>
-            {emailChannels.length === 0 ? (
-              <p className="text-sm text-slate-500">{t("environments.campaigns.no_email_channels")}</p>
-            ) : (
-              <Select value={channelId} onValueChange={setChannelId}>
-                <SelectTrigger>
-                  <SelectValue placeholder={t("environments.campaigns.select_channel")} />
-                </SelectTrigger>
-                <SelectContent>
-                  {emailChannels.map((channel) => (
-                    <SelectItem key={channel.id} value={channel.id}>
-                      {channel.name}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-            )}
+            <Label>Provider Type</Label>
+            <Select value={providerType} onValueChange={(value) => setProviderType(value as "email" | "sms")}>
+              <SelectTrigger>
+                <SelectValue placeholder="Select provider type" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="email">Email</SelectItem>
+                <SelectItem value="sms">SMS</SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
+
+          <div className="space-y-2">
+            <Label>Schedule</Label>
+            <div className="flex flex-col gap-2">
+              <div
+                className={`flex cursor-pointer items-center gap-2 rounded-md border px-3 py-2 ${
+                  scheduleType === "immediate" ? "border-brand bg-brand/5" : "border-slate-200"
+                }`}
+                onClick={() => setScheduleType("immediate")}>
+                <div
+                  className={`h-4 w-4 rounded-full border-2 ${
+                    scheduleType === "immediate" ? "border-brand bg-brand" : "border-slate-300"
+                  }`}>
+                  {scheduleType === "immediate" && (
+                    <div className="flex h-full w-full items-center justify-center">
+                      <div className="h-1.5 w-1.5 rounded-full bg-white" />
+                    </div>
+                  )}
+                </div>
+                <span className="text-sm font-medium text-slate-700">Send immediately</span>
+              </div>
+              <div
+                className={`flex cursor-pointer items-center gap-2 rounded-md border px-3 py-2 ${
+                  scheduleType === "scheduled" ? "border-brand bg-brand/5" : "border-slate-200"
+                }`}
+                onClick={() => setScheduleType("scheduled")}>
+                <div
+                  className={`h-4 w-4 rounded-full border-2 ${
+                    scheduleType === "scheduled" ? "border-brand bg-brand" : "border-slate-300"
+                  }`}>
+                  {scheduleType === "scheduled" && (
+                    <div className="flex h-full w-full items-center justify-center">
+                      <div className="h-1.5 w-1.5 rounded-full bg-white" />
+                    </div>
+                  )}
+                </div>
+                <span className="text-sm font-medium text-slate-700">Schedule for later</span>
+              </div>
+              {scheduleType === "scheduled" && (
+                <Input
+                  type="datetime-local"
+                  value={scheduledAt}
+                  onChange={(e) => setScheduledAt(e.target.value)}
+                  className="mt-1"
+                />
+              )}
+            </div>
           </div>
 
           {error && <p className="text-sm text-red-500">{error}</p>}
@@ -192,9 +234,7 @@ export const CreateCampaignDialog = ({
           <Button variant="secondary" onClick={() => setOpen(false)}>
             {t("common.cancel")}
           </Button>
-          <Button
-            onClick={handleSubmit}
-            disabled={isSubmitting || !name || !subject || !surveyId || !segmentId || !channelId}>
+          <Button onClick={handleSubmit} disabled={isSubmitting || !isFormValid}>
             {isSubmitting ? "Creating..." : t("environments.campaigns.create_campaign")}
           </Button>
         </DialogFooter>

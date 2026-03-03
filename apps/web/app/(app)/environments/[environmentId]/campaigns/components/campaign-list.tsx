@@ -16,12 +16,12 @@ interface CampaignListProps {
   initialCampaigns: TCampaignWithRelations[];
   surveys: { id: string; name: string }[];
   segments: { id: string; title: string }[];
-  emailChannels: { id: string; name: string }[];
   isReadOnly: boolean;
 }
 
 const statusConfig: Record<string, { type: "warning" | "success" | "error" | "gray"; label: string }> = {
   draft: { type: "gray", label: "Draft" },
+  scheduled: { type: "warning", label: "Scheduled" },
   sending: { type: "warning", label: "Sending" },
   sent: { type: "success", label: "Sent" },
   failed: { type: "error", label: "Failed" },
@@ -32,7 +32,6 @@ export const CampaignList = ({
   initialCampaigns,
   surveys,
   segments,
-  emailChannels,
   isReadOnly,
 }: CampaignListProps) => {
   const { t } = useTranslation();
@@ -106,6 +105,7 @@ export const CampaignList = ({
                 <th className="px-4 py-3 text-left text-sm font-medium text-slate-600">
                   {t("environments.campaigns.name")}
                 </th>
+                <th className="px-4 py-3 text-left text-sm font-medium text-slate-600">Provider</th>
                 <th className="px-4 py-3 text-left text-sm font-medium text-slate-600">
                   {t("common.surveys")}
                 </th>
@@ -124,10 +124,22 @@ export const CampaignList = ({
                 return (
                   <tr key={campaign.id} className="hover:bg-slate-50">
                     <td className="px-4 py-3 text-sm font-medium text-slate-900">{campaign.name}</td>
+                    <td className="px-4 py-3">
+                      <Badge
+                        text={campaign.providerType === "sms" ? "SMS" : "Email"}
+                        type="gray"
+                        size="tiny"
+                      />
+                    </td>
                     <td className="px-4 py-3 text-sm text-slate-600">{campaign.survey.name}</td>
                     <td className="px-4 py-3 text-sm text-slate-600">{campaign.segment?.title ?? "-"}</td>
                     <td className="px-4 py-3">
-                      <Badge text={status.label} type={status.type} size="tiny" />
+                      <div className="flex items-center gap-2">
+                        <Badge text={status.label} type={status.type} size="tiny" />
+                        {campaign.status === "scheduled" && campaign.scheduledAt && (
+                          <span className="text-xs text-slate-500">{formatDate(campaign.scheduledAt)}</span>
+                        )}
+                      </div>
                     </td>
                     <td className="px-4 py-3 text-sm text-slate-600">
                       {campaign.sentCount}/{campaign.totalCount}
@@ -162,7 +174,6 @@ export const CampaignList = ({
         environmentId={environmentId}
         surveys={surveys}
         segments={segments}
-        emailChannels={emailChannels}
         open={isCreateOpen}
         setOpen={setIsCreateOpen}
         onCreated={refreshCampaigns}
