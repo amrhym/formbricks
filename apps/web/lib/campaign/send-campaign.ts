@@ -97,7 +97,7 @@ async function sendEmailCampaign(campaignId: string): Promise<void> {
 
   // Generate email HTML (use a placeholder URL; the actual link is per-contact but the
   // Novu workflow is created once with the template HTML).
-  const emailHtml = await getPreviewEmailTemplateHtml(survey, "{{surveyUrl}}", styling, "default", t);
+  const emailHtml = await getPreviewEmailTemplateHtml(survey, "{{payload.surveyUrl}}", styling, "default", t);
 
   // Create Novu email workflow with the HTML content
   const workflowName = `campaign-${campaignId}`;
