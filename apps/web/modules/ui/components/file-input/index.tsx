@@ -105,7 +105,7 @@ export const FileInput = ({
     const uploadedUrls: string[] = [];
     uploadedFiles.forEach((file) => {
       if (file.url) {
-        uploadedUrls.push(encodeURI(file.url));
+        uploadedUrls.push(file.url);
       }
     });
 
@@ -179,7 +179,7 @@ export const FileInput = ({
     const uploadedUrls: string[] = [];
     uploadedFiles.forEach((file) => {
       if (file.url) {
-        uploadedUrls.push(encodeURI(file.url));
+        uploadedUrls.push(file.url);
       }
     });
 
