@@ -201,12 +201,47 @@ export const getCampaignNovuStatsAction = authenticatedActionClient
 
     const campaign = await prisma.campaign.findUnique({
       where: { id: parsedInput.campaignId },
-      select: { novuWorkflowId: true, environmentId: true },
+      select: {
+        novuWorkflowId: true,
+        environmentId: true,
+        sends: { select: { recipient: true } },
+      },
     });
 
     if (!campaign?.novuWorkflowId) {
       return { total: 0, sent: 0, failed: 0, delivered: 0, seen: 0, read: 0, messages: [] };
     }
 
-    return await getWorkflowStats(campaign.environmentId, campaign.novuWorkflowId);
+    // Get all Novu messages for this workflow, then filter to only this campaign's recipients
+    const recipientEmails = new Set(campaign.sends.map((s) => s.recipient.toLowerCase()));
+    const allStats = await getWorkflowStats(campaign.environmentId, campaign.novuWorkflowId);
+
+    const filteredMessages = allStats.messages.filter((msg) => recipientEmails.has(msg.email.toLowerCase()));
+
+    // Re-aggregate stats from filtered messages
+    let sent = 0;
+    let failed = 0;
+    let delivered = 0;
+    let seen = 0;
+    let read = 0;
+    for (const msg of filteredMessages) {
+      if (msg.status === "sent") {
+        sent++;
+        delivered++;
+      } else if (msg.status === "error" || msg.status === "failed") {
+        failed++;
+      }
+      if (msg.seen) seen++;
+      if (msg.read) read++;
+    }
+
+    return {
+      total: filteredMessages.length,
+      sent,
+      failed,
+      delivered,
+      seen,
+      read,
+      messages: filteredMessages,
+    };
   });
