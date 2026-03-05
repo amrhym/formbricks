@@ -413,6 +413,8 @@ export async function getWorkflowMessages(
 
       const messages = response.data ?? [];
       for (const msg of messages) {
+        // Novu's templateId filter is unreliable — filter client-side by templateIdentifier
+        if (msg.templateIdentifier !== novuWorkflowId) continue;
         allMessages.push({
           messageId: msg._id,
           email: msg.email ?? msg.phone ?? "",
