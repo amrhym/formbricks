@@ -1,5 +1,6 @@
 import "server-only";
 import { logger } from "@hivecfm/logger";
+import type { TCampaignNovuMessage, TCampaignNovuStats } from "@hivecfm/types/campaign";
 import { IS_NOVU_CONFIGURED, NOVU_API_KEY, NOVU_API_URL } from "@/lib/constants";
 import { getIntegrationByType } from "@/lib/integration/service";
 
@@ -342,4 +343,133 @@ export async function sendSmsMessage(
     );
     throw error;
   }
+}
+
+// ---------------------------------------------------------------------------
+// Analytics API
+// ---------------------------------------------------------------------------
+
+interface NovuRawMessage {
+  _id: string;
+  email?: string;
+  phone?: string;
+  status: string;
+  providerId?: string;
+  seen: boolean;
+  read: boolean;
+  createdAt: string;
+  subject?: string;
+  templateIdentifier?: string;
+}
+
+/**
+ * Resolve a workflow's internal `_id` from its human-readable `workflowId`.
+ */
+async function resolveWorkflowInternalId(config: NovuConfig, novuWorkflowId: string): Promise<string | null> {
+  try {
+    const response = (await novuApiRequest(
+      "GET",
+      `/v2/workflows/${encodeURIComponent(novuWorkflowId)}`,
+      undefined,
+      config
+    )) as { data?: { _id?: string } };
+
+    return response.data?._id ?? null;
+  } catch (error) {
+    logger.warn(
+      { novuWorkflowId, error: error instanceof Error ? error.message : String(error) },
+      "Could not resolve Novu workflow _id"
+    );
+    return null;
+  }
+}
+
+/**
+ * Fetch all messages for a given workflow from Novu (paginated).
+ */
+export async function getWorkflowMessages(
+  environmentId: string,
+  novuWorkflowId: string
+): Promise<TCampaignNovuMessage[]> {
+  const config = await getRequiredNovuConfig(environmentId);
+  const internalId = await resolveWorkflowInternalId(config, novuWorkflowId);
+
+  if (!internalId) {
+    return [];
+  }
+
+  const allMessages: TCampaignNovuMessage[] = [];
+  let page = 0;
+  const limit = 100;
+
+  try {
+    while (true) {
+      const response = (await novuApiRequest(
+        "GET",
+        `/v1/messages?templateId=${encodeURIComponent(internalId)}&channel=email&limit=${limit}&page=${page}`,
+        undefined,
+        config
+      )) as { data: NovuRawMessage[]; totalCount?: number };
+
+      const messages = response.data ?? [];
+      for (const msg of messages) {
+        allMessages.push({
+          messageId: msg._id,
+          email: msg.email ?? msg.phone ?? "",
+          status: msg.status,
+          provider: msg.providerId ?? "",
+          seen: msg.seen,
+          read: msg.read,
+          createdAt: msg.createdAt,
+        });
+      }
+
+      if (messages.length < limit) break;
+      page++;
+
+      // Safety: don't fetch more than 50 pages (5000 messages)
+      if (page >= 50) break;
+    }
+
+    return allMessages;
+  } catch (error) {
+    logger.error(
+      { environmentId, novuWorkflowId, error: error instanceof Error ? error.message : String(error) },
+      "Failed to fetch workflow messages from Novu"
+    );
+    return [];
+  }
+}
+
+/**
+ * Aggregate stats from workflow messages.
+ */
+export async function getWorkflowStats(
+  environmentId: string,
+  novuWorkflowId: string
+): Promise<TCampaignNovuStats> {
+  const messages = await getWorkflowMessages(environmentId, novuWorkflowId);
+
+  const stats: TCampaignNovuStats = {
+    total: messages.length,
+    sent: 0,
+    failed: 0,
+    delivered: 0,
+    seen: 0,
+    read: 0,
+    messages,
+  };
+
+  for (const msg of messages) {
+    if (msg.status === "sent") {
+      stats.sent++;
+      stats.delivered++;
+    } else if (msg.status === "error" || msg.status === "failed") {
+      stats.failed++;
+    }
+    if (msg.seen) stats.seen++;
+    if (msg.read) stats.read++;
+  }
+
+  return stats;
 }

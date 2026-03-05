@@ -5,8 +5,13 @@ import { prisma } from "@hivecfm/database";
 import { logger } from "@hivecfm/logger";
 import { ZCampaignCreateInput } from "@hivecfm/types/campaign";
 import { sendCampaign } from "@/lib/campaign/send-campaign";
-import { createCampaign, deleteCampaign, getCampaignsByEnvironmentId } from "@/lib/campaign/service";
-import { deleteWorkflow } from "@/lib/novu/service";
+import {
+  createCampaign,
+  deleteCampaign,
+  getCampaignWithSends,
+  getCampaignsByEnvironmentId,
+} from "@/lib/campaign/service";
+import { deleteWorkflow, getWorkflowStats } from "@/lib/novu/service";
 import { authenticatedActionClient } from "@/lib/utils/action-client";
 import { checkAuthorizationUpdated } from "@/lib/utils/action-client/action-client-middleware";
 import {
@@ -143,4 +148,65 @@ export const getCampaignsAction = authenticatedActionClient
     });
 
     return await getCampaignsByEnvironmentId(parsedInput.environmentId);
+  });
+
+const ZGetCampaignDetailAction = z.object({
+  campaignId: z.string().cuid2(),
+});
+
+export const getCampaignDetailAction = authenticatedActionClient
+  .schema(ZGetCampaignDetailAction)
+  .action(async ({ ctx, parsedInput }) => {
+    await checkAuthorizationUpdated({
+      userId: ctx.user.id,
+      organizationId: await getOrganizationIdFromCampaignId(parsedInput.campaignId),
+      access: [
+        {
+          type: "organization",
+          roles: ["owner", "manager"],
+        },
+        {
+          type: "projectTeam",
+          minPermission: "read",
+          projectId: await getProjectIdFromCampaignId(parsedInput.campaignId),
+        },
+      ],
+    });
+
+    return await getCampaignWithSends(parsedInput.campaignId);
+  });
+
+const ZGetCampaignNovuStatsAction = z.object({
+  campaignId: z.string().cuid2(),
+});
+
+export const getCampaignNovuStatsAction = authenticatedActionClient
+  .schema(ZGetCampaignNovuStatsAction)
+  .action(async ({ ctx, parsedInput }) => {
+    await checkAuthorizationUpdated({
+      userId: ctx.user.id,
+      organizationId: await getOrganizationIdFromCampaignId(parsedInput.campaignId),
+      access: [
+        {
+          type: "organization",
+          roles: ["owner", "manager"],
+        },
+        {
+          type: "projectTeam",
+          minPermission: "read",
+          projectId: await getProjectIdFromCampaignId(parsedInput.campaignId),
+        },
+      ],
+    });
+
+    const campaign = await prisma.campaign.findUnique({
+      where: { id: parsedInput.campaignId },
+      select: { novuWorkflowId: true, environmentId: true },
+    });
+
+    if (!campaign?.novuWorkflowId) {
+      return { total: 0, sent: 0, failed: 0, delivered: 0, seen: 0, read: 0, messages: [] };
+    }
+
+    return await getWorkflowStats(campaign.environmentId, campaign.novuWorkflowId);
   });

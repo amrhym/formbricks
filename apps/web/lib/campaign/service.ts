@@ -3,7 +3,7 @@ import { Prisma } from "@prisma/client";
 import { cache as reactCache } from "react";
 import { prisma } from "@hivecfm/database";
 import { logger } from "@hivecfm/logger";
-import type { TCampaignCreateInput, TCampaignWithRelations } from "@hivecfm/types/campaign";
+import type { TCampaignCreateInput, TCampaignDetail, TCampaignWithRelations } from "@hivecfm/types/campaign";
 import { ZCampaignCreateInput } from "@hivecfm/types/campaign";
 import { ZId } from "@hivecfm/types/common";
 import { DatabaseError, InvalidInputError, ResourceNotFoundError } from "@hivecfm/types/errors";
@@ -51,6 +51,38 @@ export const getCampaign = reactCache(async (campaignId: string): Promise<TCampa
   } catch (error) {
     if (error instanceof ResourceNotFoundError) throw error;
     throw new DatabaseError(`Database error when fetching campaign ${campaignId}`);
+  }
+});
+
+export const getCampaignWithSends = reactCache(async (campaignId: string): Promise<TCampaignDetail> => {
+  validateInputs([campaignId, ZId]);
+
+  try {
+    const campaign = await prisma.campaign.findUnique({
+      where: { id: campaignId },
+      select: {
+        ...selectCampaign,
+        sends: {
+          select: {
+            id: true,
+            contactId: true,
+            recipient: true,
+            status: true,
+            error: true,
+            sentAt: true,
+          },
+        },
+      },
+    });
+
+    if (!campaign) {
+      throw new ResourceNotFoundError("Campaign", campaignId);
+    }
+
+    return campaign as TCampaignDetail;
+  } catch (error) {
+    if (error instanceof ResourceNotFoundError) throw error;
+    throw new DatabaseError(`Database error when fetching campaign detail ${campaignId}`);
   }
 });
 

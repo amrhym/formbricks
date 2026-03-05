@@ -1,6 +1,7 @@
 "use client";
 
 import { PlusIcon, SendIcon, TrashIcon } from "lucide-react";
+import Link from "next/link";
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import type { TCampaignWithRelations } from "@hivecfm/types/campaign";
@@ -122,8 +123,14 @@ export const CampaignList = ({
               {campaigns.map((campaign) => {
                 const status = statusConfig[campaign.status] ?? statusConfig.draft;
                 return (
-                  <tr key={campaign.id} className="hover:bg-slate-50">
-                    <td className="px-4 py-3 text-sm font-medium text-slate-900">{campaign.name}</td>
+                  <tr key={campaign.id} className="cursor-pointer hover:bg-slate-50">
+                    <td className="px-4 py-3 text-sm font-medium text-slate-900">
+                      <Link
+                        href={`/environments/${environmentId}/campaigns/${campaign.id}`}
+                        className="hover:text-brand-dark hover:underline">
+                        {campaign.name}
+                      </Link>
+                    </td>
                     <td className="px-4 py-3">
                       <Badge
                         text={campaign.providerType === "sms" ? "SMS" : "Email"}

@@ -59,3 +59,44 @@ export const ZCampaignSend = z.object({
 });
 
 export type TCampaignSend = z.infer<typeof ZCampaignSend>;
+
+// --- Analytics types ---
+
+export const ZCampaignDetail = ZCampaignWithRelations.extend({
+  sends: z.array(
+    z.object({
+      id: z.string(),
+      contactId: z.string(),
+      recipient: z.string(),
+      status: ZCampaignSendStatus,
+      error: z.string().nullable(),
+      sentAt: z.date().nullable(),
+    })
+  ),
+});
+
+export type TCampaignDetail = z.infer<typeof ZCampaignDetail>;
+
+export const ZCampaignNovuMessage = z.object({
+  messageId: z.string(),
+  email: z.string(),
+  status: z.string(),
+  provider: z.string(),
+  seen: z.boolean(),
+  read: z.boolean(),
+  createdAt: z.string(),
+});
+
+export type TCampaignNovuMessage = z.infer<typeof ZCampaignNovuMessage>;
+
+export const ZCampaignNovuStats = z.object({
+  total: z.number(),
+  sent: z.number(),
+  failed: z.number(),
+  delivered: z.number(),
+  seen: z.number(),
+  read: z.number(),
+  messages: z.array(ZCampaignNovuMessage),
+});
+
+export type TCampaignNovuStats = z.infer<typeof ZCampaignNovuStats>;
