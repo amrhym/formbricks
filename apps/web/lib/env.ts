@@ -130,6 +130,8 @@ export const env = createEnv({
     SENTRY_ENVIRONMENT: z.string().optional(),
     NOVU_API_KEY: z.string().optional(),
     NOVU_API_URL: z.string().url().optional(),
+    HIVECFM_HUB_URL: z.string().url().optional(),
+    HIVECFM_HUB_API_KEY: z.string().optional(),
   },
 
   /*
@@ -227,5 +229,7 @@ export const env = createEnv({
     SENTRY_ENVIRONMENT: process.env.SENTRY_ENVIRONMENT,
     NOVU_API_KEY: process.env.NOVU_API_KEY,
     NOVU_API_URL: process.env.NOVU_API_URL,
+    HIVECFM_HUB_URL: process.env.HIVECFM_HUB_URL,
+    HIVECFM_HUB_API_KEY: process.env.HIVECFM_HUB_API_KEY,
   },
 });

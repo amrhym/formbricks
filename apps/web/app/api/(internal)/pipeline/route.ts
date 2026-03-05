@@ -10,6 +10,7 @@ import { responses } from "@/app/lib/api/response";
 import { transformErrorToDetails } from "@/app/lib/api/validator";
 import { CRON_SECRET } from "@/lib/constants";
 import { generateStandardWebhookSignature } from "@/lib/crypto";
+import { pushResponseToHub } from "@/lib/hivecfm-hub/service";
 import { getIntegrations } from "@/lib/integration/service";
 import { getOrganizationByEnvironmentId } from "@/lib/organization/service";
 import { getResponseCountBySurveyId } from "@/lib/response/service";
@@ -147,6 +148,21 @@ export const POST = async (request: Request) => {
     if (integrations.length > 0) {
       await handleIntegrations(integrations, inputValidation.data, survey);
     }
+
+    // Push response to HiveCFM Hub (fire-and-forget, errors are logged)
+    pushResponseToHub({
+      environmentId,
+      surveyId,
+      surveyName: survey.name,
+      responseId: response.id,
+      responseData: response.data,
+      questions: survey.questions.map((q) => ({ id: q.id, type: q.type, headline: q.headline })),
+      language: response.language,
+      userIdentifier: response.contact?.userId ?? undefined,
+      collectedAt: response.createdAt,
+    }).catch((error) => {
+      logger.error({ error, surveyId, responseId: response.id }, "Failed to push response to HiveCFM Hub");
+    });
 
     // Fetch users with notifications in a single query
     // TODO: add cache for this query. Not possible at the moment since we can't get the membership cache by environmentId
