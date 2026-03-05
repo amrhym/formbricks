@@ -124,10 +124,10 @@ export const CampaignList = ({
                 const status = statusConfig[campaign.status] ?? statusConfig.draft;
                 return (
                   <tr key={campaign.id} className="cursor-pointer hover:bg-slate-50">
-                    <td className="px-4 py-3 text-sm font-medium text-slate-900">
+                    <td className="px-4 py-3 text-sm font-medium">
                       <Link
                         href={`/environments/${environmentId}/campaigns/${campaign.id}`}
-                        className="hover:text-brand-dark hover:underline">
+                        className="text-brand-dark decoration-brand/30 hover:decoration-brand underline underline-offset-2">
                         {campaign.name}
                       </Link>
                     </td>
