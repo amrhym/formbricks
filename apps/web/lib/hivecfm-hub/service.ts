@@ -53,9 +53,13 @@ const QUESTION_TYPE_TO_HUB_FIELD: Record<string, HubFieldType> = {
   [TSurveyElementTypeEnum.Cal]: "text",
 };
 
+function stripHtml(html: string): string {
+  return html.replace(/<[^>]*>/g, "").trim();
+}
+
 function getHeadlineText(headline: Record<string, string> | string): string {
-  if (typeof headline === "string") return headline;
-  return headline.default || Object.values(headline)[0] || "";
+  const raw = typeof headline === "string" ? headline : headline.default || Object.values(headline)[0] || "";
+  return stripHtml(raw);
 }
 
 function extractFieldValue(

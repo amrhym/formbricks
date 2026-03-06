@@ -1,7 +1,7 @@
 "use client";
 
-import { Loader2, SearchIcon } from "lucide-react";
-import { useCallback, useState } from "react";
+import { BarChart3Icon, Loader2, SearchIcon, TrendingUpIcon } from "lucide-react";
+import { useCallback, useMemo, useState } from "react";
 import { semanticSearchAction } from "@/modules/ee/insights/actions";
 import { Badge } from "@/modules/ui/components/badge";
 import { Button } from "@/modules/ui/components/button";
@@ -16,6 +16,10 @@ interface SemanticSearchResult {
 interface SemanticSearchProps {
   environmentId: string;
 }
+
+const stripHtml = (html: string): string => {
+  return html.replace(/<[^>]*>/g, "").trim();
+};
 
 export const SemanticSearch = ({ environmentId }: SemanticSearchProps) => {
   const [query, setQuery] = useState("");
@@ -66,6 +70,22 @@ export const SemanticSearch = ({ environmentId }: SemanticSearchProps) => {
     return "gray";
   };
 
+  const stats = useMemo(() => {
+    if (results.length === 0) return null;
+    const scores = results.map((r) => r.score);
+    const avg = scores.reduce((a, b) => a + b, 0) / scores.length;
+    const max = Math.max(...scores);
+    const min = Math.min(...scores);
+    const highRelevance = scores.filter((s) => s >= 0.7).length;
+    const medRelevance = scores.filter((s) => s >= 0.4 && s < 0.7).length;
+    const lowRelevance = scores.filter((s) => s < 0.4).length;
+
+    // Unique questions
+    const questions = new Set(results.map((r) => stripHtml(r.field_label)).filter(Boolean));
+
+    return { avg, max, min, highRelevance, medRelevance, lowRelevance, uniqueQuestions: questions.size };
+  }, [results]);
+
   return (
     <div className="space-y-6">
       {/* Search Input */}
@@ -102,21 +122,89 @@ export const SemanticSearch = ({ environmentId }: SemanticSearchProps) => {
         </div>
       )}
 
-      {/* Results */}
+      {/* Statistics + Results */}
       {!isSearching && hasSearched && results.length > 0 && (
-        <div className="space-y-3">
-          <p className="text-sm text-slate-500">
-            {results.length} result{results.length !== 1 ? "s" : ""} found
-          </p>
+        <div className="space-y-4">
+          {/* Statistics Bar */}
+          {stats && (
+            <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
+              <div className="rounded-lg border border-slate-200 bg-white p-3">
+                <div className="flex items-center gap-2 text-xs text-slate-500">
+                  <SearchIcon className="h-3.5 w-3.5" />
+                  Results
+                </div>
+                <p className="mt-1 text-lg font-semibold text-slate-800">{results.length}</p>
+                <p className="text-xs text-slate-400">
+                  from {stats.uniqueQuestions} question{stats.uniqueQuestions !== 1 ? "s" : ""}
+                </p>
+              </div>
+              <div className="rounded-lg border border-slate-200 bg-white p-3">
+                <div className="flex items-center gap-2 text-xs text-slate-500">
+                  <TrendingUpIcon className="h-3.5 w-3.5" />
+                  Avg. Relevance
+                </div>
+                <p className="mt-1 text-lg font-semibold text-slate-800">{formatScore(stats.avg)}</p>
+                <p className="text-xs text-slate-400">
+                  {formatScore(stats.min)} — {formatScore(stats.max)}
+                </p>
+              </div>
+              <div className="rounded-lg border border-slate-200 bg-white p-3">
+                <div className="flex items-center gap-2 text-xs text-slate-500">
+                  <BarChart3Icon className="h-3.5 w-3.5" />
+                  Relevance Breakdown
+                </div>
+                <div className="mt-1.5 flex gap-1.5">
+                  {stats.highRelevance > 0 && (
+                    <Badge text={`${stats.highRelevance} high`} type="success" size="tiny" />
+                  )}
+                  {stats.medRelevance > 0 && (
+                    <Badge text={`${stats.medRelevance} med`} type="warning" size="tiny" />
+                  )}
+                  {stats.lowRelevance > 0 && (
+                    <Badge text={`${stats.lowRelevance} low`} type="gray" size="tiny" />
+                  )}
+                </div>
+              </div>
+              <div className="rounded-lg border border-slate-200 bg-white p-3">
+                <div className="flex items-center gap-2 text-xs text-slate-500">
+                  <TrendingUpIcon className="h-3.5 w-3.5" />
+                  Best Match
+                </div>
+                <p className="mt-1 text-lg font-semibold text-slate-800">{formatScore(stats.max)}</p>
+                <p className="mt-0.5 truncate text-xs text-slate-400">
+                  {stripHtml(results[0].field_label) || "—"}
+                </p>
+              </div>
+            </div>
+          )}
+
+          {/* Relevance Score Legend */}
+          <div className="flex items-center gap-4 text-xs text-slate-400">
+            <span>Relevance:</span>
+            <span className="flex items-center gap-1">
+              <span className="inline-block h-2 w-2 rounded-full bg-emerald-500" />
+              70%+ High
+            </span>
+            <span className="flex items-center gap-1">
+              <span className="inline-block h-2 w-2 rounded-full bg-amber-500" />
+              40–70% Medium
+            </span>
+            <span className="flex items-center gap-1">
+              <span className="inline-block h-2 w-2 rounded-full bg-slate-400" />
+              &lt;40% Low
+            </span>
+          </div>
+
+          {/* Result Cards */}
           {results.map((result) => (
             <div
               key={result.feedback_record_id}
               className="rounded-lg border border-slate-200 bg-white p-4 transition-colors hover:border-slate-300">
               <div className="flex items-start justify-between gap-3">
                 <div className="min-w-0 flex-1">
-                  {/* Question Label */}
+                  {/* Question Label — strip HTML */}
                   {result.field_label && (
-                    <p className="mb-1 text-xs font-medium text-slate-500">{result.field_label}</p>
+                    <p className="mb-1 text-xs font-medium text-slate-500">{stripHtml(result.field_label)}</p>
                   )}
 
                   {/* Answer Text */}
