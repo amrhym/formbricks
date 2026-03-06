@@ -106,6 +106,79 @@ interface PushToHubParams {
   collectedAt?: Date;
 }
 
+// --- Semantic Search Types & Functions ---
+
+export interface SemanticSearchResult {
+  feedback_record_id: string;
+  score: number;
+  field_label: string;
+  value_text: string;
+}
+
+export async function searchFeedbackSemantic(params: {
+  query: string;
+  tenantId: string;
+  limit?: number;
+  minScore?: number;
+}): Promise<SemanticSearchResult[]> {
+  if (!IS_HIVECFM_HUB_CONFIGURED) return [];
+
+  const url = new URL(`${HIVECFM_HUB_URL}/v1/feedback-records/search/semantic`);
+  if (params.limit) url.searchParams.set("limit", String(params.limit));
+  if (params.minScore !== undefined) url.searchParams.set("min_score", String(params.minScore));
+
+  const response = await fetch(url.toString(), {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${HIVECFM_HUB_API_KEY}`,
+    },
+    body: JSON.stringify({
+      query: params.query,
+      tenant_id: params.tenantId,
+    }),
+  });
+
+  if (!response.ok) {
+    const body = await response.text().catch(() => "");
+    logger.error({ status: response.status, body }, "Hub semantic search failed");
+    return [];
+  }
+
+  const data = await response.json();
+  return (data.data ?? []) as SemanticSearchResult[];
+}
+
+export async function getSimilarFeedback(params: {
+  recordId: string;
+  tenantId: string;
+  limit?: number;
+}): Promise<SemanticSearchResult[]> {
+  if (!IS_HIVECFM_HUB_CONFIGURED) return [];
+
+  const url = new URL(`${HIVECFM_HUB_URL}/v1/feedback-records/${params.recordId}/similar`);
+  url.searchParams.set("tenant_id", params.tenantId);
+  if (params.limit) url.searchParams.set("limit", String(params.limit));
+
+  const response = await fetch(url.toString(), {
+    method: "GET",
+    headers: {
+      Authorization: `Bearer ${HIVECFM_HUB_API_KEY}`,
+    },
+  });
+
+  if (!response.ok) {
+    const body = await response.text().catch(() => "");
+    logger.error({ status: response.status, body }, "Hub similar feedback failed");
+    return [];
+  }
+
+  const data = await response.json();
+  return (data.data ?? []) as SemanticSearchResult[];
+}
+
+// --- Push Response to Hub ---
+
 export async function pushResponseToHub(params: PushToHubParams): Promise<void> {
   if (!IS_HIVECFM_HUB_CONFIGURED) return;
 

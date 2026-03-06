@@ -9,6 +9,7 @@ import {
   MessageCircle,
   PanelLeftCloseIcon,
   PanelLeftOpenIcon,
+  SearchIcon,
   SendIcon,
   UserCircleIcon,
   UserIcon,
@@ -109,6 +110,12 @@ export const MainNavigation = ({
         href: `/environments/${environment.id}/analytics`,
         icon: BarChart3Icon,
         isActive: pathname?.includes("/analytics"),
+      },
+      {
+        name: "Insights",
+        href: `/environments/${environment.id}/insights/search`,
+        icon: SearchIcon,
+        isActive: pathname?.includes("/insights"),
       },
       {
         name: t("common.campaigns") || "Campaigns",
