@@ -1,6 +1,5 @@
 import { Metadata } from "next";
 import { getTextContent } from "@hivecfm/types/surveys/validation";
-import { IS_FORMBRICKS_CLOUD } from "@/lib/constants";
 import { getPublicDomain } from "@/lib/getPublicUrl";
 import { getLocalizedValue } from "@/lib/i18n/utils";
 import { COLOR_DEFAULTS } from "@/lib/styling/constants";
