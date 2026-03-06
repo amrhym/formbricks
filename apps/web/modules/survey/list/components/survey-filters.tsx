@@ -72,6 +72,7 @@ export const SurveyFilters = ({
   const typeOptions: TFilterOption[] = [
     { label: t("common.link"), value: "link" },
     { label: t("common.app"), value: "app" },
+    { label: t("common.voice_ivr_survey"), value: "voice" },
   ];
 
   const toggleDropdown = (id: string) => {
@@ -105,7 +106,7 @@ export const SurveyFilters = ({
   };
 
   const handleTypeChange = (value: string) => {
-    if (value === "link" || value === "app") {
+    if (value === "link" || value === "app" || value === "voice") {
       if (type.includes(value)) {
         setSurveyFilters((prev) => ({ ...prev, type: prev.type.filter((v) => v !== value) }));
       } else {

@@ -6,7 +6,7 @@ export const ZSurvey = z.object({
   id: z.string(),
   name: z.string(),
   environmentId: z.string(),
-  type: z.enum(["link", "app", "website", "web"]), //we can replace this with ZSurveyType after we remove "web" from schema
+  type: z.enum(["link", "app", "website", "web", "voice"]), //we can replace this with ZSurveyType after we remove "web" from schema
   status: ZSurveyStatus,
   createdAt: z.date(),
   updatedAt: z.date(),

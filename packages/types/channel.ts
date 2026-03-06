@@ -229,13 +229,14 @@ export const getDefaultChannelConfig = (type: TChannelType): TChannelConfig => {
 /**
  * Maps a channel type to the legacy survey type for backward compatibility.
  */
-export const channelTypeToSurveyType = (channelType: TChannelType): "link" | "app" => {
+export const channelTypeToSurveyType = (channelType: TChannelType): "link" | "app" | "voice" => {
   switch (channelType) {
     case "web":
     case "mobile":
       return "app";
-    case "link":
     case "voice":
+      return "voice";
+    case "link":
     case "whatsapp":
     case "sms":
     case "email":

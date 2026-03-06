@@ -109,6 +109,9 @@ export const SurveyEditor = ({
 
   const [isCautionDialogOpen, setIsCautionDialogOpen] = useState(false);
 
+  // Derive isVoiceChannel from localSurvey.type so it updates when user changes survey type
+  const derivedIsVoiceChannel = isVoiceChannel || localSurvey?.type === "voice";
+
   useDocumentVisibility(fetchLatestProject);
 
   useEffect(() => {
@@ -218,7 +221,7 @@ export const SurveyEditor = ({
               isMultiLanguageAllowed={isMultiLanguageAllowed}
               isFormbricksCloud={isFormbricksCloud}
               isCxMode={isCxMode}
-              isVoiceChannel={isVoiceChannel}
+              isVoiceChannel={derivedIsVoiceChannel}
               isMessagingChannel={isMessagingChannel}
               locale={locale}
               responseCount={responseCount}
@@ -280,7 +283,7 @@ export const SurveyEditor = ({
         </main>
 
         <aside className="group hidden w-1/3 flex-shrink-0 items-center justify-center overflow-hidden border-l border-slate-200 bg-slate-100 shadow-inner md:flex md:flex-col">
-          {isVoiceChannel ? (
+          {derivedIsVoiceChannel ? (
             <VoicePreviewPanel
               survey={localSurvey}
               activeElementId={activeElementId}

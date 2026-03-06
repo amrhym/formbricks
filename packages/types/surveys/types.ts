@@ -789,7 +789,7 @@ export const ZSurveyDisplayOption = z.enum([
 
 export type TSurveyDisplayOption = z.infer<typeof ZSurveyDisplayOption>;
 
-export const ZSurveyType = z.enum(["link", "app"]);
+export const ZSurveyType = z.enum(["link", "app", "voice"]);
 
 export type TSurveyType = z.infer<typeof ZSurveyType>;
 

@@ -3,13 +3,15 @@
 import { useAutoAnimate } from "@formkit/auto-animate/react";
 import { Environment } from "@prisma/client";
 import * as Collapsible from "@radix-ui/react-collapsible";
-import { CheckIcon, LinkIcon, MonitorIcon } from "lucide-react";
+import { CheckIcon, LinkIcon, MonitorIcon, PhoneIcon } from "lucide-react";
 import { useEffect, useState } from "react";
+import toast from "react-hot-toast";
 import { useTranslation } from "react-i18next";
 import { TSegment } from "@hivecfm/types/segment";
 import { TSurvey, TSurveyType } from "@hivecfm/types/surveys/types";
 import { getDefaultEndingCard } from "@/app/lib/survey-builder";
 import { cn } from "@/lib/cn";
+import { findOrCreateChannelAction } from "@/modules/survey/components/template-list/actions";
 import { Alert, AlertButton, AlertDescription, AlertTitle } from "@/modules/ui/components/alert";
 import { Badge } from "@/modules/ui/components/badge";
 import { Label } from "@/modules/ui/components/label";
@@ -31,14 +33,34 @@ export const HowToSendCard = ({ localSurvey, setLocalSurvey, environment }: HowT
     }
   }, [environment]);
 
-  const setSurveyType = (type: TSurveyType) => {
+  const setSurveyType = async (type: TSurveyType) => {
     const endingsTemp = localSurvey.endings;
-    if (type === "link" && localSurvey.endings.length === 0) {
+    if ((type === "link" || type === "voice") && localSurvey.endings.length === 0) {
       endingsTemp.push(getDefaultEndingCard(localSurvey.languages, t));
     }
+
+    // For voice type, auto-create/find the voice channel and set channelId
+    let channelId = localSurvey.channelId;
+    if (type === "voice") {
+      const channelResult = await findOrCreateChannelAction({
+        environmentId: environment.id,
+        channelType: "voice",
+      });
+      if (channelResult?.data) {
+        channelId = channelResult.data;
+      } else {
+        toast.error("Failed to set up voice channel");
+        return;
+      }
+    } else if (localSurvey.type === "voice") {
+      // Switching away from voice, clear the channelId
+      channelId = null;
+    }
+
     setLocalSurvey((prevSurvey) => ({
       ...prevSurvey,
       type,
+      channelId,
       endings: endingsTemp,
     }));
 
@@ -88,6 +110,14 @@ export const HowToSendCard = ({ localSurvey, setLocalSurvey, environment }: HowT
       description: t("environments.surveys.edit.app_survey_description"),
       comingSoon: false,
       alert: !appSetupCompleted,
+    },
+    {
+      id: "voice",
+      name: t("common.voice_ivr_survey"),
+      icon: PhoneIcon,
+      description: t("environments.surveys.edit.voice_ivr_survey_description"),
+      comingSoon: false,
+      alert: false,
     },
   ];
 

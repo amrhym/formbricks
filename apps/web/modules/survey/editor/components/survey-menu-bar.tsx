@@ -303,7 +303,7 @@ export const SurveyMenuBar = ({
         }
       });
 
-      if (localSurvey.type !== "link" && !localSurvey.triggers?.length) {
+      if (localSurvey.type === "app" && !localSurvey.triggers?.length) {
         toast.error(t("environments.surveys.edit.please_set_a_survey_trigger"));
         setIsSurveySaving(false);
         return false;

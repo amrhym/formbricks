@@ -77,11 +77,14 @@ export const TemplateList = ({
 
     // For channels that need a channelId (voice, whatsapp, sms), find or create the channel first
     let channelId: string | undefined;
-    const channelsNeedingId: ChannelSelection[] = ["voice", "whatsapp", "sms"];
-    if (selectedChannel && channelsNeedingId.includes(selectedChannel)) {
+    const channelsNeedingId = ["voice", "whatsapp", "sms"] as const;
+    if (
+      selectedChannel &&
+      channelsNeedingId.includes(selectedChannel as (typeof channelsNeedingId)[number])
+    ) {
       const channelResult = await findOrCreateChannelAction({
         environmentId,
-        channelType: selectedChannel,
+        channelType: selectedChannel as "voice" | "whatsapp" | "sms",
       });
       if (channelResult?.data) {
         channelId = channelResult.data;

@@ -146,7 +146,7 @@ export const WhenToSendCard = ({
       <Collapsible.Root
         open={open}
         onOpenChange={(openState) => {
-          if (localSurvey.type !== "link") {
+          if (localSurvey.type === "app") {
             setOpen(openState);
           }
         }}

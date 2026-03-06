@@ -110,7 +110,7 @@ export const SurveyEditorPage = async (props) => {
   const publicDomain = getPublicDomain();
 
   // Determine if this survey belongs to a voice or messaging channel
-  let isVoiceChannel = false;
+  let isVoiceChannel = survey.type === "voice";
   let isMessagingChannel = false;
   if (survey.channelId) {
     const channel = await getChannel(survey.channelId);
