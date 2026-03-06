@@ -1,111 +1,137 @@
 "use client";
 
-import { BarChart3Icon, Loader2, SearchIcon, TrendingUpIcon } from "lucide-react";
-import { useCallback, useMemo, useState } from "react";
-import { semanticSearchAction } from "@/modules/ee/insights/actions";
-import { Badge } from "@/modules/ui/components/badge";
+import { ColumnsIcon, Loader2, SearchIcon } from "lucide-react";
+import { useCallback, useState } from "react";
 import { Button } from "@/modules/ui/components/button";
-
-interface SemanticSearchResult {
-  feedback_record_id: string;
-  score: number;
-  field_label: string;
-  value_text: string;
-}
+import { useSemanticSearch } from "../hooks/use-semantic-search";
+import type { SearchResult, ViewMode } from "../types";
+import { ComparisonPanel } from "./comparison-panel";
+import { SearchFiltersPanel } from "./search-filters";
+import { SearchInput } from "./search-input";
+import { SearchResultsList } from "./search-results-list";
+import { SearchStats } from "./search-stats";
+import { SearchToolbar } from "./search-toolbar";
+import { SimilarModal } from "./similar-modal";
+import { TimelineView } from "./timeline-view";
 
 interface SemanticSearchProps {
   environmentId: string;
+  surveys: Array<{ id: string; name: string }>;
 }
 
-const stripHtml = (html: string): string => {
-  return html.replace(/<[^>]*>/g, "").trim();
-};
+function exportResultsToCsv(results: SearchResult[]) {
+  const headers = ["Question", "Answer", "Score", "Survey", "Sentiment", "Date"];
+  const rows = results.map((r) => [
+    r.field_label.replace(/<[^>]*>/g, ""),
+    r.value_text,
+    String(r.score),
+    r.source_name,
+    r.sentiment || "",
+    r.collected_at,
+  ]);
 
-export const SemanticSearch = ({ environmentId }: SemanticSearchProps) => {
-  const [query, setQuery] = useState("");
-  const [results, setResults] = useState<SemanticSearchResult[]>([]);
-  const [isSearching, setIsSearching] = useState(false);
-  const [hasSearched, setHasSearched] = useState(false);
-  const [error, setError] = useState<string | null>(null);
+  const csvContent = [headers, ...rows]
+    .map((row) => row.map((cell) => `"${cell.replace(/"/g, '""')}"`).join(","))
+    .join("\n");
 
-  const handleSearch = useCallback(async () => {
-    const trimmed = query.trim();
-    if (!trimmed) return;
+  const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" });
+  const url = URL.createObjectURL(blob);
+  const link = document.createElement("a");
+  link.href = url;
+  link.download = `semantic-search-results-${new Date().toISOString().slice(0, 10)}.csv`;
+  link.click();
+  URL.revokeObjectURL(url);
+}
 
-    setIsSearching(true);
-    setError(null);
-    setHasSearched(true);
+export const SemanticSearch = ({ environmentId, surveys }: SemanticSearchProps) => {
+  const {
+    query,
+    setQuery,
+    results,
+    isSearching,
+    hasSearched,
+    error,
+    nextCursor,
+    filters,
+    setFilters,
+    recentSearches,
+    selectedIds,
+    toggleSelected,
+    selectAll,
+    clearSelection,
+    search,
+    loadMore,
+    findSimilar,
+  } = useSemanticSearch(environmentId);
 
-    try {
-      const response = await semanticSearchAction({ environmentId, query: trimmed, limit: 20 });
-      if (response?.data) {
-        setResults(response.data);
-      } else {
-        setResults([]);
-        if (response?.serverError) {
-          setError("Search failed. Please try again.");
-        }
+  const [viewMode, setViewMode] = useState<ViewMode>("list");
+  const [showComparison, setShowComparison] = useState(false);
+  const [similarModalOpen, setSimilarModalOpen] = useState(false);
+  const [similarResults, setSimilarResults] = useState<SearchResult[]>([]);
+  const [similarLoading, setSimilarLoading] = useState(false);
+  const [similarSource, setSimilarSource] = useState<SearchResult | null>(null);
+
+  const handleFindSimilar = useCallback(
+    async (recordId: string) => {
+      const source = results.find((r) => r.feedback_record_id === recordId) ?? null;
+      setSimilarSource(source);
+      setSimilarModalOpen(true);
+      setSimilarLoading(true);
+      setSimilarResults([]);
+
+      try {
+        const similar = await findSimilar(recordId);
+        setSimilarResults(similar);
+      } catch {
+        setSimilarResults([]);
+      } finally {
+        setSimilarLoading(false);
       }
-    } catch {
-      setError("Search failed. Please try again.");
-      setResults([]);
-    } finally {
-      setIsSearching(false);
-    }
-  }, [query, environmentId]);
+    },
+    [results, findSimilar]
+  );
 
-  const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
-    if (e.key === "Enter") {
-      handleSearch();
-    }
-  };
-
-  const formatScore = (score: number): string => {
-    return `${(score * 100).toFixed(1)}%`;
-  };
-
-  const getScoreBadgeType = (score: number): "success" | "warning" | "gray" => {
-    if (score >= 0.7) return "success";
-    if (score >= 0.4) return "warning";
-    return "gray";
-  };
-
-  const stats = useMemo(() => {
-    if (results.length === 0) return null;
-    const scores = results.map((r) => r.score);
-    const avg = scores.reduce((a, b) => a + b, 0) / scores.length;
-    const max = Math.max(...scores);
-    const min = Math.min(...scores);
-    const highRelevance = scores.filter((s) => s >= 0.7).length;
-    const medRelevance = scores.filter((s) => s >= 0.4 && s < 0.7).length;
-    const lowRelevance = scores.filter((s) => s < 0.4).length;
-
-    // Unique questions
-    const questions = new Set(results.map((r) => stripHtml(r.field_label)).filter(Boolean));
-
-    return { avg, max, min, highRelevance, medRelevance, lowRelevance, uniqueQuestions: questions.size };
+  const handleExport = useCallback(() => {
+    exportResultsToCsv(results);
   }, [results]);
 
-  return (
-    <div className="space-y-6">
-      {/* Search Input */}
-      <div className="flex gap-3">
-        <div className="relative flex-1">
-          <SearchIcon className="absolute top-1/2 left-3 h-4 w-4 -translate-y-1/2 text-slate-400" />
-          <input
-            type="text"
-            className="w-full rounded-lg border border-slate-300 bg-white py-2 pr-4 pl-10 text-sm text-slate-800 placeholder:text-slate-400 focus:border-slate-500 focus:ring-1 focus:ring-slate-500 focus:outline-none"
-            placeholder="Search feedback by meaning... (e.g. 'customer satisfaction with delivery')"
-            value={query}
-            onChange={(e) => setQuery(e.target.value)}
-            onKeyDown={handleKeyDown}
-            disabled={isSearching}
-          />
+  const handleExportSelected = useCallback(() => {
+    const selected = results.filter((r) => selectedIds.has(r.feedback_record_id));
+    exportResultsToCsv(selected);
+  }, [results, selectedIds]);
+
+  if (showComparison) {
+    return (
+      <div className="space-y-4">
+        <div className="flex items-center justify-between">
+          <h3 className="text-sm font-medium text-slate-700">Comparison Mode</h3>
+          <Button
+            size="sm"
+            variant="ghost"
+            onClick={() => setShowComparison(false)}
+            className="text-xs text-slate-500">
+            <ColumnsIcon className="mr-1 h-3 w-3" />
+            Exit Comparison
+          </Button>
         </div>
-        <Button size="sm" onClick={handleSearch} disabled={isSearching || !query.trim()}>
-          {isSearching ? <Loader2 className="h-4 w-4 animate-spin" /> : "Search"}
-        </Button>
+        <ComparisonPanel environmentId={environmentId} surveys={surveys} />
       </div>
+    );
+  }
+
+  return (
+    <div className="space-y-4">
+      {/* Search Input */}
+      <SearchInput
+        query={query}
+        onQueryChange={setQuery}
+        onSearch={search}
+        isSearching={isSearching}
+        recentSearches={recentSearches}
+      />
+
+      {/* Filters */}
+      <SearchFiltersPanel filters={filters} onFiltersChange={setFilters} surveys={surveys} />
 
       {/* Error State */}
       {error && (
@@ -113,7 +139,7 @@ export const SemanticSearch = ({ environmentId }: SemanticSearchProps) => {
       )}
 
       {/* Loading State */}
-      {isSearching && (
+      {isSearching && !hasSearched && (
         <div className="flex h-64 items-center justify-center">
           <div className="text-center">
             <Loader2 className="mx-auto h-8 w-8 animate-spin text-slate-400" />
@@ -122,100 +148,50 @@ export const SemanticSearch = ({ environmentId }: SemanticSearchProps) => {
         </div>
       )}
 
-      {/* Statistics + Results */}
-      {!isSearching && hasSearched && results.length > 0 && (
+      {/* Statistics + Toolbar + Results */}
+      {hasSearched && results.length > 0 && (
         <div className="space-y-4">
-          {/* Statistics Bar */}
-          {stats && (
-            <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
-              <div className="rounded-lg border border-slate-200 bg-white p-3">
-                <div className="flex items-center gap-2 text-xs text-slate-500">
-                  <SearchIcon className="h-3.5 w-3.5" />
-                  Results
-                </div>
-                <p className="mt-1 text-lg font-semibold text-slate-800">{results.length}</p>
-                <p className="text-xs text-slate-400">
-                  from {stats.uniqueQuestions} question{stats.uniqueQuestions !== 1 ? "s" : ""}
-                </p>
-              </div>
-              <div className="rounded-lg border border-slate-200 bg-white p-3">
-                <div className="flex items-center gap-2 text-xs text-slate-500">
-                  <TrendingUpIcon className="h-3.5 w-3.5" />
-                  Avg. Relevance
-                </div>
-                <p className="mt-1 text-lg font-semibold text-slate-800">{formatScore(stats.avg)}</p>
-                <p className="text-xs text-slate-400">
-                  {formatScore(stats.min)} — {formatScore(stats.max)}
-                </p>
-              </div>
-              <div className="rounded-lg border border-slate-200 bg-white p-3">
-                <div className="flex items-center gap-2 text-xs text-slate-500">
-                  <BarChart3Icon className="h-3.5 w-3.5" />
-                  Relevance Breakdown
-                </div>
-                <div className="mt-1.5 flex gap-1.5">
-                  {stats.highRelevance > 0 && (
-                    <Badge text={`${stats.highRelevance} high`} type="success" size="tiny" />
-                  )}
-                  {stats.medRelevance > 0 && (
-                    <Badge text={`${stats.medRelevance} med`} type="warning" size="tiny" />
-                  )}
-                  {stats.lowRelevance > 0 && (
-                    <Badge text={`${stats.lowRelevance} low`} type="gray" size="tiny" />
-                  )}
-                </div>
-              </div>
-              <div className="rounded-lg border border-slate-200 bg-white p-3">
-                <div className="flex items-center gap-2 text-xs text-slate-500">
-                  <TrendingUpIcon className="h-3.5 w-3.5" />
-                  Best Match
-                </div>
-                <p className="mt-1 text-lg font-semibold text-slate-800">{formatScore(stats.max)}</p>
-                <p className="mt-0.5 truncate text-xs text-slate-400">
-                  {stripHtml(results[0].field_label) || "—"}
-                </p>
-              </div>
-            </div>
+          {/* Statistics */}
+          <SearchStats results={results} />
+
+          {/* Toolbar */}
+          <SearchToolbar
+            viewMode={viewMode}
+            onViewModeChange={setViewMode}
+            onExport={handleExport}
+            onToggleComparison={() => setShowComparison(true)}
+            showComparison={false}
+            selectedCount={selectedIds.size}
+            onExportSelected={handleExportSelected}
+            onSelectAll={selectAll}
+            onClearSelection={clearSelection}
+            resultCount={results.length}
+          />
+
+          {/* Results */}
+          {viewMode === "timeline" ? (
+            <TimelineView
+              results={results}
+              query={query}
+              environmentId={environmentId}
+              selectedIds={selectedIds}
+              onToggleSelect={toggleSelected}
+              onFindSimilar={handleFindSimilar}
+            />
+          ) : (
+            <SearchResultsList
+              results={results}
+              query={query}
+              environmentId={environmentId}
+              viewMode={viewMode}
+              nextCursor={nextCursor}
+              isSearching={isSearching}
+              selectedIds={selectedIds}
+              onToggleSelect={toggleSelected}
+              onLoadMore={loadMore}
+              onFindSimilar={handleFindSimilar}
+            />
           )}
-
-          {/* Relevance Score Legend */}
-          <div className="flex items-center gap-4 text-xs text-slate-400">
-            <span>Relevance:</span>
-            <span className="flex items-center gap-1">
-              <span className="inline-block h-2 w-2 rounded-full bg-emerald-500" />
-              70%+ High
-            </span>
-            <span className="flex items-center gap-1">
-              <span className="inline-block h-2 w-2 rounded-full bg-amber-500" />
-              40–70% Medium
-            </span>
-            <span className="flex items-center gap-1">
-              <span className="inline-block h-2 w-2 rounded-full bg-slate-400" />
-              &lt;40% Low
-            </span>
-          </div>
-
-          {/* Result Cards */}
-          {results.map((result) => (
-            <div
-              key={result.feedback_record_id}
-              className="rounded-lg border border-slate-200 bg-white p-4 transition-colors hover:border-slate-300">
-              <div className="flex items-start justify-between gap-3">
-                <div className="min-w-0 flex-1">
-                  {/* Question Label — strip HTML */}
-                  {result.field_label && (
-                    <p className="mb-1 text-xs font-medium text-slate-500">{stripHtml(result.field_label)}</p>
-                  )}
-
-                  {/* Answer Text */}
-                  <p className="text-sm leading-relaxed text-slate-800">{result.value_text || "(no text)"}</p>
-                </div>
-
-                {/* Score Badge */}
-                <Badge text={formatScore(result.score)} type={getScoreBadgeType(result.score)} size="tiny" />
-              </div>
-            </div>
-          ))}
         </div>
       )}
 
@@ -242,6 +218,16 @@ export const SemanticSearch = ({ environmentId }: SemanticSearchProps) => {
           </div>
         </div>
       )}
+
+      {/* Similar Modal */}
+      <SimilarModal
+        isOpen={similarModalOpen}
+        onClose={() => setSimilarModalOpen(false)}
+        results={similarResults}
+        isLoading={similarLoading}
+        sourceResult={similarSource}
+        environmentId={environmentId}
+      />
     </div>
   );
 };

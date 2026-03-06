@@ -117,6 +117,18 @@ export interface SemanticSearchResult {
   score: number;
   field_label: string;
   value_text: string;
+  source_id: string;
+  source_name: string;
+  submission_id: string;
+  collected_at: string;
+  sentiment: string;
+  sentiment_score: number;
+}
+
+export interface SemanticSearchApiResponse {
+  data: SemanticSearchResult[];
+  limit: number;
+  next_cursor?: string;
 }
 
 export async function searchFeedbackSemantic(params: {
@@ -124,12 +136,26 @@ export async function searchFeedbackSemantic(params: {
   tenantId: string;
   limit?: number;
   minScore?: number;
-}): Promise<SemanticSearchResult[]> {
-  if (!IS_HIVECFM_HUB_CONFIGURED) return [];
+  sourceId?: string;
+  since?: string;
+  until?: string;
+  cursor?: string;
+}): Promise<SemanticSearchApiResponse> {
+  const empty: SemanticSearchApiResponse = { data: [], limit: params.limit ?? 10 };
+  if (!IS_HIVECFM_HUB_CONFIGURED) return empty;
 
   const url = new URL(`${HIVECFM_HUB_URL}/v1/feedback-records/search/semantic`);
   if (params.limit) url.searchParams.set("limit", String(params.limit));
   if (params.minScore !== undefined) url.searchParams.set("min_score", String(params.minScore));
+  if (params.cursor) url.searchParams.set("cursor", params.cursor);
+
+  const body: Record<string, string> = {
+    query: params.query,
+    tenant_id: params.tenantId,
+  };
+  if (params.sourceId) body.source_id = params.sourceId;
+  if (params.since) body.since = params.since;
+  if (params.until) body.until = params.until;
 
   const response = await fetch(url.toString(), {
     method: "POST",
@@ -137,32 +163,36 @@ export async function searchFeedbackSemantic(params: {
       "Content-Type": "application/json",
       Authorization: `Bearer ${HIVECFM_HUB_API_KEY}`,
     },
-    body: JSON.stringify({
-      query: params.query,
-      tenant_id: params.tenantId,
-    }),
+    body: JSON.stringify(body),
   });
 
   if (!response.ok) {
-    const body = await response.text().catch(() => "");
-    logger.error({ status: response.status, body }, "Hub semantic search failed");
-    return [];
+    const respBody = await response.text().catch(() => "");
+    logger.error({ status: response.status, body: respBody }, "Hub semantic search failed");
+    return empty;
   }
 
   const data = await response.json();
-  return (data.data ?? []) as SemanticSearchResult[];
+  return {
+    data: (data.data ?? []) as SemanticSearchResult[],
+    limit: data.limit ?? params.limit ?? 10,
+    next_cursor: data.next_cursor,
+  };
 }
 
 export async function getSimilarFeedback(params: {
   recordId: string;
   tenantId: string;
   limit?: number;
-}): Promise<SemanticSearchResult[]> {
-  if (!IS_HIVECFM_HUB_CONFIGURED) return [];
+  cursor?: string;
+}): Promise<SemanticSearchApiResponse> {
+  const empty: SemanticSearchApiResponse = { data: [], limit: params.limit ?? 10 };
+  if (!IS_HIVECFM_HUB_CONFIGURED) return empty;
 
   const url = new URL(`${HIVECFM_HUB_URL}/v1/feedback-records/${params.recordId}/similar`);
   url.searchParams.set("tenant_id", params.tenantId);
   if (params.limit) url.searchParams.set("limit", String(params.limit));
+  if (params.cursor) url.searchParams.set("cursor", params.cursor);
 
   const response = await fetch(url.toString(), {
     method: "GET",
@@ -174,11 +204,15 @@ export async function getSimilarFeedback(params: {
   if (!response.ok) {
     const body = await response.text().catch(() => "");
     logger.error({ status: response.status, body }, "Hub similar feedback failed");
-    return [];
+    return empty;
   }
 
   const data = await response.json();
-  return (data.data ?? []) as SemanticSearchResult[];
+  return {
+    data: (data.data ?? []) as SemanticSearchResult[],
+    limit: data.limit ?? params.limit ?? 10,
+    next_cursor: data.next_cursor,
+  };
 }
 
 // --- Push Response to Hub ---

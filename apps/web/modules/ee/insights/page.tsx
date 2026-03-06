@@ -1,6 +1,7 @@
 import { SearchIcon } from "lucide-react";
 import { Metadata } from "next";
 import { IS_HIVECFM_HUB_CONFIGURED } from "@/lib/constants";
+import { getSurveys } from "@/lib/survey/service";
 import { getEnvironmentAuth } from "@/modules/environments/lib/utils";
 import { PageContentWrapper } from "@/modules/ui/components/page-content-wrapper";
 import { PageHeader } from "@/modules/ui/components/page-header";
@@ -37,10 +38,15 @@ export const InsightsSearchPage = async ({ params: paramsProps }: InsightsSearch
     );
   }
 
+  const surveys = await getSurveys(params.environmentId);
+
   return (
     <PageContentWrapper>
       <PageHeader pageTitle="Semantic Search" />
-      <SemanticSearch environmentId={params.environmentId} />
+      <SemanticSearch
+        environmentId={params.environmentId}
+        surveys={surveys.map((s) => ({ id: s.id, name: s.name }))}
+      />
     </PageContentWrapper>
   );
 };
