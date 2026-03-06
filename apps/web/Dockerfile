@@ -41,6 +41,10 @@ ARG TARGETARCH
 ARG BASE_PATH=""
 ENV BASE_PATH=${BASE_PATH}
 
+# Public Superset URL for embedded analytics iframe (client-side)
+ARG NEXT_PUBLIC_SUPERSET_BASE_URL=""
+ENV NEXT_PUBLIC_SUPERSET_BASE_URL=${NEXT_PUBLIC_SUPERSET_BASE_URL}
+
 # Set the working directory
 WORKDIR /app
 
