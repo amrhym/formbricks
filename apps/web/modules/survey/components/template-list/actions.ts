@@ -1,8 +1,10 @@
 "use server";
 
 import { z } from "zod";
+import { TChannelType } from "@hivecfm/types/channel";
 import { OperationNotAllowedError, ResourceNotFoundError } from "@hivecfm/types/errors";
 import { ZSurveyCreateInput } from "@hivecfm/types/surveys/types";
+import { createChannel, getChannelsByEnvironmentId } from "@/lib/channel/service";
 import { authenticatedActionClient } from "@/lib/utils/action-client";
 import { checkAuthorizationUpdated } from "@/lib/utils/action-client/action-client-middleware";
 import { AuthenticatedActionClientCtx } from "@/lib/utils/action-client/types/context";
@@ -81,3 +83,55 @@ export const createSurveyAction = authenticatedActionClient.schema(ZCreateSurvey
     }
   )
 );
+
+const ZFindOrCreateChannelAction = z.object({
+  environmentId: z.string().cuid2(),
+  channelType: z.enum(["voice", "whatsapp", "sms"]),
+});
+
+export const findOrCreateChannelAction = authenticatedActionClient
+  .schema(ZFindOrCreateChannelAction)
+  .action(
+    async ({
+      ctx,
+      parsedInput,
+    }: {
+      ctx: AuthenticatedActionClientCtx;
+      parsedInput: { environmentId: string; channelType: TChannelType };
+    }) => {
+      const organizationId = await getOrganizationIdFromEnvironmentId(parsedInput.environmentId);
+      await checkAuthorizationUpdated({
+        userId: ctx.user.id,
+        organizationId,
+        access: [
+          {
+            type: "organization",
+            roles: ["owner", "manager"],
+          },
+          {
+            type: "projectTeam",
+            minPermission: "readWrite",
+            projectId: await getProjectIdFromEnvironmentId(parsedInput.environmentId),
+          },
+        ],
+      });
+
+      const channels = await getChannelsByEnvironmentId(parsedInput.environmentId);
+      const existing = channels.find((c) => c.type === parsedInput.channelType);
+      if (existing) {
+        return existing.id;
+      }
+
+      const channelNames: Record<string, string> = {
+        voice: "IVR / Voice",
+        whatsapp: "WhatsApp",
+        sms: "SMS",
+      };
+
+      const channel = await createChannel(parsedInput.environmentId, {
+        name: channelNames[parsedInput.channelType] || parsedInput.channelType,
+        type: parsedInput.channelType,
+      });
+      return channel.id;
+    }
+  );

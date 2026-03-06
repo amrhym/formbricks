@@ -12,7 +12,7 @@ import { TSurveyCreateInput, TSurveyType } from "@hivecfm/types/surveys/types";
 import { TTemplate, TTemplateFilter, ZTemplateRole } from "@hivecfm/types/templates";
 import { templates } from "@/app/lib/templates";
 import { getFormattedErrorMessage } from "@/lib/utils/helper";
-import { createSurveyAction } from "./actions";
+import { createSurveyAction, findOrCreateChannelAction } from "./actions";
 import { ChannelSelection, ChannelSelector } from "./components/channel-selector";
 import { IntegrationMethodSelector } from "./components/integration-method-selector";
 import { StartFromScratchTemplate } from "./components/start-from-scratch-template";
@@ -74,10 +74,29 @@ export const TemplateList = ({
 
   const createSurvey = async (activeTemplate: TTemplate) => {
     setLoading(true);
+
+    // For channels that need a channelId (voice, whatsapp, sms), find or create the channel first
+    let channelId: string | undefined;
+    const channelsNeedingId: ChannelSelection[] = ["voice", "whatsapp", "sms"];
+    if (selectedChannel && channelsNeedingId.includes(selectedChannel)) {
+      const channelResult = await findOrCreateChannelAction({
+        environmentId,
+        channelType: selectedChannel,
+      });
+      if (channelResult?.data) {
+        channelId = channelResult.data;
+      } else {
+        toast.error("Failed to set up channel");
+        setLoading(false);
+        return;
+      }
+    }
+
     const augmentedTemplate: TSurveyCreateInput = {
       ...activeTemplate.preset,
       type: surveyType,
       createdBy: userId,
+      ...(channelId && { channelId }),
     };
     const createSurveyResponse = await createSurveyAction({
       environmentId: environmentId,
