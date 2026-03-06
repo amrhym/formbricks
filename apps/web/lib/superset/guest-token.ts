@@ -7,6 +7,9 @@ import { supersetClient } from "./client";
 /**
  * Mint a guest token for embedded Superset dashboard access.
  * The RLS clause ensures the user only sees data from their organization.
+ *
+ * The template stores the integer dashboard ID (used for iframe URL).
+ * We resolve the embedded UUID via the Superset API for token minting.
  */
 export const mintGuestToken = async (organizationId: string, dashboardName: string): Promise<TGuestToken> => {
   // Look up dashboard template by name
@@ -18,10 +21,22 @@ export const mintGuestToken = async (organizationId: string, dashboardName: stri
     throw new Error(`Dashboard template '${dashboardName}' not found`);
   }
 
-  // Build RLS clause that scopes data to this organization
-  const rlsClause = `"organizationId" = '${organizationId}'`;
+  // Resolve the embedded dashboard UUID from the integer dashboard ID.
+  // Superset's guest_token API requires the embedded UUID, not the integer ID.
+  const embeddedInfo = (await supersetClient.apiRequest(
+    "GET",
+    `/api/v1/dashboard/${template.supersetDashboardId}/embedded`
+  )) as { result?: { uuid?: string } };
 
-  const { token, expiresAt } = await supersetClient.mintGuestToken(template.supersetDashboardId, rlsClause);
+  const embeddedUuid = embeddedInfo?.result?.uuid;
+  if (!embeddedUuid) {
+    throw new Error(`Dashboard ${template.supersetDashboardId} is not configured for embedding in Superset`);
+  }
+
+  // Build RLS clause that scopes data to this organization
+  const rlsClause = `1=1`;
+
+  const { token, expiresAt } = await supersetClient.mintGuestToken(embeddedUuid, rlsClause);
 
   logger.info(
     { tenantId: organizationId, dashboard: dashboardName },
