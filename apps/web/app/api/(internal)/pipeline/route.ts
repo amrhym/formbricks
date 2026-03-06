@@ -150,13 +150,19 @@ export const POST = async (request: Request) => {
     }
 
     // Push response to HiveCFM Hub (fire-and-forget, errors are logged)
+    // Surveys may use questions[] (legacy) or blocks[].elements[] (current)
+    const allQuestions =
+      survey.questions.length > 0
+        ? survey.questions
+        : (survey.blocks?.flatMap((block) => block.elements) ?? []);
+
     pushResponseToHub({
       environmentId,
       surveyId,
       surveyName: survey.name,
       responseId: response.id,
       responseData: response.data,
-      questions: survey.questions.map((q) => ({ id: q.id, type: q.type, headline: q.headline })),
+      questions: allQuestions.map((q) => ({ id: q.id, type: q.type, headline: q.headline })),
       language: response.language,
       userIdentifier: response.contact?.userId ?? undefined,
       collectedAt: response.createdAt,
