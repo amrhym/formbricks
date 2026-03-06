@@ -26,6 +26,7 @@ interface CTAElementFormProps {
   locale: TUserLocale;
   isStorageConfigured: boolean;
   isExternalUrlsAllowed?: boolean;
+  isVoiceChannel?: boolean;
 }
 
 export const CTAElementForm = ({
@@ -40,6 +41,7 @@ export const CTAElementForm = ({
   locale,
   isStorageConfigured = true,
   isExternalUrlsAllowed,
+  isVoiceChannel,
 }: CTAElementFormProps): JSX.Element => {
   const { t } = useTranslation();
   const surveyLanguageCodes = extractLanguageCodes(localSurvey.languages);
@@ -61,6 +63,7 @@ export const CTAElementForm = ({
         isStorageConfigured={isStorageConfigured}
         autoFocus={!element.headline?.default || element.headline.default.trim() === ""}
         isExternalUrlsAllowed={isExternalUrlsAllowed}
+        isVoiceChannel={isVoiceChannel}
       />
 
       <div ref={parent}>

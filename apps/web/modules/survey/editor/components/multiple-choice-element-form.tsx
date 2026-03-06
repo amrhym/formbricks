@@ -250,6 +250,7 @@ export const MultipleChoiceElementForm = ({
         isStorageConfigured={isStorageConfigured}
         autoFocus={!element.headline?.default || element.headline.default.trim() === ""}
         isExternalUrlsAllowed={isExternalUrlsAllowed}
+        isVoiceChannel={isVoiceChannel}
       />
 
       <div ref={parent}>

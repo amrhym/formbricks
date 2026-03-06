@@ -57,6 +57,7 @@ export const ZSurveyElementBase = z.object({
   subheader: ZI18nString.optional(),
   imageUrl: ZUrl.optional(),
   videoUrl: ZUrl.optional(),
+  audioUrl: ZUrl.optional(),
   required: z.boolean(),
   scale: z.enum(["number", "smiley", "star"]).optional(),
   range: z.union([z.literal(5), z.literal(3), z.literal(4), z.literal(7), z.literal(10)]).optional(),

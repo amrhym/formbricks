@@ -24,13 +24,15 @@ interface FileInputProps {
   id: string;
   allowedFileExtensions: TAllowedFileExtension[];
   environmentId: string;
-  onFileUpload: (uploadedUrl: string[] | undefined, fileType: "image" | "video") => void;
+  onFileUpload: (uploadedUrl: string[] | undefined, fileType: "image" | "video" | "audio") => void;
   fileUrl?: string | string[];
   videoUrl?: string;
+  audioUrl?: string;
   multiple?: boolean;
   imageFit?: "cover" | "contain";
   maxSizeInMB?: number;
   isVideoAllowed?: boolean;
+  isAudioAllowed?: boolean;
   disabled?: boolean;
   isStorageConfigured: boolean;
 }
@@ -48,10 +50,12 @@ export const FileInput = ({
   onFileUpload,
   fileUrl,
   videoUrl,
+  audioUrl,
   multiple = false,
   imageFit = "cover",
   maxSizeInMB,
   isVideoAllowed = false,
+  isAudioAllowed = false,
   disabled = false,
   isStorageConfigured = true,
 }: FileInputProps) => {
@@ -59,12 +63,15 @@ export const FileInput = ({
   const options = [
     { value: "image", label: t("common.image") },
     { value: "video", label: t("common.video") },
+    ...(isAudioAllowed ? [{ value: "audio", label: t("common.audio") }] : []),
   ];
   const [selectedFiles, setSelectedFiles] = useState<SelectedFile[]>([]);
   const [uploadedVideoUrl, setUploadedVideoUrl] = useState(videoUrl ?? "");
-  const [activeTab, setActiveTab] = useState(videoUrl ? "video" : "image");
+  const [uploadedAudioUrl, setUploadedAudioUrl] = useState(audioUrl ?? "");
+  const [activeTab, setActiveTab] = useState(audioUrl ? "audio" : videoUrl ? "video" : "image");
   const [imageUrlTemp, setImageUrlTemp] = useState(fileUrl ?? "");
   const [videoUrlTemp, setVideoUrlTemp] = useState(videoUrl ?? "");
+  const [audioUrlTemp, setAudioUrlTemp] = useState(audioUrl ?? "");
 
   const handleUpload = async (files: File[]) => {
     if (!isStorageConfigured) {
@@ -114,7 +121,7 @@ export const FileInput = ({
       return;
     }
 
-    onFileUpload(uploadedUrls, activeTab === "video" ? "video" : "image");
+    onFileUpload(uploadedUrls, activeTab === "audio" ? "audio" : activeTab === "video" ? "video" : "image");
   };
 
   const handleDragOver = (e: React.DragEvent<HTMLLabelElement>) => {
@@ -202,18 +209,28 @@ export const FileInput = ({
 
   useEffect(() => {
     if (activeTab === "image" && typeof imageUrlTemp === "string") {
-      // Temporarily store the current video URL before switching tabs.
+      // Temporarily store the current video/audio URL before switching tabs.
       setVideoUrlTemp(videoUrl ?? "");
+      setAudioUrlTemp(audioUrl ?? "");
 
       if (imageUrlTemp) {
         onFileUpload([imageUrlTemp], "image");
       }
     } else if (activeTab === "video") {
-      // Temporarily store the current image URL before switching tabs.
+      // Temporarily store the current image/audio URL before switching tabs.
       setImageUrlTemp(fileUrl ?? "");
+      setAudioUrlTemp(audioUrl ?? "");
 
       if (videoUrlTemp) {
         onFileUpload([videoUrlTemp], "video");
+      }
+    } else if (activeTab === "audio") {
+      // Temporarily store the current image/video URL before switching tabs.
+      setImageUrlTemp(fileUrl ?? "");
+      setVideoUrlTemp(videoUrl ?? "");
+
+      if (audioUrlTemp) {
+        onFileUpload([audioUrlTemp], "audio");
       }
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps -- Only run when activeTab changes to avoid infinite loops
@@ -222,7 +239,7 @@ export const FileInput = ({
   return (
     <div className="w-full cursor-default">
       <div>
-        {isVideoAllowed && (
+        {(isVideoAllowed || isAudioAllowed) && (
           <OptionsSwitch options={options} currentOption={activeTab} handleOptionChange={setActiveTab} />
         )}
         <div>
@@ -238,8 +255,82 @@ export const FileInput = ({
             </div>
           )}
 
+          {activeTab === "audio" && (
+            <div
+              className={cn(
+                (isVideoAllowed || isAudioAllowed) && "rounded-b-lg border-x border-b border-slate-200 p-4"
+              )}>
+              {uploadedAudioUrl ? (
+                <div className="flex items-center gap-3 rounded-lg border border-slate-200 p-3">
+                  <audio controls src={uploadedAudioUrl} className="h-10 flex-1" />
+                  <button
+                    className="flex cursor-pointer items-center justify-center rounded-md bg-slate-100 p-1 hover:bg-slate-200"
+                    onClick={(e) => {
+                      e.preventDefault();
+                      setUploadedAudioUrl("");
+                      setAudioUrlTemp("");
+                      onFileUpload(undefined, "audio");
+                    }}>
+                    <XIcon className="h-5 text-slate-700 hover:text-slate-900" />
+                  </button>
+                </div>
+              ) : (
+                <Uploader
+                  id={`${id}-audio`}
+                  name="audio-file"
+                  handleDragOver={handleDragOver}
+                  handleDrop={async (e: React.DragEvent<HTMLLabelElement>) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    const files = Array.from(e.dataTransfer.files);
+                    const audioExtensions: TAllowedFileExtension[] = ["wav", "mp3", "m4a", "ogg"];
+                    const allowedFiles = await getAllowedFiles(files, audioExtensions, maxSizeInMB);
+                    if (allowedFiles.length === 0) return;
+
+                    const uploadedFiles = await Promise.all(
+                      allowedFiles.map((file) => handleFileUpload(file, environmentId, audioExtensions))
+                    );
+                    const uploadedUrl = uploadedFiles.find((f) => f.url)?.url;
+                    if (uploadedUrl) {
+                      setUploadedAudioUrl(uploadedUrl);
+                      setAudioUrlTemp(uploadedUrl);
+                      onFileUpload([uploadedUrl], "audio");
+                    }
+                  }}
+                  uploaderClassName="h-52 w-full"
+                  allowedFileExtensions={["wav", "mp3", "m4a", "ogg"]}
+                  multiple={false}
+                  handleUpload={async (files: File[]) => {
+                    if (!isStorageConfigured) {
+                      showStorageNotConfiguredToast();
+                      return;
+                    }
+                    const audioExtensions: TAllowedFileExtension[] = ["wav", "mp3", "m4a", "ogg"];
+                    const allowedFiles = await getAllowedFiles(files, audioExtensions, maxSizeInMB);
+                    if (allowedFiles.length === 0) return;
+
+                    const uploadedFiles = await Promise.all(
+                      allowedFiles.map((file) => handleFileUpload(file, environmentId, audioExtensions))
+                    );
+                    const uploadedUrl = uploadedFiles.find((f) => f.url)?.url;
+                    if (uploadedUrl) {
+                      setUploadedAudioUrl(uploadedUrl);
+                      setAudioUrlTemp(uploadedUrl);
+                      onFileUpload([uploadedUrl], "audio");
+                    }
+                  }}
+                  disabled={disabled}
+                  isStorageConfigured={isStorageConfigured}
+                />
+              )}
+            </div>
+          )}
+
           {activeTab === "image" && (
-            <div className={cn(isVideoAllowed && "rounded-b-lg border-x border-b border-slate-200 p-4")}>
+            <div
+              className={cn(
+                (isVideoAllowed || isAudioAllowed) && "rounded-b-lg border-x border-b border-slate-200 p-4"
+              )}>
               {selectedFiles.length > 0 ? (
                 multiple ? (
                   <div className="flex flex-wrap gap-2">

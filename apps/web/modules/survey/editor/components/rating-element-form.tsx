@@ -25,6 +25,7 @@ interface RatingElementFormProps {
   locale: TUserLocale;
   isStorageConfigured: boolean;
   isExternalUrlsAllowed?: boolean;
+  isVoiceChannel?: boolean;
 }
 
 export const RatingElementForm = ({
@@ -38,6 +39,7 @@ export const RatingElementForm = ({
   locale,
   isStorageConfigured = true,
   isExternalUrlsAllowed,
+  isVoiceChannel,
 }: RatingElementFormProps) => {
   const { t } = useTranslation();
   const surveyLanguageCodes = extractLanguageCodes(localSurvey.languages);
@@ -59,6 +61,7 @@ export const RatingElementForm = ({
         isStorageConfigured={isStorageConfigured}
         autoFocus={!element.headline?.default || element.headline.default.trim() === ""}
         isExternalUrlsAllowed={isExternalUrlsAllowed}
+        isVoiceChannel={isVoiceChannel}
       />
 
       <div ref={parent}>

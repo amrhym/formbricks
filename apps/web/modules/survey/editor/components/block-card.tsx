@@ -197,6 +197,7 @@ export const BlockCard = ({
     locale,
     isStorageConfigured,
     isExternalUrlsAllowed,
+    isVoiceChannel,
   });
 
   // Element form components mapped by type
@@ -243,14 +244,6 @@ export const BlockCard = ({
     if (element.type === TSurveyElementTypeEnum.FileUpload) {
       additionalProps.project = project;
       additionalProps.isFormbricksCloud = isFormbricksCloud;
-    }
-
-    // MultipleChoice needs voice channel flag for DTMF mapping
-    if (
-      element.type === TSurveyElementTypeEnum.MultipleChoiceSingle ||
-      element.type === TSurveyElementTypeEnum.MultipleChoiceMulti
-    ) {
-      additionalProps.isVoiceChannel = isVoiceChannel;
     }
 
     // @ts-expect-error - These props should cover everything

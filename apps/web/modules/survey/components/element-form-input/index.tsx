@@ -61,6 +61,7 @@ interface ElementFormInputProps {
   firstRender?: boolean;
   setFirstRender?: (value: boolean) => void;
   isExternalUrlsAllowed?: boolean;
+  isVoiceChannel?: boolean;
 }
 
 export const ElementFormInput = ({
@@ -87,6 +88,7 @@ export const ElementFormInput = ({
   firstRender: externalFirstRender,
   setFirstRender: externalSetFirstRender,
   isExternalUrlsAllowed,
+  isVoiceChannel = false,
 }: ElementFormInputProps) => {
   const { t } = useTranslation();
   const defaultLanguageCode =
@@ -297,6 +299,11 @@ export const ElementFormInput = ({
     } else return currentElement.videoUrl;
   };
 
+  const getAudioUrl = (): string | undefined => {
+    if (isWelcomeCard || isEndingCard) return undefined;
+    return currentElement?.audioUrl;
+  };
+
   const debouncedHandleUpdate = useMemo(() => debounce((value) => handleUpdate(value), 100), [handleUpdate]);
 
   const [animationParent] = useAutoAnimate();
@@ -416,22 +423,39 @@ export const ElementFormInput = ({
               id="element-image"
               allowedFileExtensions={["png", "jpeg", "jpg", "webp", "heic"]}
               environmentId={localSurvey.environmentId}
-              onFileUpload={(url: string[] | undefined, fileType: "image" | "video") => {
+              onFileUpload={(url: string[] | undefined, fileType: "image" | "video" | "audio") => {
                 if (url) {
                   const update =
-                    fileType === "video"
-                      ? { videoUrl: url[0], imageUrl: undefined }
-                      : { imageUrl: url[0], videoUrl: undefined };
+                    fileType === "audio"
+                      ? { audioUrl: url[0], imageUrl: undefined, videoUrl: undefined }
+                      : fileType === "video"
+                        ? { videoUrl: url[0], imageUrl: undefined, audioUrl: undefined }
+                        : { imageUrl: url[0], videoUrl: undefined, audioUrl: undefined };
                   if ((isWelcomeCard || isEndingCard) && updateSurvey) {
                     updateSurvey(update);
                   } else if (updateElement) {
                     updateElement(elementIdx, update);
                   }
+                } else {
+                  // File removed
+                  const clearUpdate =
+                    fileType === "audio"
+                      ? { audioUrl: undefined }
+                      : fileType === "video"
+                        ? { videoUrl: undefined }
+                        : { imageUrl: undefined };
+                  if ((isWelcomeCard || isEndingCard) && updateSurvey) {
+                    updateSurvey(clearUpdate);
+                  } else if (updateElement) {
+                    updateElement(elementIdx, clearUpdate);
+                  }
                 }
               }}
               fileUrl={getFileUrl()}
               videoUrl={getVideoUrl()}
+              audioUrl={getAudioUrl()}
               isVideoAllowed={true}
+              isAudioAllowed={isVoiceChannel}
               maxSizeInMB={5}
               isStorageConfigured={isStorageConfigured}
             />

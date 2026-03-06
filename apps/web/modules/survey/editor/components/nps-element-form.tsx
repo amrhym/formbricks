@@ -23,6 +23,7 @@ interface NPSElementFormProps {
   locale: TUserLocale;
   isStorageConfigured: boolean;
   isExternalUrlsAllowed?: boolean;
+  isVoiceChannel?: boolean;
 }
 
 export const NPSElementForm = ({
@@ -36,6 +37,7 @@ export const NPSElementForm = ({
   locale,
   isStorageConfigured = true,
   isExternalUrlsAllowed,
+  isVoiceChannel,
 }: NPSElementFormProps): JSX.Element => {
   const { t } = useTranslation();
   const surveyLanguageCodes = extractLanguageCodes(localSurvey.languages);
@@ -57,6 +59,7 @@ export const NPSElementForm = ({
         isStorageConfigured={isStorageConfigured}
         autoFocus={!element.headline?.default || element.headline.default.trim() === ""}
         isExternalUrlsAllowed={isExternalUrlsAllowed}
+        isVoiceChannel={isVoiceChannel}
       />
 
       <div ref={parent}>
