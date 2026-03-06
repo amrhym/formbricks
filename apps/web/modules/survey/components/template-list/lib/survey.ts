@@ -17,7 +17,7 @@ export const createSurvey = async (
   surveyBody: TSurveyCreateInput
 ): Promise<TSurvey> => {
   try {
-    const { createdBy, ...restSurveyBody } = surveyBody;
+    const { createdBy, channelId, environmentId: _envId, ...restSurveyBody } = surveyBody;
 
     // empty languages array
     if (!restSurveyBody.languages?.length) {
@@ -40,6 +40,14 @@ export const createSurvey = async (
       data.creator = {
         connect: {
           id: createdBy,
+        },
+      };
+    }
+
+    if (channelId) {
+      data.channel = {
+        connect: {
+          id: channelId,
         },
       };
     }

@@ -22,11 +22,14 @@ export class SupersetAdminClient {
     this.baseUrl = baseUrl || SUPERSET_BASE_URL;
   }
 
-  private async login(): Promise<string> {
+  private async login(forceRefresh = false): Promise<string> {
     const now = Date.now();
-    if (this.adminToken && now < this.tokenExpiry) {
+    if (!forceRefresh && this.adminToken && now < this.tokenExpiry) {
       return this.adminToken;
     }
+
+    this.adminToken = null;
+    this.tokenExpiry = 0;
 
     const response = await fetch(`${this.baseUrl}/api/v1/security/login`, {
       method: "POST",
@@ -46,8 +49,8 @@ export class SupersetAdminClient {
 
     const data: SupersetLoginResponse = await response.json();
     this.adminToken = data.access_token;
-    // Cache for 8 hours
-    this.tokenExpiry = now + 8 * 60 * 60 * 1000;
+    // Cache for 1 hour (Superset default JWT expiry is often shorter than 8h)
+    this.tokenExpiry = now + 1 * 60 * 60 * 1000;
 
     logger.info("Superset admin token acquired");
     return this.adminToken;
@@ -61,10 +64,10 @@ export class SupersetAdminClient {
     dashboardId: string,
     rlsClause: string
   ): Promise<{ token: string; expiresAt: string }> {
-    const adminToken = await this.login();
+    let adminToken = await this.login();
     const expiresAt = new Date(Date.now() + 15 * 60 * 1000).toISOString();
 
-    const response = await fetch(`${this.baseUrl}/api/v1/security/guest_token/`, {
+    let response = await fetch(`${this.baseUrl}/api/v1/security/guest_token/`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -76,6 +79,24 @@ export class SupersetAdminClient {
         rls: [{ clause: rlsClause }],
       }),
     });
+
+    // Retry once with a fresh token on 401 (cached token may have expired)
+    if (response.status === 401) {
+      logger.warn("Superset admin token expired, refreshing and retrying");
+      adminToken = await this.login(true);
+      response = await fetch(`${this.baseUrl}/api/v1/security/guest_token/`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${adminToken}`,
+        },
+        body: JSON.stringify({
+          user: { username: "guest", first_name: "Guest", last_name: "User" },
+          resources: [{ type: "dashboard", id: dashboardId }],
+          rls: [{ clause: rlsClause }],
+        }),
+      });
+    }
 
     if (!response.ok) {
       const errorText = await response.text();
