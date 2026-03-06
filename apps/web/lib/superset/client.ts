@@ -16,8 +16,6 @@ interface SupersetGuestTokenResponse {
 export class SupersetAdminClient {
   private baseUrl: string;
   private adminToken: string | null = null;
-  private csrfToken: string | null = null;
-  private csrfCookies: string | null = null;
   private tokenExpiry: number = 0;
 
   constructor(baseUrl?: string) {
@@ -29,10 +27,6 @@ export class SupersetAdminClient {
     if (this.adminToken && now < this.tokenExpiry) {
       return this.adminToken;
     }
-
-    // Reset CSRF when re-logging in
-    this.csrfToken = null;
-    this.csrfCookies = null;
 
     const response = await fetch(`${this.baseUrl}/api/v1/security/login`, {
       method: "POST",
@@ -59,40 +53,6 @@ export class SupersetAdminClient {
     return this.adminToken;
   }
 
-  /**
-   * Fetch a CSRF token from Superset. Required for POST/PUT/DELETE requests.
-   * Superset validates CSRF via both the X-CSRFToken header and the session cookie.
-   */
-  private async fetchCsrfToken(): Promise<{ csrfToken: string; cookies: string }> {
-    if (this.csrfToken && this.csrfCookies) {
-      return { csrfToken: this.csrfToken, cookies: this.csrfCookies };
-    }
-
-    const adminToken = await this.login();
-
-    const response = await fetch(`${this.baseUrl}/api/v1/security/csrf_token/`, {
-      method: "GET",
-      headers: {
-        Authorization: `Bearer ${adminToken}`,
-      },
-    });
-
-    if (!response.ok) {
-      const errorText = await response.text();
-      logger.error({ status: response.status, body: errorText }, "Superset CSRF token fetch failed");
-      throw new Error(`Superset CSRF token failed: ${response.status}`);
-    }
-
-    const data = (await response.json()) as { result: string };
-    const setCookieHeaders = response.headers.getSetCookie?.() ?? [];
-    const cookies = setCookieHeaders.map((c) => c.split(";")[0]).join("; ");
-
-    this.csrfToken = data.result;
-    this.csrfCookies = cookies;
-
-    return { csrfToken: this.csrfToken, cookies: this.csrfCookies };
-  }
-
   async getAdminToken(): Promise<string> {
     return this.login();
   }
@@ -102,7 +62,6 @@ export class SupersetAdminClient {
     rlsClause: string
   ): Promise<{ token: string; expiresAt: string }> {
     const adminToken = await this.login();
-    const { csrfToken, cookies } = await this.fetchCsrfToken();
     const expiresAt = new Date(Date.now() + 15 * 60 * 1000).toISOString();
 
     const response = await fetch(`${this.baseUrl}/api/v1/security/guest_token/`, {
@@ -110,8 +69,6 @@ export class SupersetAdminClient {
       headers: {
         "Content-Type": "application/json",
         Authorization: `Bearer ${adminToken}`,
-        "X-CSRFToken": csrfToken,
-        Cookie: cookies,
       },
       body: JSON.stringify({
         user: { username: "guest", first_name: "Guest", last_name: "User" },
@@ -123,9 +80,6 @@ export class SupersetAdminClient {
     if (!response.ok) {
       const errorText = await response.text();
       logger.error({ status: response.status, body: errorText }, "Superset guest token mint failed");
-      // Invalidate cached CSRF on failure so next attempt re-fetches
-      this.csrfToken = null;
-      this.csrfCookies = null;
       throw new Error(`Superset guest token failed: ${response.status}`);
     }
 
@@ -136,21 +90,12 @@ export class SupersetAdminClient {
   async apiRequest(method: string, endpoint: string, body?: unknown): Promise<unknown> {
     const adminToken = await this.login();
 
-    const headers: Record<string, string> = {
-      "Content-Type": "application/json",
-      Authorization: `Bearer ${adminToken}`,
-    };
-
-    // POST/PUT/DELETE need CSRF
-    if (method !== "GET") {
-      const { csrfToken, cookies } = await this.fetchCsrfToken();
-      headers["X-CSRFToken"] = csrfToken;
-      headers["Cookie"] = cookies;
-    }
-
     const response = await fetch(`${this.baseUrl}${endpoint}`, {
       method,
-      headers,
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${adminToken}`,
+      },
       ...(body ? { body: JSON.stringify(body) } : {}),
     });
 
