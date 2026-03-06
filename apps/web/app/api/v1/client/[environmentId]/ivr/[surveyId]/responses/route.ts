@@ -76,7 +76,7 @@ export const POST = withV1ApiWrapper({
       };
     }
 
-    const { callId, callerNumber, answers, finished, language, meta } = inputValidation.data;
+    const { callId, answers, finished, language, meta } = inputValidation.data;
 
     const survey = await getSurvey(surveyId);
     if (!survey) {
