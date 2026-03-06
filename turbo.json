@@ -185,6 +185,8 @@
         "LOG_LEVEL",
         "NOVU_API_KEY",
         "NOVU_API_URL",
+        "HIVECFM_HUB_URL",
+        "HIVECFM_HUB_API_KEY",
         "MAIL_FROM",
         "MAIL_FROM_NAME",
         "NEXT_PUBLIC_LAYER_API_KEY",
