@@ -421,10 +421,7 @@ export function TargetingCard({
             <AlertDescription className="ml-2">
               <span className="mr-1 text-slate-600">
                 {t("environments.segments.user_targeting_is_currently_only_available_when")}{" "}
-                <Link
-                  href="https://formbricks.com//docs/app-surveys/user-identification"
-                  target="blank"
-                  className="underline">
+                <Link href="/docs" target="blank" className="underline">
                   {t("environments.segments.identifying_users")}
                 </Link>{" "}
                 {t("environments.segments.with_the_formbricks_sdk")}.

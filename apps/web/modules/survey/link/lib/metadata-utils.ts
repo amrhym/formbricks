@@ -71,9 +71,7 @@ export const getBasicSurveyMetadata = async (
   const ogImage = metadata?.ogImage;
 
   if (!titleFromMetadata) {
-    if (IS_FORMBRICKS_CLOUD) {
-      title = `${title} | Formbricks`;
-    }
+    title = `${title} | HiveCFM`;
   }
 
   return {

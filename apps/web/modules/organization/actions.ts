@@ -24,7 +24,7 @@ export const createOrganizationAction = authenticatedActionClient.schema(ZCreate
       const isMultiOrgEnabled = await getIsMultiOrgEnabled();
       if (!isMultiOrgEnabled)
         throw new OperationNotAllowedError(
-          "Creating Multiple organization is restricted on your instance of Formbricks"
+          "Creating multiple organizations is restricted on your instance of HiveCFM"
         );
 
       const newOrganization = await createOrganization({

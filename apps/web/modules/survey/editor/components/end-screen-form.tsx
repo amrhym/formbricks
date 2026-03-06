@@ -190,7 +190,7 @@ export const EndScreenForm = ({
                           id="buttonLink"
                           name="buttonLink"
                           className={`relative text-black caret-black ${!isExternalUrlsAllowed ? "cursor-not-allowed opacity-50" : ""}`}
-                          placeholder="https://formbricks.com"
+                          placeholder="https://example.com"
                           value={
                             recallToHeadline(
                               {

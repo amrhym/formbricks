@@ -26,7 +26,7 @@ export const HIVECFM_LOGO_URL = FB_LOGO_URL;
 
 // HiveCFM: Documentation and external URLs
 // These can be updated when HiveCFM has its own documentation
-export const DOCS_URL = env.DOCS_URL || "https://formbricks.com/docs";
+export const DOCS_URL = env.DOCS_URL || "/docs";
 export const HIVECFM_SUPPORT_EMAIL = "support@hivecfm.xcai.io";
 // HiveCFM: Enterprise is always enabled, but keeping these for code compatibility
 export const UPGRADE_URL = "#"; // Enterprise always enabled in HiveCFM

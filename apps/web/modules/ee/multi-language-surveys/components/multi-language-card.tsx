@@ -236,9 +236,7 @@ export const MultiLanguageCard: FC<MultiLanguageCardProps> = ({
                     text: isFormbricksCloud
                       ? t("common.start_free_trial")
                       : t("common.request_trial_license"),
-                    href: isFormbricksCloud
-                      ? `/environments/${environmentId}/settings/billing`
-                      : "https://formbricks.com/docs/self-hosting/license#30-day-trial-license-request",
+                    href: isFormbricksCloud ? `/environments/${environmentId}/settings/billing` : "#",
                   },
                   {
                     text: t("common.learn_more"),

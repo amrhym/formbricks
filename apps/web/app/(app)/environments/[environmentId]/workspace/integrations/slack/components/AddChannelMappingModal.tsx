@@ -235,10 +235,7 @@ export const AddChannelMappingModal = ({
                     setSelectedItem={setSelectedChannel}
                     disabled={channels.length === 0}
                   />
-                  <Link
-                    href="https://formbricks.com/docs/developer-docs/integrations/slack"
-                    target="_blank"
-                    className="text-xs">
+                  <Link href="/docs" target="_blank" className="text-xs">
                     <Button variant="ghost" size="sm" className="my-2" type="button">
                       <CircleHelpIcon className="h-4 w-4" />
                       {t("environments.integrations.slack.dont_see_your_channel")}

@@ -115,10 +115,7 @@ export const OnboardingSetupInstructions = ({
               {channel === "app" ? npmSnippetForAppSurveys : npmSnippetForWebsiteSurveys}
             </CodeBlock>
             <Button id="onboarding-inapp-connect-read-npm-docs" className="mt-3" variant="secondary" asChild>
-              <Link
-                className="no-underline"
-                href={`https://formbricks.com/docs/${channel}-surveys/framework-guides`}
-                target="_blank">
+              <Link className="no-underline" href={`/docs`} target="_blank">
                 {t("common.read_docs")}
               </Link>
             </Button>
@@ -148,10 +145,7 @@ export const OnboardingSetupInstructions = ({
               </Button>
 
               <Button id="onboarding-inapp-connect-step-by-step-manual" variant="secondary" asChild>
-                <Link
-                  href={`https://formbricks.com/docs/${channel}-surveys/framework-guides#html`}
-                  target="_blank"
-                  className="no-underline">
+                <Link href={`/docs`} target="_blank" className="no-underline">
                   {t("common.step_by_step_manual")}
                 </Link>
               </Button>

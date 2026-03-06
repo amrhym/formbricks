@@ -52,7 +52,7 @@ const nextConfig = {
       },
       {
         protocol: "https",
-        hostname: "app.formbricks.com",
+        hostname: "hivecfm.xcai.io",
       },
       {
         protocol: "https",
@@ -454,8 +454,8 @@ nextConfig.images.remotePatterns.push({
 const sentryOptions = {
   // For all available options, see:
   // https://www.npmjs.com/package/@sentry/webpack-plugin#options
-  project: "formbricks-cloud",
-  org: "formbricks",
+  project: "hivecfm",
+  org: "hivecfm",
 
   // Enable logging to debug sourcemap generation issues
   silent: false,

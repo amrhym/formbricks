@@ -29,15 +29,15 @@ export const DynamicPopupTab = ({ environmentId, surveyId }: DynamicPopupTabProp
         links={[
           {
             title: t("environments.surveys.share.dynamic_popup.attribute_based_targeting"),
-            href: "https://formbricks.com/docs/xm-and-surveys/surveys/website-app-surveys/advanced-targeting",
+            href: "/docs",
           },
           {
             title: t("environments.surveys.share.dynamic_popup.code_no_code_triggers"),
-            href: "https://formbricks.com/docs/xm-and-surveys/surveys/website-app-surveys/actions",
+            href: "/docs",
           },
           {
             title: t("environments.surveys.share.dynamic_popup.recontact_options"),
-            href: "https://formbricks.com/docs/xm-and-surveys/surveys/website-app-surveys/recontact",
+            href: "/docs",
           },
         ]}
       />

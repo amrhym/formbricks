@@ -77,7 +77,7 @@ export const getCloudPricingData = (t: TFunction): { plans: TPricingPlan[] } => 
       t("environments.settings.billing.uptime_sla_99"),
       t("environments.settings.billing.premium_support_with_slas"),
     ],
-    href: "https://formbricks.com/custom-plan?source=billingView",
+    href: "/contact",
   };
 
   return {

@@ -100,11 +100,7 @@ export const SocialMediaTab: React.FC<SocialMediaTabProps> = ({ surveyUrl, surve
         </AlertDescription>
         <AlertButton
           onClick={() => {
-            window.open(
-              "https://formbricks.com/docs/xm-and-surveys/surveys/link-surveys/source-tracking",
-              "_blank",
-              "noopener,noreferrer"
-            );
+            window.open("/docs", "_blank", "noopener,noreferrer");
           }}>
           {t("common.learn_more")}
         </AlertButton>

@@ -61,10 +61,7 @@ export const AppConnectionPage = async ({ params }: { params: Promise<{ environm
                     {t("environments.workspace.app-connection.setup_alert_description")}
                   </AlertDescription>
                   <AlertButton asChild>
-                    <Link
-                      href="https://formbricks.com/docs/xm-and-surveys/surveys/website-app-surveys/framework-guides"
-                      target="_blank"
-                      rel="noopener noreferrer">
+                    <Link href="/docs" target="_blank" rel="noopener noreferrer">
                       {t("common.learn_more")}
                     </Link>
                   </AlertButton>
