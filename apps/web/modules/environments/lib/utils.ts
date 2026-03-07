@@ -16,6 +16,7 @@ import {
   getOrganizationByEnvironmentId,
 } from "@/lib/organization/service";
 import { getProjectByEnvironmentId } from "@/lib/project/service";
+import { checkLicenseValid } from "@/lib/tenant/license-enforcement";
 import { getUser } from "@/lib/user/service";
 import { validateInputs } from "@/lib/utils/validate";
 import { getTranslate } from "@/lingodotdev/server";
@@ -72,6 +73,9 @@ export const getEnvironmentAuth = reactCache(async (environmentId: string): Prom
 
   const isReadOnly = isMember && hasReadAccess;
 
+  // Check tenant license validity
+  const licenseCheck = await checkLicenseValid(organization.id);
+
   return {
     environment,
     project,
@@ -87,6 +91,8 @@ export const getEnvironmentAuth = reactCache(async (environmentId: string): Prom
     hasReadWriteAccess,
     hasManageAccess,
     isReadOnly,
+    isLicenseInvalid: !licenseCheck.valid,
+    licenseInvalidReason: licenseCheck.reason,
   };
 });
 
@@ -297,10 +303,11 @@ export const getEnvironmentLayoutData = reactCache(
     }
 
     // Fetch remaining data in parallel
-    const [isAccessControlAllowed, projectPermission, license] = await Promise.all([
+    const [isAccessControlAllowed, projectPermission, license, licenseCheck] = await Promise.all([
       getAccessControlPermission(organization.billing.plan), // No DB query (logic only)
       getProjectPermissionByUserId(userId, environment.projectId), // 1 DB query
       getEnterpriseLicense(), // Externally cached
+      checkLicenseValid(organization.id), // Tenant license check
     ]);
 
     // Conditional queries for Formbricks Cloud
@@ -326,6 +333,8 @@ export const getEnvironmentLayoutData = reactCache(
       license,
       peopleCount,
       responseCount,
+      isLicenseInvalid: !licenseCheck.valid,
+      licenseInvalidReason: licenseCheck.reason,
     };
   }
 );

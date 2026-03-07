@@ -1,5 +1,7 @@
 import { redirect } from "next/navigation";
+import { LicenseBlockedPage } from "@/app/(app)/environments/[environmentId]/components/LicenseBlockedPage";
 import { getEnvironment } from "@/lib/environment/service";
+import { checkLicenseValid } from "@/lib/tenant/license-enforcement";
 import { environmentIdLayoutChecks } from "@/modules/environments/lib/utils";
 
 const SurveyEditorEnvironmentLayout = async (props) => {
@@ -7,7 +9,7 @@ const SurveyEditorEnvironmentLayout = async (props) => {
 
   const { children } = props;
 
-  const { t, session, user } = await environmentIdLayoutChecks(params.environmentId);
+  const { t, session, user, organization } = await environmentIdLayoutChecks(params.environmentId);
 
   if (!session) {
     return redirect(`/auth/login`);
@@ -21,6 +23,14 @@ const SurveyEditorEnvironmentLayout = async (props) => {
 
   if (!environment) {
     throw new Error(t("common.environment_not_found"));
+  }
+
+  // Block access when tenant license is invalid
+  if (organization) {
+    const licenseCheck = await checkLicenseValid(organization.id);
+    if (!licenseCheck.valid) {
+      return <LicenseBlockedPage reason={licenseCheck.reason} />;
+    }
   }
 
   return (

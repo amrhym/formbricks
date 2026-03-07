@@ -1,6 +1,7 @@
 import { getServerSession } from "next-auth";
 import { redirect } from "next/navigation";
 import { EnvironmentLayout } from "@/app/(app)/environments/[environmentId]/components/EnvironmentLayout";
+import { LicenseBlockedPage } from "@/app/(app)/environments/[environmentId]/components/LicenseBlockedPage";
 import { EnvironmentContextWrapper } from "@/app/(app)/environments/[environmentId]/context/environment-context";
 import { authOptions } from "@/modules/auth/lib/authOptions";
 import { getEnvironmentLayoutData } from "@/modules/environments/lib/utils";
@@ -21,6 +22,11 @@ const EnvLayout = async (props: {
 
   // Single consolidated data fetch (replaces ~12 individual fetches)
   const layoutData = await getEnvironmentLayoutData(params.environmentId, session.user.id);
+
+  // Block access when tenant license is invalid
+  if (layoutData.isLicenseInvalid) {
+    return <LicenseBlockedPage reason={layoutData.licenseInvalidReason} />;
+  }
 
   return (
     <>

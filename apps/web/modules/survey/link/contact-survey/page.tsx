@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
+import { checkLicenseValid } from "@/lib/tenant/license-enforcement";
 import { findMatchingLocale } from "@/lib/utils/locale";
 import { getTranslate } from "@/lingodotdev/server";
 import { verifyContactSurveyToken } from "@/modules/ee/contacts/lib/contact-survey-link";
@@ -141,6 +142,12 @@ export const ContactSurveyPage = async (props: ContactSurveyPageProps) => {
     // Fetch existing response for this contact
     getExistingContactResponse(survey.id, contactId)(),
   ]);
+
+  // License check
+  const licenseCheck = await checkLicenseValid(environmentContext.organizationId);
+  if (!licenseCheck.valid) {
+    return <SurveyInactive status="link invalid" project={environmentContext.project} />;
+  }
 
   // Get multi-language permission
   const isMultiLanguageAllowed = await getMultiLanguagePermission(

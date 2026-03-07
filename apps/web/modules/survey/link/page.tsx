@@ -3,6 +3,7 @@ import { notFound } from "next/navigation";
 import { logger } from "@hivecfm/logger";
 import { ZId } from "@hivecfm/types/common";
 import { TSurvey } from "@hivecfm/types/surveys/types";
+import { checkLicenseValid } from "@/lib/tenant/license-enforcement";
 import { findMatchingLocale } from "@/lib/utils/locale";
 import { getMultiLanguagePermission } from "@/modules/ee/license-check/lib/utils";
 import { getResponseCountBySurveyId } from "@/modules/survey/lib/response";
@@ -112,10 +113,12 @@ export const LinkSurveyPage = async (props: LinkSurveyPageProps) => {
       : Promise.resolve(undefined),
   ]);
 
-  // Stage 3: Get multi-language permission (depends on environmentContext)
-  // Future optimization: Consider caching getMultiLanguagePermission by plan tier
-  // since it's a pure computation based on billing plan. Could be memoized at
-  // the plan level rather than per-request.
+  // Stage 3: License check + multi-language permission (depends on environmentContext)
+  const licenseCheck = await checkLicenseValid(environmentContext.organizationId);
+  if (!licenseCheck.valid) {
+    return <SurveyInactive status="link invalid" project={environmentContext.project} />;
+  }
+
   const isMultiLanguageAllowed = await getMultiLanguagePermission(
     environmentContext.organizationBilling.plan
   );

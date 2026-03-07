@@ -12,6 +12,7 @@ import {
   getCampaignsByEnvironmentId,
 } from "@/lib/campaign/service";
 import { deleteWorkflow, getWorkflowStats } from "@/lib/novu/service";
+import { checkAddonAccess, checkLicenseValid } from "@/lib/tenant/license-enforcement";
 import { authenticatedActionClient } from "@/lib/utils/action-client";
 import { checkAuthorizationUpdated } from "@/lib/utils/action-client/action-client-middleware";
 import {
@@ -56,9 +57,11 @@ const ZSendCampaignAction = z.object({
 export const sendCampaignAction = authenticatedActionClient
   .schema(ZSendCampaignAction)
   .action(async ({ ctx, parsedInput }) => {
+    const organizationId = await getOrganizationIdFromCampaignId(parsedInput.campaignId);
+
     await checkAuthorizationUpdated({
       userId: ctx.user.id,
-      organizationId: await getOrganizationIdFromCampaignId(parsedInput.campaignId),
+      organizationId,
       access: [
         {
           type: "organization",
@@ -71,6 +74,17 @@ export const sendCampaignAction = authenticatedActionClient
         },
       ],
     });
+
+    // Check license validity and campaign addon access
+    const licenseValid = await checkLicenseValid(organizationId);
+    if (!licenseValid.valid) {
+      throw new Error(licenseValid.reason || "License validation failed");
+    }
+
+    const hasAddonAccess = await checkAddonAccess(organizationId, "campaignManagement");
+    if (!hasAddonAccess) {
+      throw new Error("Campaign management addon is not enabled for this organization");
+    }
 
     if (parsedInput.scheduledAt) {
       await prisma.campaign.update({

@@ -35,6 +35,8 @@ export const ZEnvironmentAuth = z.object({
   hasReadWriteAccess: z.boolean(),
   hasManageAccess: z.boolean(),
   isReadOnly: z.boolean(),
+  isLicenseInvalid: z.boolean(),
+  licenseInvalidReason: z.string().optional(),
 });
 
 export type TEnvironmentAuth = z.infer<typeof ZEnvironmentAuth>;
@@ -59,4 +61,6 @@ export type TEnvironmentLayoutData = {
   license: TEnterpriseLicense;
   peopleCount: number;
   responseCount: number;
+  isLicenseInvalid: boolean;
+  licenseInvalidReason?: string;
 };
