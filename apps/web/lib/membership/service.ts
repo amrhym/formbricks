@@ -59,14 +59,19 @@ export const createMembership = async (
       return existingMembership;
     }
 
-    // Enforce license user limit for new memberships
+    // Enforce license for new memberships
     if (!existingMembership) {
       const license = await getLicense(organizationId);
-      if (license && isLicenseValid(license)) {
+      if (license) {
+        if (!isLicenseValid(license)) {
+          throw new OperationNotAllowedError("Cannot add users: license is expired or inactive");
+        }
         const check = await checkUserLimit(organizationId, license.maxUsers);
         if (!check.allowed) {
           throw new OperationNotAllowedError(`User limit reached (${check.current}/${check.limit})`);
         }
+      } else {
+        throw new OperationNotAllowedError("Cannot add users: no license found for this organization");
       }
     }
 

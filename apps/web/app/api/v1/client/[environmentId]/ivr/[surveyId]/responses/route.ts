@@ -9,7 +9,10 @@ import { responses } from "@/app/lib/api/response";
 import { transformErrorToDetails } from "@/app/lib/api/validator";
 import { withV1ApiWrapper } from "@/app/lib/api/with-api-logging";
 import { sendToPipeline } from "@/app/lib/pipelines";
+import { getOrganizationByEnvironmentId } from "@/lib/organization/service";
 import { getSurvey } from "@/lib/survey/service";
+import { checkLicenseValid } from "@/lib/tenant/license-enforcement";
+import { checkCompletedResponseQuota } from "@/lib/tenant/quota-enforcement";
 
 const ZIvrResponseInput = z.object({
   callId: z.string().min(1),
@@ -101,6 +104,29 @@ export const POST = withV1ApiWrapper({
     const data: Record<string, string | number> = {};
     for (const [elementId, value] of Object.entries(answers)) {
       data[elementId] = value;
+    }
+
+    // Pre-flight license enforcement
+    const organization = await getOrganizationByEnvironmentId(environmentId);
+    if (organization) {
+      const licenseValid = await checkLicenseValid(organization.id);
+      if (!licenseValid.valid) {
+        return {
+          response: responses.forbiddenResponse(licenseValid.reason || "License validation failed", true),
+        };
+      }
+
+      if (finished) {
+        const quotaCheck = await checkCompletedResponseQuota(organization.id);
+        if (!quotaCheck.allowed) {
+          return {
+            response: responses.forbiddenResponse(
+              `Completed response limit reached (${quotaCheck.current}/${quotaCheck.limit})`,
+              true
+            ),
+          };
+        }
+      }
     }
 
     const responseInput: TResponseInput = {

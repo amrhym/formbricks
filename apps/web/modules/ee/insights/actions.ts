@@ -3,6 +3,7 @@
 import { z } from "zod";
 import { ZId } from "@hivecfm/types/common";
 import { getSimilarFeedback, searchFeedbackSemantic } from "@/lib/hivecfm-hub/service";
+import { checkAddonAccess } from "@/lib/tenant/license-enforcement";
 import { authenticatedActionClient } from "@/lib/utils/action-client";
 import { checkAuthorizationUpdated } from "@/lib/utils/action-client/action-client-middleware";
 import { getOrganizationIdFromEnvironmentId, getProjectIdFromEnvironmentId } from "@/lib/utils/helper";
@@ -19,9 +20,17 @@ const ZSemanticSearchAction = z.object({
 });
 
 async function checkInsightsAccess(userId: string, environmentId: string) {
+  const organizationId = await getOrganizationIdFromEnvironmentId(environmentId);
+
+  // Check license addon access
+  const hasAddonAccess = await checkAddonAccess(organizationId, "aiInsights");
+  if (!hasAddonAccess) {
+    throw new Error("AI Insights addon is not enabled for this organization");
+  }
+
   await checkAuthorizationUpdated({
     userId,
-    organizationId: await getOrganizationIdFromEnvironmentId(environmentId),
+    organizationId,
     access: [
       {
         type: "organization",

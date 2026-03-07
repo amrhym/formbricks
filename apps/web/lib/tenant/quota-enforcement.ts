@@ -81,15 +81,19 @@ export const checkResponseQuota = async (
 export const checkCompletedResponseQuota = async (organizationId: string): Promise<QuotaCheckResult> => {
   try {
     const license = await getLicense(organizationId);
-    if (!license || !isLicenseValid(license)) {
-      // No valid license = no license-based restriction
-      return { allowed: true, current: 0, limit: 0, remaining: 0 };
+    if (!license) {
+      // No license = block access
+      return { allowed: false, current: 0, limit: 0, remaining: 0 };
+    }
+    if (!isLicenseValid(license)) {
+      // Invalid/expired license = block access
+      return { allowed: false, current: 0, limit: 0, remaining: 0 };
     }
 
     return await checkCompletedResponseLimit(organizationId, license.maxCompletedResponses);
   } catch (error) {
     logger.error({ tenantId: organizationId, error }, "Failed to check completed response quota");
-    return { allowed: true, current: 0, limit: 0, remaining: 0 };
+    return { allowed: false, current: 0, limit: 0, remaining: 0 };
   }
 };
 

@@ -6,7 +6,10 @@ import { responses } from "@/app/lib/api/response";
 import { transformErrorToDetails } from "@/app/lib/api/validator";
 import { TApiAuditLog, TApiKeyAuthentication, withV1ApiWrapper } from "@/app/lib/api/with-api-logging";
 import { sendToPipeline } from "@/app/lib/pipelines";
+import { getOrganizationByEnvironmentId } from "@/lib/organization/service";
 import { getSurvey } from "@/lib/survey/service";
+import { checkLicenseValid } from "@/lib/tenant/license-enforcement";
+import { checkCompletedResponseQuota } from "@/lib/tenant/quota-enforcement";
 import { hasPermission } from "@/modules/organization/settings/api-keys/lib/utils";
 import { validateFileUploads } from "@/modules/storage/utils";
 import {
@@ -147,6 +150,28 @@ export const POST = withV1ApiWrapper({
         return {
           response: responses.badRequestResponse("Invalid file upload response"),
         };
+      }
+
+      // Pre-flight license enforcement
+      const organization = await getOrganizationByEnvironmentId(environmentId);
+      if (organization) {
+        const licenseValid = await checkLicenseValid(organization.id);
+        if (!licenseValid.valid) {
+          return {
+            response: responses.forbiddenResponse(licenseValid.reason || "License validation failed"),
+          };
+        }
+
+        if (responseInput.finished) {
+          const quotaCheck = await checkCompletedResponseQuota(organization.id);
+          if (!quotaCheck.allowed) {
+            return {
+              response: responses.forbiddenResponse(
+                `Completed response limit reached (${quotaCheck.current}/${quotaCheck.limit})`
+              ),
+            };
+          }
+        }
       }
 
       if (responseInput.createdAt && !responseInput.updatedAt) {

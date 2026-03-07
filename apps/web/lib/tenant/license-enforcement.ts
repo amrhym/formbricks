@@ -32,7 +32,7 @@ export const checkUserLimit = async (
     };
   } catch (error) {
     logger.error({ tenantId: organizationId, error }, "Failed to check user limit");
-    return { allowed: true, current: 0, limit: maxUsers, remaining: maxUsers };
+    return { allowed: false, current: 0, limit: maxUsers, remaining: 0 };
   }
 };
 
@@ -69,10 +69,10 @@ export const checkCompletedResponseLimit = async (
   } catch (error) {
     logger.error({ tenantId: organizationId, error }, "Failed to check completed response limit");
     return {
-      allowed: true,
+      allowed: false,
       current: 0,
       limit: maxCompletedResponses,
-      remaining: maxCompletedResponses,
+      remaining: 0,
     };
   }
 };
@@ -83,7 +83,7 @@ export const checkAddonAccess = async (
 ): Promise<boolean> => {
   try {
     const license = await getLicense(organizationId);
-    if (!license) return true; // No license = no restrictions
+    if (!license) return false; // No license = no access to addons
     if (!isLicenseValid(license)) return false;
 
     if (addon === "aiInsights") return license.addonAiInsights;
@@ -92,7 +92,7 @@ export const checkAddonAccess = async (
     return false;
   } catch (error) {
     logger.error({ tenantId: organizationId, addon, error }, "Failed to check addon access");
-    return true; // Fail open
+    return false; // Fail closed
   }
 };
 
@@ -101,7 +101,7 @@ export const checkLicenseValid = async (
 ): Promise<{ valid: boolean; reason?: string }> => {
   try {
     const license = await getLicense(organizationId);
-    if (!license) return { valid: true }; // No license = no restrictions
+    if (!license) return { valid: false, reason: "No license found for this organization" };
 
     if (!license.isActive) {
       return { valid: false, reason: "License is deactivated" };
@@ -118,6 +118,6 @@ export const checkLicenseValid = async (
     return { valid: true };
   } catch (error) {
     logger.error({ tenantId: organizationId, error }, "Failed to check license validity");
-    return { valid: true }; // Fail open
+    return { valid: false, reason: "License validation failed" }; // Fail closed
   }
 };

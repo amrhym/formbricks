@@ -8,8 +8,11 @@ import { checkSurveyValidity } from "@/app/api/v2/client/[environmentId]/respons
 import { responses } from "@/app/lib/api/response";
 import { transformErrorToDetails } from "@/app/lib/api/validator";
 import { sendToPipeline } from "@/app/lib/pipelines";
+import { getOrganizationByEnvironmentId } from "@/lib/organization/service";
 import { getSurvey } from "@/lib/survey/service";
 import { getElementsFromBlocks } from "@/lib/survey/utils";
+import { checkLicenseValid } from "@/lib/tenant/license-enforcement";
+import { checkCompletedResponseQuota } from "@/lib/tenant/quota-enforcement";
 import { getClientIpFromHeaders } from "@/lib/utils/client-ip";
 import { validateOtherOptionLengthForMultipleChoice } from "@/modules/api/v2/lib/element";
 import { getIsContactsEnabled } from "@/modules/ee/license-check/lib/utils";
@@ -104,6 +107,25 @@ export const POST = async (request: Request, context: Context): Promise<Response
       },
       true
     );
+  }
+
+  // Pre-flight license enforcement: check validity and response limits before creating response
+  const organization = await getOrganizationByEnvironmentId(environmentId);
+  if (organization) {
+    const licenseValid = await checkLicenseValid(organization.id);
+    if (!licenseValid.valid) {
+      return responses.forbiddenResponse(licenseValid.reason || "License validation failed", true);
+    }
+
+    if (responseInput.finished) {
+      const quotaCheck = await checkCompletedResponseQuota(organization.id);
+      if (!quotaCheck.allowed) {
+        return responses.forbiddenResponse(
+          `Completed response limit reached (${quotaCheck.current}/${quotaCheck.limit})`,
+          true
+        );
+      }
+    }
   }
 
   let response: TResponseWithQuotaFull;
