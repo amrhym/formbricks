@@ -1,0 +1,19 @@
+services:
+  hivelic:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: hivelic-portal
+    restart: unless-stopped
+    ports:
+      - "127.0.0.1:3101:3101"
+    env_file:
+      - .env
+    environment:
+      - NODE_ENV=production
+    healthcheck:
+      test: ["CMD", "wget", "-qO-", "http://localhost:3101/api/auth/session"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 10s

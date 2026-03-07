@@ -1,0 +1,12 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --brand: #00E6CA;
+  --brand-dark: #00C4B8;
+}
+
+body {
+  @apply bg-slate-50 text-slate-900 antialiased;
+}
