@@ -67,12 +67,55 @@ export const ZOrganizationBrandingSchema = z.object({
 });
 export type TOrganizationBrandingSchema = z.infer<typeof ZOrganizationBrandingSchema>;
 
+export const ZTenantLicense = z.object({
+  id: z.string().cuid2(),
+  organizationId: z.string().cuid2(),
+  licenseKey: z.string(),
+  maxCompletedResponses: z.number().int().positive(),
+  maxUsers: z.number().int().positive(),
+  addonAiInsights: z.boolean(),
+  addonCampaignManagement: z.boolean(),
+  validFrom: z.date(),
+  validUntil: z.date(),
+  isActive: z.boolean(),
+  createdAt: z.date(),
+  updatedAt: z.date(),
+});
+export type TTenantLicense = z.infer<typeof ZTenantLicense>;
+
+export const ZTenantLicenseCreate = z.object({
+  maxCompletedResponses: z.number().int().positive().default(10000),
+  maxUsers: z.number().int().positive().default(10),
+  addonAiInsights: z.boolean().default(false),
+  addonCampaignManagement: z.boolean().default(false),
+  validFrom: z.coerce.date().optional(),
+  validUntil: z.coerce.date(),
+});
+export type TTenantLicenseCreate = z.infer<typeof ZTenantLicenseCreate>;
+
+export const ZTenantLicenseUpdate = z.object({
+  maxCompletedResponses: z.number().int().positive().optional(),
+  maxUsers: z.number().int().positive().optional(),
+  addonAiInsights: z.boolean().optional(),
+  addonCampaignManagement: z.boolean().optional(),
+  validFrom: z.coerce.date().optional(),
+  validUntil: z.coerce.date().optional(),
+  isActive: z.boolean().optional(),
+});
+export type TTenantLicenseUpdate = z.infer<typeof ZTenantLicenseUpdate>;
+
+export const ZLicenseActivateInput = z.object({
+  licenseKey: z.string().min(1),
+});
+export type TLicenseActivateInput = z.infer<typeof ZLicenseActivateInput>;
+
 export const ZTenantCreateInput = z.object({
   name: z.string().trim().min(1, { message: "Tenant name is required" }),
   adminEmail: z.string().email({ message: "Valid admin email is required" }),
   plan: z.enum(["free", "startup", "enterprise", "custom"]).default("free"),
   branding: ZBrandingUpdate.optional(),
   quotas: ZTenantQuotaUpdate.optional(),
+  license: ZTenantLicenseCreate.optional(),
 });
 export type TTenantCreateInput = z.infer<typeof ZTenantCreateInput>;
 

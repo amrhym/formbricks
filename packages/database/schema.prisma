@@ -762,6 +762,7 @@ model Organization {
 
   tenantQuota          TenantQuota?
   organizationBranding OrganizationBranding?
+  tenantLicense        TenantLicense?
   provisioningLogs     TenantProvisioningLog[]
 }
 
@@ -778,6 +779,24 @@ model TenantQuota {
   updatedAt            DateTime     @updatedAt @map(name: "updated_at")
 
   @@map("tenant_quota")
+}
+
+model TenantLicense {
+  id                      String       @id @default(cuid())
+  organization            Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  organizationId          String       @unique @map(name: "organization_id")
+  licenseKey              String       @unique @map(name: "license_key")
+  maxCompletedResponses   Int          @default(10000) @map(name: "max_completed_responses")
+  maxUsers                Int          @default(10) @map(name: "max_users")
+  addonAiInsights         Boolean      @default(false) @map(name: "addon_ai_insights")
+  addonCampaignManagement Boolean      @default(false) @map(name: "addon_campaign_management")
+  validFrom               DateTime     @default(now()) @map(name: "valid_from")
+  validUntil              DateTime     @map(name: "valid_until")
+  isActive                Boolean      @default(true) @map(name: "is_active")
+  createdAt               DateTime     @default(now()) @map(name: "created_at")
+  updatedAt               DateTime     @updatedAt @map(name: "updated_at")
+
+  @@map("tenant_license")
 }
 
 model OrganizationBranding {

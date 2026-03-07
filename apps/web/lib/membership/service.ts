@@ -4,8 +4,10 @@ import { cache as reactCache } from "react";
 import { prisma } from "@hivecfm/database";
 import { logger } from "@hivecfm/logger";
 import { ZString } from "@hivecfm/types/common";
-import { DatabaseError, UnknownError } from "@hivecfm/types/errors";
+import { DatabaseError, OperationNotAllowedError, UnknownError } from "@hivecfm/types/errors";
 import { TMembership, ZMembership } from "@hivecfm/types/memberships";
+import { getLicense, isLicenseValid } from "../tenant/license";
+import { checkUserLimit } from "../tenant/license-enforcement";
 import { validateInputs } from "../utils/validate";
 
 export const getMembershipByUserIdOrganizationId = reactCache(
@@ -55,6 +57,17 @@ export const createMembership = async (
 
     if (existingMembership && existingMembership.role === data.role) {
       return existingMembership;
+    }
+
+    // Enforce license user limit for new memberships
+    if (!existingMembership) {
+      const license = await getLicense(organizationId);
+      if (license && isLicenseValid(license)) {
+        const check = await checkUserLimit(organizationId, license.maxUsers);
+        if (!check.allowed) {
+          throw new OperationNotAllowedError(`User limit reached (${check.current}/${check.limit})`);
+        }
+      }
     }
 
     let membership: TMembership;

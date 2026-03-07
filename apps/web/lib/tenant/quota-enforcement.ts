@@ -1,6 +1,8 @@
 import "server-only";
 import { prisma } from "@hivecfm/database";
 import { logger } from "@hivecfm/logger";
+import { getLicense, isLicenseValid } from "./license";
+import { checkCompletedResponseLimit } from "./license-enforcement";
 
 interface QuotaCheckResult {
   allowed: boolean;
@@ -69,6 +71,25 @@ export const checkResponseQuota = async (
   } catch (error) {
     logger.error({ tenantId: organizationId, error }, "Failed to check response quota");
     return { allowed: true, current: 0, limit: maxResponsesPerMonth, remaining: maxResponsesPerMonth };
+  }
+};
+
+/**
+ * Check completed response quota against tenant license (monthly).
+ * Only counts responses with finished=true.
+ */
+export const checkCompletedResponseQuota = async (organizationId: string): Promise<QuotaCheckResult> => {
+  try {
+    const license = await getLicense(organizationId);
+    if (!license || !isLicenseValid(license)) {
+      // No valid license = no license-based restriction
+      return { allowed: true, current: 0, limit: 0, remaining: 0 };
+    }
+
+    return await checkCompletedResponseLimit(organizationId, license.maxCompletedResponses);
+  } catch (error) {
+    logger.error({ tenantId: organizationId, error }, "Failed to check completed response quota");
+    return { allowed: true, current: 0, limit: 0, remaining: 0 };
   }
 };
 

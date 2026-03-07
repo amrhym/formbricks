@@ -15,6 +15,7 @@ import { getIntegrations } from "@/lib/integration/service";
 import { getOrganizationByEnvironmentId } from "@/lib/organization/service";
 import { getResponseCountBySurveyId } from "@/lib/response/service";
 import { getSurvey, updateSurvey } from "@/lib/survey/service";
+import { checkCompletedResponseQuota } from "@/lib/tenant/quota-enforcement";
 import { convertDatesInObject } from "@/lib/time";
 import { queueAuditEvent } from "@/modules/ee/audit-logs/lib/handler";
 import { TAuditStatus, UNKNOWN_DATA } from "@/modules/ee/audit-logs/types/audit-log";
@@ -139,6 +140,18 @@ export const POST = async (request: Request) => {
   });
 
   if (event === "responseFinished") {
+    // Check completed response license limit
+    const licenseCheck = await checkCompletedResponseQuota(organization.id);
+    if (!licenseCheck.allowed) {
+      logger.warn(
+        { organizationId: organization.id, current: licenseCheck.current, limit: licenseCheck.limit },
+        "Completed response license limit reached"
+      );
+      return responses.forbiddenResponse(
+        `Completed response limit reached (${licenseCheck.current}/${licenseCheck.limit})`
+      );
+    }
+
     // Fetch integrations and responseCount in parallel
     const [integrations, responseCount] = await Promise.all([
       getIntegrations(environmentId),

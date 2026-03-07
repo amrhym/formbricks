@@ -6,7 +6,13 @@ import { logger } from "@hivecfm/logger";
 import type { TCampaignCreateInput, TCampaignDetail, TCampaignWithRelations } from "@hivecfm/types/campaign";
 import { ZCampaignCreateInput } from "@hivecfm/types/campaign";
 import { ZId } from "@hivecfm/types/common";
-import { DatabaseError, InvalidInputError, ResourceNotFoundError } from "@hivecfm/types/errors";
+import {
+  DatabaseError,
+  InvalidInputError,
+  OperationNotAllowedError,
+  ResourceNotFoundError,
+} from "@hivecfm/types/errors";
+import { checkAddonAccess } from "../tenant/license-enforcement";
 import { validateInputs } from "../utils/validate";
 
 const selectCampaign = {
@@ -111,6 +117,18 @@ export const createCampaign = async (
   validateInputs([environmentId, ZId], [campaignInput, ZCampaignCreateInput]);
 
   try {
+    // Resolve organizationId from environment and check campaign addon
+    const environment = await prisma.environment.findUnique({
+      where: { id: environmentId },
+      select: { project: { select: { organizationId: true } } },
+    });
+    if (environment) {
+      const hasAccess = await checkAddonAccess(environment.project.organizationId, "campaignManagement");
+      if (!hasAccess) {
+        throw new OperationNotAllowedError("Campaign management addon is not enabled for this organization");
+      }
+    }
+
     const survey = await prisma.survey.findUnique({
       where: { id: campaignInput.surveyId },
       select: { name: true },

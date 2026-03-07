@@ -129,6 +129,22 @@ export const getTenant = async (organizationId: string) => {
         whitelabel: true,
         tenantQuota: { select: tenantQuotaSelect },
         organizationBranding: { select: brandingSelect },
+        tenantLicense: {
+          select: {
+            id: true,
+            organizationId: true,
+            licenseKey: true,
+            maxCompletedResponses: true,
+            maxUsers: true,
+            addonAiInsights: true,
+            addonCampaignManagement: true,
+            validFrom: true,
+            validUntil: true,
+            isActive: true,
+            createdAt: true,
+            updatedAt: true,
+          },
+        },
       },
     });
 
