@@ -15,6 +15,7 @@ import {
 } from "@/lib/n8n/service";
 import { deprovisionNovuForTenant, provisionNovuForTenant } from "@/lib/novu/tenant-provisioning";
 import { createRLSRule, deleteRLSRule } from "@/lib/superset/service";
+import { createLicense } from "@/lib/tenant/license";
 import { TenantProvisioner } from "@/lib/tenant/provisioning";
 import { createTenant, listTenants } from "@/lib/tenant/service";
 
@@ -69,6 +70,12 @@ export const POST = withV1ApiWrapper({
       auditLog.targetId = result.organization.id;
       auditLog.newObject = result;
 
+      // Create license if provided in input
+      let license = null;
+      if (inputValidation.data.license) {
+        license = await createLicense(result.organization.id, inputValidation.data.license);
+      }
+
       // Run full provisioning for external services
       const environmentIds = result.project.environments.map((env) => env.id);
       const provisioner = new TenantProvisioner(
@@ -98,6 +105,7 @@ export const POST = withV1ApiWrapper({
         return {
           response: responses.successResponse({
             ...result,
+            ...(license ? { license } : {}),
             provisioningWarning:
               "Tenant created but some external services failed to provision. Check provisioning logs.",
           }),
@@ -105,7 +113,10 @@ export const POST = withV1ApiWrapper({
       }
 
       return {
-        response: responses.successResponse(result),
+        response: responses.successResponse({
+          ...result,
+          ...(license ? { license } : {}),
+        }),
       };
     } catch (error) {
       if (error instanceof DatabaseError) {
