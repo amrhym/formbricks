@@ -85,6 +85,11 @@ class HiveCFMClient {
       cache: "no-store",
     });
 
+    const contentType = res.headers.get("content-type") || "";
+    if (!contentType.includes("application/json")) {
+      throw new Error(`API returned non-JSON response (${res.status}). The endpoint may not exist.`);
+    }
+
     const json = await res.json();
 
     if (!res.ok) {

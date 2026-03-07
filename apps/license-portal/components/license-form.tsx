@@ -71,8 +71,14 @@ export function LicenseForm({ orgId, mode, initialData, trigger }: LicenseFormPr
       });
 
       if (!res.ok) {
-        const data = await res.json();
-        throw new Error(data.error || "Failed to save license");
+        let errorMessage = "Failed to save license";
+        try {
+          const data = await res.json();
+          errorMessage = data.error || errorMessage;
+        } catch {
+          errorMessage = `Server error (${res.status})`;
+        }
+        throw new Error(errorMessage);
       }
 
       setOpen(false);
