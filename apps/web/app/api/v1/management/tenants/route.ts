@@ -71,7 +71,7 @@ export const POST = withV1ApiWrapper({
       auditLog.newObject = result;
 
       // Create license if provided in input
-      let license = null;
+      let license: Awaited<ReturnType<typeof createLicense>> | null = null;
       if (inputValidation.data.license) {
         license = await createLicense(result.organization.id, inputValidation.data.license);
       }
