@@ -96,6 +96,7 @@ function extractFieldValue(
 
 interface PushToHubParams {
   environmentId: string;
+  organizationId: string;
   surveyId: string;
   surveyName: string;
   responseId: string;
@@ -221,7 +222,7 @@ export async function pushResponseToHub(params: PushToHubParams): Promise<void> 
   if (!IS_HIVECFM_HUB_CONFIGURED) return;
 
   const {
-    environmentId,
+    organizationId,
     surveyId,
     surveyName,
     responseId,
@@ -246,7 +247,7 @@ export async function pushResponseToHub(params: PushToHubParams): Promise<void> 
       continue;
 
     records.push({
-      tenant_id: environmentId,
+      tenant_id: organizationId,
       submission_id: responseId,
       source_type: "survey",
       source_id: surveyId,
@@ -289,5 +290,61 @@ export async function pushResponseToHub(params: PushToHubParams): Promise<void> 
     );
   } else {
     logger.info({ surveyId, responseId, count: records.length }, "Pushed feedback records to Hub");
+  }
+}
+
+// --- Tenant Registration ---
+
+export async function registerHubTenant(organizationId: string, orgName: string): Promise<void> {
+  if (!IS_HIVECFM_HUB_CONFIGURED) return;
+
+  try {
+    const response = await fetch(`${HIVECFM_HUB_URL}/v1/tenants`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${HIVECFM_HUB_API_KEY}`,
+      },
+      body: JSON.stringify({ tenant_id: organizationId, name: orgName }),
+    });
+
+    if (!response.ok) {
+      const body = await response.text().catch(() => "");
+      logger.warn(
+        { organizationId, status: response.status, body },
+        "Hub tenant registration returned non-OK (may not be supported yet)"
+      );
+      return;
+    }
+
+    logger.info({ organizationId }, "Registered tenant in Hub");
+  } catch (error) {
+    logger.warn({ organizationId, error }, "Failed to register tenant in Hub (graceful)");
+  }
+}
+
+export async function deregisterHubTenant(organizationId: string): Promise<void> {
+  if (!IS_HIVECFM_HUB_CONFIGURED) return;
+
+  try {
+    const response = await fetch(`${HIVECFM_HUB_URL}/v1/tenants/${encodeURIComponent(organizationId)}`, {
+      method: "DELETE",
+      headers: {
+        Authorization: `Bearer ${HIVECFM_HUB_API_KEY}`,
+      },
+    });
+
+    if (!response.ok) {
+      const body = await response.text().catch(() => "");
+      logger.warn(
+        { organizationId, status: response.status, body },
+        "Hub tenant deregistration returned non-OK (may not be supported yet)"
+      );
+      return;
+    }
+
+    logger.info({ organizationId }, "Deregistered tenant from Hub");
+  } catch (error) {
+    logger.warn({ organizationId, error }, "Failed to deregister tenant from Hub (graceful)");
   }
 }

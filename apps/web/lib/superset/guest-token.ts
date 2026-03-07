@@ -34,7 +34,7 @@ export const mintGuestToken = async (organizationId: string, dashboardName: stri
   }
 
   // Build RLS clause that scopes data to this organization
-  const rlsClause = `1=1`;
+  const rlsClause = `"organizationId" = '${organizationId}'`;
 
   const { token, expiresAt } = await supersetClient.mintGuestToken(embeddedUuid, rlsClause);
 

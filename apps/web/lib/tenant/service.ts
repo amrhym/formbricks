@@ -260,6 +260,43 @@ export const deactivateTenant = async (organizationId: string) => {
       );
     }
 
+    // Superset RLS cleanup
+    try {
+      const { deleteRLSRule } = await import("@/lib/superset/service");
+      await deleteRLSRule(organizationId);
+    } catch (err) {
+      logger.error(
+        { tenantId: organizationId, error: err },
+        "Failed to delete Superset RLS during deactivation"
+      );
+    }
+
+    // Novu cleanup
+    try {
+      const { deprovisionNovuForTenant } = await import("@/lib/novu/tenant-provisioning");
+      const envs = await prisma.environment.findMany({
+        where: { project: { organizationId } },
+        select: { id: true },
+      });
+      await deprovisionNovuForTenant(
+        organizationId,
+        envs.map((e) => e.id)
+      );
+    } catch (err) {
+      logger.error(
+        { tenantId: organizationId, error: err },
+        "Failed to deprovision Novu during deactivation"
+      );
+    }
+
+    // Hub cleanup
+    try {
+      const { deregisterHubTenant } = await import("@/lib/hivecfm-hub/service");
+      await deregisterHubTenant(organizationId);
+    } catch (err) {
+      logger.error({ tenantId: organizationId, error: err }, "Failed to deregister Hub during deactivation");
+    }
+
     // Soft-deactivate by updating billing plan
     const organization = await prisma.organization.update({
       where: { id: organizationId },

@@ -5,6 +5,8 @@ export const ZProvisioningStep = z.enum([
   "DB_CREATED",
   "SUPERSET_CONFIGURED",
   "N8N_CONFIGURED",
+  "NOVU_CONFIGURED",
+  "HUB_CONFIGURED",
   "COMPLETED",
   "FAILED",
 ]);

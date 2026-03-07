@@ -41,9 +41,10 @@ export const semanticSearchAction = authenticatedActionClient
   .action(async ({ ctx, parsedInput }) => {
     await checkInsightsAccess(ctx.user.id, parsedInput.environmentId);
 
+    const organizationId = await getOrganizationIdFromEnvironmentId(parsedInput.environmentId);
     return searchFeedbackSemantic({
       query: parsedInput.query,
-      tenantId: parsedInput.environmentId,
+      tenantId: organizationId,
       limit: parsedInput.limit,
       minScore: parsedInput.minScore ?? 0.3,
       sourceId: parsedInput.sourceId,
@@ -65,9 +66,10 @@ export const findSimilarAction = authenticatedActionClient
   .action(async ({ ctx, parsedInput }) => {
     await checkInsightsAccess(ctx.user.id, parsedInput.environmentId);
 
+    const organizationId = await getOrganizationIdFromEnvironmentId(parsedInput.environmentId);
     return getSimilarFeedback({
       recordId: parsedInput.feedbackRecordId,
-      tenantId: parsedInput.environmentId,
+      tenantId: organizationId,
       limit: parsedInput.limit ?? 10,
       cursor: parsedInput.cursor,
     });

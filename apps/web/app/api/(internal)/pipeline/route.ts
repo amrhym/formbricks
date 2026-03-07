@@ -158,6 +158,7 @@ export const POST = async (request: Request) => {
 
     pushResponseToHub({
       environmentId,
+      organizationId: organization.id,
       surveyId,
       surveyName: survey.name,
       responseId: response.id,

@@ -16,6 +16,16 @@ interface N8nClient {
   revokeTenantCredentials(organizationId: string): Promise<void>;
 }
 
+interface NovuProvisionClient {
+  provisionTenant(organizationId: string, environmentIds: string[]): Promise<void>;
+  deprovisionTenant(organizationId: string, environmentIds: string[]): Promise<void>;
+}
+
+interface HubProvisionClient {
+  registerTenant(organizationId: string, orgName: string): Promise<void>;
+  deregisterTenant(organizationId: string): Promise<void>;
+}
+
 interface ProvisioningStep {
   name: TProvisioningStep;
   execute: () => Promise<void>;
@@ -25,20 +35,29 @@ interface ProvisioningStep {
 export class TenantProvisioner {
   private organizationId: string;
   private organizationName: string;
+  private environmentIds: string[];
   private supersetClient: SupersetClient;
   private n8nClient: N8nClient;
+  private novuClient: NovuProvisionClient;
+  private hubClient: HubProvisionClient;
   private completedSteps: TProvisioningStep[] = [];
 
   constructor(
     organizationId: string,
     organizationName: string,
+    environmentIds: string[],
     supersetClient: SupersetClient,
-    n8nClient: N8nClient
+    n8nClient: N8nClient,
+    novuClient: NovuProvisionClient,
+    hubClient: HubProvisionClient
   ) {
     this.organizationId = organizationId;
     this.organizationName = organizationName;
+    this.environmentIds = environmentIds;
     this.supersetClient = supersetClient;
     this.n8nClient = n8nClient;
+    this.novuClient = novuClient;
+    this.hubClient = hubClient;
   }
 
   private async logStep(step: TProvisioningStep, status: string, details?: Record<string, unknown>) {
@@ -122,6 +141,60 @@ export class TenantProvisioner {
             );
           }
           await this.logStep("N8N_CONFIGURED", "COMPENSATED");
+        },
+      },
+      {
+        name: "NOVU_CONFIGURED",
+        execute: async () => {
+          try {
+            await this.novuClient.provisionTenant(this.organizationId, this.environmentIds);
+          } catch (err) {
+            logger.warn(
+              { tenantId: this.organizationId, error: err },
+              "Novu provisioning failed (graceful degradation)"
+            );
+            await this.logStep("NOVU_CONFIGURED", "COMPLETED", {
+              skipped: true,
+              reason: String(err),
+            });
+            return;
+          }
+          await this.logStep("NOVU_CONFIGURED", "COMPLETED");
+        },
+        compensate: async () => {
+          try {
+            await this.novuClient.deprovisionTenant(this.organizationId, this.environmentIds);
+          } catch (err) {
+            logger.error({ tenantId: this.organizationId, error: err }, "Failed to compensate Novu");
+          }
+          await this.logStep("NOVU_CONFIGURED", "COMPENSATED");
+        },
+      },
+      {
+        name: "HUB_CONFIGURED",
+        execute: async () => {
+          try {
+            await this.hubClient.registerTenant(this.organizationId, this.organizationName);
+          } catch (err) {
+            logger.warn(
+              { tenantId: this.organizationId, error: err },
+              "Hub registration failed (graceful degradation)"
+            );
+            await this.logStep("HUB_CONFIGURED", "COMPLETED", {
+              skipped: true,
+              reason: String(err),
+            });
+            return;
+          }
+          await this.logStep("HUB_CONFIGURED", "COMPLETED");
+        },
+        compensate: async () => {
+          try {
+            await this.hubClient.deregisterTenant(this.organizationId);
+          } catch (err) {
+            logger.error({ tenantId: this.organizationId, error: err }, "Failed to compensate Hub");
+          }
+          await this.logStep("HUB_CONFIGURED", "COMPENSATED");
         },
       },
       {
