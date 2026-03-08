@@ -48,29 +48,52 @@ ENV NEXT_PUBLIC_SUPERSET_BASE_URL=${NEXT_PUBLIC_SUPERSET_BASE_URL}
 # Set the working directory
 WORKDIR /app
 
-# Copy the package information
-# COPY .gitignore .gitignore
-# COPY --from=builder /app/out/json/ .
-# COPY --from=builder /app/out/pnpm-lock.yaml ./pnpm-lock.yaml
+# --- Dependency layer (cached unless lockfile/package.json changes) ---
+# Copy only files needed for dependency resolution first
+COPY pnpm-lock.yaml pnpm-workspace.yaml package.json .npmrc* ./
+COPY patches/ ./patches/
 
-# Prepare the build
+# Copy all package.json files from workspaces
+COPY apps/web/package.json ./apps/web/package.json
+COPY apps/license-portal/package.json ./apps/license-portal/package.json
+COPY apps/storybook/package.json ./apps/storybook/package.json
+COPY packages/cache/package.json ./packages/cache/package.json
+COPY packages/config-eslint/package.json ./packages/config-eslint/package.json
+COPY packages/config-prettier/package.json ./packages/config-prettier/package.json
+COPY packages/config-typescript/package.json ./packages/config-typescript/package.json
+COPY packages/database/package.json ./packages/database/package.json
+COPY packages/email/package.json ./packages/email/package.json
+COPY packages/i18n-utils/package.json ./packages/i18n-utils/package.json
+COPY packages/js-core/package.json ./packages/js-core/package.json
+COPY packages/license-crypto/package.json ./packages/license-crypto/package.json
+COPY packages/logger/package.json ./packages/logger/package.json
+COPY packages/storage/package.json ./packages/storage/package.json
+COPY packages/survey-ui/package.json ./packages/survey-ui/package.json
+COPY packages/surveys/package.json ./packages/surveys/package.json
+COPY packages/types/package.json ./packages/types/package.json
+COPY packages/vite-plugins/package.json ./packages/vite-plugins/package.json
+
+# Install dependencies with BuildKit cache mount for pnpm store
+RUN --mount=type=cache,id=pnpm-store,target=/root/.local/share/pnpm/store \
+    pnpm install --ignore-scripts
+
+# --- Source layer (changes on every code change, but build caches are preserved) ---
 COPY . .
 
 # Create a .env file
 RUN touch apps/web/.env
 
-# Install the dependencies
-RUN pnpm install --ignore-scripts
+# Build the database package first (with turbo cache)
+RUN --mount=type=cache,id=turbo-cache,target=/app/node_modules/.cache \
+    pnpm build --filter=@hivecfm/database
 
-# Build the database package first
-RUN pnpm build --filter=@hivecfm/database
-
-# Build the project using our secret reader script
-# This mounts the secrets only during this build step without storing them in layers
+# Build the project with BuildKit cache mounts for Next.js and turbo caches
 RUN --mount=type=secret,id=database_url \
     --mount=type=secret,id=encryption_key \
     --mount=type=secret,id=redis_url \
     --mount=type=secret,id=sentry_auth_token \
+    --mount=type=cache,id=nextjs-cache,target=/app/apps/web/.next/cache \
+    --mount=type=cache,id=turbo-cache,target=/app/node_modules/.cache \
     /tmp/read-secrets.sh pnpm build --filter=@hivecfm/web...
 
 # Extract Prisma version
