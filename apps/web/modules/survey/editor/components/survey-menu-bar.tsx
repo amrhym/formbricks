@@ -118,7 +118,7 @@ export const SurveyMenuBar = ({
   };
 
   const containsEmptyTriggers = useMemo(() => {
-    if (localSurvey.type === "link") return false;
+    if (localSurvey.type !== "app") return false;
 
     const noTriggers = !localSurvey.triggers || localSurvey.triggers.length === 0 || !localSurvey.triggers[0];
 
@@ -448,7 +448,7 @@ export const SurveyMenuBar = ({
         />
       </div>
 
-      <div className="mt-3 flex items-center gap-2 sm:mt-0 sm:ml-4">
+      <div className="mt-3 flex items-center gap-2 sm:ml-4 sm:mt-0">
         {!isStorageConfigured && (
           <div>
             <Alert variant="warning" size="small">

@@ -138,12 +138,12 @@ export const RecontactOptionsCard = ({ localSurvey, setLocalSurvey }: RecontactO
   };
 
   useEffect(() => {
-    if (localSurvey.type === "link") {
+    if (localSurvey.type !== "app") {
       setOpen(false);
     }
   }, [localSurvey.type]);
 
-  if (localSurvey.type === "link") {
+  if (localSurvey.type !== "app") {
     return null; // Hide card completely
   }
 
@@ -161,7 +161,7 @@ export const RecontactOptionsCard = ({ localSurvey, setLocalSurvey }: RecontactO
         className="h-full w-full cursor-pointer rounded-lg hover:bg-slate-50"
         id="recontactOptionsCardTrigger">
         <div className="inline-flex px-4 py-4">
-          <div className="flex items-center pr-5 pl-2">
+          <div className="flex items-center pl-2 pr-5">
             <CheckIcon
               strokeWidth={3}
               className="h-7 w-7 rounded-full border border-green-300 bg-green-100 p-1.5 text-green-600"
@@ -222,7 +222,7 @@ export const RecontactOptionsCard = ({ localSurvey, setLocalSurvey }: RecontactO
                           id="overwriteDays"
                           value={inputDays}
                           onChange={handleOverwriteDaysChange}
-                          className="mr-2 ml-2 inline w-20 bg-white text-center text-sm"
+                          className="ml-2 mr-2 inline w-20 bg-white text-center text-sm"
                         />
                         {t("environments.surveys.edit.days_before_showing_this_survey_again")}
                       </p>
@@ -292,7 +292,7 @@ export const RecontactOptionsCard = ({ localSurvey, setLocalSurvey }: RecontactO
                           id="displayLimit"
                           value={displayLimit.toString()}
                           onChange={(e) => handleDisplayLimitChange(e)}
-                          className="mr-2 ml-2 inline w-20 bg-white text-center text-sm"
+                          className="ml-2 mr-2 inline w-20 bg-white text-center text-sm"
                         />
                         {t("environments.surveys.edit.times")}.
                       </p>
