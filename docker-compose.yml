@@ -74,10 +74,12 @@ services:
       S3_SECRET_KEY: ${MINIO_ROOT_PASSWORD:-hivecfm-secret-key}
       S3_REGION: ${S3_REGION:-us-east-1}
       S3_BUCKET_NAME: ${S3_BUCKET_NAME:-hivecfm-uploads}
-      # Public endpoint for signed URLs (browser access via nginx proxy)
+      # Public endpoint for browser-facing signed URLs (via nginx proxy)
       S3_ENDPOINT_URL: ${S3_ENDPOINT_URL:-https://hivecfm.xcai.io/storage}
+      # Public endpoint for rewriting presigned POST URLs so browsers can upload directly
+      S3_PUBLIC_ENDPOINT_URL: ${S3_PUBLIC_ENDPOINT_URL:-https://hivecfm.xcai.io/storage}
       S3_FORCE_PATH_STYLE: "1"
-      # Internal endpoint for direct container access (optional, for debugging)
+      # Internal endpoint for server-side S3 SDK operations (used by the S3 client)
       S3_INTERNAL_ENDPOINT: http://minio:9000
       # Superset Integration
       SUPERSET_BASE_URL: ${SUPERSET_BASE_URL:-http://hivecfm-superset:8088}

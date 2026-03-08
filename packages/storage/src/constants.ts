@@ -8,3 +8,6 @@ export const S3_BUCKET_NAME = process.env.S3_BUCKET_NAME;
 // When the S3 SDK endpoint is internal (e.g., http://minio:9000), browsers can't reach it.
 // This URL is used to rewrite presigned POST URLs so browsers can upload directly.
 export const S3_PUBLIC_ENDPOINT_URL = process.env.S3_PUBLIC_ENDPOINT_URL;
+// Internal endpoint for server-side S3 SDK operations (HeadObject, GetObject, etc.).
+// When set, the S3 client uses this for API calls while S3_ENDPOINT_URL is used for browser-facing URLs.
+export const S3_INTERNAL_ENDPOINT = process.env.S3_INTERNAL_ENDPOINT;

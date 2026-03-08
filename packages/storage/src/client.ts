@@ -6,6 +6,7 @@ import {
   S3_BUCKET_NAME,
   S3_ENDPOINT_URL,
   S3_FORCE_PATH_STYLE,
+  S3_INTERNAL_ENDPOINT,
   S3_REGION,
   S3_SECRET_KEY,
 } from "./constants";
@@ -28,8 +29,9 @@ export const createS3ClientFromEnv = (): Result<S3Client, StorageError> => {
     }
 
     // Build S3 client configuration
+    // Prefer internal endpoint for server-side operations; fall back to public endpoint
     const s3Config: S3ClientConfig = {
-      endpoint: S3_ENDPOINT_URL,
+      endpoint: S3_INTERNAL_ENDPOINT || S3_ENDPOINT_URL,
       forcePathStyle: S3_FORCE_PATH_STYLE,
     };
 

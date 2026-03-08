@@ -15,7 +15,7 @@ import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
 import { logger } from "@hivecfm/logger";
 import { type Result, type StorageError, StorageErrorCode, err, ok } from "../types/error";
 import { createS3Client } from "./client";
-import { S3_BUCKET_NAME, S3_ENDPOINT_URL, S3_PUBLIC_ENDPOINT_URL } from "./constants";
+import { S3_BUCKET_NAME, S3_ENDPOINT_URL, S3_INTERNAL_ENDPOINT, S3_PUBLIC_ENDPOINT_URL } from "./constants";
 
 /**
  * Get a signed URL for uploading a file to S3
@@ -74,8 +74,9 @@ export const getSignedUploadUrl = async (
     // If a public endpoint is configured and the S3 endpoint is internal,
     // rewrite the presigned POST URL so browsers can reach it.
     let browserUrl = url;
-    if (S3_PUBLIC_ENDPOINT_URL && S3_ENDPOINT_URL) {
-      browserUrl = url.replace(S3_ENDPOINT_URL, S3_PUBLIC_ENDPOINT_URL);
+    const sdkEndpoint = S3_INTERNAL_ENDPOINT || S3_ENDPOINT_URL;
+    if (S3_PUBLIC_ENDPOINT_URL && sdkEndpoint) {
+      browserUrl = url.replace(sdkEndpoint, S3_PUBLIC_ENDPOINT_URL);
     }
 
     return ok({
