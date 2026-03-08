@@ -1,0 +1,17 @@
+{
+  "name": "@hivecfm/license-crypto",
+  "version": "0.0.0",
+  "private": true,
+  "main": "src/index.ts",
+  "sideEffects": false,
+  "scripts": {
+    "lint": "eslint . --ext .ts,.js",
+    "clean": "rimraf node_modules .turbo"
+  },
+  "dependencies": {
+    "zod": "3.24.4"
+  },
+  "devDependencies": {
+    "@hivecfm/config-typescript": "workspace:*"
+  }
+}

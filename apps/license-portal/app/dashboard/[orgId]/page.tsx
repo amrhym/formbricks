@@ -2,6 +2,7 @@ import { ArrowLeft, BarChart3, Key, Puzzle, Users } from "lucide-react";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { LicenseStatusCard } from "@/components/license-status-card";
+import { OfflineTokenGenerator } from "@/components/offline-token-generator";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { UsageBar } from "@/components/usage-chart";
@@ -124,6 +125,8 @@ export default async function TenantDetailPage({ params }: { params: Promise<{ o
               </div>
             </CardContent>
           </Card>
+
+          <OfflineTokenGenerator orgId={orgId} />
         </>
       )}
     </div>

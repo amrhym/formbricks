@@ -132,6 +132,8 @@ export const env = createEnv({
     NOVU_API_URL: z.string().url().optional(),
     HIVECFM_HUB_URL: z.string().url().optional(),
     HIVECFM_HUB_API_KEY: z.string().optional(),
+    HIVECFM_LICENSE_PUBLIC_KEY: z.string().optional(),
+    HIVECFM_OFFLINE_LICENSE_TOKEN: z.string().optional(),
   },
 
   /*
@@ -231,5 +233,7 @@ export const env = createEnv({
     NOVU_API_URL: process.env.NOVU_API_URL,
     HIVECFM_HUB_URL: process.env.HIVECFM_HUB_URL,
     HIVECFM_HUB_API_KEY: process.env.HIVECFM_HUB_API_KEY,
+    HIVECFM_LICENSE_PUBLIC_KEY: process.env.HIVECFM_LICENSE_PUBLIC_KEY,
+    HIVECFM_OFFLINE_LICENSE_TOKEN: process.env.HIVECFM_OFFLINE_LICENSE_TOKEN,
   },
 });

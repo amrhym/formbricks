@@ -32,6 +32,7 @@
     "@hivecfm/email": "workspace:*",
     "@hivecfm/i18n-utils": "workspace:*",
     "@hivecfm/js-core": "workspace:*",
+    "@hivecfm/license-crypto": "workspace:*",
     "@hivecfm/logger": "workspace:*",
     "@hivecfm/storage": "workspace:*",
     "@hivecfm/surveys": "workspace:*",

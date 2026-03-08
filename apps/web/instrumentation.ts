@@ -8,6 +8,11 @@ export const register = async () => {
     if (PROMETHEUS_ENABLED) {
       await import("./instrumentation-node");
     }
+    // Auto-activate offline license from env var if configured
+    if (process.env.HIVECFM_OFFLINE_LICENSE_TOKEN) {
+      const { tryAutoActivateFromEnv } = await import("./lib/tenant/offline-license");
+      await tryAutoActivateFromEnv();
+    }
   }
   if (process.env.NEXT_RUNTIME === "nodejs" && IS_PRODUCTION && SENTRY_DSN) {
     await import("./sentry.server.config");

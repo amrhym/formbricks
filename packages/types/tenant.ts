@@ -109,6 +109,11 @@ export const ZLicenseActivateInput = z.object({
 });
 export type TLicenseActivateInput = z.infer<typeof ZLicenseActivateInput>;
 
+export const ZOfflineLicenseActivateInput = z.object({
+  token: z.string().min(1),
+});
+export type TOfflineLicenseActivateInput = z.infer<typeof ZOfflineLicenseActivateInput>;
+
 export const ZTenantCreateInput = z.object({
   name: z.string().trim().min(1, { message: "Tenant name is required" }),
   adminEmail: z.string().email({ message: "Valid admin email is required" }),
