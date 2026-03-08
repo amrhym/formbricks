@@ -45,7 +45,7 @@ export function OfflineLicenseActivator({ organizationId }: OfflineLicenseActiva
         setMessage(err.message || "An unexpected error occurred.");
       }
     },
-    [params.environmentId, router]
+    [organizationId, router]
   );
 
   const handleFileUpload = useCallback(
