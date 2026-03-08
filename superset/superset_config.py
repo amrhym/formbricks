@@ -35,3 +35,6 @@ CORS_OPTIONS = {
 
 # Talisman (CSP) - disable for embedding
 TALISMAN_ENABLED = False
+
+# Disable CSRF for API access (server-to-server calls use Bearer token auth)
+WTF_CSRF_ENABLED = False
