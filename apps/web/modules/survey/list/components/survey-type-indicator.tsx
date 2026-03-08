@@ -1,6 +1,6 @@
 "use client";
 
-import { Code, HelpCircle, Link2Icon } from "lucide-react";
+import { Code, HelpCircle, Link2Icon, PhoneIcon } from "lucide-react";
 import { useTranslation } from "react-i18next";
 
 interface SurveyTypeIndicatorProps {
@@ -12,6 +12,7 @@ export const SurveyTypeIndicator = ({ type }: SurveyTypeIndicatorProps) => {
   const surveyTypeMapping = {
     app: { icon: Code, label: t("common.app") },
     link: { icon: Link2Icon, label: t("common.link") },
+    voice: { icon: PhoneIcon, label: t("common.voice") },
   };
   const { icon: Icon, label } = surveyTypeMapping[type] || { icon: HelpCircle, label: "Unknown" };
 
