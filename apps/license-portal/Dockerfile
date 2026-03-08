@@ -10,7 +10,7 @@ COPY packages/license-crypto/ ./packages/license-crypto/
 
 # Copy license-portal package.json and resolve workspace reference for npm
 COPY apps/license-portal/package.json ./
-RUN sed -i 's|"workspace:\*"|"file:./packages/license-crypto"|' package.json
+RUN sed -i 's|"workspace:[^"]*"|"file:./packages/license-crypto"|' package.json
 RUN npm install --legacy-peer-deps
 
 # Build the app
