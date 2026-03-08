@@ -53,6 +53,9 @@ WORKDIR /app
 COPY pnpm-lock.yaml pnpm-workspace.yaml package.json .npmrc* ./
 COPY patches/ ./patches/
 
+# Copy vendored dependencies required by pnpm install
+COPY apps/web/vendor/ ./apps/web/vendor/
+
 # Copy all package.json files from workspaces
 COPY apps/web/package.json ./apps/web/package.json
 COPY apps/license-portal/package.json ./apps/license-portal/package.json
