@@ -5,7 +5,12 @@ FROM base AS deps
 RUN apk add --no-cache libc6-compat
 WORKDIR /app
 
-COPY package.json ./
+# Copy license-crypto package (shared dependency)
+COPY packages/license-crypto/ ./packages/license-crypto/
+
+# Copy license-portal package.json and resolve workspace reference for npm
+COPY apps/license-portal/package.json ./
+RUN sed -i 's|"workspace:\*"|"file:./packages/license-crypto"|' package.json
 RUN npm install --legacy-peer-deps
 
 # Build the app
@@ -13,7 +18,8 @@ FROM base AS builder
 WORKDIR /app
 
 COPY --from=deps /app/node_modules ./node_modules
-COPY . .
+COPY --from=deps /app/packages/license-crypto ./packages/license-crypto
+COPY apps/license-portal/ .
 
 ENV NEXT_TELEMETRY_DISABLED=1
 

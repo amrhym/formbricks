@@ -1,8 +1,8 @@
 services:
   hivelic:
     build:
-      context: .
-      dockerfile: Dockerfile
+      context: ../..
+      dockerfile: apps/license-portal/Dockerfile
     container_name: hivelic-portal
     restart: unless-stopped
     ports:
