@@ -56,13 +56,13 @@ export default async function TenantDetailPage({ params }: { params: Promise<{ o
 
             <Card>
               <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                <CardTitle className="text-sm font-medium">Usage This Month</CardTitle>
+                <CardTitle className="text-sm font-medium">Usage This Year</CardTitle>
                 <BarChart3 className="h-4 w-4 text-slate-400" />
               </CardHeader>
               <CardContent className="space-y-4">
                 <UsageBar
                   label="Completed Responses"
-                  current={license.usage.completedResponsesThisMonth}
+                  current={license.usage.completedResponsesThisYear}
                   max={license.maxCompletedResponses}
                 />
                 <UsageBar label="Active Users" current={license.usage.currentUsers} max={license.maxUsers} />
@@ -106,7 +106,7 @@ export default async function TenantDetailPage({ params }: { params: Promise<{ o
                     <span className="font-medium">{license.maxUsers.toLocaleString()}</span>
                   </div>
                   <div className="flex items-center justify-between">
-                    <span className="text-sm text-slate-600">Max Responses/Month</span>
+                    <span className="text-sm text-slate-600">Max Responses/Year</span>
                     <span className="font-medium">{license.maxCompletedResponses.toLocaleString()}</span>
                   </div>
                 </div>

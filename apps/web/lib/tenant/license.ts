@@ -197,14 +197,14 @@ export const getLicenseStatus = async (organizationId: string) => {
   if (!license) return null;
 
   const now = new Date();
-  const startOfMonth = new Date(now.getFullYear(), now.getMonth(), 1);
+  const startOfYear = new Date(now.getFullYear(), 0, 1);
 
   const [completedResponseCount, userCount] = await Promise.all([
     prisma.response.count({
       where: {
         finished: true,
         survey: { environment: { project: { organizationId } } },
-        createdAt: { gte: startOfMonth },
+        createdAt: { gte: startOfYear },
       },
     }),
     prisma.membership.count({
@@ -216,7 +216,7 @@ export const getLicenseStatus = async (organizationId: string) => {
     ...license,
     valid: isLicenseValid(license),
     usage: {
-      completedResponsesThisMonth: completedResponseCount,
+      completedResponsesThisYear: completedResponseCount,
       currentUsers: userCount,
     },
   };

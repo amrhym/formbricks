@@ -23,7 +23,7 @@ export interface TenantLicense {
 export interface LicenseStatus extends TenantLicense {
   valid: boolean;
   usage: {
-    completedResponsesThisMonth: number;
+    completedResponsesThisYear: number;
     currentUsers: number;
   };
 }

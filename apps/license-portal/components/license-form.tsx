@@ -111,7 +111,7 @@ export function LicenseForm({ orgId, mode, initialData, trigger }: LicenseFormPr
               />
             </div>
             <div className="space-y-2">
-              <Label htmlFor="maxResponses">Max Responses/Month</Label>
+              <Label htmlFor="maxResponses">Max Responses/Year</Label>
               <Input
                 id="maxResponses"
                 type="number"
