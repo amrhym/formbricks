@@ -446,7 +446,8 @@
     "variables": "Variables",
     "verified_email": "Verified Email",
     "video": "Video",
-    "voice_ivr_survey": "Voice IVR Survey",
+    "voice": "Voice",
+    "voice_ivr_survey": "Voice / IVR",
     "warning": "Warning",
     "we_were_unable_to_verify_your_license_because_the_license_server_is_unreachable": "We were unable to verify your license because the license server is unreachable.",
     "webhook": "Webhook",
@@ -538,9 +539,7 @@
     "verification_email_verify_email": "Verify email",
     "verification_new_email_subject": "Email change verification",
     "verification_security_notice": "If you did not request this email change, please ignore this email or contact support immediately.",
-    "verified_link_survey_email_subject": "Your survey is ready to be filled out.",
-    "voice": "Voice",
-    "voice_ivr_survey": "Voice / IVR"
+    "verified_link_survey_email_subject": "Your survey is ready to be filled out."
   },
   "environments": {
     "actions": {
