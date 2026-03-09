@@ -1,8 +1,4 @@
 <?xml version="1.0" standalone="no"?>
-<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 20010904//EN" "http://www.w3.org/TR/2001/REC-SVG-20010904/DTD/svg10.dtd">
 <svg version="1.0" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16">
-  <!-- HiveCFM Hexagon Icon for Safari Pinned Tab -->
-  <path d="M8 1 L14 4.5 L14 11.5 L8 15 L2 11.5 L2 4.5 Z" fill="#000000"/>
-  <path d="M8 3 L12 5.5 L12 10.5 L8 13 L4 10.5 L4 5.5 Z" fill="none" stroke="#ffffff" stroke-width="0.5"/>
-  <circle cx="8" cy="8" r="2" fill="#ffffff"/>
+  <text x="8" y="13" font-family="Helvetica, Arial, sans-serif" font-size="14" font-weight="bold" fill="#000000" text-anchor="middle">H</text>
 </svg>
