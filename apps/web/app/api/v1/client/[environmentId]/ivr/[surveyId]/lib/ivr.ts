@@ -8,6 +8,7 @@ import {
 } from "@hivecfm/types/surveys/elements";
 import { TConditionGroup, TSingleCondition } from "@hivecfm/types/surveys/logic";
 import { TSurvey } from "@hivecfm/types/surveys/types";
+import { parseRecallInfo } from "@/lib/utils/recall";
 
 interface IvrInputConfigNumeric {
   inputType: "numeric";
@@ -60,12 +61,20 @@ export interface IvrSurveyResponse {
   questions: IvrQuestion[];
 }
 
-const getDefaultLanguageText = (i18nString?: Record<string, string>): string | null => {
+const getDefaultLanguageText = (
+  i18nString?: Record<string, string>,
+  hiddenFields?: Record<string, string>
+): string | null => {
   if (!i18nString) return null;
-  return i18nString.default || null;
+  const text = i18nString.default || null;
+  if (!text || !hiddenFields || Object.keys(hiddenFields).length === 0) return text;
+  return text.includes("#recall:") ? parseRecallInfo(text, hiddenFields) : text;
 };
 
-const buildInputConfig = (element: TSurveyElement): IvrInputConfig | null => {
+const buildInputConfig = (
+  element: TSurveyElement,
+  hiddenFields?: Record<string, string>
+): IvrInputConfig | null => {
   switch (element.type) {
     case TSurveyElementTypeEnum.NPS:
       return { inputType: "numeric", min: 0, max: 10 };
@@ -82,7 +91,7 @@ const buildInputConfig = (element: TSurveyElement): IvrInputConfig | null => {
         inputType: "dtmf_choice",
         options: choices.map((choice, index) => ({
           key: String(index + 1),
-          label: getDefaultLanguageText(choice.label) || `Option ${index + 1}`,
+          label: getDefaultLanguageText(choice.label, hiddenFields) || `Option ${index + 1}`,
         })),
       };
     }
@@ -275,7 +284,7 @@ export const linearizeSurveyForIvr = (
         continue;
       }
 
-      const inputConfig = buildInputConfig(element);
+      const inputConfig = buildInputConfig(element, hiddenFields);
       if (!inputConfig) continue;
 
       questionIndex++;
@@ -285,8 +294,8 @@ export const linearizeSurveyForIvr = (
         questionIndex,
         blockId: block.id,
         blockName: block.name,
-        questionText: getDefaultLanguageText(element.headline) || "",
-        subheader: getDefaultLanguageText(element.subheader) || null,
+        questionText: getDefaultLanguageText(element.headline, hiddenFields) || "",
+        subheader: getDefaultLanguageText(element.subheader, hiddenFields) || null,
         audioUrl: element.audioUrl
           ? buildMediaUrl(baseUrl, survey.environmentId, survey.id, element.id)
           : null,
@@ -300,7 +309,7 @@ export const linearizeSurveyForIvr = (
   // Build welcome/thank you messages from survey endings
   const firstEndingMessage =
     survey.endings.length > 0 && survey.endings[0].type === "endScreen"
-      ? getDefaultLanguageText(survey.endings[0].headline)
+      ? getDefaultLanguageText(survey.endings[0].headline, hiddenFields)
       : null;
 
   const surveyConfig: IvrSurveyConfig = {
@@ -308,7 +317,7 @@ export const linearizeSurveyForIvr = (
     name: survey.name,
     totalQuestions: questions.length,
     welcomeMessage: survey.welcomeCard.enabled
-      ? getDefaultLanguageText(survey.welcomeCard.headline) || null
+      ? getDefaultLanguageText(survey.welcomeCard.headline, hiddenFields) || null
       : null,
     welcomeAudioUrl: null,
     thankYouMessage: voiceConfig.thankYouMessage || firstEndingMessage,
