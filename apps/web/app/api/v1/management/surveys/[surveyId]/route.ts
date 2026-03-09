@@ -16,7 +16,29 @@ import { TApiAuditLog, TApiKeyAuthentication, withV1ApiWrapper } from "@/app/lib
 import { WEBAPP_URL } from "@/lib/constants";
 import { getOrganizationByEnvironmentId } from "@/lib/organization/service";
 import { getSurvey, updateSurvey } from "@/lib/survey/service";
+import { parseRecallInfo } from "@/lib/utils/recall";
 import { hasPermission } from "@/modules/organization/settings/api-keys/lib/utils";
+
+/**
+ * Recursively resolves recall tags (#recall:fieldId/fallback:value#) in all
+ * string values within the survey object using the provided hidden field data.
+ */
+const resolveRecallTags = (obj: any, data: Record<string, string>): any => {
+  if (!obj || typeof obj !== "object") return obj;
+  if (Array.isArray(obj)) return obj.map((item) => resolveRecallTags(item, data));
+
+  const result: Record<string, any> = {};
+  for (const [key, value] of Object.entries(obj)) {
+    if (typeof value === "string" && value.includes("#recall:")) {
+      result[key] = parseRecallInfo(value, data);
+    } else if (typeof value === "object" && value !== null) {
+      result[key] = resolveRecallTags(value, data);
+    } else {
+      result[key] = value;
+    }
+  }
+  return result;
+};
 
 const fetchAndAuthorizeSurvey = async (
   surveyId: string,
@@ -74,13 +96,18 @@ export const GET = withV1ApiWrapper({
         result.survey.blocks.length > 0 &&
         result.survey.blocks.every((block) => block.elements.length === 1);
 
-      const surveyData = shouldTransformToQuestions
+      let surveyData = shouldTransformToQuestions
         ? {
             ...result.survey,
             questions: transformBlocksToQuestions(result.survey.blocks, result.survey.endings),
             blocks: [],
           }
         : result.survey;
+
+      // Resolve recall tags if hidden field values are provided
+      if (Object.keys(hiddenFieldValues).length > 0) {
+        surveyData = resolveRecallTags(surveyData, hiddenFieldValues);
+      }
 
       return {
         response: responses.successResponse({
