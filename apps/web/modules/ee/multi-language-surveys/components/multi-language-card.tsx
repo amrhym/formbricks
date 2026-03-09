@@ -241,7 +241,7 @@ export const MultiLanguageCard: FC<MultiLanguageCardProps> = ({
         const translations = result.data;
 
         // Apply translations to the survey
-        const updatedSurvey = JSON.parse(JSON.stringify(localSurvey)) as TSurvey;
+        const updatedSurvey = structuredClone(localSurvey);
 
         const applyTranslation = (obj: any, path: string, langCode: string, translatedText: string) => {
           const parts = path.split(/\.|\[(\d+)\]/).filter(Boolean);
