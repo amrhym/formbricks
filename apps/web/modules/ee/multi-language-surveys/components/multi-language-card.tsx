@@ -6,12 +6,14 @@ import * as Collapsible from "@radix-ui/react-collapsible";
 import { ArrowUpRight, Languages } from "lucide-react";
 import Link from "next/link";
 import type { FC } from "react";
-import { useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
+import { toast } from "react-hot-toast";
 import { useTranslation } from "react-i18next";
 import type { TSurvey, TSurveyLanguage } from "@hivecfm/types/surveys/types";
 import { TUserLocale } from "@hivecfm/types/user";
 import { cn } from "@/lib/cn";
 import { addMultiLanguageLabels, extractLanguageCodes, getEnabledLanguages } from "@/lib/i18n/utils";
+import { translateSurveyContentAction } from "@/modules/ee/multi-language-surveys/lib/ai-translate";
 import { AdvancedOptionToggle } from "@/modules/ui/components/advanced-option-toggle";
 import { Button } from "@/modules/ui/components/button";
 import { ConfirmationModal } from "@/modules/ui/components/confirmation-modal";
@@ -28,6 +30,7 @@ interface MultiLanguageCardProps {
   activeElementId: string | null;
   setActiveElementId: (elementId: string | null) => void;
   isMultiLanguageAllowed?: boolean;
+  isAIEnabled?: boolean;
   isFormbricksCloud: boolean;
   setSelectedLanguageCode: (language: string) => void;
   locale: TUserLocale;
@@ -49,6 +52,7 @@ export const MultiLanguageCard: FC<MultiLanguageCardProps> = ({
   setLocalSurvey,
   projectLanguages,
   isMultiLanguageAllowed,
+  isAIEnabled,
   isFormbricksCloud,
   setSelectedLanguageCode,
   locale,
@@ -179,6 +183,101 @@ export const MultiLanguageCard: FC<MultiLanguageCardProps> = ({
 
   const enabledLanguages = getEnabledLanguages(localSurvey.languages);
 
+  const [translatingLanguage, setTranslatingLanguage] = useState<string | null>(null);
+
+  const handleAutoTranslate = useCallback(
+    async (targetLanguage: Language) => {
+      if (!defaultLanguage) return;
+      setTranslatingLanguage(targetLanguage.code);
+
+      try {
+        // Collect all translatable texts from the survey
+        const textsToTranslate: { path: string; text: string }[] = [];
+
+        const collectI18nTexts = (obj: any, prefix: string) => {
+          if (!obj || typeof obj !== "object") return;
+          if (obj.default !== undefined && typeof obj.default === "string") {
+            // This is a TI18nString
+            if (obj.default.trim()) {
+              textsToTranslate.push({ path: prefix, text: obj.default });
+            }
+            return;
+          }
+          if (Array.isArray(obj)) {
+            obj.forEach((item, i) => collectI18nTexts(item, `${prefix}[${i}]`));
+          } else {
+            Object.entries(obj).forEach(([key, value]) => collectI18nTexts(value, `${prefix}.${key}`));
+          }
+        };
+
+        // Collect from welcome card, blocks, and endings
+        collectI18nTexts(localSurvey.welcomeCard, "welcomeCard");
+        localSurvey.blocks.forEach((block, bi) => {
+          block.elements.forEach((element, ei) => {
+            collectI18nTexts(element, `blocks[${bi}].elements[${ei}]`);
+          });
+        });
+        localSurvey.endings.forEach((ending, i) => {
+          collectI18nTexts(ending, `endings[${i}]`);
+        });
+
+        if (textsToTranslate.length === 0) {
+          toast.error("No text content found to translate");
+          return;
+        }
+
+        const result = await translateSurveyContentAction({
+          environmentId: localSurvey.environmentId,
+          sourceLanguageCode: defaultLanguage.code,
+          targetLanguageCode: targetLanguage.code,
+          texts: textsToTranslate.map((t) => t.text),
+        });
+
+        if (!result?.data) {
+          toast.error("Translation failed. Please try again.");
+          return;
+        }
+
+        const translations = result.data;
+
+        // Apply translations to the survey
+        const updatedSurvey = JSON.parse(JSON.stringify(localSurvey)) as TSurvey;
+
+        const applyTranslation = (obj: any, path: string, langCode: string, translatedText: string) => {
+          const parts = path.split(/\.|\[(\d+)\]/).filter(Boolean);
+          let current: any = obj;
+          for (let i = 0; i < parts.length - 1; i++) {
+            const part = parts[i];
+            current = current[isNaN(Number(part)) ? part : Number(part)];
+            if (!current) return;
+          }
+          const lastPart = parts[parts.length - 1];
+          const target = current[isNaN(Number(lastPart)) ? lastPart : Number(lastPart)];
+          if (target && typeof target === "object" && "default" in target) {
+            target[langCode] = translatedText;
+          }
+        };
+
+        const langCode = targetLanguage.code === defaultLanguage.code ? "default" : targetLanguage.code;
+
+        textsToTranslate.forEach((item, i) => {
+          if (translations[i]) {
+            applyTranslation(updatedSurvey, item.path, langCode, translations[i]);
+          }
+        });
+
+        setLocalSurvey(updatedSurvey);
+        toast.success(`Survey translated to ${targetLanguage.code} successfully`);
+      } catch (error) {
+        console.error("AI translation failed:", error);
+        toast.error("Translation failed. Please try again.");
+      } finally {
+        setTranslatingLanguage(null);
+      }
+    },
+    [localSurvey, defaultLanguage, setLocalSurvey]
+  );
+
   return (
     <div
       className={cn(
@@ -188,7 +287,7 @@ export const MultiLanguageCard: FC<MultiLanguageCardProps> = ({
       <div
         className={cn(
           open ? "bg-slate-50" : "bg-white group-hover:bg-slate-50",
-          "flex w-10 items-center justify-center rounded-l-lg border-t border-b border-l group-aria-expanded:rounded-bl-none"
+          "flex w-10 items-center justify-center rounded-l-lg border-b border-l border-t group-aria-expanded:rounded-bl-none"
         )}>
         <p>
           <Languages className="h-6 w-6 rounded-full bg-indigo-500 p-1 text-white" />
@@ -247,7 +346,7 @@ export const MultiLanguageCard: FC<MultiLanguageCardProps> = ({
             ) : (
               <>
                 {projectLanguages.length <= 1 && (
-                  <div className="mb-4 text-sm text-slate-500 italic">
+                  <div className="mb-4 text-sm italic text-slate-500">
                     {projectLanguages.length === 0
                       ? t("environments.surveys.edit.no_languages_found_add_first_one_to_get_started")
                       : t(
@@ -258,7 +357,7 @@ export const MultiLanguageCard: FC<MultiLanguageCardProps> = ({
                 {projectLanguages.length > 1 && (
                   <div className="space-y-6">
                     {isMultiLanguageAllowed && !isMultiLanguageActivated ? (
-                      <div className="text-sm text-slate-500 italic">
+                      <div className="text-sm italic text-slate-500">
                         {t("environments.surveys.edit.switch_multi_language_on_to_get_started")}
                       </div>
                     ) : null}
@@ -280,6 +379,9 @@ export const MultiLanguageCard: FC<MultiLanguageCardProps> = ({
                             setActiveElementId={setActiveElementId}
                             setSelectedLanguageCode={setSelectedLanguageCode}
                             updateSurveyLanguages={updateSurveyLanguages}
+                            isAIEnabled={isAIEnabled}
+                            onAutoTranslate={handleAutoTranslate}
+                            translatingLanguage={translatingLanguage}
                             locale={locale}
                           />
                         ) : null}

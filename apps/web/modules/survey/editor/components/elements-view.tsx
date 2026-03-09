@@ -62,6 +62,7 @@ interface ElementsViewProps {
   selectedLanguageCode: string;
   setSelectedLanguageCode: (languageCode: string) => void;
   isMultiLanguageAllowed?: boolean;
+  isAIEnabled?: boolean;
   isFormbricksCloud: boolean;
   isCxMode: boolean;
   locale: TUserLocale;
@@ -86,6 +87,7 @@ export const ElementsView = ({
   setSelectedLanguageCode,
   selectedLanguageCode,
   isMultiLanguageAllowed,
+  isAIEnabled,
   isFormbricksCloud,
   isCxMode,
   locale,
@@ -923,6 +925,7 @@ export const ElementsView = ({
               setActiveElementId={setActiveElementId}
               activeElementId={activeElementId}
               isMultiLanguageAllowed={isMultiLanguageAllowed}
+              isAIEnabled={isAIEnabled}
               isFormbricksCloud={isFormbricksCloud}
               setSelectedLanguageCode={setSelectedLanguageCode}
               locale={locale}

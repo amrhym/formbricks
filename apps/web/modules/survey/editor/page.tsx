@@ -67,6 +67,9 @@ export const SurveyEditorPage = async (props) => {
     throw new Error(t("common.organization_not_found"));
   }
 
+  const { checkAddonAccess } = await import("@/lib/tenant/license-enforcement");
+  const isAIEnabled = await checkAddonAccess(projectWithTeamIds.organizationId, "aiInsights");
+
   const isSurveyCreationDeletionDisabled = isMember && hasReadAccess;
   const [locale, userEmail] = await Promise.all([
     getUserLocale(session.user.id),
@@ -135,6 +138,7 @@ export const SurveyEditorPage = async (props) => {
       segments={segments}
       isUserTargetingAllowed={isUserTargetingAllowed}
       isMultiLanguageAllowed={isMultiLanguageAllowed}
+      isAIEnabled={isAIEnabled}
       isSpamProtectionAllowed={isSpamProtectionAllowed}
       projectLanguages={projectLanguages}
       isFormbricksCloud={IS_FORMBRICKS_CLOUD}

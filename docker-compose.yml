@@ -81,6 +81,8 @@ services:
       S3_FORCE_PATH_STYLE: "1"
       # Internal endpoint for server-side S3 SDK operations (used by the S3 client)
       S3_INTERNAL_ENDPOINT: http://minio:9000
+      # AI Translation (OpenAI) - required for AI auto-translate in multi-language surveys
+      OPENAI_API_KEY: ${OPENAI_API_KEY:-}
       # Superset Integration
       SUPERSET_BASE_URL: ${SUPERSET_BASE_URL:-http://hivecfm-superset:8088}
       SUPERSET_ADMIN_USERNAME: ${SUPERSET_ADMIN_USERNAME:-admin}

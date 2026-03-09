@@ -14,6 +14,9 @@ interface SecondaryLanguageSelectProps {
   setActiveElementId: (elementId: string) => void;
   localSurvey: TSurvey;
   updateSurveyLanguages: (language: Language) => void;
+  isAIEnabled?: boolean;
+  onAutoTranslate?: (language: Language) => void;
+  translatingLanguage?: string | null;
   locale: TUserLocale;
 }
 
@@ -24,6 +27,9 @@ export function SecondaryLanguageSelect({
   setActiveElementId,
   localSurvey,
   updateSurveyLanguages,
+  isAIEnabled,
+  onAutoTranslate,
+  translatingLanguage,
   locale,
 }: SecondaryLanguageSelectProps) {
   const { t } = useTranslation();
@@ -54,6 +60,9 @@ export function SecondaryLanguageSelect({
             onToggle={() => {
               updateSurveyLanguages(language);
             }}
+            isAIEnabled={isAIEnabled}
+            onAutoTranslate={onAutoTranslate ? () => onAutoTranslate(language) : undefined}
+            isTranslating={translatingLanguage === language.code}
             locale={locale}
           />
         ))}
