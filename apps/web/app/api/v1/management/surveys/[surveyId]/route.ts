@@ -13,6 +13,7 @@ import {
 } from "@/app/lib/api/survey-transformation";
 import { transformErrorToDetails } from "@/app/lib/api/validator";
 import { TApiAuditLog, TApiKeyAuthentication, withV1ApiWrapper } from "@/app/lib/api/with-api-logging";
+import { WEBAPP_URL } from "@/lib/constants";
 import { getOrganizationByEnvironmentId } from "@/lib/organization/service";
 import { getSurvey, updateSurvey } from "@/lib/survey/service";
 import { hasPermission } from "@/modules/organization/settings/api-keys/lib/utils";
@@ -35,9 +36,11 @@ const fetchAndAuthorizeSurvey = async (
 
 export const GET = withV1ApiWrapper({
   handler: async ({
+    req,
     props,
     authentication,
   }: {
+    req: NextRequest;
     props: { params: Promise<{ surveyId: string }> };
     authentication: NonNullable<TApiKeyAuthentication>;
   }) => {
@@ -51,23 +54,39 @@ export const GET = withV1ApiWrapper({
         };
       }
 
+      // Extract hidden field values from query params
+      const reservedParams = new Set(["surveyId"]);
+      const hiddenFieldValues: Record<string, string> = {};
+      for (const [key, value] of req.nextUrl.searchParams.entries()) {
+        if (!reservedParams.has(key)) {
+          hiddenFieldValues[key] = value;
+        }
+      }
+
+      // Build survey link with hidden fields as query params
+      const surveyUrl = new URL(`/s/${result.survey.id}`, WEBAPP_URL);
+      for (const [key, value] of Object.entries(hiddenFieldValues)) {
+        surveyUrl.searchParams.set(key, value);
+      }
+
       const shouldTransformToQuestions =
         result.survey.blocks &&
         result.survey.blocks.length > 0 &&
         result.survey.blocks.every((block) => block.elements.length === 1);
 
-      if (shouldTransformToQuestions) {
-        return {
-          response: responses.successResponse({
+      const surveyData = shouldTransformToQuestions
+        ? {
             ...result.survey,
             questions: transformBlocksToQuestions(result.survey.blocks, result.survey.endings),
             blocks: [],
-          }),
-        };
-      }
+          }
+        : result.survey;
 
       return {
-        response: responses.successResponse(result.survey),
+        response: responses.successResponse({
+          ...surveyData,
+          surveyLink: surveyUrl.toString(),
+        }),
       };
     } catch (error) {
       return {
