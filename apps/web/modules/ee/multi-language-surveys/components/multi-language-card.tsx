@@ -210,12 +210,10 @@ export const MultiLanguageCard: FC<MultiLanguageCardProps> = ({
           }
         };
 
-        // Collect from welcome card, blocks, and endings
+        // Collect from welcome card, blocks (including block-level fields like buttonLabel), and endings
         collectI18nTexts(localSurvey.welcomeCard, "welcomeCard");
         localSurvey.blocks.forEach((block, bi) => {
-          block.elements.forEach((element, ei) => {
-            collectI18nTexts(element, `blocks[${bi}].elements[${ei}]`);
-          });
+          collectI18nTexts(block, `blocks[${bi}]`);
         });
         localSurvey.endings.forEach((ending, i) => {
           collectI18nTexts(ending, `endings[${i}]`);
