@@ -20,6 +20,7 @@ const ZIvrResponseInput = z.object({
   answers: z.record(z.union([z.string(), z.number()])),
   finished: z.boolean(),
   language: z.string().optional(),
+  hiddenFields: z.record(z.union([z.string(), z.number()])).optional(),
   meta: z
     .object({
       source: z.string().optional(),
@@ -79,7 +80,7 @@ export const POST = withV1ApiWrapper({
       };
     }
 
-    const { callId, answers, finished, language, meta } = inputValidation.data;
+    const { callId, answers, finished, language, hiddenFields, meta } = inputValidation.data;
 
     const survey = await getSurvey(surveyId);
     if (!survey) {
@@ -104,6 +105,13 @@ export const POST = withV1ApiWrapper({
     const data: Record<string, string | number> = {};
     for (const [elementId, value] of Object.entries(answers)) {
       data[elementId] = value;
+    }
+
+    // Include hidden fields in response data (same as link surveys)
+    if (hiddenFields) {
+      for (const [key, value] of Object.entries(hiddenFields)) {
+        data[key] = value;
+      }
     }
 
     // Pre-flight license enforcement

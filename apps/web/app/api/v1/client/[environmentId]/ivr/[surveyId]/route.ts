@@ -53,9 +53,19 @@ export const GET = withV1ApiWrapper({
     }
 
     try {
+      // Extract hidden fields from query params
+      // Known non-hidden-field params to exclude
+      const reservedParams = new Set(["environmentId", "surveyId"]);
+      const hiddenFields: Record<string, string> = {};
+      for (const [key, value] of req.nextUrl.searchParams.entries()) {
+        if (!reservedParams.has(key)) {
+          hiddenFields[key] = value;
+        }
+      }
+
       // Use the request origin or WEBAPP_URL as the base for media URLs
       const baseUrl = req ? `${req.nextUrl.protocol}//${req.nextUrl.host}` : WEBAPP_URL;
-      const ivrData = linearizeSurveyForIvr(survey, baseUrl);
+      const ivrData = linearizeSurveyForIvr(survey, baseUrl, hiddenFields);
       return {
         response: responses.successResponse(ivrData, true),
       };
