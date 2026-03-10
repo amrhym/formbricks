@@ -20,16 +20,36 @@ stages:
     displayName: Build hivecfm-core
     steps:
     - task: Docker@2
-      displayName: Build and push hivecfm-core
+      displayName: Login to ACR
       inputs:
-        command: buildAndPush
-        repository: hivecfm-core
-        dockerfile: apps/web/Dockerfile
-        buildContext: $(Build.SourcesDirectory)
+        command: login
         containerRegistry: $(dockerRegistryServiceConnection)
-        tags: |
-          $(tag)
-          latest
+
+    - script: |
+        mkdir -p /tmp/docker-secrets
+        echo "postgresql://build:build@localhost:5432/build" > /tmp/docker-secrets/database_url
+        echo "build-time-placeholder-key-32chars!!" > /tmp/docker-secrets/encryption_key
+        echo "redis://localhost:6379" > /tmp/docker-secrets/redis_url
+        echo "" > /tmp/docker-secrets/sentry_auth_token
+
+        docker build \
+          -f apps/web/Dockerfile \
+          --build-arg NODE_OPTIONS="--max_old_space_size=3072" \
+          --secret id=database_url,src=/tmp/docker-secrets/database_url \
+          --secret id=encryption_key,src=/tmp/docker-secrets/encryption_key \
+          --secret id=redis_url,src=/tmp/docker-secrets/redis_url \
+          --secret id=sentry_auth_token,src=/tmp/docker-secrets/sentry_auth_token \
+          -t $(containerRegistry)/hivecfm-core:$(tag) \
+          -t $(containerRegistry)/hivecfm-core:latest \
+          $(Build.SourcesDirectory)
+
+        rm -rf /tmp/docker-secrets
+      displayName: Build hivecfm-core
+
+    - script: |
+        docker push $(containerRegistry)/hivecfm-core:$(tag)
+        docker push $(containerRegistry)/hivecfm-core:latest
+      displayName: Push hivecfm-core
 
   - job: BuildLicensePortal
     displayName: Build license-portal
