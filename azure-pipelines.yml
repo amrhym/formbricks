@@ -1,0 +1,46 @@
+trigger:
+  branches:
+    include:
+      - hivecfm-main
+
+pool:
+  vmImage: ubuntu-latest
+
+variables:
+  dockerRegistryServiceConnection: hivecfm-acr
+  containerRegistry: hivecfmregistry.azurecr.io
+  tag: $(Build.BuildId)
+
+stages:
+- stage: Build
+  displayName: Build and Push Images
+  jobs:
+  - job: BuildCore
+    displayName: Build hivecfm-core
+    steps:
+    - task: Docker@2
+      displayName: Build and push hivecfm-core
+      inputs:
+        command: buildAndPush
+        repository: hivecfm-core
+        dockerfile: apps/web/Dockerfile
+        buildContext: $(Build.SourcesDirectory)
+        containerRegistry: $(dockerRegistryServiceConnection)
+        tags: |
+          $(tag)
+          latest
+
+  - job: BuildLicensePortal
+    displayName: Build license-portal
+    steps:
+    - task: Docker@2
+      displayName: Build and push license-portal
+      inputs:
+        command: buildAndPush
+        repository: hivecfm-license-portal
+        dockerfile: apps/license-portal/Dockerfile
+        buildContext: $(Build.SourcesDirectory)
+        containerRegistry: $(dockerRegistryServiceConnection)
+        tags: |
+          $(tag)
+          latest
