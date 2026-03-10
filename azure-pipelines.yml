@@ -34,7 +34,7 @@ stages:
 
         docker build \
           -f apps/web/Dockerfile \
-          --build-arg NODE_OPTIONS="--max_old_space_size=3072" \
+          --build-arg NODE_OPTIONS="--max_old_space_size=8192" \
           --secret id=database_url,src=/tmp/docker-secrets/database_url \
           --secret id=encryption_key,src=/tmp/docker-secrets/encryption_key \
           --secret id=redis_url,src=/tmp/docker-secrets/redis_url \
