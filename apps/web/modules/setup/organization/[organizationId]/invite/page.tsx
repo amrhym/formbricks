@@ -10,7 +10,7 @@ import { InviteMembers } from "@/modules/setup/organization/[organizationId]/inv
 
 export const metadata: Metadata = {
   title: "Invite",
-  description: "Open-source Experience Management. Free & open source.",
+  description: "HiveCFM - Enterprise Experience Management Suite.",
 };
 
 interface InvitePageProps {

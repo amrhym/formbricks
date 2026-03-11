@@ -2137,10 +2137,10 @@
   "setup": {
     "intro": {
       "get_started": "Começar",
-      "made_with_love_in_kiel": "Feito com 🤍 na Alemanha",
-      "paragraph_1": "HiveCFM é uma Suite de Gestão de Experiência construída na <b>plataforma de inquéritos open-source de crescimento mais rápido</b> a nível mundial.",
-      "paragraph_2": "Execute inquéritos direcionados em websites, em apps ou em qualquer lugar online. Recolha informações valiosas para <b>criar experiências irresistíveis</b> para clientes, utilizadores e funcionários.",
-      "paragraph_3": "Estamos comprometidos com o mais alto grau de privacidade de dados. Faça self-host para manter <b>controlo total sobre os seus dados</b>.",
+      "made_with_love_in_kiel": "",
+      "paragraph_1": "HiveCFM é uma <b>Suite Empresarial de Gestão de Experiência</b> para recolher e analisar feedback de clientes em grande escala.",
+      "paragraph_2": "Execute inquéritos direcionados em websites, em apps, por voz (IVR), WhatsApp, SMS ou em qualquer lugar online. Recolha informações valiosas para <b>proporcionar experiências excecionais</b> a clientes, utilizadores e funcionários.",
+      "paragraph_3": "Segurança de nível empresarial com <b>controlo total sobre os seus dados</b> e integração perfeita nos seus fluxos de trabalho existentes.",
       "welcome_to_formbricks": "Bem-vindo ao HiveCFM!"
     },
     "invite": {

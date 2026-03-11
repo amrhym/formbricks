@@ -2137,10 +2137,10 @@
   "setup": {
     "intro": {
       "get_started": "Comenzar",
-      "made_with_love_in_kiel": "Hecho con 🤍 en Alemania",
-      "paragraph_1": "HiveCFM es una suite de gestión de experiencias construida sobre la <b>plataforma de encuestas de código abierto de más rápido crecimiento</b> a nivel mundial.",
-      "paragraph_2": "Realiza encuestas dirigidas en sitios web, en aplicaciones o en cualquier lugar online. Recopila información valiosa para <b>crear experiencias irresistibles</b> para clientes, usuarios y empleados.",
-      "paragraph_3": "Estamos comprometidos con el más alto grado de privacidad de datos. Aloja en tu propio servidor para mantener el <b>control total sobre tus datos</b>.",
+      "made_with_love_in_kiel": "",
+      "paragraph_1": "HiveCFM es una <b>suite empresarial de gestión de experiencias</b> para recopilar y analizar comentarios de clientes a gran escala.",
+      "paragraph_2": "Realiza encuestas dirigidas en sitios web, en aplicaciones, por voz (IVR), WhatsApp, SMS o en cualquier lugar online. Recopila información valiosa para <b>ofrecer experiencias excepcionales</b> a clientes, usuarios y empleados.",
+      "paragraph_3": "Seguridad de nivel empresarial con <b>control total sobre tus datos</b> e integración perfecta en tus flujos de trabajo existentes.",
       "welcome_to_formbricks": "¡Bienvenido a HiveCFM!"
     },
     "invite": {

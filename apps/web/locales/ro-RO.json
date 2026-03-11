@@ -2137,10 +2137,10 @@
   "setup": {
     "intro": {
       "get_started": "Începeți",
-      "made_with_love_in_kiel": "Creat cu 🤍 în Germania",
-      "paragraph_1": "HiveCFM este o suită de management al experienței construită pe <b>cea mai rapidă platformă open-source de sondaje</b> din lume.",
-      "paragraph_2": "Rulați sondaje direcționate pe site-uri web, în aplicații sau oriunde online. Adunați informații valoroase pentru a <b>crea experiențe irezistibile</b> pentru clienți, utilizatori și angajați.",
-      "paragraph_3": "Suntem dedicați celui mai înalt nivel de confidențialitate a datelor. Găzduiește local pentru a păstra <b>controlul deplin asupra datelor tale</b>.",
+      "made_with_love_in_kiel": "",
+      "paragraph_1": "HiveCFM este o <b>suită enterprise de management al experienței</b> pentru colectarea și analiza feedback-ului clienților la scară largă.",
+      "paragraph_2": "Rulați sondaje direcționate pe site-uri web, în aplicații, prin voce (IVR), WhatsApp, SMS sau oriunde online. Adunați informații valoroase pentru a <b>oferi experiențe excepționale</b> clienților, utilizatorilor și angajaților.",
+      "paragraph_3": "Securitate de nivel enterprise cu <b>control deplin asupra datelor dumneavoastră</b> și integrare perfectă în fluxurile de lucru existente.",
       "welcome_to_formbricks": "Bine ai venit la HiveCFM!"
     },
     "invite": {

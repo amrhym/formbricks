@@ -2137,10 +2137,10 @@
   "setup": {
     "intro": {
       "get_started": "開始使用",
-      "made_with_love_in_kiel": "用 🤍 在德國製造",
-      "paragraph_1": "HiveCFM 是一套體驗管理工具，建構於全球<b>成長最快的開源問卷平台</b>之上。",
-      "paragraph_2": "在網站、應用程式或線上任何地方執行目標問卷。收集寶貴的洞察，為客戶、使用者和員工<b>打造無法抗拒的體驗</b>。",
-      "paragraph_3": "我們致力於最高等級的資料隱私。自我託管，讓您<b>完全掌控您的資料</b>。",
+      "made_with_love_in_kiel": "",
+      "paragraph_1": "HiveCFM 是一套<b>企業級體驗管理平台</b>，用於大規模收集和分析客戶回饋。",
+      "paragraph_2": "在網站、應用程式中，透過語音（IVR）、WhatsApp、簡訊或線上任何地方執行目標調查。收集寶貴的洞察，為客戶、使用者和員工<b>提供卓越的體驗</b>。",
+      "paragraph_3": "企業級安全性，<b>完全掌控您的資料</b>，並與您現有的工作流程無縫整合。",
       "welcome_to_formbricks": "歡迎使用 HiveCFM！"
     },
     "invite": {

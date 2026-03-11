@@ -5,7 +5,7 @@ import { Button } from "@/modules/ui/components/button";
 
 export const metadata: Metadata = {
   title: "Intro",
-  description: "Open-source Experience Management. Free & open source.",
+  description: "HiveCFM - Enterprise Experience Management Suite.",
 };
 
 export const IntroPage = async () => {
@@ -21,8 +21,6 @@ export const IntroPage = async () => {
       <Button className="mt-6" asChild>
         <Link href="/setup/signup">{t("setup.intro.get_started")}</Link>
       </Button>
-
-      <p className="pt-6 text-xs text-slate-400">{t("setup.intro.made_with_love_in_kiel")}</p>
     </div>
   );
 };

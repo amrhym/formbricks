@@ -2137,10 +2137,10 @@
   "setup": {
     "intro": {
       "get_started": "Leg los",
-      "made_with_love_in_kiel": "Gebaut mit 🤍 in Deutschland",
-      "paragraph_1": "HiveCFM ist eine Experience Management Suite, die auf der <b>am schnellsten wachsenden Open-Source-Umfrageplattform</b> weltweit basiert.",
-      "paragraph_2": "Führe gezielte Umfragen auf Websites, in Apps oder überall online durch. Sammle wertvolle Insights, um unwiderstehliche Erlebnisse für Kunden, Nutzer und Mitarbeiter zu gestalten.",
-      "paragraph_3": "Wir verpflichten uns zu höchstem Datenschutz. Hosten Sie selbst, um die <b>volle Kontrolle über Ihre Daten</b> zu behalten.",
+      "made_with_love_in_kiel": "",
+      "paragraph_1": "HiveCFM ist eine <b>Enterprise Experience Management Suite</b> zur Erfassung und Analyse von Kundenfeedback in großem Maßstab.",
+      "paragraph_2": "Führen Sie gezielte Umfragen auf Websites, in Apps, per Sprache (IVR), WhatsApp, SMS oder überall online durch. Sammeln Sie wertvolle Erkenntnisse, um <b>außergewöhnliche Erlebnisse</b> für Kunden, Nutzer und Mitarbeiter zu schaffen.",
+      "paragraph_3": "Sicherheit auf Enterprise-Niveau mit <b>voller Kontrolle über Ihre Daten</b> und nahtloser Integration in Ihre bestehenden Arbeitsabläufe.",
       "welcome_to_formbricks": "Willkommen bei HiveCFM!"
     },
     "invite": {

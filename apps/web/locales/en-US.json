@@ -1619,7 +1619,7 @@
         "suggest_colors": "Suggest colors",
         "survey_approved": "Survey approved and published",
         "survey_completed_heading": "Survey Completed",
-        "survey_completed_subheading": "This free & open-source survey has been closed",
+        "survey_completed_subheading": "This survey has been closed",
         "survey_display_settings": "Survey Display Settings",
         "survey_placement": "Survey Placement",
         "survey_rejected": "Survey rejected and returned to draft",
@@ -2172,7 +2172,7 @@
   "s": {
     "check_inbox_or_spam": "Please also check your spam folder if you don't see the email in your inbox.",
     "completed": "This survey is closed.",
-    "create_your_own": "Create your own open-source survey",
+    "create_your_own": "Create your own survey",
     "enter_pin": "This survey is protected. Enter the PIN below",
     "just_curious": "Just curious?",
     "link_invalid": "This survey can only be taken by invitation.",
@@ -2195,10 +2195,10 @@
   "setup": {
     "intro": {
       "get_started": "Get started",
-      "made_with_love_in_kiel": "Made with \uD83E\uDD0D in Germany",
-      "paragraph_1": "HiveCFM is an Experience Management Suite built on the <b>fastest growing open-source survey platform</b> worldwide.",
-      "paragraph_2": "Run targeted surveys on websites, in apps or anywhere online. Gather valuable insights to <b>craft irresistible experiences</b> for customers, users and employees.",
-      "paragraph_3": "We're committed to the highest degree of data privacy. Self-host to keep <b>full control over your data</b>.",
+      "made_with_love_in_kiel": "",
+      "paragraph_1": "HiveCFM is an <b>Enterprise Experience Management Suite</b> for collecting and analyzing customer feedback at scale.",
+      "paragraph_2": "Run targeted surveys on websites, in apps, via voice (IVR), WhatsApp, SMS or anywhere online. Gather valuable insights to <b>deliver exceptional experiences</b> for customers, users and employees.",
+      "paragraph_3": "Enterprise-grade security with <b>full control over your data</b> and seamless integration into your existing workflows.",
       "welcome_to_formbricks": "Welcome to HiveCFM!"
     },
     "invite": {
@@ -3050,7 +3050,7 @@
     "uncover_strengths_and_weaknesses_name": "Uncover Strengths & Weaknesses",
     "uncover_strengths_and_weaknesses_question_1_choice_1": "Ease of use",
     "uncover_strengths_and_weaknesses_question_1_choice_2": "Good value for money",
-    "uncover_strengths_and_weaknesses_question_1_choice_3": "It's open-source",
+    "uncover_strengths_and_weaknesses_question_1_choice_3": "Enterprise features",
     "uncover_strengths_and_weaknesses_question_1_choice_4": "The founders are cute",
     "uncover_strengths_and_weaknesses_question_1_choice_5": "Other",
     "uncover_strengths_and_weaknesses_question_1_headline": "What do you value most about $[projectName]?",

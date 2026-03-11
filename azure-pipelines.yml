@@ -65,3 +65,29 @@ stages:
         tags: |
           $(tag)
           latest
+
+- stage: Deploy
+  displayName: Deploy to Container Apps
+  dependsOn: Build
+  jobs:
+  - job: DeployCore
+    displayName: Deploy hivecfm-core
+    steps:
+    - script: |
+        az login --identity
+        az containerapp update \
+          --name hivecfm-core \
+          --resource-group rg-hivecfm \
+          --image $(containerRegistry)/hivecfm-core:$(tag)
+      displayName: Deploy hivecfm-core
+
+  - job: DeployLicensePortal
+    displayName: Deploy license-portal
+    steps:
+    - script: |
+        az login --identity
+        az containerapp update \
+          --name license-portal \
+          --resource-group rg-hivecfm \
+          --image $(containerRegistry)/hivecfm-license-portal:$(tag)
+      displayName: Deploy license-portal

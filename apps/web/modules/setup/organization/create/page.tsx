@@ -15,7 +15,7 @@ import { CreateOrganization } from "./components/create-organization";
 
 export const metadata: Metadata = {
   title: "Create Organization",
-  description: "Open-source Experience Management. Free & open source.",
+  description: "HiveCFM - Enterprise Experience Management Suite.",
 };
 
 export const CreateOrganizationPage = async () => {

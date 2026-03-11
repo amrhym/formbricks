@@ -23,7 +23,7 @@ import { getIsSamlSsoEnabled, getIsSsoEnabled } from "@/modules/ee/license-check
 
 export const metadata: Metadata = {
   title: "Sign up",
-  description: "Open-source Experience Management. Free & open source.",
+  description: "HiveCFM - Enterprise Experience Management Suite.",
 };
 
 export const SignupPage = async () => {

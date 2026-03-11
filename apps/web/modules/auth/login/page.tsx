@@ -22,7 +22,7 @@ import { LoginForm } from "./components/login-form";
 
 export const metadata: Metadata = {
   title: "Login",
-  description: "Open-source Experience Management. Free & open source.",
+  description: "HiveCFM - Enterprise Experience Management Suite.",
 };
 
 export const LoginPage = async () => {

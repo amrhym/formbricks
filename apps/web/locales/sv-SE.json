@@ -2137,10 +2137,10 @@
   "setup": {
     "intro": {
       "get_started": "Kom igång",
-      "made_with_love_in_kiel": "Gjort med 🤍 i Tyskland",
-      "paragraph_1": "HiveCFM är en Experience Management Suite byggd på den <b>snabbast växande open source-enkätplattformen</b> i världen.",
-      "paragraph_2": "Kör riktade enkäter på webbplatser, i appar eller var som helst online. Samla värdefulla insikter för att <b>skapa oemotståndliga upplevelser</b> för kunder, användare och anställda.",
-      "paragraph_3": "Vi är engagerade i högsta möjliga datasekretess. Självhosta för att behålla <b>full kontroll över dina data</b>.",
+      "made_with_love_in_kiel": "",
+      "paragraph_1": "HiveCFM är en <b>Enterprise Experience Management Suite</b> för att samla in och analysera kundfeedback i stor skala.",
+      "paragraph_2": "Kör riktade enkäter på webbplatser, i appar, via röst (IVR), WhatsApp, SMS eller var som helst online. Samla värdefulla insikter för att <b>leverera exceptionella upplevelser</b> för kunder, användare och anställda.",
+      "paragraph_3": "Säkerhet på enterprise-nivå med <b>full kontroll över dina data</b> och sömlös integration i dina befintliga arbetsflöden.",
       "welcome_to_formbricks": "Välkommen till HiveCFM!"
     },
     "invite": {
