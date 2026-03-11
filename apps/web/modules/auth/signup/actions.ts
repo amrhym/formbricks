@@ -8,6 +8,7 @@ import { IS_TURNSTILE_CONFIGURED, TURNSTILE_SECRET_KEY } from "@/lib/constants";
 import { verifyInviteToken } from "@/lib/jwt";
 import { createMembership } from "@/lib/membership/service";
 import { createOrganization } from "@/lib/organization/service";
+import { createLicense } from "@/lib/tenant/license";
 import { provisionExternalUser } from "@/lib/user/external-provisioning";
 import { actionClient } from "@/lib/utils/action-client";
 import { ActionClientCtx } from "@/lib/utils/action-client/types/context";
@@ -134,6 +135,17 @@ async function handleOrganizationCreation(ctx: ActionClientCtx, user: TCreatedUs
 
   const organization = await createOrganization({ name: `${user.name}'s Organization` });
   ctx.auditLoggingCtx.organizationId = organization.id;
+
+  // Auto-create a default tenant license so membership creation succeeds
+  const validUntil = new Date();
+  validUntil.setFullYear(validUntil.getFullYear() + 10);
+  await createLicense(organization.id, {
+    maxCompletedResponses: 1000000,
+    maxUsers: 1000,
+    addonAiInsights: true,
+    addonCampaignManagement: true,
+    validUntil,
+  });
 
   await createMembership(organization.id, user.id, {
     role: "owner",
