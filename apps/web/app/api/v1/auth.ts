@@ -8,13 +8,8 @@ export const authenticateRequest = async (request: NextRequest): Promise<TAuthen
   const apiKey = request.headers.get("x-api-key");
   if (!apiKey) return null;
 
-  // Get API key with permissions
   const apiKeyData = await getApiKeyWithPermissions(apiKey);
   if (!apiKeyData) return null;
-
-  // In the route handlers, we'll do more specific permission checks
-  const environmentIds = apiKeyData.apiKeyEnvironments.map((env) => env.environmentId);
-  if (environmentIds.length === 0) return null;
 
   const authentication: TAuthenticationApiKey = {
     type: "apiKey",
