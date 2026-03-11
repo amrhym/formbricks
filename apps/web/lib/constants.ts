@@ -27,7 +27,7 @@ export const HIVECFM_LOGO_URL = FB_LOGO_URL;
 // HiveCFM: Documentation and external URLs
 // These can be updated when HiveCFM has its own documentation
 export const DOCS_URL = env.DOCS_URL || "/docs";
-export const HIVECFM_SUPPORT_EMAIL = "support@hivecfm.xcai.io";
+export const HIVECFM_SUPPORT_EMAIL = "support@hivecfm.io";
 // HiveCFM: Enterprise is always enabled, but keeping these for code compatibility
 export const UPGRADE_URL = "#"; // Enterprise always enabled in HiveCFM
 export const LEARN_MORE_LICENSE_URL = "#"; // Enterprise always enabled in HiveCFM
@@ -167,7 +167,8 @@ export const BREVO_API_KEY = env.BREVO_API_KEY;
 export const BREVO_LIST_ID = env.BREVO_LIST_ID;
 
 export const NOVU_API_KEY = env.NOVU_API_KEY;
-export const NOVU_API_URL = env.NOVU_API_URL ?? "https://novu.xcai.io/api";
+export const NOVU_API_URL =
+  env.NOVU_API_URL ?? "https://novu-api.graypond-ce0467a0.westeurope.azurecontainerapps.io/api";
 export const IS_NOVU_CONFIGURED = Boolean(NOVU_API_KEY && NOVU_API_URL);
 
 export const HIVECFM_HUB_URL = env.HIVECFM_HUB_URL;

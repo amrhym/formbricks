@@ -472,7 +472,7 @@
     "email_template_text_1": "このメールはHiveCFM経由で送信されました。",
     "embed_survey_preview_email_didnt_request": "これをリクエストしていませんか？",
     "embed_survey_preview_email_environment_id": "環境ID",
-    "embed_survey_preview_email_fight_spam": "スパム対策にご協力ください。このメールを support@hivecfm.xcai.io に転送してください",
+    "embed_survey_preview_email_fight_spam": "スパム対策にご協力ください。このメールを support@hivecfm.io に転送してください",
     "embed_survey_preview_email_heading": "メール埋め込みプレビュー",
     "embed_survey_preview_email_subject": "HiveCFM メールフォームプレビュー",
     "embed_survey_preview_email_text": "以下は、メールに埋め込まれたコードスニペットの見た目です。",

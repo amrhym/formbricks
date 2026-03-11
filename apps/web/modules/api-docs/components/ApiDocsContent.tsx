@@ -540,7 +540,7 @@ x-api-key: your_api_key_here`}
           <h2 className="text-xl font-semibold text-slate-800">Base URL</h2>
         </div>
         <pre className="rounded-lg bg-slate-900 p-4 text-sm text-slate-100">
-          https://app.hivecfm.xcai.io/api
+          https://hivecfm-core.graypond-ce0467a0.westeurope.azurecontainerapps.io/api
         </pre>
         <p className="mt-2 text-sm text-slate-500">All API endpoints are relative to this base URL.</p>
       </section>

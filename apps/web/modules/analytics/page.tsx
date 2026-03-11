@@ -8,7 +8,9 @@ import { PageContentWrapper } from "@/modules/ui/components/page-content-wrapper
 import { PageHeader } from "@/modules/ui/components/page-header";
 import { SupersetEmbed } from "./components/SupersetEmbed";
 
-const SUPERSET_URL = process.env.NEXT_PUBLIC_SUPERSET_URL || "https://superset.hivecfm.xcai.io";
+const SUPERSET_URL =
+  process.env.NEXT_PUBLIC_SUPERSET_BASE_URL ||
+  "https://superset.graypond-ce0467a0.westeurope.azurecontainerapps.io";
 
 export const metadata: Metadata = {
   title: "Analytics",

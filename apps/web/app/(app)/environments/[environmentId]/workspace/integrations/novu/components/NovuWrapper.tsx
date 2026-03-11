@@ -30,7 +30,7 @@ interface NovuWrapperProps {
   novuIntegration: TIntegrationNovu | null;
 }
 
-const DEFAULT_NOVU_API_URL = "https://novu.xcai.io/api";
+const DEFAULT_NOVU_API_URL = "https://novu-api.graypond-ce0467a0.westeurope.azurecontainerapps.io/api";
 
 export const NovuWrapper = ({ environmentId, novuIntegration }: NovuWrapperProps) => {
   const [isConnected, setIsConnected] = useState(!!novuIntegration?.config?.key);
@@ -200,7 +200,7 @@ export const NovuWrapper = ({ environmentId, novuIntegration }: NovuWrapperProps
                         <p className="text-sm font-medium text-slate-900">
                           {integration.name || integration.providerId}
                         </p>
-                        <p className="text-xs text-slate-500 capitalize">{integration.channel}</p>
+                        <p className="text-xs capitalize text-slate-500">{integration.channel}</p>
                       </div>
                     </div>
                     <span className="inline-flex items-center rounded-full bg-green-100 px-2 py-0.5 text-xs font-medium text-green-800">

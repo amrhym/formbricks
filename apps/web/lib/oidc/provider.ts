@@ -2,7 +2,9 @@ import "server-only";
 import * as crypto from "crypto";
 import { logger } from "@hivecfm/logger";
 
-const OIDC_ISSUER_URL = process.env.OIDC_ISSUER_URL || "https://hivecfm.xcai.io/api/oidc";
+const OIDC_ISSUER_URL =
+  process.env.OIDC_ISSUER_URL ||
+  "https://hivecfm-core.graypond-ce0467a0.westeurope.azurecontainerapps.io/api/oidc";
 const NEXTAUTH_SECRET = process.env.NEXTAUTH_SECRET || "";
 
 // In-memory authorization code store (short-lived, 5 min TTL)

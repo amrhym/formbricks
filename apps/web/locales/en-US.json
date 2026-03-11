@@ -484,7 +484,7 @@
     "email_template_text_1": "This email was sent via HiveCFM.",
     "embed_survey_preview_email_didnt_request": "Didn't request this?",
     "embed_survey_preview_email_environment_id": "Environment ID",
-    "embed_survey_preview_email_fight_spam": "Help us fight spam and forward this mail to support@hivecfm.xcai.io",
+    "embed_survey_preview_email_fight_spam": "Help us fight spam and forward this mail to support@hivecfm.io",
     "embed_survey_preview_email_heading": "Preview Email Embed",
     "embed_survey_preview_email_subject": "HiveCFM Email Survey Preview",
     "embed_survey_preview_email_text": "This is how the code snippet looks embedded into an email:",

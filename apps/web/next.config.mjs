@@ -52,7 +52,7 @@ const nextConfig = {
       },
       {
         protocol: "https",
-        hostname: "hivecfm.xcai.io",
+        hostname: "hivecfm.io",
       },
       {
         protocol: "https",

@@ -1,7 +1,8 @@
 import "server-only";
 
-const N8N_WEBHOOK_BASE_URL = process.env.N8N_WEBHOOK_BASE_URL || "https://n8n.hivecfm.xcai.io";
-const HIVECFM_WEBAPP_URL = process.env.WEBAPP_URL || "https://hivecfm.xcai.io";
+const N8N_WEBHOOK_BASE_URL = process.env.N8N_WEBHOOK_BASE_URL || "https://n8n.hivecfm.io";
+const HIVECFM_WEBAPP_URL =
+  process.env.WEBAPP_URL || "https://hivecfm-core.graypond-ce0467a0.westeurope.azurecontainerapps.io";
 
 /**
  * Parameterize a workflow template JSON for a specific tenant.
