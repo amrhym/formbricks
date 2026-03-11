@@ -116,8 +116,8 @@ export const finishOnboarding = async (
   }
 
   // await page.getByRole("button", { name: "Proven methods SaaS" }).click();
-  await page.getByPlaceholder("e.g. Formbricks").click();
-  await page.getByPlaceholder("e.g. Formbricks").fill("My Workspace");
+  await page.getByPlaceholder("e.g. HiveCFM").click();
+  await page.getByPlaceholder("e.g. HiveCFM").fill("My Workspace");
   await page.locator("#form-next-button").click();
 
   if (projectChannel !== "link") {
