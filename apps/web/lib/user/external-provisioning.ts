@@ -2,7 +2,6 @@ import "server-only";
 import { prisma } from "@hivecfm/database";
 import { logger } from "@hivecfm/logger";
 import { hashPassword } from "@/lib/auth";
-import { supersetClient } from "@/lib/superset/client";
 
 const NOVU_API_URL = process.env.NOVU_API_URL;
 const NOVU_API_KEY = process.env.NOVU_API_KEY;
@@ -16,32 +15,64 @@ interface UserProvisioningData {
 
 /**
  * Provision a user in Superset.
- * Creates an actual user account so they can log in directly.
+ * Superset 3.x doesn't expose a user management REST API, so we insert directly
+ * into its PostgreSQL metadata database (FAB's ab_user / ab_user_role tables).
  */
 async function provisionSupersetUser(user: UserProvisioningData): Promise<void> {
+  const supersetDbUrl = process.env.SUPERSET_DB_URL;
+  if (!supersetDbUrl) {
+    logger.warn("SUPERSET_DB_URL not configured, skipping Superset user provisioning");
+    return;
+  }
+
   try {
     const nameParts = user.name.split(" ");
     const firstName = nameParts[0] || user.email;
     const lastName = nameParts.slice(1).join(" ") || "-";
+    const hashedPassword = await hashPassword(user.password);
 
-    // First, look up the "Gamma" role ID (standard viewer role in Superset)
-    const rolesResponse = (await supersetClient.apiRequest("GET", "/api/v1/security/roles/")) as {
-      result: { id: number; name: string }[];
-    };
-    const gammaRole = rolesResponse.result?.find((r) => r.name === "Gamma");
-    const roleId = gammaRole?.id || 4; // Gamma is typically ID 4
+    // Insert user into Superset's FAB user table using a separate Prisma raw query
+    // against the Superset database
+    const { Client } = await import("pg");
+    const client = new Client({ connectionString: supersetDbUrl });
+    await client.connect();
 
-    await supersetClient.apiRequest("POST", "/api/v1/security/users/", {
-      first_name: firstName,
-      last_name: lastName,
-      username: user.email,
-      email: user.email,
-      password: user.password,
-      active: true,
-      roles: [roleId],
-    });
+    try {
+      // Check if user already exists
+      const existing = await client.query("SELECT id FROM ab_user WHERE email = $1 LIMIT 1", [user.email]);
 
-    logger.info({ email: user.email }, "Superset user provisioned");
+      if (existing.rows.length > 0) {
+        await client.query(
+          `UPDATE ab_user SET first_name = $1, last_name = $2, password = $3, changed_on = NOW() WHERE email = $4`,
+          [firstName, lastName, hashedPassword, user.email]
+        );
+        logger.info({ email: user.email }, "Superset user updated");
+      } else {
+        // Get the Admin role ID
+        const roleResult = await client.query("SELECT id FROM ab_role WHERE name = 'Admin' LIMIT 1");
+        const adminRoleId = roleResult.rows[0]?.id || 1;
+
+        // Insert new user
+        const userResult = await client.query(
+          `INSERT INTO ab_user (first_name, last_name, username, email, password, active, created_on, changed_on, login_count)
+           VALUES ($1, $2, $3, $4, $5, true, NOW(), NOW(), 0)
+           RETURNING id`,
+          [firstName, lastName, user.email, user.email, hashedPassword]
+        );
+
+        const newUserId = userResult.rows[0].id;
+
+        // Assign Admin role
+        await client.query(
+          `INSERT INTO ab_user_role (user_id, role_id) VALUES ($1, $2) ON CONFLICT DO NOTHING`,
+          [newUserId, adminRoleId]
+        );
+
+        logger.info({ email: user.email }, "Superset user provisioned");
+      }
+    } finally {
+      await client.end();
+    }
   } catch (error) {
     logger.error({ email: user.email, error }, "Superset user provisioning failed (non-blocking)");
   }
