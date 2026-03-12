@@ -18,6 +18,17 @@ interface UserProvisioningData {
  * Superset 3.x doesn't expose a user management REST API, so we insert directly
  * into its PostgreSQL metadata database (FAB's ab_user / ab_user_role tables).
  */
+/**
+ * Hash password in werkzeug pbkdf2:sha256 format used by Superset/Flask-AppBuilder.
+ */
+async function hashWerkzeug(password: string): Promise<string> {
+  const crypto = await import("node:crypto");
+  const salt = crypto.randomBytes(16).toString("hex");
+  const iterations = 600000;
+  const key = crypto.pbkdf2Sync(password, salt, iterations, 32, "sha256").toString("hex");
+  return `pbkdf2:sha256:${String(iterations)}$${salt}$${key}`;
+}
+
 async function provisionSupersetUser(user: UserProvisioningData): Promise<void> {
   const supersetDbUrl = process.env.SUPERSET_DB_URL;
   if (!supersetDbUrl) {
@@ -29,10 +40,8 @@ async function provisionSupersetUser(user: UserProvisioningData): Promise<void> 
     const nameParts = user.name.split(" ");
     const firstName = nameParts[0] || user.email;
     const lastName = nameParts.slice(1).join(" ") || "-";
-    const hashedPassword = await hashPassword(user.password);
+    const hashedPassword = await hashWerkzeug(user.password);
 
-    // Insert user into Superset's FAB user table using a separate Prisma raw query
-    // against the Superset database
     const { Client } = await import("pg");
     const client = new Client({ connectionString: supersetDbUrl });
     await client.connect();
@@ -48,24 +57,21 @@ async function provisionSupersetUser(user: UserProvisioningData): Promise<void> 
         );
         logger.info({ email: user.email }, "Superset user updated");
       } else {
-        // Get the Admin role ID
+        // Get next ID and Admin role
+        const maxIdResult = await client.query("SELECT COALESCE(MAX(id), 0) + 1 AS next_id FROM ab_user");
+        const nextId = maxIdResult.rows[0].next_id;
         const roleResult = await client.query("SELECT id FROM ab_role WHERE name = 'Admin' LIMIT 1");
         const adminRoleId = roleResult.rows[0]?.id || 1;
 
-        // Insert new user
-        const userResult = await client.query(
-          `INSERT INTO ab_user (first_name, last_name, username, email, password, active, created_on, changed_on, login_count)
-           VALUES ($1, $2, $3, $4, $5, true, NOW(), NOW(), 0)
-           RETURNING id`,
-          [firstName, lastName, user.email, user.email, hashedPassword]
+        await client.query(
+          `INSERT INTO ab_user (id, first_name, last_name, username, email, password, active, created_on, changed_on, login_count)
+           VALUES ($1, $2, $3, $4, $5, $6, true, NOW(), NOW(), 0)`,
+          [nextId, firstName, lastName, user.email, user.email, hashedPassword]
         );
 
-        const newUserId = userResult.rows[0].id;
-
-        // Assign Admin role
         await client.query(
           `INSERT INTO ab_user_role (user_id, role_id) VALUES ($1, $2) ON CONFLICT DO NOTHING`,
-          [newUserId, adminRoleId]
+          [nextId, adminRoleId]
         );
 
         logger.info({ email: user.email }, "Superset user provisioned");
