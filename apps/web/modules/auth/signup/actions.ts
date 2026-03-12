@@ -1,10 +1,13 @@
 "use server";
 
 import { z } from "zod";
+import { prisma } from "@hivecfm/database";
+import { logger } from "@hivecfm/logger";
 import { InvalidInputError, UnknownError } from "@hivecfm/types/errors";
 import { ZUser, ZUserEmail, ZUserLocale, ZUserName, ZUserPassword } from "@hivecfm/types/user";
 import { hashPassword } from "@/lib/auth";
 import { IS_TURNSTILE_CONFIGURED, TURNSTILE_SECRET_KEY } from "@/lib/constants";
+import { hashSecret, hashSha256, parseApiKeyV2 } from "@/lib/crypto";
 import { verifyInviteToken } from "@/lib/jwt";
 import { createMembership } from "@/lib/membership/service";
 import { createOrganization } from "@/lib/organization/service";
@@ -151,6 +154,31 @@ async function handleOrganizationCreation(ctx: ActionClientCtx, user: TCreatedUs
     role: "owner",
     accepted: true,
   });
+
+  // Create a management API key for service-to-service access (e.g. license portal)
+  const managementKey = process.env.MANAGEMENT_API_KEY;
+  if (managementKey) {
+    try {
+      const parsed = parseApiKeyV2(managementKey);
+      if (parsed) {
+        const lookupHash = hashSha256(parsed.secret);
+        const hashedKey = await hashSecret(parsed.secret, 12);
+        await prisma.apiKey.create({
+          data: {
+            label: "Management API Key",
+            hashedKey,
+            lookupHash,
+            createdBy: user.id,
+            organizationId: organization.id,
+            organizationAccess: { accessControl: "full" },
+          },
+        });
+        logger.info({ organizationId: organization.id }, "Management API key created");
+      }
+    } catch (error) {
+      logger.error({ error }, "Failed to create management API key (non-blocking)");
+    }
+  }
 
   await updateUser(user.id, {
     notificationSettings: {
