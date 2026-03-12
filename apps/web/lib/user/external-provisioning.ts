@@ -69,10 +69,16 @@ async function provisionSupersetUser(user: UserProvisioningData): Promise<void> 
           [nextId, firstName, lastName, user.email, user.email, hashedPassword]
         );
 
-        await client.query(
-          `INSERT INTO ab_user_role (user_id, role_id) VALUES ($1, $2) ON CONFLICT DO NOTHING`,
-          [nextId, adminRoleId]
+        const maxRoleIdResult = await client.query(
+          "SELECT COALESCE(MAX(id), 0) + 1 AS next_id FROM ab_user_role"
         );
+        const nextRoleId = maxRoleIdResult.rows[0].next_id;
+
+        await client.query(`INSERT INTO ab_user_role (id, user_id, role_id) VALUES ($1, $2, $3)`, [
+          nextRoleId,
+          nextId,
+          adminRoleId,
+        ]);
 
         logger.info({ email: user.email }, "Superset user provisioned");
       }
