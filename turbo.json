@@ -267,7 +267,8 @@
         "OIDC_SUPERSET_CLIENT_SECRET",
         "SUPERSET_ADMIN_PASSWORD",
         "SUPERSET_ADMIN_USERNAME",
-        "SUPERSET_BASE_URL"
+        "SUPERSET_BASE_URL",
+        "MANAGEMENT_API_KEY"
       ],
       "outputs": ["dist/**", ".next/**"]
     },
