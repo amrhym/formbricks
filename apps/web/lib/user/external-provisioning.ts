@@ -164,8 +164,8 @@ async function provisionNovuSubscriber(user: UserProvisioningData): Promise<void
   }
 
   try {
-    const baseUrl = NOVU_API_URL.replace(/\/api$/, "");
-    const response = await fetch(`${baseUrl}/api/v1/subscribers`, {
+    const baseUrl = NOVU_API_URL.replace(/\/api\/?$/, "").replace(/\/+$/, "");
+    const response = await fetch(`${baseUrl}/v1/subscribers`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
