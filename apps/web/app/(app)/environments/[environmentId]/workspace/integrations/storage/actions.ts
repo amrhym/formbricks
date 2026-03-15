@@ -1,6 +1,7 @@
 "use server";
 
 import { HeadBucketCommand, S3Client } from "@aws-sdk/client-s3";
+import { BlobServiceClient, StorageSharedKeyCredential } from "@azure/storage-blob";
 import { z } from "zod";
 import { ZId } from "@hivecfm/types/common";
 import { ZStorageCredential } from "@hivecfm/types/integration/storage";
@@ -35,10 +36,9 @@ export const testStorageConnectionAction = authenticatedActionClient
     });
 
     const creds = parsedInput.credentials;
-    let s3Client: S3Client;
 
     if (creds.provider === "minio") {
-      s3Client = new S3Client({
+      const s3Client = new S3Client({
         endpoint: creds.endpointUrl,
         region: creds.region || "us-east-1",
         forcePathStyle: creds.forcePathStyle ?? true,
@@ -46,19 +46,22 @@ export const testStorageConnectionAction = authenticatedActionClient
       });
       await s3Client.send(new HeadBucketCommand({ Bucket: creds.bucketName }));
     } else if (creds.provider === "awsS3") {
-      s3Client = new S3Client({
+      const s3Client = new S3Client({
         region: creds.region,
         credentials: { accessKeyId: creds.accessKey, secretAccessKey: creds.secretKey },
       });
       await s3Client.send(new HeadBucketCommand({ Bucket: creds.bucketName }));
     } else if (creds.provider === "azureBlob") {
-      s3Client = new S3Client({
-        endpoint: `https://${creds.accountName}.blob.core.windows.net`,
-        region: "westeurope",
-        forcePathStyle: true,
-        credentials: { accessKeyId: creds.accountName, secretAccessKey: creds.accountKey },
-      });
-      await s3Client.send(new HeadBucketCommand({ Bucket: creds.containerName }));
+      const credential = new StorageSharedKeyCredential(creds.accountName, creds.accountKey);
+      const blobServiceClient = new BlobServiceClient(
+        `https://${creds.accountName}.blob.core.windows.net`,
+        credential
+      );
+      const containerClient = blobServiceClient.getContainerClient(creds.containerName);
+      const exists = await containerClient.exists();
+      if (!exists) {
+        throw new Error(`Container '${creds.containerName}' does not exist`);
+      }
     }
 
     return { success: true };
