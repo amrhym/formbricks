@@ -79,7 +79,11 @@ stages:
         az containerapp update \
           --name hivecfm-core \
           --resource-group rg-hivecfm \
-          --image $(containerRegistry)/hivecfm-core:$(tag)
+          --image $(containerRegistry)/hivecfm-core:$(tag) \
+          || az containerapp update \
+            --name hivecfm-core \
+            --resource-group rg-hivecfm \
+            --image $(containerRegistry)/hivecfm-core:latest
       displayName: Deploy hivecfm-core
 
   - job: DeployLicensePortal
@@ -90,5 +94,9 @@ stages:
         az containerapp update \
           --name license-portal \
           --resource-group rg-hivecfm \
-          --image $(containerRegistry)/hivecfm-license-portal:$(tag)
+          --image $(containerRegistry)/hivecfm-license-portal:$(tag) \
+          || az containerapp update \
+            --name license-portal \
+            --resource-group rg-hivecfm \
+            --image $(containerRegistry)/hivecfm-license-portal:latest
       displayName: Deploy license-portal
