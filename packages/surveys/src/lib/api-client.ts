@@ -127,40 +127,55 @@ export class ApiClient {
 
     const { data } = json;
 
-    const { signedUrl, fileUrl, presignedFields } = data as {
+    const { signedUrl, fileUrl, presignedFields, uploadMethod } = data as {
       signedUrl: string;
       presignedFields: Record<string, string>;
       fileUrl: string;
+      uploadMethod?: "PUT" | "POST";
     };
 
-    if (!signedUrl || !presignedFields || !fileUrl) {
+    if (!signedUrl || !fileUrl) {
       throw new Error("Invalid response");
-    }
-
-    const formData = new FormData();
-
-    Object.entries(presignedFields).forEach(([key, value]) => {
-      formData.append(key, value);
-    });
-
-    try {
-      const binaryString = atob(file.base64.split(",")[1]);
-      const uint8Array = Uint8Array.from([...binaryString].map((char) => char.charCodeAt(0)));
-      const blob = new Blob([uint8Array], { type: file.type });
-
-      formData.append("file", blob);
-    } catch (err) {
-      console.error(err);
-      throw new Error("Error uploading file");
     }
 
     let uploadResponse: Response;
 
     try {
-      uploadResponse = await fetch(signedUrl, {
-        method: "POST",
-        body: formData,
-      });
+      if (uploadMethod === "PUT") {
+        // Azure Blob Storage: upload via PUT with SAS token
+        const binaryString = atob(file.base64.split(",")[1]);
+        const uint8Array = Uint8Array.from([...binaryString].map((char) => char.charCodeAt(0)));
+        const blob = new Blob([uint8Array], { type: file.type });
+
+        uploadResponse = await fetch(signedUrl, {
+          method: "PUT",
+          headers: {
+            "Content-Type": file.type,
+            "x-ms-blob-type": "BlockBlob",
+          },
+          body: blob,
+        });
+      } else {
+        // S3 / MinIO: upload via POST with presigned form fields
+        const formData = new FormData();
+
+        if (presignedFields) {
+          Object.entries(presignedFields).forEach(([key, value]) => {
+            formData.append(key, value);
+          });
+        }
+
+        const binaryString = atob(file.base64.split(",")[1]);
+        const uint8Array = Uint8Array.from([...binaryString].map((char) => char.charCodeAt(0)));
+        const blob = new Blob([uint8Array], { type: file.type });
+
+        formData.append("file", blob);
+
+        uploadResponse = await fetch(signedUrl, {
+          method: "POST",
+          body: formData,
+        });
+      }
     } catch (err) {
       console.error("Error uploading file", err);
       throw new Error("Network error while uploading file");

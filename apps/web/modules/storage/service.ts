@@ -26,6 +26,7 @@ export const getSignedUrlForUpload = async (
       signedUrl: string;
       presignedFields: Record<string, string>;
       fileUrl: string;
+      uploadMethod?: "PUT" | "POST";
     },
     StorageError
   >
@@ -60,6 +61,7 @@ export const getSignedUrlForUpload = async (
       fileUrl: new URL(
         `${baseUrl}/storage/${environmentId}/${accessType}/${encodeURIComponent(updatedFileName)}`
       ).href,
+      uploadMethod: signedUrlResult.data.uploadMethod,
     });
   } catch (error) {
     logger.error({ error }, "Error getting signed url for upload");

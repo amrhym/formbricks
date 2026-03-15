@@ -14,16 +14,26 @@ import {
 import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
 import { logger } from "@hivecfm/logger";
 import { type Result, type StorageError, StorageErrorCode, err, ok } from "../types/error";
+import {
+  deleteAzureBlob,
+  deleteAzureBlobsByPrefix,
+  getAzureBlobSignedDownloadUrl,
+  getAzureBlobSignedUploadUrl,
+} from "./azure-blob-service";
 import { createS3Client } from "./client";
-import { S3_BUCKET_NAME, S3_ENDPOINT_URL, S3_INTERNAL_ENDPOINT, S3_PUBLIC_ENDPOINT_URL } from "./constants";
+import {
+  S3_BUCKET_NAME,
+  S3_ENDPOINT_URL,
+  S3_INTERNAL_ENDPOINT,
+  S3_PUBLIC_ENDPOINT_URL,
+  STORAGE_PROVIDER,
+} from "./constants";
+
+const isAzureBlob = () => STORAGE_PROVIDER === "azureBlob";
 
 /**
- * Get a signed URL for uploading a file to S3
- * @param fileName - The name of the file to upload
- * @param contentType - The content type of the file
- * @param filePath - The path to the file in S3
- * @param maxSize - The maximum size of the file to upload or undefined if no limit is desired
- * @returns A Result containing the signed URL and presigned fields or an error: StorageError
+ * Get a signed URL for uploading a file.
+ * Routes to Azure Blob SAS or S3 presigned POST based on STORAGE_PROVIDER env var.
  */
 export const getSignedUploadUrl = async (
   fileName: string,
@@ -35,10 +45,16 @@ export const getSignedUploadUrl = async (
     {
       signedUrl: string;
       presignedFields: PresignedPost["fields"];
+      uploadMethod?: "PUT" | "POST";
     },
     StorageError
   >
 > => {
+  // Route to Azure Blob when configured
+  if (isAzureBlob()) {
+    return getAzureBlobSignedUploadUrl(fileName, contentType, filePath, maxSize);
+  }
+
   try {
     const s3Client = createS3Client();
 
@@ -82,6 +98,7 @@ export const getSignedUploadUrl = async (
     return ok({
       signedUrl: browserUrl,
       presignedFields: fields,
+      uploadMethod: "POST" as const,
     });
   } catch (error) {
     logger.error({ error }, "Failed to get signed upload URL");
@@ -93,11 +110,14 @@ export const getSignedUploadUrl = async (
 };
 
 /**
- * Get a signed URL for a file in S3
- * @param fileKey - The key of the file in S3
- * @returns A Result containing the signed URL or an error: StorageError
+ * Get a signed URL for downloading a file.
+ * Routes to Azure Blob SAS or S3 presigned GET based on STORAGE_PROVIDER env var.
  */
 export const getSignedDownloadUrl = async (fileKey: string): Promise<Result<string, StorageError>> => {
+  if (isAzureBlob()) {
+    return getAzureBlobSignedDownloadUrl(fileKey);
+  }
+
   try {
     const s3Client = createS3Client();
 
@@ -155,6 +175,10 @@ export const getSignedDownloadUrl = async (fileKey: string): Promise<Result<stri
  * @returns A Result containing the void or an error: StorageError
  */
 export const deleteFile = async (fileKey: string): Promise<Result<void, StorageError>> => {
+  if (isAzureBlob()) {
+    return deleteAzureBlob(fileKey);
+  }
+
   try {
     const s3Client = createS3Client();
 
@@ -193,6 +217,10 @@ export const deleteFile = async (fileKey: string): Promise<Result<void, StorageE
  * @returns A Result containing the void or an error: StorageError
  */
 export const deleteFilesByPrefix = async (prefix: string): Promise<Result<void, StorageError>> => {
+  if (isAzureBlob()) {
+    return deleteAzureBlobsByPrefix(prefix);
+  }
+
   try {
     const s3Client = createS3Client();
 

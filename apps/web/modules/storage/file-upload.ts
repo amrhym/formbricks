@@ -80,37 +80,54 @@ export const handleFileUpload = async (
     const json = await response.json();
     const { data } = json;
 
-    const { signedUrl, fileUrl, presignedFields } = data as {
+    const { signedUrl, fileUrl, presignedFields, uploadMethod } = data as {
       signedUrl: string;
       presignedFields: Record<string, string>;
       fileUrl: string;
+      uploadMethod?: "PUT" | "POST";
     };
 
-    const fileBase64 = (await toBase64(file)) as string;
-    const formDataForS3 = new FormData();
+    let uploadResponse: Response;
 
-    Object.entries(presignedFields).forEach(([key, value]) => {
-      formDataForS3.append(key, value);
-    });
+    if (uploadMethod === "PUT") {
+      // Azure Blob Storage: upload via PUT with SAS token URL
+      const fileBuffer = await file.arrayBuffer();
+      uploadResponse = await fetch(signedUrl, {
+        method: "PUT",
+        headers: {
+          "Content-Type": file.type,
+          "x-ms-blob-type": "BlockBlob",
+        },
+        body: fileBuffer,
+      });
+    } else {
+      // S3 / MinIO: upload via POST with presigned form fields
+      const fileBase64 = (await toBase64(file)) as string;
+      const formDataForS3 = new FormData();
 
-    try {
-      const binaryString = atob(fileBase64.split(",")[1]);
-      const uint8Array = Uint8Array.from([...binaryString].map((char) => char.charCodeAt(0)));
-      const blob = new Blob([uint8Array], { type: file.type });
+      Object.entries(presignedFields).forEach(([key, value]) => {
+        formDataForS3.append(key, value);
+      });
 
-      formDataForS3.append("file", blob);
-    } catch (err) {
-      console.error("Error in uploading file: ", err);
-      return {
-        error: FileUploadError.UPLOAD_FAILED,
-        url: "",
-      };
+      try {
+        const binaryString = atob(fileBase64.split(",")[1]);
+        const uint8Array = Uint8Array.from([...binaryString].map((char) => char.charCodeAt(0)));
+        const blob = new Blob([uint8Array], { type: file.type });
+
+        formDataForS3.append("file", blob);
+      } catch (err) {
+        console.error("Error in uploading file: ", err);
+        return {
+          error: FileUploadError.UPLOAD_FAILED,
+          url: "",
+        };
+      }
+
+      uploadResponse = await fetch(signedUrl, {
+        method: "POST",
+        body: formDataForS3,
+      });
     }
-
-    const uploadResponse = await fetch(signedUrl, {
-      method: "POST",
-      body: formDataForS3,
-    });
 
     if (!uploadResponse.ok) {
       return {
