@@ -34,6 +34,7 @@ stages:
         echo "" > /tmp/docker-secrets/sentry_auth_token
 
         docker build \
+          --no-cache \
           -f apps/web/Dockerfile \
           --build-arg NODE_OPTIONS="--max_old_space_size=8192" \
           --secret id=database_url,src=/tmp/docker-secrets/database_url \
