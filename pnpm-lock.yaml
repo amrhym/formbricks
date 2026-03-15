@@ -217,6 +217,9 @@ importers:
       '@aws-sdk/s3-request-presigner':
         specifier: 3.879.0
         version: 3.879.0
+      '@azure/storage-blob':
+        specifier: 12.31.0
+        version: 12.31.0
       '@boxyhq/saml-jackson':
         specifier: 1.52.2
         version: 1.52.2(ts-node@10.9.2)
@@ -20219,7 +20222,7 @@ packages:
       local-pkg: 1.1.2
       magic-string: 0.30.21
       typescript: 5.8.3
-      vite: 6.4.1(@types/node@22.19.15)(jiti@2.4.2)(tsx@4.19.4)
+      vite: 6.4.1(terser@5.39.1)(tsx@4.19.4)
     transitivePeerDependencies:
       - '@types/node'
       - rollup

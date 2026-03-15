@@ -14,12 +14,6 @@ import {
 import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
 import { logger } from "@hivecfm/logger";
 import { type Result, type StorageError, StorageErrorCode, err, ok } from "../types/error";
-import {
-  deleteAzureBlob,
-  deleteAzureBlobsByPrefix,
-  getAzureBlobSignedDownloadUrl,
-  getAzureBlobSignedUploadUrl,
-} from "./azure-blob-service";
 import { createS3Client } from "./client";
 import {
   S3_BUCKET_NAME,
@@ -30,6 +24,9 @@ import {
 } from "./constants";
 
 const isAzureBlob = () => STORAGE_PROVIDER === "azureBlob";
+
+// Lazy-load Azure Blob service to avoid bundling @azure/storage-blob in non-Azure builds
+const getAzureBlobService = () => import("./azure-blob-service");
 
 /**
  * Get a signed URL for uploading a file.
@@ -52,7 +49,8 @@ export const getSignedUploadUrl = async (
 > => {
   // Route to Azure Blob when configured
   if (isAzureBlob()) {
-    return getAzureBlobSignedUploadUrl(fileName, contentType, filePath, maxSize);
+    const azure = await getAzureBlobService();
+    return azure.getAzureBlobSignedUploadUrl(fileName, contentType, filePath, maxSize);
   }
 
   try {
@@ -115,7 +113,8 @@ export const getSignedUploadUrl = async (
  */
 export const getSignedDownloadUrl = async (fileKey: string): Promise<Result<string, StorageError>> => {
   if (isAzureBlob()) {
-    return getAzureBlobSignedDownloadUrl(fileKey);
+    const azure = await getAzureBlobService();
+    return azure.getAzureBlobSignedDownloadUrl(fileKey);
   }
 
   try {
@@ -176,7 +175,8 @@ export const getSignedDownloadUrl = async (fileKey: string): Promise<Result<stri
  */
 export const deleteFile = async (fileKey: string): Promise<Result<void, StorageError>> => {
   if (isAzureBlob()) {
-    return deleteAzureBlob(fileKey);
+    const azure = await getAzureBlobService();
+    return azure.deleteAzureBlob(fileKey);
   }
 
   try {
@@ -218,7 +218,8 @@ export const deleteFile = async (fileKey: string): Promise<Result<void, StorageE
  */
 export const deleteFilesByPrefix = async (prefix: string): Promise<Result<void, StorageError>> => {
   if (isAzureBlob()) {
-    return deleteAzureBlobsByPrefix(prefix);
+    const azure = await getAzureBlobService();
+    return azure.deleteAzureBlobsByPrefix(prefix);
   }
 
   try {
