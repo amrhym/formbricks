@@ -1,4 +1,5 @@
 import { TFunction } from "i18next";
+import { HardDriveIcon } from "lucide-react";
 import Image from "next/image";
 import { redirect } from "next/navigation";
 import { TIntegrationType } from "@hivecfm/types/integration";
@@ -63,6 +64,7 @@ const Page = async (props) => {
   const isN8nIntegrationConnected = isIntegrationConnected("n8n");
   const isSlackIntegrationConnected = isIntegrationConnected("slack");
   const isNovuIntegrationConnected = isIntegrationConnected("novu");
+  const isStorageIntegrationConnected = isIntegrationConnected("storage");
 
   const appSetupCompleted = !!environment?.appSetupCompleted;
   const integrationCards = [
@@ -148,6 +150,17 @@ const Page = async (props) => {
       icon: <Image src={NovuLogo} alt="Novu Logo" />,
       connected: isNovuIntegrationConnected,
       statusText: isNovuIntegrationConnected ? t("common.connected") : t("common.not_connected"),
+      disabled: isReadOnly,
+    },
+    {
+      connectHref: `/environments/${params.environmentId}/workspace/integrations/storage`,
+      connectText: isStorageIntegrationConnected ? t("common.manage") : t("common.connect"),
+      connectNewTab: false,
+      label: "Storage",
+      description: "Configure file storage provider (MinIO, Azure Blob, or AWS S3)",
+      icon: <HardDriveIcon className="h-8 w-8 text-slate-900" />,
+      connected: isStorageIntegrationConnected,
+      statusText: isStorageIntegrationConnected ? t("common.connected") : t("common.not_connected"),
       disabled: isReadOnly,
     },
     {

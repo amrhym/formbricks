@@ -10,6 +10,9 @@ import { ITEMS_PER_PAGE } from "../constants";
 import { validateInputs } from "../utils/validate";
 
 const transformIntegration = (integration: TIntegration): TIntegration => {
+  if (integration.type === "storage" || integration.type === "novu") {
+    return integration;
+  }
   return {
     ...integration,
     config: {
