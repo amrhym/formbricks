@@ -25,6 +25,7 @@ interface DashboardTemplate {
 interface GuestTokenResponse {
   guestToken: string;
   dashboardId: string;
+  embeddedUuid: string;
   supersetBaseUrl: string;
   expiresAt: string;
 }
@@ -42,6 +43,7 @@ export const SupersetEmbed = ({ environmentId, height = "100%" }: SupersetEmbedP
   const [tokenLoading, setTokenLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const refreshTimerRef = useRef<NodeJS.Timeout | null>(null);
+  const iframeRef = useRef<HTMLIFrameElement | null>(null);
 
   // Fetch available dashboards
   useEffect(() => {
@@ -110,6 +112,24 @@ export const SupersetEmbed = ({ environmentId, height = "100%" }: SupersetEmbedP
     fetchGuestToken(selectedDashboard);
   }, [selectedDashboard, fetchGuestToken]);
 
+  // Send guest token to Superset iframe via postMessage
+  useEffect(() => {
+    if (!guestToken) return;
+
+    const handleMessage = (event: MessageEvent) => {
+      // Superset embedded sends a "guest_token_request" message when ready
+      if (event.data?.type === "guest_token_request" && iframeRef.current?.contentWindow) {
+        iframeRef.current.contentWindow.postMessage(
+          { guestToken: guestToken.guestToken },
+          guestToken.supersetBaseUrl
+        );
+      }
+    };
+
+    window.addEventListener("message", handleMessage);
+    return () => window.removeEventListener("message", handleMessage);
+  }, [guestToken]);
+
   // Auto-refresh token before expiry
   useEffect(() => {
     if (!guestToken || !selectedDashboard) return;
@@ -133,9 +153,10 @@ export const SupersetEmbed = ({ environmentId, height = "100%" }: SupersetEmbedP
 
   const currentDashboard = dashboards.find((d) => d.name === selectedDashboard);
 
+  // Use the /embedded/{uuid} endpoint which handles guest tokens via postMessage
   const iframeSrc =
-    guestToken && guestToken.dashboardId
-      ? `${guestToken.supersetBaseUrl}/superset/dashboard/${guestToken.dashboardId}/?standalone=true&guest_token=${guestToken.guestToken}`
+    guestToken && guestToken.embeddedUuid
+      ? `${guestToken.supersetBaseUrl}/embedded/${guestToken.embeddedUuid}`
       : null;
 
   // Loading state: fetching dashboard list
@@ -232,10 +253,10 @@ export const SupersetEmbed = ({ environmentId, height = "100%" }: SupersetEmbedP
         )}
         {iframeSrc && !tokenLoading && (
           <iframe
+            ref={iframeRef}
             src={iframeSrc}
             className="h-full w-full border-0"
             title={`Dashboard: ${selectedDashboard}`}
-            sandbox="allow-scripts allow-same-origin allow-popups allow-forms"
           />
         )}
       </div>

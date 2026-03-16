@@ -1,0 +1,199 @@
+{
+  "active": "9a0fef3b4b79ad24",
+  "lastOpenFiles": [
+    "09-codebase-walkthrough.md",
+    "08-logging-monitoring-support.md",
+    "07-deployment-guide.md",
+    "06-authentication-security.md",
+    "05-integrations.md",
+    "04-survey-engine.md",
+    "03-api-reference.md",
+    "02-database-schema.md",
+    "01-architecture-overview.md",
+    "10-azure-infrastructure.md"
+  ],
+  "left": {
+    "children": [
+      {
+        "children": [
+          {
+            "id": "ba9895d7a9ffdca4",
+            "state": {
+              "icon": "lucide-folder-closed",
+              "state": {
+                "autoReveal": false,
+                "sortOrder": "alphabetical"
+              },
+              "title": "Files",
+              "type": "file-explorer"
+            },
+            "type": "leaf"
+          },
+          {
+            "id": "363f2f42ca5bb9a2",
+            "state": {
+              "icon": "lucide-search",
+              "state": {
+                "collapseAll": false,
+                "explainSearch": false,
+                "extraContext": false,
+                "matchingCase": false,
+                "query": "",
+                "sortOrder": "alphabetical"
+              },
+              "title": "Search",
+              "type": "search"
+            },
+            "type": "leaf"
+          },
+          {
+            "id": "c00eff82fe68158b",
+            "state": {
+              "icon": "lucide-bookmark",
+              "state": {},
+              "title": "Bookmarks",
+              "type": "bookmarks"
+            },
+            "type": "leaf"
+          }
+        ],
+        "id": "df958d60d1d6a70a",
+        "type": "tabs"
+      }
+    ],
+    "direction": "horizontal",
+    "id": "66198f2bb2d052c7",
+    "type": "split",
+    "width": 300
+  },
+  "left-ribbon": {
+    "hiddenItems": {
+      "bases:Create new base": false,
+      "canvas:Create new canvas": false,
+      "command-palette:Open command palette": false,
+      "daily-notes:Open today's daily note": false,
+      "graph:Open graph view": false,
+      "switcher:Open quick switcher": false,
+      "templates:Insert template": false
+    }
+  },
+  "main": {
+    "children": [
+      {
+        "children": [
+          {
+            "id": "9a0fef3b4b79ad24",
+            "state": {
+              "icon": "lucide-file",
+              "state": {
+                "file": "10-azure-infrastructure.md",
+                "mode": "source",
+                "source": false
+              },
+              "title": "10-azure-infrastructure",
+              "type": "markdown"
+            },
+            "type": "leaf"
+          }
+        ],
+        "id": "b8b3558854e8147f",
+        "type": "tabs"
+      }
+    ],
+    "direction": "vertical",
+    "id": "2ead030c7dba4d36",
+    "type": "split"
+  },
+  "right": {
+    "children": [
+      {
+        "children": [
+          {
+            "id": "a6981bb770637b7b",
+            "state": {
+              "icon": "links-coming-in",
+              "state": {
+                "backlinkCollapsed": false,
+                "collapseAll": false,
+                "extraContext": false,
+                "file": "09-codebase-walkthrough.md",
+                "searchQuery": "",
+                "showSearch": false,
+                "sortOrder": "alphabetical",
+                "unlinkedCollapsed": true
+              },
+              "title": "Backlinks for 09-codebase-walkthrough",
+              "type": "backlink"
+            },
+            "type": "leaf"
+          },
+          {
+            "id": "c3b5a1d68d6ae20a",
+            "state": {
+              "icon": "links-going-out",
+              "state": {
+                "file": "09-codebase-walkthrough.md",
+                "linksCollapsed": false,
+                "unlinkedCollapsed": true
+              },
+              "title": "Outgoing links from 09-codebase-walkthrough",
+              "type": "outgoing-link"
+            },
+            "type": "leaf"
+          },
+          {
+            "id": "da2cbfb6dc3070b5",
+            "state": {
+              "icon": "lucide-tags",
+              "state": {
+                "searchQuery": "",
+                "showSearch": false,
+                "sortOrder": "frequency",
+                "useHierarchy": true
+              },
+              "title": "Tags",
+              "type": "tag"
+            },
+            "type": "leaf"
+          },
+          {
+            "id": "16574c6aac4b2b35",
+            "state": {
+              "icon": "lucide-archive",
+              "state": {
+                "searchQuery": "",
+                "showSearch": false,
+                "sortOrder": "frequency"
+              },
+              "title": "All properties",
+              "type": "all-properties"
+            },
+            "type": "leaf"
+          },
+          {
+            "id": "eaf824e25ca0b72e",
+            "state": {
+              "icon": "lucide-list",
+              "state": {
+                "file": "09-codebase-walkthrough.md",
+                "followCursor": false,
+                "searchQuery": "",
+                "showSearch": false
+              },
+              "title": "Outline of 09-codebase-walkthrough",
+              "type": "outline"
+            },
+            "type": "leaf"
+          }
+        ],
+        "id": "e5aaafcd1e04f6e7",
+        "type": "tabs"
+      }
+    ],
+    "collapsed": true,
+    "direction": "horizontal",
+    "id": "bfbca722a89239c1",
+    "type": "split",
+    "width": 300
+  }
+}

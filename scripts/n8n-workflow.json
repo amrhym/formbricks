@@ -1,0 +1,457 @@
+{
+  "active": false,
+  "connections": {
+    "Build CES Case": {
+      "main": [
+        [
+          {
+            "index": 0,
+            "node": "POST CES Case to Salesforce",
+            "type": "main"
+          }
+        ]
+      ]
+    },
+    "Build CSAT Case": {
+      "main": [
+        [
+          {
+            "index": 0,
+            "node": "POST CSAT Case to Salesforce",
+            "type": "main"
+          }
+        ]
+      ]
+    },
+    "Build NPS Case": {
+      "main": [
+        [
+          {
+            "index": 0,
+            "node": "POST NPS Case to Salesforce",
+            "type": "main"
+          }
+        ]
+      ]
+    },
+    "IF CES Low": {
+      "main": [
+        [
+          {
+            "index": 0,
+            "node": "Build CES Case",
+            "type": "main"
+          }
+        ]
+      ]
+    },
+    "IF CSAT Low": {
+      "main": [
+        [
+          {
+            "index": 0,
+            "node": "Build CSAT Case",
+            "type": "main"
+          }
+        ]
+      ]
+    },
+    "IF NPS Detractor": {
+      "main": [
+        [
+          {
+            "index": 0,
+            "node": "Build NPS Case",
+            "type": "main"
+          }
+        ]
+      ]
+    },
+    "POST CES Case to Salesforce": {
+      "main": [
+        [
+          {
+            "index": 0,
+            "node": "Notify CES Alert",
+            "type": "main"
+          }
+        ]
+      ]
+    },
+    "POST CSAT Case to Salesforce": {
+      "main": [
+        [
+          {
+            "index": 0,
+            "node": "Notify CSAT Alert",
+            "type": "main"
+          }
+        ]
+      ]
+    },
+    "POST NPS Case to Salesforce": {
+      "main": [
+        [
+          {
+            "index": 0,
+            "node": "Notify NPS Alert",
+            "type": "main"
+          }
+        ]
+      ]
+    },
+    "Switch: Survey Type": {
+      "main": [
+        [
+          {
+            "index": 0,
+            "node": "IF NPS Detractor",
+            "type": "main"
+          }
+        ],
+        [
+          {
+            "index": 0,
+            "node": "IF CSAT Low",
+            "type": "main"
+          }
+        ],
+        [
+          {
+            "index": 0,
+            "node": "IF CES Low",
+            "type": "main"
+          }
+        ]
+      ]
+    },
+    "Webhook: Survey Response": {
+      "main": [
+        [
+          {
+            "index": 0,
+            "node": "Switch: Survey Type",
+            "type": "main"
+          }
+        ]
+      ]
+    }
+  },
+  "name": "Al Rajhi Bank - CX Closed-Loop Feedback Router",
+  "nodes": [
+    {
+      "id": "webhook-trigger",
+      "name": "Webhook: Survey Response",
+      "parameters": {
+        "httpMethod": "POST",
+        "options": {},
+        "path": "survey-response",
+        "responseMode": "onReceived"
+      },
+      "position": [220, 460],
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "webhookId": "survey-response"
+    },
+    {
+      "id": "switch-survey-type",
+      "name": "Switch: Survey Type",
+      "parameters": {
+        "options": {},
+        "rules": {
+          "values": [
+            {
+              "conditions": {
+                "combinator": "and",
+                "conditions": [
+                  {
+                    "leftValue": "={{ $json.data.surveyName || $json.surveyName || '' }}",
+                    "operator": {
+                      "operation": "contains",
+                      "type": "string"
+                    },
+                    "rightValue": "NPS"
+                  }
+                ],
+                "options": {
+                  "caseSensitive": false,
+                  "leftValue": "",
+                  "typeValidation": "loose"
+                }
+              },
+              "outputKey": "NPS",
+              "renameOutput": true
+            },
+            {
+              "conditions": {
+                "combinator": "and",
+                "conditions": [
+                  {
+                    "leftValue": "={{ $json.data.surveyName || $json.surveyName || '' }}",
+                    "operator": {
+                      "operation": "contains",
+                      "type": "string"
+                    },
+                    "rightValue": "CSAT"
+                  }
+                ],
+                "options": {
+                  "caseSensitive": false,
+                  "leftValue": "",
+                  "typeValidation": "loose"
+                }
+              },
+              "outputKey": "CSAT",
+              "renameOutput": true
+            },
+            {
+              "conditions": {
+                "combinator": "and",
+                "conditions": [
+                  {
+                    "leftValue": "={{ $json.data.surveyName || $json.surveyName || '' }}",
+                    "operator": {
+                      "operation": "contains",
+                      "type": "string"
+                    },
+                    "rightValue": "CES"
+                  }
+                ],
+                "options": {
+                  "caseSensitive": false,
+                  "leftValue": "",
+                  "typeValidation": "loose"
+                }
+              },
+              "outputKey": "CES",
+              "renameOutput": true
+            }
+          ]
+        }
+      },
+      "position": [460, 460],
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 3.2
+    },
+    {
+      "id": "if-nps-detractor",
+      "name": "IF NPS Detractor",
+      "parameters": {
+        "conditions": {
+          "combinator": "and",
+          "conditions": [
+            {
+              "id": "nps-threshold",
+              "leftValue": "={{ Number($json.data?.data?.['nps-score'] ?? $json.data?.responseData?.['nps-score'] ?? 10) }}",
+              "operator": {
+                "operation": "lte",
+                "type": "number"
+              },
+              "rightValue": 6
+            }
+          ],
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict"
+          }
+        },
+        "options": {}
+      },
+      "position": [700, 260],
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2
+    },
+    {
+      "id": "if-csat-low",
+      "name": "IF CSAT Low",
+      "parameters": {
+        "conditions": {
+          "combinator": "and",
+          "conditions": [
+            {
+              "id": "csat-threshold",
+              "leftValue": "={{ Number($json.data?.data?.['csat-overall'] ?? $json.data?.responseData?.['csat-overall'] ?? 5) }}",
+              "operator": {
+                "operation": "lte",
+                "type": "number"
+              },
+              "rightValue": 2
+            }
+          ],
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict"
+          }
+        },
+        "options": {}
+      },
+      "position": [700, 460],
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2
+    },
+    {
+      "id": "if-ces-low",
+      "name": "IF CES Low",
+      "parameters": {
+        "conditions": {
+          "combinator": "and",
+          "conditions": [
+            {
+              "id": "ces-threshold",
+              "leftValue": "={{ Number($json.data?.data?.['ces-score'] ?? $json.data?.responseData?.['ces-score'] ?? 7) }}",
+              "operator": {
+                "operation": "lte",
+                "type": "number"
+              },
+              "rightValue": 3
+            }
+          ],
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict"
+          }
+        },
+        "options": {}
+      },
+      "position": [700, 660],
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2
+    },
+    {
+      "id": "set-nps-case",
+      "name": "Build NPS Case",
+      "parameters": {
+        "jsonOutput": "={\n  \"customerId\": \"{{ $json.data?.data?.customerId ?? $json.data?.responseData?.customerId ?? 'unknown' }}\",\n  \"surveyType\": \"NPS\",\n  \"score\": {{ Number($json.data?.data?.['nps-score'] ?? $json.data?.responseData?.['nps-score'] ?? 0) }},\n  \"verbatim\": \"{{ $json.data?.data?.['nps-detractor-reason'] ?? $json.data?.responseData?.['nps-detractor-reason'] ?? '' }}\",\n  \"priority\": \"{{ Number($json.data?.data?.['nps-score'] ?? $json.data?.responseData?.['nps-score'] ?? 0) <= 3 ? 'P1' : 'P2' }}\",\n  \"assignedTeam\": \"Customer Recovery Team\",\n  \"status\": \"Open\",\n  \"responseId\": \"{{ $json.data?.id ?? $json.data?.responseId ?? '' }}\",\n  \"surveyId\": \"{{ $json.data?.surveyId ?? '' }}\",\n  \"branchCode\": \"{{ $json.data?.data?.branchCode ?? $json.data?.responseData?.branchCode ?? '' }}\",\n  \"channel\": \"{{ $json.data?.data?.channel ?? $json.data?.responseData?.channel ?? '' }}\",\n  \"createdAt\": \"{{ new Date().toISOString() }}\"\n}",
+        "mode": "raw",
+        "options": {}
+      },
+      "position": [940, 200],
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4
+    },
+    {
+      "id": "set-csat-case",
+      "name": "Build CSAT Case",
+      "parameters": {
+        "jsonOutput": "={\n  \"customerId\": \"{{ $json.data?.data?.customerId ?? $json.data?.responseData?.customerId ?? 'unknown' }}\",\n  \"surveyType\": \"CSAT\",\n  \"score\": {{ Number($json.data?.data?.['csat-overall'] ?? $json.data?.responseData?.['csat-overall'] ?? 0) }},\n  \"verbatim\": \"{{ $json.data?.data?.['csat-feedback'] ?? $json.data?.responseData?.['csat-feedback'] ?? '' }}\",\n  \"priority\": \"{{ Number($json.data?.data?.['csat-overall'] ?? $json.data?.responseData?.['csat-overall'] ?? 0) <= 1 ? 'P1' : 'P2' }}\",\n  \"assignedTeam\": \"Customer Recovery Team\",\n  \"status\": \"Open\",\n  \"responseId\": \"{{ $json.data?.id ?? $json.data?.responseId ?? '' }}\",\n  \"surveyId\": \"{{ $json.data?.surveyId ?? '' }}\",\n  \"branchCode\": \"{{ $json.data?.data?.branchCode ?? $json.data?.responseData?.branchCode ?? '' }}\",\n  \"agentId\": \"{{ $json.data?.data?.agentId ?? $json.data?.responseData?.agentId ?? '' }}\",\n  \"transactionType\": \"{{ $json.data?.data?.transactionType ?? $json.data?.responseData?.transactionType ?? '' }}\",\n  \"createdAt\": \"{{ new Date().toISOString() }}\"\n}",
+        "mode": "raw",
+        "options": {}
+      },
+      "position": [940, 400],
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4
+    },
+    {
+      "id": "set-ces-case",
+      "name": "Build CES Case",
+      "parameters": {
+        "jsonOutput": "={\n  \"customerId\": \"{{ $json.data?.data?.customerId ?? $json.data?.responseData?.customerId ?? 'unknown' }}\",\n  \"surveyType\": \"CES\",\n  \"score\": {{ Number($json.data?.data?.['ces-score'] ?? $json.data?.responseData?.['ces-score'] ?? 0) }},\n  \"verbatim\": \"{{ $json.data?.data?.['ces-difficulty'] ?? $json.data?.responseData?.['ces-difficulty'] ?? '' }}\",\n  \"priority\": \"{{ Number($json.data?.data?.['ces-score'] ?? $json.data?.responseData?.['ces-score'] ?? 0) <= 2 ? 'P2' : 'P3' }}\",\n  \"assignedTeam\": \"Customer Recovery Team\",\n  \"status\": \"Open\",\n  \"responseId\": \"{{ $json.data?.id ?? $json.data?.responseId ?? '' }}\",\n  \"surveyId\": \"{{ $json.data?.surveyId ?? '' }}\",\n  \"transactionId\": \"{{ $json.data?.data?.transactionId ?? $json.data?.responseData?.transactionId ?? '' }}\",\n  \"channel\": \"{{ $json.data?.data?.channel ?? $json.data?.responseData?.channel ?? '' }}\",\n  \"createdAt\": \"{{ new Date().toISOString() }}\"\n}",
+        "mode": "raw",
+        "options": {}
+      },
+      "position": [940, 600],
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4
+    },
+    {
+      "id": "http-create-nps-case",
+      "name": "POST NPS Case to Salesforce",
+      "parameters": {
+        "jsonBody": "={{ JSON.stringify($json) }}",
+        "method": "POST",
+        "options": {},
+        "sendBody": true,
+        "specifyBody": "json",
+        "url": "https://salesforce.xcai.io/cases"
+      },
+      "position": [1180, 200],
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2
+    },
+    {
+      "id": "http-create-csat-case",
+      "name": "POST CSAT Case to Salesforce",
+      "parameters": {
+        "jsonBody": "={{ JSON.stringify($json) }}",
+        "method": "POST",
+        "options": {},
+        "sendBody": true,
+        "specifyBody": "json",
+        "url": "https://salesforce.xcai.io/cases"
+      },
+      "position": [1180, 400],
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2
+    },
+    {
+      "id": "http-create-ces-case",
+      "name": "POST CES Case to Salesforce",
+      "parameters": {
+        "jsonBody": "={{ JSON.stringify($json) }}",
+        "method": "POST",
+        "options": {},
+        "sendBody": true,
+        "specifyBody": "json",
+        "url": "https://salesforce.xcai.io/cases"
+      },
+      "position": [1180, 600],
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2
+    },
+    {
+      "id": "http-notify-nps",
+      "name": "Notify NPS Alert",
+      "parameters": {
+        "jsonBody": "={\n  \"type\": \"alert\",\n  \"surveyType\": \"NPS\",\n  \"priority\": \"{{ $('Build NPS Case').item.json.priority }}\",\n  \"customerId\": \"{{ $('Build NPS Case').item.json.customerId }}\",\n  \"score\": {{ $('Build NPS Case').item.json.score }},\n  \"caseId\": {{ $json.id ?? 0 }},\n  \"message\": \"NPS Detractor Alert: Score {{ $('Build NPS Case').item.json.score }} from customer {{ $('Build NPS Case').item.json.customerId }}\",\n  \"createdAt\": \"{{ new Date().toISOString() }}\"\n}",
+        "method": "POST",
+        "options": {},
+        "sendBody": true,
+        "specifyBody": "json",
+        "url": "https://salesforce.xcai.io/notifications"
+      },
+      "position": [1420, 200],
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2
+    },
+    {
+      "id": "http-notify-csat",
+      "name": "Notify CSAT Alert",
+      "parameters": {
+        "jsonBody": "={\n  \"type\": \"alert\",\n  \"surveyType\": \"CSAT\",\n  \"priority\": \"{{ $('Build CSAT Case').item.json.priority }}\",\n  \"customerId\": \"{{ $('Build CSAT Case').item.json.customerId }}\",\n  \"score\": {{ $('Build CSAT Case').item.json.score }},\n  \"caseId\": {{ $json.id ?? 0 }},\n  \"message\": \"CSAT Low Score Alert: Score {{ $('Build CSAT Case').item.json.score }} from customer {{ $('Build CSAT Case').item.json.customerId }}\",\n  \"createdAt\": \"{{ new Date().toISOString() }}\"\n}",
+        "method": "POST",
+        "options": {},
+        "sendBody": true,
+        "specifyBody": "json",
+        "url": "https://salesforce.xcai.io/notifications"
+      },
+      "position": [1420, 400],
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2
+    },
+    {
+      "id": "http-notify-ces",
+      "name": "Notify CES Alert",
+      "parameters": {
+        "jsonBody": "={\n  \"type\": \"alert\",\n  \"surveyType\": \"CES\",\n  \"priority\": \"{{ $('Build CES Case').item.json.priority }}\",\n  \"customerId\": \"{{ $('Build CES Case').item.json.customerId }}\",\n  \"score\": {{ $('Build CES Case').item.json.score }},\n  \"caseId\": {{ $json.id ?? 0 }},\n  \"message\": \"CES Low Effort Score Alert: Score {{ $('Build CES Case').item.json.score }} from customer {{ $('Build CES Case').item.json.customerId }}\",\n  \"createdAt\": \"{{ new Date().toISOString() }}\"\n}",
+        "method": "POST",
+        "options": {},
+        "sendBody": true,
+        "specifyBody": "json",
+        "url": "https://salesforce.xcai.io/notifications"
+      },
+      "position": [1420, 600],
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2
+    }
+  ],
+  "pinData": {},
+  "settings": {
+    "callerPolicy": "workflowsFromSameOwner",
+    "executionOrder": "v1",
+    "saveManualExecutions": true
+  },
+  "staticData": null
+}

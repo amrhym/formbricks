@@ -78,6 +78,7 @@ export const mintGuestToken = async (organizationId: string, dashboardName: stri
   return {
     guestToken: token,
     dashboardId: template.supersetDashboardId,
+    embeddedUuid,
     supersetBaseUrl,
     expiresAt,
   };
