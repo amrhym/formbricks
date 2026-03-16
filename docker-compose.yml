@@ -89,6 +89,9 @@ services:
       SUPERSET_ADMIN_PASSWORD: ${SUPERSET_ADMIN_PASSWORD}
       GUEST_TOKEN_JWT_SECRET: ${GUEST_TOKEN_JWT_SECRET}
       NEXT_PUBLIC_SUPERSET_BASE_URL: ${NEXT_PUBLIC_SUPERSET_BASE_URL:-https://hivecfm.xcai.io:3002}
+      SUPERSET_DB_URL: postgresql://superset:${SUPERSET_DB_PASSWORD:-superset}@postgres:5432/superset_app
+      # Storage provider (s3 for MinIO/AWS, azureBlob for Azure Blob Storage)
+      STORAGE_PROVIDER: ${STORAGE_PROVIDER:-s3}
       # n8n Integration
       N8N_BASE_URL: ${N8N_BASE_URL:-http://hivecfm-n8n:5678}
       N8N_API_KEY: ${N8N_API_KEY}
