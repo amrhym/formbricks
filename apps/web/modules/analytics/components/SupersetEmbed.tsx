@@ -1,6 +1,6 @@
 "use client";
 
-import { AlertCircleIcon, BarChart3Icon, ExternalLinkIcon, RefreshCwIcon } from "lucide-react";
+import { AlertCircleIcon, BarChart3Icon, RefreshCwIcon } from "lucide-react";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { Button } from "@/modules/ui/components/button";
 import { LoadingSpinner } from "@/modules/ui/components/loading-spinner";
@@ -11,10 +11,6 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/modules/ui/components/select";
-
-const SUPERSET_URL =
-  process.env.NEXT_PUBLIC_SUPERSET_BASE_URL ||
-  "https://superset.graypond-ce0467a0.westeurope.azurecontainerapps.io";
 
 // Token refresh interval: refresh 2 minutes before the 15-min expiry
 const TOKEN_REFRESH_INTERVAL_MS = 13 * 60 * 1000;
@@ -29,6 +25,7 @@ interface DashboardTemplate {
 interface GuestTokenResponse {
   guestToken: string;
   dashboardId: string;
+  supersetBaseUrl: string;
   expiresAt: string;
 }
 
@@ -138,7 +135,7 @@ export const SupersetEmbed = ({ environmentId, height = "100%" }: SupersetEmbedP
 
   const iframeSrc =
     guestToken && guestToken.dashboardId
-      ? `${SUPERSET_URL}/superset/dashboard/${guestToken.dashboardId}/?standalone=true&guest_token=${guestToken.guestToken}`
+      ? `${guestToken.supersetBaseUrl}/superset/dashboard/${guestToken.dashboardId}/?standalone=true&guest_token=${guestToken.guestToken}`
       : null;
 
   // Loading state: fetching dashboard list
@@ -189,14 +186,8 @@ export const SupersetEmbed = ({ environmentId, height = "100%" }: SupersetEmbedP
         <BarChart3Icon className="h-12 w-12 text-slate-400" />
         <h3 className="mt-4 text-lg font-medium text-slate-700">No Dashboards Configured</h3>
         <p className="mt-2 max-w-md text-center text-sm text-slate-500">
-          No analytics dashboards have been set up yet. Visit Superset to create dashboards.
+          No analytics dashboards have been set up yet. Contact your administrator to configure dashboards.
         </p>
-        <Button variant="secondary" size="sm" className="mt-4" asChild>
-          <a href={SUPERSET_URL} target="_blank" rel="noopener noreferrer">
-            Open Superset
-            <ExternalLinkIcon className="ml-2 h-4 w-4" />
-          </a>
-        </Button>
       </div>
     );
   }
