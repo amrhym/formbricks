@@ -115,7 +115,7 @@ const nextConfig = {
       },
     ];
   },
-  webpack: (config) => {
+  webpack: (config, { isServer }) => {
     config.module.rules.push({
       test: /\.(mp4|webm|ogg|swf|ogv)$/,
       use: [
@@ -133,6 +133,14 @@ const nextConfig = {
       http: false, // Prevents Next.js from trying to bundle 'http'
       https: false,
     };
+    // Prevent @azure/storage-blob from being bundled in client bundles
+    // (it's only used server-side but gets pulled in via the storage package's dist chunks)
+    if (!isServer) {
+      config.resolve.alias = {
+        ...config.resolve.alias,
+        "@azure/storage-blob": false,
+      };
+    }
     return config;
   },
   async headers() {
