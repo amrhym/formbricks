@@ -1,6 +1,6 @@
 "use client";
 
-import { AlertCircleIcon, BarChart3Icon, RefreshCwIcon } from "lucide-react";
+import { AlertCircleIcon, BarChart3Icon, ExternalLinkIcon, RefreshCwIcon } from "lucide-react";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { Button } from "@/modules/ui/components/button";
 import { LoadingSpinner } from "@/modules/ui/components/loading-spinner";
@@ -11,6 +11,10 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/modules/ui/components/select";
+
+const SUPERSET_URL =
+  process.env.NEXT_PUBLIC_SUPERSET_BASE_URL ||
+  "https://superset.graypond-ce0467a0.westeurope.azurecontainerapps.io";
 
 // Token refresh interval: refresh 2 minutes before the 15-min expiry
 const TOKEN_REFRESH_INTERVAL_MS = 13 * 60 * 1000;
@@ -25,8 +29,6 @@ interface DashboardTemplate {
 interface GuestTokenResponse {
   guestToken: string;
   dashboardId: string;
-  embeddedUuid: string;
-  supersetBaseUrl: string;
   expiresAt: string;
 }
 
@@ -43,7 +45,6 @@ export const SupersetEmbed = ({ environmentId, height = "100%" }: SupersetEmbedP
   const [tokenLoading, setTokenLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const refreshTimerRef = useRef<NodeJS.Timeout | null>(null);
-  const iframeRef = useRef<HTMLIFrameElement | null>(null);
 
   // Fetch available dashboards
   useEffect(() => {
@@ -112,46 +113,6 @@ export const SupersetEmbed = ({ environmentId, height = "100%" }: SupersetEmbedP
     fetchGuestToken(selectedDashboard);
   }, [selectedDashboard, fetchGuestToken]);
 
-  // Send guest token to the embedded Superset iframe via postMessage
-  // Superset's embedded page requests the token and also accepts token pushes
-  useEffect(() => {
-    if (!guestToken || !iframeRef.current) return;
-
-    const sendToken = () => {
-      iframeRef.current?.contentWindow?.postMessage({ guestToken: guestToken.guestToken }, "*");
-    };
-
-    // Listen for token requests from the embedded Superset page
-    const handleMessage = (event: MessageEvent) => {
-      if (event.data === "GUEST_TOKEN_REFRESH" || event.data?.type === "webpackClose") {
-        return;
-      }
-      // Superset embedded sends various messages; respond to token requests
-      if (
-        typeof event.data === "object" &&
-        (event.data.guestToken !== undefined || event.data.type === "request_token")
-      ) {
-        sendToken();
-      }
-    };
-
-    window.addEventListener("message", handleMessage);
-
-    // Also send token when iframe loads
-    const iframe = iframeRef.current;
-    const onLoad = () => {
-      // Small delay to let Superset JS initialize
-      setTimeout(sendToken, 500);
-      setTimeout(sendToken, 2000);
-    };
-    iframe.addEventListener("load", onLoad);
-
-    return () => {
-      window.removeEventListener("message", handleMessage);
-      iframe.removeEventListener("load", onLoad);
-    };
-  }, [guestToken]);
-
   // Auto-refresh token before expiry
   useEffect(() => {
     if (!guestToken || !selectedDashboard) return;
@@ -176,8 +137,8 @@ export const SupersetEmbed = ({ environmentId, height = "100%" }: SupersetEmbedP
   const currentDashboard = dashboards.find((d) => d.name === selectedDashboard);
 
   const iframeSrc =
-    guestToken && guestToken.embeddedUuid
-      ? `${guestToken.supersetBaseUrl}/embedded/${guestToken.embeddedUuid}`
+    guestToken && guestToken.dashboardId
+      ? `${SUPERSET_URL}/superset/dashboard/${guestToken.dashboardId}/?standalone=true&guest_token=${guestToken.guestToken}`
       : null;
 
   // Loading state: fetching dashboard list
@@ -228,8 +189,14 @@ export const SupersetEmbed = ({ environmentId, height = "100%" }: SupersetEmbedP
         <BarChart3Icon className="h-12 w-12 text-slate-400" />
         <h3 className="mt-4 text-lg font-medium text-slate-700">No Dashboards Configured</h3>
         <p className="mt-2 max-w-md text-center text-sm text-slate-500">
-          No analytics dashboards have been set up yet. Contact your administrator to configure dashboards.
+          No analytics dashboards have been set up yet. Visit Superset to create dashboards.
         </p>
+        <Button variant="secondary" size="sm" className="mt-4" asChild>
+          <a href={SUPERSET_URL} target="_blank" rel="noopener noreferrer">
+            Open Superset
+            <ExternalLinkIcon className="ml-2 h-4 w-4" />
+          </a>
+        </Button>
       </div>
     );
   }
@@ -274,10 +241,10 @@ export const SupersetEmbed = ({ environmentId, height = "100%" }: SupersetEmbedP
         )}
         {iframeSrc && !tokenLoading && (
           <iframe
-            ref={iframeRef}
             src={iframeSrc}
             className="h-full w-full border-0"
             title={`Dashboard: ${selectedDashboard}`}
+            sandbox="allow-scripts allow-same-origin allow-popups allow-forms"
           />
         )}
       </div>

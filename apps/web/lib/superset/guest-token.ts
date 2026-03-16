@@ -72,14 +72,9 @@ export const mintGuestToken = async (organizationId: string, dashboardName: stri
     "Guest token minted for embedded dashboard"
   );
 
-  const supersetBaseUrl =
-    process.env.NEXT_PUBLIC_SUPERSET_BASE_URL || process.env.SUPERSET_BASE_URL || "http://localhost:8088";
-
   return {
     guestToken: token,
     dashboardId: template.supersetDashboardId,
-    embeddedUuid,
-    supersetBaseUrl,
     expiresAt,
   };
 };

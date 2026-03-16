@@ -133,8 +133,6 @@ export type TTenantUpdateInput = z.infer<typeof ZTenantUpdateInput>;
 export const ZGuestToken = z.object({
   guestToken: z.string(),
   dashboardId: z.string(),
-  embeddedUuid: z.string(),
-  supersetBaseUrl: z.string(),
   expiresAt: z.string().datetime(),
 });
 export type TGuestToken = z.infer<typeof ZGuestToken>;
