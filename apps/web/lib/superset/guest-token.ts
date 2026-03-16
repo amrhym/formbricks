@@ -23,12 +23,41 @@ export const mintGuestToken = async (organizationId: string, dashboardName: stri
 
   // Resolve the embedded dashboard UUID from the integer dashboard ID.
   // Superset's guest_token API requires the embedded UUID, not the integer ID.
-  const embeddedInfo = (await supersetClient.apiRequest(
-    "GET",
-    `/api/v1/dashboard/${template.supersetDashboardId}/embedded`
-  )) as { result?: { uuid?: string } };
+  // Try API first, then fall back to direct DB query (some Superset versions
+  // return 404 on the GET embedded endpoint due to permission issues).
+  let embeddedUuid: string | undefined;
 
-  const embeddedUuid = embeddedInfo?.result?.uuid;
+  try {
+    const embeddedInfo = (await supersetClient.apiRequest(
+      "GET",
+      `/api/v1/dashboard/${template.supersetDashboardId}/embedded`
+    )) as { result?: { uuid?: string } };
+    embeddedUuid = embeddedInfo?.result?.uuid;
+  } catch {
+    logger.warn(
+      { dashboardId: template.supersetDashboardId },
+      "Failed to get embedded UUID via API, falling back to DB query"
+    );
+  }
+
+  if (!embeddedUuid) {
+    // Fall back: query Superset DB directly for the embedded UUID
+    const supersetDbUrl = process.env.SUPERSET_DB_URL;
+    if (supersetDbUrl) {
+      const { Client } = await import("pg");
+      const pgClient = new Client({ connectionString: supersetDbUrl });
+      try {
+        await pgClient.connect();
+        const result = await pgClient.query("SELECT uuid FROM embedded_dashboards WHERE dashboard_id = $1", [
+          template.supersetDashboardId,
+        ]);
+        embeddedUuid = result.rows[0]?.uuid;
+      } finally {
+        await pgClient.end();
+      }
+    }
+  }
+
   if (!embeddedUuid) {
     throw new Error(`Dashboard ${template.supersetDashboardId} is not configured for embedding in Superset`);
   }
