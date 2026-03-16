@@ -20,7 +20,13 @@ const nextConfig = {
   output: "standalone",
   poweredByHeader: false,
   productionBrowserSourceMaps: true,
-  serverExternalPackages: ["@aws-sdk", "@opentelemetry/instrumentation", "pino", "pino-pretty"],
+  serverExternalPackages: [
+    "@aws-sdk",
+    "@azure/storage-blob",
+    "@opentelemetry/instrumentation",
+    "pino",
+    "pino-pretty",
+  ],
   outputFileTracingIncludes: {
     "/api/auth/**/*": ["../../node_modules/jose/**/*"],
   },
