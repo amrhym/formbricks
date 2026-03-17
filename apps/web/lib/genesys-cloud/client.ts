@@ -6,9 +6,15 @@ interface GenesysAccessToken {
   expires_in: number;
 }
 
+function getLoginUrl(environmentUrl: string): string {
+  const baseUrl = environmentUrl.replace(/\/+$/, "");
+  // Convert api.mypurecloud.X to login.mypurecloud.X
+  return baseUrl.replace("://api.", "://login.");
+}
+
 export async function getAccessToken(credentials: TGenesysCloudCredential): Promise<string> {
-  const baseUrl = credentials.environmentUrl.replace(/\/+$/, "");
-  const tokenUrl = `${baseUrl}/oauth/token`;
+  const loginUrl = getLoginUrl(credentials.environmentUrl);
+  const tokenUrl = `${loginUrl}/oauth/token`;
   const basicAuth = Buffer.from(`${credentials.clientId}:${credentials.clientSecret}`).toString("base64");
 
   const response = await fetch(tokenUrl, {
