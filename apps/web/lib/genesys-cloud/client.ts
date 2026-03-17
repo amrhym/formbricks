@@ -69,7 +69,7 @@ export async function uploadPromptResource(
   token: string,
   environmentUrl: string,
   promptId: string,
-  wavBuffer: Buffer,
+  wavBuffer: Uint8Array,
   language: string = "en-us"
 ): Promise<void> {
   const response = await fetch(`${environmentUrl}/api/v2/architect/prompts/${promptId}/resources`, {
