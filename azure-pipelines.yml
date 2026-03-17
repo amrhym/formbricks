@@ -1,5 +1,4 @@
 trigger:
-  batch: false
   branches:
     include:
       - hivecfm-main
