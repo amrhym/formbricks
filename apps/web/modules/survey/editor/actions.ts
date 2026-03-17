@@ -172,10 +172,12 @@ export const updateSurveyAction = authenticatedActionClient.schema(ZSurvey).acti
         syncAudioPromptsToGenesys(result.environmentId, {
           id: result.id,
           name: result.name,
-          elements: (result.elements ?? []).map((el: any) => ({
-            id: el.id,
-            audioUrl: el.audioUrl,
-          })),
+          elements: (result.blocks ?? [])
+            .flatMap((b: any) => b.elements ?? [])
+            .map((el: any) => ({
+              id: el.id,
+              audioUrl: el.audioUrl,
+            })),
         }).catch((err) => console.error("Failed to sync Genesys prompts:", err));
       }
 
