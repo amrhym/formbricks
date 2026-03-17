@@ -12,6 +12,7 @@ import {
   ZSurvey,
 } from "@hivecfm/types/surveys/types";
 import { UNSPLASH_ACCESS_KEY, UNSPLASH_ALLOWED_DOMAINS } from "@/lib/constants";
+import { syncAudioPromptsToGenesys } from "@/lib/genesys-cloud/prompt-sync";
 import { getMembershipByUserIdOrganizationId } from "@/lib/membership/service";
 import { actionClient, authenticatedActionClient } from "@/lib/utils/action-client";
 import { checkAuthorizationUpdated } from "@/lib/utils/action-client/action-client-middleware";
@@ -165,6 +166,18 @@ export const updateSurveyAction = authenticatedActionClient.schema(ZSurvey).acti
       const result = await updateSurvey(parsedInput);
       ctx.auditLoggingCtx.oldObject = oldObject;
       ctx.auditLoggingCtx.newObject = result;
+
+      // Sync audio prompts to Genesys Cloud for voice surveys
+      if (result.type === "voice") {
+        syncAudioPromptsToGenesys(result.environmentId, {
+          id: result.id,
+          name: result.name,
+          elements: (result.elements ?? []).map((el: any) => ({
+            id: el.id,
+            audioUrl: el.audioUrl,
+          })),
+        }).catch((err) => console.error("Failed to sync Genesys prompts:", err));
+      }
 
       revalidatePath(`/environments/${result.environmentId}/surveys/${result.id}`);
 

@@ -1,5 +1,5 @@
 import { TFunction } from "i18next";
-import { HardDriveIcon } from "lucide-react";
+import { HardDriveIcon, PhoneIcon } from "lucide-react";
 import Image from "next/image";
 import { redirect } from "next/navigation";
 import { TIntegrationType } from "@hivecfm/types/integration";
@@ -65,6 +65,7 @@ const Page = async (props) => {
   const isSlackIntegrationConnected = isIntegrationConnected("slack");
   const isNovuIntegrationConnected = isIntegrationConnected("novu");
   const isStorageIntegrationConnected = isIntegrationConnected("storage");
+  const isGenesysCloudIntegrationConnected = isIntegrationConnected("genesysCloud");
 
   const appSetupCompleted = !!environment?.appSetupCompleted;
   const integrationCards = [
@@ -161,6 +162,17 @@ const Page = async (props) => {
       icon: <HardDriveIcon className="h-8 w-8 text-slate-900" />,
       connected: isStorageIntegrationConnected,
       statusText: isStorageIntegrationConnected ? t("common.connected") : t("common.not_connected"),
+      disabled: isReadOnly,
+    },
+    {
+      connectHref: `/environments/${params.environmentId}/workspace/integrations/genesys-cloud`,
+      connectText: isGenesysCloudIntegrationConnected ? t("common.manage") : t("common.connect"),
+      connectNewTab: false,
+      label: "Genesys Cloud",
+      description: "Connect Genesys Cloud for IVR surveys and bot connector integration",
+      icon: <PhoneIcon className="h-8 w-8 text-slate-900" />,
+      connected: isGenesysCloudIntegrationConnected,
+      statusText: isGenesysCloudIntegrationConnected ? t("common.connected") : t("common.not_connected"),
       disabled: isReadOnly,
     },
     {

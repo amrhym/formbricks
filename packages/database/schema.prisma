@@ -590,6 +590,7 @@ enum IntegrationType {
   slack
   novu
   storage
+  genesysCloud
 }
 
 /// Represents third-party service integrations.

@@ -398,7 +398,7 @@ export const ElementFormInput = ({
     return (
       <div className="w-full">
         {label && (
-          <div className="mt-3 mb-2 flex items-center justify-between">
+          <div className="mb-2 mt-3 flex items-center justify-between">
             <Label htmlFor={id}>{label}</Label>
             {id === "headline" && currentElement && updateElement && (
               <div className="flex items-center space-x-2">
@@ -421,7 +421,7 @@ export const ElementFormInput = ({
           {showImageUploader && id === "headline" && (
             <FileInput
               id="element-image"
-              allowedFileExtensions={["png", "jpeg", "jpg", "webp", "heic"]}
+              allowedFileExtensions={isVoiceChannel ? ["wav"] : ["png", "jpeg", "jpg", "webp", "heic"]}
               environmentId={localSurvey.environmentId}
               onFileUpload={(url: string[] | undefined, fileType: "image" | "video" | "audio") => {
                 if (url) {
@@ -454,7 +454,7 @@ export const ElementFormInput = ({
               fileUrl={getFileUrl()}
               videoUrl={getVideoUrl()}
               audioUrl={getAudioUrl()}
-              isVideoAllowed={true}
+              isVideoAllowed={!isVoiceChannel}
               isAudioAllowed={isVoiceChannel}
               maxSizeInMB={5}
               isStorageConfigured={isStorageConfigured}
@@ -545,7 +545,7 @@ export const ElementFormInput = ({
   return (
     <div className="w-full">
       {label && (
-        <div className="mt-3 mb-2 flex items-center justify-between">
+        <div className="mb-2 mt-3 flex items-center justify-between">
           <Label htmlFor={id}>{label}</Label>
           {id === "headline" && currentElement && updateElement && (
             <div className="flex items-center space-x-2">
@@ -607,7 +607,7 @@ export const ElementFormInput = ({
                         <div className="h-10 w-full"></div>
                         <div
                           ref={highlightContainerRef}
-                          className={`no-scrollbar absolute top-0 z-0 mt-0.5 flex h-10 w-full overflow-scroll px-3 py-2 text-center text-sm whitespace-nowrap text-transparent ${
+                          className={`no-scrollbar absolute top-0 z-0 mt-0.5 flex h-10 w-full overflow-scroll whitespace-nowrap px-3 py-2 text-center text-sm text-transparent ${
                             localSurvey.languages?.length > 1 ? "pr-24" : ""
                           }`}
                           dir="auto"
