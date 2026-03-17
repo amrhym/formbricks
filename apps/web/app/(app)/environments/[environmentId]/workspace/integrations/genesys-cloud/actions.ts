@@ -35,10 +35,5 @@ export const testGenesysCloudConnectionAction = authenticatedActionClient
     });
 
     const result = await testConnection(parsedInput.credentials);
-
-    if (!result.success) {
-      throw new Error(result.error ?? "Connection failed");
-    }
-
-    return { success: true };
+    return result;
   });

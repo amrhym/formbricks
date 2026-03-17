@@ -4,7 +4,7 @@ import { ZIntegrationBase } from "./shared-types";
 export const ZGenesysCloudCredential = z.object({
   clientId: z.string().min(1),
   clientSecret: z.string().min(1),
-  environmentUrl: z.string().url(),
+  environmentUrl: z.string().min(1),
 });
 export type TGenesysCloudCredential = z.infer<typeof ZGenesysCloudCredential>;
 

@@ -64,8 +64,8 @@ export const GenesysCloudWrapper = ({
       if (result?.data?.success) {
         toast.success("Connection successful");
       } else {
-        const errorMessage = getFormattedErrorMessage(result);
-        toast.error(errorMessage ?? "Connection failed");
+        const errorMessage = result?.data?.error || getFormattedErrorMessage(result) || "Connection failed";
+        toast.error(errorMessage);
       }
     } catch {
       toast.error("Connection test failed");

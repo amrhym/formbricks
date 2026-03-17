@@ -7,7 +7,8 @@ interface GenesysAccessToken {
 }
 
 export async function getAccessToken(credentials: TGenesysCloudCredential): Promise<string> {
-  const tokenUrl = `${credentials.environmentUrl}/oauth/token`;
+  const baseUrl = credentials.environmentUrl.replace(/\/+$/, "");
+  const tokenUrl = `${baseUrl}/oauth/token`;
   const basicAuth = Buffer.from(`${credentials.clientId}:${credentials.clientSecret}`).toString("base64");
 
   const response = await fetch(tokenUrl, {
