@@ -99,7 +99,7 @@ export async function uploadPromptResource(
       headers: {
         "Content-Type": "audio/wav",
       },
-      body: wavBuffer,
+      body: new Blob([wavBuffer], { type: "audio/wav" }),
     });
 
     if (!uploadResponse.ok) {
