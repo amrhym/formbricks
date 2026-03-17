@@ -69,7 +69,7 @@ export async function uploadPromptResource(
   token: string,
   environmentUrl: string,
   promptId: string,
-  wavBuffer: Uint8Array,
+  wavBuffer: ArrayBuffer,
   language: string = "en-us"
 ): Promise<void> {
   const response = await fetch(`${environmentUrl}/api/v2/architect/prompts/${promptId}/resources`, {
@@ -99,7 +99,7 @@ export async function uploadPromptResource(
       headers: {
         "Content-Type": "audio/wav",
       },
-      body: new Blob([wavBuffer], { type: "audio/wav" }),
+      body: wavBuffer,
     });
 
     if (!uploadResponse.ok) {

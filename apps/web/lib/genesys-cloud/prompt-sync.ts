@@ -70,7 +70,7 @@ export async function syncAudioPromptsToGenesys(environmentId: string, survey: S
         console.error(`Failed to download audio for element ${element.id}: ${audioResponse.status}`);
         continue;
       }
-      const audioBuffer = new Uint8Array(await audioResponse.arrayBuffer());
+      const audioBuffer = await audioResponse.arrayBuffer();
 
       await uploadPromptResource(token, credentials.environmentUrl, promptId, audioBuffer);
     } catch (error) {
