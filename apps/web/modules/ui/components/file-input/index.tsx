@@ -60,15 +60,18 @@ export const FileInput = ({
   isStorageConfigured = true,
 }: FileInputProps) => {
   const { t } = useTranslation();
+  const isImageAllowed = isVideoAllowed || !isAudioAllowed;
   const options = [
-    { value: "image", label: t("common.image") },
-    { value: "video", label: t("common.video") },
+    ...(isImageAllowed ? [{ value: "image", label: t("common.image") }] : []),
+    ...(isVideoAllowed ? [{ value: "video", label: t("common.video") }] : []),
     ...(isAudioAllowed ? [{ value: "audio", label: t("common.audio") }] : []),
   ];
   const [selectedFiles, setSelectedFiles] = useState<SelectedFile[]>([]);
   const [uploadedVideoUrl, setUploadedVideoUrl] = useState(videoUrl ?? "");
   const [uploadedAudioUrl, setUploadedAudioUrl] = useState(audioUrl ?? "");
-  const [activeTab, setActiveTab] = useState(audioUrl ? "audio" : videoUrl ? "video" : "image");
+  const [activeTab, setActiveTab] = useState(
+    audioUrl ? "audio" : videoUrl ? "video" : isImageAllowed ? "image" : isAudioAllowed ? "audio" : "image"
+  );
   const [imageUrlTemp, setImageUrlTemp] = useState(fileUrl ?? "");
   const [videoUrlTemp, setVideoUrlTemp] = useState(videoUrl ?? "");
   const [audioUrlTemp, setAudioUrlTemp] = useState(audioUrl ?? "");
@@ -349,7 +352,7 @@ export const FileInput = ({
                             />
                             {file.uploaded ? (
                               <button
-                                className="absolute top-2 right-2 flex cursor-pointer items-center justify-center rounded-md bg-slate-100 p-1 hover:bg-slate-200 hover:bg-white/90"
+                                className="absolute right-2 top-2 flex cursor-pointer items-center justify-center rounded-md bg-slate-100 p-1 hover:bg-slate-200 hover:bg-white/90"
                                 onClick={(e) => {
                                   e.preventDefault();
                                   handleRemove(idx);
@@ -370,7 +373,7 @@ export const FileInput = ({
                             </p>
                             {file.uploaded ? (
                               <button
-                                className="absolute top-2 right-2 flex cursor-pointer items-center justify-center rounded-md bg-slate-100 p-1 hover:bg-slate-200 hover:bg-white/90"
+                                className="absolute right-2 top-2 flex cursor-pointer items-center justify-center rounded-md bg-slate-100 p-1 hover:bg-slate-200 hover:bg-white/90"
                                 onClick={(e) => {
                                   e.preventDefault();
                                   handleRemove(idx);
@@ -414,7 +417,7 @@ export const FileInput = ({
                         />
                         {selectedFiles[0].uploaded ? (
                           <button
-                            className="absolute top-2 right-2 flex cursor-pointer items-center justify-center rounded-md bg-slate-100 p-1 hover:bg-slate-200 hover:bg-white/90"
+                            className="absolute right-2 top-2 flex cursor-pointer items-center justify-center rounded-md bg-slate-100 p-1 hover:bg-slate-200 hover:bg-white/90"
                             onClick={(e) => {
                               e.preventDefault();
                               handleRemove(0);
@@ -433,7 +436,7 @@ export const FileInput = ({
                         </p>
                         {selectedFiles[0].uploaded ? (
                           <button
-                            className="absolute top-2 right-2 flex cursor-pointer items-center justify-center rounded-md bg-slate-100 p-1 hover:bg-slate-200 hover:bg-white/90"
+                            className="absolute right-2 top-2 flex cursor-pointer items-center justify-center rounded-md bg-slate-100 p-1 hover:bg-slate-200 hover:bg-white/90"
                             onClick={(e) => {
                               e.preventDefault();
                               handleRemove(0);
