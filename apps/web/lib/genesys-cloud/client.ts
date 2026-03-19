@@ -64,6 +64,22 @@ export async function createPrompt(
     body: JSON.stringify({ name, description }),
   });
 
+  if (response.status === 409) {
+    // Prompt already exists — search for it by name
+    const searchRes = await fetch(
+      `${environmentUrl}/api/v2/architect/prompts?name=${encodeURIComponent(name)}`,
+      {
+        headers: { Authorization: `Bearer ${token}` },
+      }
+    );
+    if (searchRes.ok) {
+      const data = await searchRes.json();
+      const existing = data.entities?.find((p: any) => p.name === name);
+      if (existing) return { id: existing.id, name: existing.name };
+    }
+    throw new Error(`Prompt "${name}" already exists but could not be found`);
+  }
+
   if (!response.ok) {
     const errorText = await response.text();
     throw new Error(`Failed to create Genesys prompt: ${response.status} ${errorText}`);
@@ -79,7 +95,7 @@ export async function uploadPromptResource(
   wavBuffer: ArrayBuffer,
   language: string = "en-us"
 ): Promise<void> {
-  const response = await fetch(`${environmentUrl}/api/v2/architect/prompts/${promptId}/resources`, {
+  let response = await fetch(`${environmentUrl}/api/v2/architect/prompts/${promptId}/resources`, {
     method: "POST",
     headers: {
       Authorization: `Bearer ${token}`,
@@ -92,7 +108,29 @@ export async function uploadPromptResource(
     }),
   });
 
-  if (!response.ok) {
+  // If resource already exists, fetch it instead to get the upload URI
+  if (response.status === 409) {
+    const existingRes = await fetch(
+      `${environmentUrl}/api/v2/architect/prompts/${promptId}/resources/${language}`,
+      {
+        method: "PUT",
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          language,
+          mediaUri: `prompt://${promptId}`,
+          ttsString: "",
+        }),
+      }
+    );
+    if (!existingRes.ok) {
+      const errorText = await existingRes.text();
+      throw new Error(`Failed to update prompt resource: ${existingRes.status} ${errorText}`);
+    }
+    response = existingRes;
+  } else if (!response.ok) {
     const errorText = await response.text();
     throw new Error(`Failed to create prompt resource: ${response.status} ${errorText}`);
   }
