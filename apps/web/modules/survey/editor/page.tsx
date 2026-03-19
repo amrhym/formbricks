@@ -8,6 +8,7 @@ import {
   UNSPLASH_ACCESS_KEY,
 } from "@/lib/constants";
 import { getPublicDomain } from "@/lib/getPublicUrl";
+import { getIntegrationByType } from "@/lib/integration/service";
 import { getTranslate } from "@/lingodotdev/server";
 import { getContactAttributeKeys } from "@/modules/ee/contacts/lib/contact-attribute-keys";
 import { getSegments } from "@/modules/ee/contacts/segments/lib/segments";
@@ -124,6 +125,13 @@ export const SurveyEditorPage = async (props) => {
     }
   }
 
+  // Check if Genesys Cloud integration is connected for voice surveys
+  let isGenesysConnected = false;
+  if (isVoiceChannel) {
+    const genesysIntegration = await getIntegrationByType(params.environmentId, "genesysCloud");
+    isGenesysConnected = !!genesysIntegration?.config?.key;
+  }
+
   return (
     <SurveyEditor
       survey={survey}
@@ -146,6 +154,7 @@ export const SurveyEditorPage = async (props) => {
       isCxMode={isCxMode}
       isVoiceChannel={isVoiceChannel}
       isMessagingChannel={isMessagingChannel}
+      isGenesysConnected={isGenesysConnected}
       locale={locale ?? DEFAULT_LOCALE}
       mailFrom={MAIL_FROM ?? "hola@hivecfm.com"}
       isSurveyFollowUpsAllowed={isSurveyFollowUpsAllowed}

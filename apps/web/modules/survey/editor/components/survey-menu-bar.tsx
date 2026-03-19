@@ -26,6 +26,7 @@ import { Button } from "@/modules/ui/components/button";
 import { Input } from "@/modules/ui/components/input";
 import { submitForReviewAction, updateSurveyAction, updateSurveyDraftAction } from "../actions";
 import { isSurveyValid } from "../lib/validation";
+import { GenesysSyncButton } from "./genesys-sync-button";
 
 interface SurveyMenuBarProps {
   localSurvey: TSurvey;
@@ -44,6 +45,8 @@ interface SurveyMenuBarProps {
   setIsCautionDialogOpen: (open: boolean) => void;
   isStorageConfigured: boolean;
   membershipRole?: OrganizationRole;
+  isVoiceChannel?: boolean;
+  isGenesysConnected?: boolean;
 }
 
 export const SurveyMenuBar = ({
@@ -62,6 +65,8 @@ export const SurveyMenuBar = ({
   setIsCautionDialogOpen,
   isStorageConfigured = true,
   membershipRole,
+  isVoiceChannel = false,
+  isGenesysConnected = false,
 }: SurveyMenuBarProps) => {
   const { t } = useTranslation();
   const isAdmin = membershipRole === "owner" || membershipRole === "manager";
@@ -486,6 +491,10 @@ export const SurveyMenuBar = ({
             <ClockIcon className="h-3.5 w-3.5" />
             {t("environments.surveys.edit.under_review")}
           </div>
+        )}
+        {/* Genesys Cloud sync button for voice surveys */}
+        {isVoiceChannel && isGenesysConnected && (
+          <GenesysSyncButton surveyId={localSurvey.id} environmentId={environmentId} />
         )}
         {/* Save button: show for draft and non-underReview statuses for non-admin members */}
         {!isCxMode && localSurvey.status !== "underReview" && (

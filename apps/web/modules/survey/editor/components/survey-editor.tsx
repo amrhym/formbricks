@@ -46,6 +46,7 @@ interface SurveyEditorProps {
   isCxMode: boolean;
   isVoiceChannel: boolean;
   isMessagingChannel: boolean;
+  isGenesysConnected: boolean;
   locale: TUserLocale;
   projectPermission: TTeamPermission | null;
   mailFrom: string;
@@ -80,6 +81,7 @@ export const SurveyEditor = ({
   isCxMode = false,
   isVoiceChannel = false,
   isMessagingChannel = false,
+  isGenesysConnected = false,
   locale,
   projectPermission,
   mailFrom,
@@ -191,6 +193,8 @@ export const SurveyEditor = ({
         setIsCautionDialogOpen={setIsCautionDialogOpen}
         isStorageConfigured={isStorageConfigured}
         membershipRole={membershipRole}
+        isVoiceChannel={derivedIsVoiceChannel}
+        isGenesysConnected={isGenesysConnected}
       />
       {localSurvey.status === "underReview" &&
         (membershipRole === "owner" || membershipRole === "manager") && (
