@@ -21,6 +21,7 @@ export function AddOfflineOrgForm() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const [name, setName] = useState("");
+  const [orgId, setOrgId] = useState("");
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -31,7 +32,7 @@ export function AddOfflineOrgForm() {
       const res = await fetch("/api/offline-org", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ name: name.trim() }),
+        body: JSON.stringify({ name: name.trim(), id: orgId.trim() || undefined }),
       });
 
       if (!res.ok) {
@@ -47,6 +48,7 @@ export function AddOfflineOrgForm() {
 
       setOpen(false);
       setName("");
+      setOrgId("");
       router.refresh();
     } catch (e: any) {
       setError(e.message);
@@ -69,6 +71,20 @@ export function AddOfflineOrgForm() {
         </DialogHeader>
         <form onSubmit={handleSubmit} className="space-y-4">
           <div className="space-y-2">
+            <Label htmlFor="orgId">Organization ID</Label>
+            <Input
+              id="orgId"
+              type="text"
+              placeholder="e.g. cmmntw1f90001ay0185s7y6wk"
+              value={orgId}
+              onChange={(e) => setOrgId(e.target.value)}
+            />
+            <p className="text-xs text-slate-500">
+              The exact Organization ID from the disconnected HiveCFM instance. Find it in Settings &gt;
+              General. Leave blank to auto-generate.
+            </p>
+          </div>
+          <div className="space-y-2">
             <Label htmlFor="orgName">Organization Name</Label>
             <Input
               id="orgName"
@@ -78,9 +94,6 @@ export function AddOfflineOrgForm() {
               onChange={(e) => setName(e.target.value)}
               required
             />
-            <p className="text-xs text-slate-500">
-              This organization will be managed locally and is not connected to any HiveCFM Core instance.
-            </p>
           </div>
           {error && <p className="text-sm text-red-600">{error}</p>}
           <DialogFooter>

@@ -74,10 +74,17 @@ export function getOfflineOrg(id: string): OfflineOrg | null {
   return store.orgs.find((o) => o.id === id) || null;
 }
 
-export function addOfflineOrg(name: string): OfflineOrg {
+export function addOfflineOrg(name: string, customId?: string): OfflineOrg {
   const store = readStore();
+  const id = customId || randomUUID();
+
+  // Check for duplicate ID
+  if (store.orgs.find((o) => o.id === id)) {
+    throw new Error(`An offline organization with ID "${id}" already exists`);
+  }
+
   const org: OfflineOrg = {
-    id: randomUUID(),
+    id,
     name,
     createdAt: new Date().toISOString(),
     license: null,

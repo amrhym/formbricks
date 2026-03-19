@@ -29,7 +29,8 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: "Organization name is required" }, { status: 400 });
     }
 
-    const org = addOfflineOrg(body.name.trim());
+    const customId = body.id && typeof body.id === "string" ? body.id.trim() : undefined;
+    const org = addOfflineOrg(body.name.trim(), customId);
     return NextResponse.json(org, { status: 201 });
   } catch (e: any) {
     return NextResponse.json({ error: e.message }, { status: 500 });
