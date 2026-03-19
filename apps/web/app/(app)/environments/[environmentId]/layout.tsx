@@ -25,7 +25,12 @@ const EnvLayout = async (props: {
 
   // Block access when tenant license is invalid
   if (layoutData.isLicenseInvalid) {
-    return <LicenseBlockedPage reason={layoutData.licenseInvalidReason} />;
+    return (
+      <LicenseBlockedPage
+        reason={layoutData.licenseInvalidReason}
+        organizationId={layoutData.organization.id}
+      />
+    );
   }
 
   return (

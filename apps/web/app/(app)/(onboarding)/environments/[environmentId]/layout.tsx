@@ -27,7 +27,7 @@ const OnboardingLayout = async (props) => {
   if (organization) {
     const licenseCheck = await checkLicenseValid(organization.id);
     if (!licenseCheck.valid) {
-      return <LicenseBlockedPage reason={licenseCheck.reason} />;
+      return <LicenseBlockedPage reason={licenseCheck.reason} organizationId={organization.id} />;
     }
   }
 
