@@ -18,6 +18,7 @@ import { Switch } from "@/components/ui/switch";
 interface LicenseFormProps {
   orgId: string;
   mode: "create" | "edit";
+  offline?: boolean;
   initialData?: {
     maxUsers: number;
     maxCompletedResponses: number;
@@ -30,7 +31,7 @@ interface LicenseFormProps {
   trigger: React.ReactNode;
 }
 
-export function LicenseForm({ orgId, mode, initialData, trigger }: LicenseFormProps) {
+export function LicenseForm({ orgId, mode, offline, initialData, trigger }: LicenseFormProps) {
   const router = useRouter();
   const [open, setOpen] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -63,9 +64,9 @@ export function LicenseForm({ orgId, mode, initialData, trigger }: LicenseFormPr
     }
 
     try {
-      const url = `/api/license/${orgId}`;
+      const url = offline ? `/api/offline-org/${orgId}` : `/api/license/${orgId}`;
       const res = await fetch(url, {
-        method: mode === "create" ? "POST" : "PATCH",
+        method: offline ? "PATCH" : mode === "create" ? "POST" : "PATCH",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(body),
       });

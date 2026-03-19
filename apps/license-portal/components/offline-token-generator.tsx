@@ -7,6 +7,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 
 interface OfflineTokenGeneratorProps {
   orgId: string;
+  offline?: boolean;
 }
 
 interface TokenPayload {
@@ -20,7 +21,7 @@ interface TokenPayload {
   validUntil: string;
 }
 
-export function OfflineTokenGenerator({ orgId }: OfflineTokenGeneratorProps) {
+export function OfflineTokenGenerator({ orgId, offline }: OfflineTokenGeneratorProps) {
   const [token, setToken] = useState<string | null>(null);
   const [payload, setPayload] = useState<TokenPayload | null>(null);
   const [loading, setLoading] = useState(false);
@@ -34,7 +35,8 @@ export function OfflineTokenGenerator({ orgId }: OfflineTokenGeneratorProps) {
     setPayload(null);
 
     try {
-      const res = await fetch(`/api/license/${orgId}/offline-token`, { method: "POST" });
+      const url = offline ? `/api/offline-org/${orgId}/offline-token` : `/api/license/${orgId}/offline-token`;
+      const res = await fetch(url, { method: "POST" });
       const data = await res.json();
 
       if (!res.ok) {

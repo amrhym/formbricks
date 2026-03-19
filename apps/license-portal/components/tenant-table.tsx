@@ -10,6 +10,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 interface TenantRow {
   id: string;
   name: string;
+  isOffline?: boolean;
   license: {
     isActive: boolean;
     valid: boolean;
@@ -50,7 +51,16 @@ export function TenantTable({ tenants }: { tenants: TenantRow[] }) {
       <TableBody>
         {tenants.map((tenant) => (
           <TableRow key={tenant.id}>
-            <TableCell className="font-medium">{tenant.name}</TableCell>
+            <TableCell className="font-medium">
+              <div className="flex items-center gap-2">
+                {tenant.name}
+                {tenant.isOffline && (
+                  <Badge variant="default" className="text-xs">
+                    Offline
+                  </Badge>
+                )}
+              </div>
+            </TableCell>
             <TableCell>
               <LicenseBadge license={tenant.license} />
             </TableCell>
@@ -70,7 +80,7 @@ export function TenantTable({ tenants }: { tenants: TenantRow[] }) {
               {tenant.license?.validUntil ? format(new Date(tenant.license.validUntil), "MMM d, yyyy") : "-"}
             </TableCell>
             <TableCell className="text-right">
-              <Link href={`/dashboard/${tenant.id}`}>
+              <Link href={tenant.isOffline ? `/dashboard/offline-${tenant.id}` : `/dashboard/${tenant.id}`}>
                 <Button variant="ghost" size="sm">
                   <Eye className="mr-1 h-4 w-4" />
                   View
