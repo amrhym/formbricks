@@ -95,7 +95,20 @@ export async function uploadPromptResource(
   wavBuffer: ArrayBuffer,
   language: string = "en-us"
 ): Promise<void> {
-  let response = await fetch(`${environmentUrl}/api/v2/architect/prompts/${promptId}/resources`, {
+  // Delete existing resource first so we always replace the audio
+  const deleteRes = await fetch(
+    `${environmentUrl}/api/v2/architect/prompts/${promptId}/resources/${language}`,
+    {
+      method: "DELETE",
+      headers: { Authorization: `Bearer ${token}` },
+    }
+  );
+  // 404 is fine — means no existing resource
+  if (!deleteRes.ok && deleteRes.status !== 404) {
+    // Non-critical — continue to create
+  }
+
+  const response = await fetch(`${environmentUrl}/api/v2/architect/prompts/${promptId}/resources`, {
     method: "POST",
     headers: {
       Authorization: `Bearer ${token}`,
@@ -108,29 +121,7 @@ export async function uploadPromptResource(
     }),
   });
 
-  // If resource already exists, fetch it instead to get the upload URI
-  if (response.status === 409) {
-    const existingRes = await fetch(
-      `${environmentUrl}/api/v2/architect/prompts/${promptId}/resources/${language}`,
-      {
-        method: "PUT",
-        headers: {
-          Authorization: `Bearer ${token}`,
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          language,
-          mediaUri: `prompt://${promptId}`,
-          ttsString: "",
-        }),
-      }
-    );
-    if (!existingRes.ok) {
-      const errorText = await existingRes.text();
-      throw new Error(`Failed to update prompt resource: ${existingRes.status} ${errorText}`);
-    }
-    response = existingRes;
-  } else if (!response.ok) {
+  if (!response.ok) {
     const errorText = await response.text();
     throw new Error(`Failed to create prompt resource: ${response.status} ${errorText}`);
   }
