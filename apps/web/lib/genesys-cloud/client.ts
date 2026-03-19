@@ -130,26 +130,14 @@ export async function uploadPromptResource(
   const uploadUri = resource.uploadUri;
 
   if (uploadUri) {
-    // Try POST first (some Genesys regions use POST for upload), fall back to PUT
-    let uploadResponse = await fetch(uploadUri, {
-      method: "POST",
+    // Upload URI is a pre-signed S3 URL — use PUT with raw binary, no auth header
+    const uploadResponse = await fetch(uploadUri, {
+      method: "PUT",
       headers: {
         "Content-Type": "audio/wav",
-        Authorization: `Bearer ${token}`,
       },
       body: wavBuffer,
     });
-
-    if (uploadResponse.status === 405) {
-      // Fall back to PUT without auth (pre-signed URL)
-      uploadResponse = await fetch(uploadUri, {
-        method: "PUT",
-        headers: {
-          "Content-Type": "audio/wav",
-        },
-        body: wavBuffer,
-      });
-    }
 
     if (!uploadResponse.ok) {
       const errorText = await uploadResponse.text().catch(() => "");
