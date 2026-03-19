@@ -80,7 +80,7 @@ export function TenantTable({ tenants }: { tenants: TenantRow[] }) {
               {tenant.license?.validUntil ? format(new Date(tenant.license.validUntil), "MMM d, yyyy") : "-"}
             </TableCell>
             <TableCell className="text-right">
-              <Link href={tenant.isOffline ? `/dashboard/offline-${tenant.id}` : `/dashboard/${tenant.id}`}>
+              <Link href={tenant.isOffline ? `/dashboard/offline/${tenant.id}` : `/dashboard/${tenant.id}`}>
                 <Button variant="ghost" size="sm">
                   <Eye className="mr-1 h-4 w-4" />
                   View
