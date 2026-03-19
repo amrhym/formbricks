@@ -4,6 +4,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { apiClient } from "@/lib/api-client";
 import { getOfflineOrgs } from "@/lib/offline-store";
 
+export const dynamic = "force-dynamic";
 export const metadata = { title: "Dashboard" };
 
 export default async function DashboardPage() {

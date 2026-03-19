@@ -8,6 +8,8 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { getOfflineOrg } from "@/lib/offline-store";
 import { OfflineTenantActions } from "./tenant-actions";
 
+export const dynamic = "force-dynamic";
+
 export default async function OfflineTenantDetailPage({ params }: { params: Promise<{ orgId: string }> }) {
   const { orgId } = await params;
 
