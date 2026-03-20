@@ -97,11 +97,17 @@ export async function syncAudioPromptsToGenesys(
 
   // Save updated mappings back to the integration config
   try {
+    // Clean mappings — only keep valid fields, strip any corrupt data
+    const cleanMappings = updatedMappings.map((m) => ({
+      elementId: m.elementId,
+      promptId: m.promptId,
+      promptName: m.promptName,
+    }));
     await createOrUpdateIntegration(environmentId, {
       type: "genesysCloud",
       config: {
         key: credentials,
-        data: updatedMappings,
+        data: cleanMappings,
       },
     });
   } catch (error) {
