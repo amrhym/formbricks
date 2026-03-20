@@ -26,6 +26,7 @@ import { Button } from "@/modules/ui/components/button";
 import { Input } from "@/modules/ui/components/input";
 import { submitForReviewAction, updateSurveyAction, updateSurveyDraftAction } from "../actions";
 import { isSurveyValid } from "../lib/validation";
+import { GenesysIvrInfo } from "./genesys-ivr-info";
 import { GenesysSyncButton } from "./genesys-sync-button";
 
 interface SurveyMenuBarProps {
@@ -558,6 +559,22 @@ export const SurveyMenuBar = ({
         }}
         onConfirm={handleSaveAndGoBack}
       />
+      {isVoiceChannel && isGenesysConnected && (
+        <GenesysIvrInfo
+          surveyId={localSurvey.id}
+          environmentId={environmentId}
+          elements={localSurvey.blocks
+            .flatMap((b: any) => b.elements || [])
+            .filter((el: any) => el.audioUrl)
+            .map((el: any) => ({
+              id: el.id,
+              headline:
+                typeof el.headline === "string"
+                  ? el.headline
+                  : el.headline?.default || el.headline?.en || el.id,
+            }))}
+        />
+      )}
     </div>
   );
 };
