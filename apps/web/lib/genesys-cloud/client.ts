@@ -130,30 +130,17 @@ export async function uploadPromptResource(
   const uploadUri = resource.uploadUri;
 
   if (uploadUri) {
-    // Genesys upload endpoint requires POST with multipart/form-data
-    const boundary = "----HiveCFMUpload" + Date.now();
-    const fileName = `prompt_${promptId}.wav`;
-
-    // Build multipart body manually since FormData isn't available in all Node runtimes
-    const header = `--${boundary}\r\nContent-Disposition: form-data; name="file"; filename="${fileName}"\r\nContent-Type: audio/wav\r\n\r\n`;
-    const footer = `\r\n--${boundary}--\r\n`;
-
-    const headerBytes = new TextEncoder().encode(header);
-    const footerBytes = new TextEncoder().encode(footer);
-    const wavBytes = new Uint8Array(wavBuffer);
-
-    const body = new Uint8Array(headerBytes.length + wavBytes.length + footerBytes.length);
-    body.set(headerBytes, 0);
-    body.set(wavBytes, headerBytes.length);
-    body.set(footerBytes, headerBytes.length + wavBytes.length);
+    // Use native FormData (available in Node 18+) for proper multipart upload
+    const formData = new FormData();
+    const blob = new Blob([wavBuffer], { type: "audio/wav" });
+    formData.append("file", blob, `prompt_${promptId}.wav`);
 
     const uploadResponse = await fetch(uploadUri, {
       method: "POST",
       headers: {
-        "Content-Type": `multipart/form-data; boundary=${boundary}`,
         Authorization: `Bearer ${token}`,
       },
-      body: body,
+      body: formData,
     });
 
     if (!uploadResponse.ok) {
