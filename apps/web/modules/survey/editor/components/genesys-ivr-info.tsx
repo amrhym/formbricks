@@ -1,6 +1,6 @@
 "use client";
 
-import { CheckCircleIcon, CopyIcon, InfoIcon } from "lucide-react";
+import { CheckCircleIcon, CopyIcon, DownloadIcon, InfoIcon } from "lucide-react";
 import { useCallback, useEffect, useState } from "react";
 import toast from "react-hot-toast";
 
@@ -240,6 +240,30 @@ curl -X POST "${ivrResponseUrl}" \\
           </div>
         </div>
 
+        <div>
+          <p className="mb-2 text-xs font-medium text-slate-500">Genesys Data Actions (import in Genesys)</p>
+          <div className="flex flex-wrap gap-2">
+            <button
+              onClick={() => downloadDataAction("HiveCFM_GetSurveyQuestions", generateGetSurveyAction())}
+              className="flex items-center gap-1 rounded border border-slate-200 bg-white px-2 py-1 text-xs text-slate-600 hover:bg-slate-50">
+              <DownloadIcon className="h-3 w-3" />
+              GetSurveyQuestions.json
+            </button>
+            <button
+              onClick={() => downloadDataAction("HiveCFM_GetPromptNames", generateGetPromptsAction())}
+              className="flex items-center gap-1 rounded border border-slate-200 bg-white px-2 py-1 text-xs text-slate-600 hover:bg-slate-50">
+              <DownloadIcon className="h-3 w-3" />
+              GetPromptNames.json
+            </button>
+            <button
+              onClick={() => downloadDataAction("HiveCFM_SubmitAnswer", generateSubmitAnswerAction())}
+              className="flex items-center gap-1 rounded border border-slate-200 bg-white px-2 py-1 text-xs text-slate-600 hover:bg-slate-50">
+              <DownloadIcon className="h-3 w-3" />
+              SubmitAnswer.json
+            </button>
+          </div>
+        </div>
+
         <p className="text-xs text-slate-400">
           Replace <code className="rounded bg-slate-200 px-1">YOUR_API_KEY</code> with your actual API key
           from Settings &gt; API Keys.
@@ -247,4 +271,170 @@ curl -X POST "${ivrResponseUrl}" \\
       </div>
     </div>
   );
+
+  function downloadDataAction(name: string, json: object) {
+    const blob = new Blob([JSON.stringify(json, null, 2)], { type: "application/json" });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = `${name}.json`;
+    a.click();
+    URL.revokeObjectURL(url);
+    toast.success(`Downloaded ${name}.json`);
+  }
+
+  function generateGetSurveyAction() {
+    return {
+      name: "HiveCFM_GetSurveyQuestions",
+      integrationType: "custom-rest-actions",
+      actionType: "custom",
+      config: {
+        request: {
+          requestUrlTemplate: `${baseUrl}/api/v1/client/${environmentId}/ivr/\${input.surveyId}`,
+          requestType: "GET",
+          headers: { "x-Api-Key": "YOUR_API_KEY" },
+          requestTemplate: "${input.rawRequest}",
+        },
+        response: {
+          translationMap: {
+            totalQuestions: "$.data.survey.totalQuestions",
+            surveyName: "$.data.survey.name",
+            questions: "$.data.questions",
+          },
+          translationMapDefaults: { totalQuestions: "0", surveyName: '""', questions: "[]" },
+          successTemplate:
+            '{ "totalQuestions": ${totalQuestions}, "surveyName": ${surveyName}, "questions": ${questions} }',
+        },
+      },
+      contract: {
+        input: {
+          inputSchema: {
+            title: "Input",
+            type: "object",
+            properties: { surveyId: { type: "string" } },
+            additionalProperties: true,
+          },
+        },
+        output: {
+          successSchema: {
+            title: "Output",
+            type: "object",
+            properties: {
+              totalQuestions: { type: "integer" },
+              surveyName: { type: "string" },
+              questions: { type: "array", items: { type: "object" } },
+            },
+            additionalProperties: true,
+          },
+        },
+      },
+      secure: false,
+    };
+  }
+
+  function generateGetPromptsAction() {
+    return {
+      name: "HiveCFM_GetPromptNames",
+      integrationType: "custom-rest-actions",
+      actionType: "custom",
+      config: {
+        request: {
+          requestUrlTemplate: `${baseUrl}/api/v1/client/${environmentId}/ivr/\${input.surveyId}/prompts`,
+          requestType: "GET",
+          headers: { "x-Api-Key": "YOUR_API_KEY" },
+          requestTemplate: "${input.rawRequest}",
+        },
+        response: {
+          translationMap: {
+            surveyId: "$.data.surveyId",
+            surveyName: "$.data.surveyName",
+            prompts: "$.data.prompts",
+          },
+          translationMapDefaults: { surveyId: '""', surveyName: '""', prompts: "{}" },
+          successTemplate: '{ "surveyId": ${surveyId}, "surveyName": ${surveyName}, "prompts": ${prompts} }',
+        },
+      },
+      contract: {
+        input: {
+          inputSchema: {
+            title: "Input",
+            type: "object",
+            properties: { surveyId: { type: "string" } },
+            additionalProperties: true,
+          },
+        },
+        output: {
+          successSchema: {
+            title: "Output",
+            type: "object",
+            properties: {
+              surveyId: { type: "string" },
+              surveyName: { type: "string" },
+              prompts: { type: "object" },
+            },
+            additionalProperties: true,
+          },
+        },
+      },
+      secure: false,
+    };
+  }
+
+  function generateSubmitAnswerAction() {
+    return {
+      name: "HiveCFM_SubmitAnswer",
+      integrationType: "custom-rest-actions",
+      actionType: "custom",
+      config: {
+        request: {
+          requestUrlTemplate: `${baseUrl}/api/v1/client/${environmentId}/ivr/\${input.surveyId}/responses`,
+          requestType: "POST",
+          headers: { "x-Api-Key": "YOUR_API_KEY" },
+          requestTemplate:
+            '{ "callId": "${input.callId}", "callerNumber": "${input.callerNumber}", "finished": ${input.finished}, "answers": { "${input.questionId}": "${input.answerValue}" } }',
+        },
+        response: {
+          translationMap: {
+            responseId: "$.data.responseId",
+            status: "$.data.status",
+            answersCount: "$.data.answersCount",
+          },
+          translationMapDefaults: { responseId: '""', status: '""', answersCount: "0" },
+          successTemplate:
+            '{ "responseId": ${responseId}, "status": ${status}, "answersCount": ${answersCount} }',
+        },
+      },
+      contract: {
+        input: {
+          inputSchema: {
+            title: "Input",
+            type: "object",
+            required: ["surveyId", "callId", "questionId", "answerValue", "finished"],
+            properties: {
+              surveyId: { type: "string" },
+              callId: { type: "string" },
+              callerNumber: { type: "string" },
+              questionId: { type: "string" },
+              answerValue: { type: "string" },
+              finished: { type: "boolean" },
+            },
+            additionalProperties: true,
+          },
+        },
+        output: {
+          successSchema: {
+            title: "Output",
+            type: "object",
+            properties: {
+              responseId: { type: "string" },
+              status: { type: "string" },
+              answersCount: { type: "integer" },
+            },
+            additionalProperties: true,
+          },
+        },
+      },
+      secure: false,
+    };
+  }
 };
