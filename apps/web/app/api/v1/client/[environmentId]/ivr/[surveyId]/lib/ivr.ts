@@ -36,6 +36,7 @@ export interface IvrQuestion {
   questionText: string;
   subheader: string | null;
   audioUrl: string | null;
+  genesysPromptName: string | null;
   type: string;
   required: boolean;
   inputConfig: IvrInputConfig;
@@ -298,6 +299,9 @@ export const linearizeSurveyForIvr = (
         subheader: getDefaultLanguageText(element.subheader, hiddenFields) || null,
         audioUrl: element.audioUrl
           ? buildMediaUrl(baseUrl, survey.environmentId, survey.id, element.id)
+          : null,
+        genesysPromptName: element.audioUrl
+          ? `hivecfm_${survey.id}_${element.id}`.replace(/[^a-zA-Z0-9_]/g, "_")
           : null,
         type: element.type,
         required: element.required,
