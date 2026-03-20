@@ -82,7 +82,7 @@ export const POST = withV1ApiWrapper({
       };
     }
 
-    const { callId, answers, finished, language, hiddenFields, meta } = inputValidation.data;
+    const { callId, callerNumber, answers, finished, language, hiddenFields, meta } = inputValidation.data;
 
     const survey = await getSurvey(surveyId);
     if (!survey) {
@@ -204,6 +204,7 @@ export const POST = withV1ApiWrapper({
         language: language || undefined,
         meta: {
           source: meta?.source || "ivr",
+          ...(callerNumber && { callerNumber }),
           userAgent: {
             browser: "IVR",
             device: "phone",
