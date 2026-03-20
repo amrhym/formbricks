@@ -24,6 +24,7 @@ export const GenesysIvrInfo = ({ surveyId, environmentId, elements }: GenesysIvr
   const ivrSurveyUrl = `${baseUrl}/api/v1/client/${environmentId}/ivr/${surveyId}`;
   const ivrResponseUrl = `${baseUrl}/api/v1/client/${environmentId}/ivr/${surveyId}/responses`;
   const ivrMediaUrlPattern = `${baseUrl}/api/v1/client/${environmentId}/ivr/${surveyId}/media/{questionId}`;
+  const ivrPromptsUrl = `${baseUrl}/api/v1/client/${environmentId}/ivr/${surveyId}/prompts`;
 
   const loadMappings = useCallback(async () => {
     try {
@@ -98,6 +99,18 @@ export const GenesysIvrInfo = ({ surveyId, environmentId, elements }: GenesysIvr
               {ivrResponseUrl}
             </code>
             <button onClick={() => copy(ivrResponseUrl)} className="p-1 text-slate-400 hover:text-slate-600">
+              <CopyIcon className="h-3.5 w-3.5" />
+            </button>
+          </div>
+        </div>
+
+        <div>
+          <p className="mb-1 text-xs font-medium text-slate-500">Get Genesys Prompt Names (GET)</p>
+          <div className="flex items-center gap-2">
+            <code className="flex-1 truncate rounded border border-slate-200 bg-white px-2 py-1 text-xs text-slate-700">
+              {ivrPromptsUrl}
+            </code>
+            <button onClick={() => copy(ivrPromptsUrl)} className="p-1 text-slate-400 hover:text-slate-600">
               <CopyIcon className="h-3.5 w-3.5" />
             </button>
           </div>
