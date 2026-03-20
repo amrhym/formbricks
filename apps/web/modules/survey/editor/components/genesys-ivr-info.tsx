@@ -3,7 +3,6 @@
 import { CheckCircleIcon, CopyIcon, InfoIcon } from "lucide-react";
 import { useCallback, useEffect, useState } from "react";
 import toast from "react-hot-toast";
-import { Button } from "@/modules/ui/components/button";
 
 interface PromptMapping {
   elementId: string;
