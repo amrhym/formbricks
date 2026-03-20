@@ -130,13 +130,30 @@ export async function uploadPromptResource(
   const uploadUri = resource.uploadUri;
 
   if (uploadUri) {
-    // Upload URI is a pre-signed S3 URL — use PUT with raw binary, no auth header
+    // Genesys upload endpoint requires POST with multipart/form-data
+    const boundary = "----HiveCFMUpload" + Date.now();
+    const fileName = `prompt_${promptId}.wav`;
+
+    // Build multipart body manually since FormData isn't available in all Node runtimes
+    const header = `--${boundary}\r\nContent-Disposition: form-data; name="file"; filename="${fileName}"\r\nContent-Type: audio/wav\r\n\r\n`;
+    const footer = `\r\n--${boundary}--\r\n`;
+
+    const headerBytes = new TextEncoder().encode(header);
+    const footerBytes = new TextEncoder().encode(footer);
+    const wavBytes = new Uint8Array(wavBuffer);
+
+    const body = new Uint8Array(headerBytes.length + wavBytes.length + footerBytes.length);
+    body.set(headerBytes, 0);
+    body.set(wavBytes, headerBytes.length);
+    body.set(footerBytes, headerBytes.length + wavBytes.length);
+
     const uploadResponse = await fetch(uploadUri, {
-      method: "PUT",
+      method: "POST",
       headers: {
-        "Content-Type": "audio/wav",
+        "Content-Type": `multipart/form-data; boundary=${boundary}`,
+        Authorization: `Bearer ${token}`,
       },
-      body: wavBuffer,
+      body: body,
     });
 
     if (!uploadResponse.ok) {
