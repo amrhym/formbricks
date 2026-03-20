@@ -102,11 +102,14 @@ export const POST = withV1ApiWrapper({
     }
 
     // Map IVR answers to standard response data format
-    // IVR answers are { elementId: numericValue | "dtmfKey" }
-    // Standard response data is { elementId: string | number | string[] }
+    // Convert numeric string values to numbers (rating/NPS questions expect numbers)
     const data: Record<string, string | number> = {};
     for (const [elementId, value] of Object.entries(answers)) {
-      data[elementId] = value;
+      if (typeof value === "string" && /^\d+$/.test(value)) {
+        data[elementId] = parseInt(value, 10);
+      } else {
+        data[elementId] = value;
+      }
     }
 
     // Include hidden fields in response data (same as link surveys)
