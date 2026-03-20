@@ -1,9 +1,11 @@
 import { NextRequest } from "next/server";
 import { z } from "zod";
+import { prisma } from "@hivecfm/database";
 import { logger } from "@hivecfm/logger";
 import { ZEnvironmentId } from "@hivecfm/types/environment";
 import { InvalidInputError } from "@hivecfm/types/errors";
 import { TResponseInput } from "@hivecfm/types/responses";
+import { updateResponseWithQuotaEvaluation } from "@/app/api/v1/client/[environmentId]/responses/[responseId]/lib/response";
 import { createResponseWithQuotaEvaluation } from "@/app/api/v1/client/[environmentId]/responses/lib/response";
 import { responses } from "@/app/lib/api/response";
 import { transformErrorToDetails } from "@/app/lib/api/validator";
@@ -137,26 +139,80 @@ export const POST = withV1ApiWrapper({
       }
     }
 
-    const responseInput: TResponseInput = {
-      environmentId,
-      surveyId,
-      finished,
-      data,
-      singleUseId: callId,
-      language: language || undefined,
-      meta: {
-        source: meta?.source || "ivr",
-        userAgent: {
-          browser: "IVR",
-          device: "phone",
-          os: "telephony",
-        },
-      },
-    };
-
     try {
-      const response = await createResponseWithQuotaEvaluation(responseInput);
+      // Look up existing response by callId (singleUseId) to support question-by-question submission
+      const existingResponse = await prisma.response.findFirst({
+        where: { surveyId, singleUseId: callId },
+        select: { id: true, data: true, finished: true },
+      });
 
+      if (existingResponse) {
+        // Update existing response — merge new answers into existing data
+        if (existingResponse.finished) {
+          return {
+            response: responses.badRequestResponse(
+              "Response already finished. Cannot update a completed response.",
+              { responseId: existingResponse.id },
+              true
+            ),
+          };
+        }
+
+        const mergedData = { ...(existingResponse.data as Record<string, any>), ...data };
+        const updateResult = await updateResponseWithQuotaEvaluation(existingResponse.id, {
+          data: mergedData,
+          finished,
+        });
+
+        const { quotaFull, ...responseData } = updateResult;
+
+        sendToPipeline({
+          event: "responseUpdated",
+          environmentId: survey.environmentId,
+          surveyId: responseData.surveyId,
+          response: responseData,
+        });
+
+        if (finished) {
+          sendToPipeline({
+            event: "responseFinished",
+            environmentId: survey.environmentId,
+            surveyId: responseData.surveyId,
+            response: responseData,
+          });
+        }
+
+        return {
+          response: responses.successResponse(
+            {
+              responseId: responseData.id,
+              status: "updated",
+              answersCount: Object.keys(mergedData).length,
+            },
+            true
+          ),
+        };
+      }
+
+      // Create new response
+      const responseInput: TResponseInput = {
+        environmentId,
+        surveyId,
+        finished,
+        data,
+        singleUseId: callId,
+        language: language || undefined,
+        meta: {
+          source: meta?.source || "ivr",
+          userAgent: {
+            browser: "IVR",
+            device: "phone",
+            os: "telephony",
+          },
+        },
+      };
+
+      const response = await createResponseWithQuotaEvaluation(responseInput);
       const { quotaFull, ...responseData } = response;
 
       sendToPipeline({
@@ -180,6 +236,7 @@ export const POST = withV1ApiWrapper({
           {
             responseId: responseData.id,
             status: "created",
+            answersCount: Object.keys(data).length,
           },
           true
         ),
@@ -190,7 +247,7 @@ export const POST = withV1ApiWrapper({
           response: responses.badRequestResponse(error.message),
         };
       }
-      logger.error({ error, surveyId, callId }, "Error creating IVR response");
+      logger.error({ error, surveyId, callId }, "Error creating/updating IVR response");
       return {
         response: responses.internalServerErrorResponse(error.message),
       };
