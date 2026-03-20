@@ -112,6 +112,12 @@ export const POST = withV1ApiWrapper({
       }
     }
 
+    // Store callerNumber and callId as hidden fields so they appear in reports
+    if (callerNumber) {
+      data["callerNumber"] = callerNumber;
+    }
+    data["callId"] = callId;
+
     // Include hidden fields in response data (same as link surveys)
     if (hiddenFields) {
       for (const [key, value] of Object.entries(hiddenFields)) {
