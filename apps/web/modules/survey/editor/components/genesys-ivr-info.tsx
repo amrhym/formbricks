@@ -153,9 +153,76 @@ export const GenesysIvrInfo = ({ surveyId, environmentId, elements }: GenesysIvr
           </div>
         )}
 
+        <div>
+          <p className="mb-2 text-xs font-medium text-slate-500">cURL Examples</p>
+          <div className="space-y-2">
+            <div>
+              <p className="mb-1 text-xs text-slate-400">Get Survey Structure</p>
+              <div className="flex items-start gap-2">
+                <pre className="flex-1 overflow-x-auto rounded border border-slate-200 bg-white p-2 text-xs text-slate-600">
+                  {`curl -X GET "${ivrSurveyUrl}" \\
+  -H "x-Api-Key: YOUR_API_KEY" \\
+  -H "Content-Type: application/json"`}
+                </pre>
+                <button
+                  onClick={() =>
+                    copy(
+                      `curl -X GET "${ivrSurveyUrl}" \\\n  -H "x-Api-Key: YOUR_API_KEY" \\\n  -H "Content-Type: application/json"`
+                    )
+                  }
+                  className="shrink-0 p-1 text-slate-400 hover:text-slate-600">
+                  <CopyIcon className="h-3.5 w-3.5" />
+                </button>
+              </div>
+            </div>
+            <div>
+              <p className="mb-1 text-xs text-slate-400">Get Genesys Prompt Names</p>
+              <div className="flex items-start gap-2">
+                <pre className="flex-1 overflow-x-auto rounded border border-slate-200 bg-white p-2 text-xs text-slate-600">
+                  {`curl -X GET "${ivrPromptsUrl}" \\
+  -H "x-Api-Key: YOUR_API_KEY"`}
+                </pre>
+                <button
+                  onClick={() => copy(`curl -X GET "${ivrPromptsUrl}" \\\n  -H "x-Api-Key: YOUR_API_KEY"`)}
+                  className="shrink-0 p-1 text-slate-400 hover:text-slate-600">
+                  <CopyIcon className="h-3.5 w-3.5" />
+                </button>
+              </div>
+            </div>
+            <div>
+              <p className="mb-1 text-xs text-slate-400">Submit IVR Response</p>
+              <div className="flex items-start gap-2">
+                <pre className="flex-1 overflow-x-auto rounded border border-slate-200 bg-white p-2 text-xs text-slate-600">
+                  {`curl -X POST "${ivrResponseUrl}" \\
+  -H "x-Api-Key: YOUR_API_KEY" \\
+  -H "Content-Type: application/json" \\
+  -d '{
+    "callId": "unique-call-id",
+    "callerNumber": "+1234567890",
+    "finished": true,
+    "answers": {
+      "questionId1": "5",
+      "questionId2": "3"
+    }
+  }'`}
+                </pre>
+                <button
+                  onClick={() =>
+                    copy(
+                      `curl -X POST "${ivrResponseUrl}" \\\n  -H "x-Api-Key: YOUR_API_KEY" \\\n  -H "Content-Type: application/json" \\\n  -d '{\n    "callId": "unique-call-id",\n    "callerNumber": "+1234567890",\n    "finished": true,\n    "answers": {\n      "questionId1": "5",\n      "questionId2": "3"\n    }\n  }'`
+                    )
+                  }
+                  className="shrink-0 p-1 text-slate-400 hover:text-slate-600">
+                  <CopyIcon className="h-3.5 w-3.5" />
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+
         <p className="text-xs text-slate-400">
-          Use your API key in the <code className="rounded bg-slate-200 px-1">x-Api-Key</code> header for
-          authentication.
+          Replace <code className="rounded bg-slate-200 px-1">YOUR_API_KEY</code> with your actual API key
+          from Settings &gt; API Keys.
         </p>
       </div>
     </div>
