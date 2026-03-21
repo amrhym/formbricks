@@ -54,7 +54,6 @@ export async function syncAudioPromptsToGenesys(
 
   for (const element of elementsWithAudio) {
     const promptName = `hivecfm_${survey.id}_${element.id}`.replace(/[^a-zA-Z0-9_]/g, "_");
-    const existingMapping = existingData.find((m) => m.elementId === element.id);
 
     try {
       let promptId: string;
