@@ -48,8 +48,10 @@ export interface IvrSurveyConfig {
   totalQuestions: number;
   welcomeMessage: string | null;
   welcomeAudioUrl: string | null;
+  welcomeGenesysPromptName: string | null;
   thankYouMessage: string | null;
   thankYouAudioUrl: string | null;
+  thankYouGenesysPromptName: string | null;
   errorMessage: string | null;
   inputTimeout: number;
   maxRetries: number;
