@@ -112,7 +112,9 @@ export const EditWelcomeCard = ({
         <Collapsible.CollapsibleContent className={`flex flex-col px-4 ${open && "pb-6"}`}>
           <form>
             <div className="mt-2">
-              <Label htmlFor="companyLogo">{t("environments.surveys.edit.company_logo")}</Label>
+              <Label htmlFor="companyLogo">
+                {isVoiceChannel ? "Welcome Audio" : t("environments.surveys.edit.company_logo")}
+              </Label>
             </div>
             <div className="mt-3 flex w-full items-center justify-center">
               <FileInput
@@ -167,46 +169,50 @@ export const EditWelcomeCard = ({
               />
             </div>
 
-            <div className="mt-3 flex justify-between gap-8">
-              <div className="flex w-full space-x-2">
-                <div className="w-full">
-                  <ElementFormInput
-                    id="buttonLabel"
-                    value={localSurvey.welcomeCard.buttonLabel}
-                    localSurvey={localSurvey}
-                    elementIdx={-1}
-                    maxLength={48}
-                    placeholder={t("common.next")}
-                    isInvalid={isInvalid}
-                    updateSurvey={updateSurvey}
-                    selectedLanguageCode={selectedLanguageCode}
-                    setSelectedLanguageCode={setSelectedLanguageCode}
-                    label={t("environments.surveys.edit.next_button_label")}
-                    locale={locale}
-                    isStorageConfigured={isStorageConfigured}
-                    isExternalUrlsAllowed={isExternalUrlsAllowed}
+            {!isVoiceChannel && (
+              <div className="mt-3 flex justify-between gap-8">
+                <div className="flex w-full space-x-2">
+                  <div className="w-full">
+                    <ElementFormInput
+                      id="buttonLabel"
+                      value={localSurvey.welcomeCard.buttonLabel}
+                      localSurvey={localSurvey}
+                      elementIdx={-1}
+                      maxLength={48}
+                      placeholder={t("common.next")}
+                      isInvalid={isInvalid}
+                      updateSurvey={updateSurvey}
+                      selectedLanguageCode={selectedLanguageCode}
+                      setSelectedLanguageCode={setSelectedLanguageCode}
+                      label={t("environments.surveys.edit.next_button_label")}
+                      locale={locale}
+                      isStorageConfigured={isStorageConfigured}
+                      isExternalUrlsAllowed={isExternalUrlsAllowed}
+                    />
+                  </div>
+                </div>
+              </div>
+            )}
+            {!isVoiceChannel && (
+              <div className="mt-8 flex items-center">
+                <div className="mr-2">
+                  <Switch
+                    id="timeToFinish"
+                    name="timeToFinish"
+                    checked={localSurvey?.welcomeCard?.timeToFinish}
+                    onCheckedChange={() =>
+                      updateSurvey({ timeToFinish: !localSurvey.welcomeCard.timeToFinish })
+                    }
                   />
                 </div>
-              </div>
-            </div>
-            <div className="mt-8 flex items-center">
-              <div className="mr-2">
-                <Switch
-                  id="timeToFinish"
-                  name="timeToFinish"
-                  checked={localSurvey?.welcomeCard?.timeToFinish}
-                  onCheckedChange={() =>
-                    updateSurvey({ timeToFinish: !localSurvey.welcomeCard.timeToFinish })
-                  }
-                />
-              </div>
-              <div className="flex-column">
-                <Label htmlFor="timeToFinish">{t("common.time_to_finish")}</Label>
-                <div className="text-sm text-slate-500 dark:text-slate-400">
-                  {t("environments.surveys.edit.display_an_estimate_of_completion_time_for_survey")}
+                <div className="flex-column">
+                  <Label htmlFor="timeToFinish">{t("common.time_to_finish")}</Label>
+                  <div className="text-sm text-slate-500 dark:text-slate-400">
+                    {t("environments.surveys.edit.display_an_estimate_of_completion_time_for_survey")}
+                  </div>
                 </div>
               </div>
-            </div>
+            )}
             {localSurvey?.type === "link" && (
               <div className="mt-6 flex items-center">
                 <div className="mr-2">
