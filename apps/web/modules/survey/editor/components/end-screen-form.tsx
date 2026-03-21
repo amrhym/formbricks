@@ -110,118 +110,120 @@ export const EndScreenForm = ({
           </Button>
         )}
       </div>
-      <div className="mt-4">
-        <div className="flex items-center space-x-1">
-          <Switch
-            id="showButton"
-            checked={showEndingCardCTA}
-            onCheckedChange={() => {
-              if (showEndingCardCTA) {
-                updateSurvey({ buttonLabel: undefined, buttonLink: undefined });
-              } else {
-                updateSurvey({
-                  buttonLabel: { default: t("environments.surveys.edit.default_button_label") },
-                  buttonLink: "https://www.yourwebsite.com",
-                });
-              }
-              setshowEndingCardCTA(!showEndingCardCTA);
-            }}
-          />
-          <Label htmlFor="showButton" className="cursor-pointer">
-            <div className="ml-2">
-              <h3 className="text-sm font-semibold text-slate-700">
-                {t("environments.surveys.edit.show_button")}
-              </h3>
-              <p className="text-xs font-normal text-slate-500">
-                {t("environments.surveys.edit.send_your_respondents_to_a_page_of_your_choice")}
-              </p>
-            </div>
-          </Label>
-        </div>
-        {showEndingCardCTA && (
-          <div className="border-1 mt-4 space-y-4 rounded-md border bg-slate-100 p-4 pt-2">
-            <div className="space-y-2">
-              <ElementFormInput
-                id="buttonLabel"
-                label={t("environments.surveys.edit.button_label")}
-                placeholder={t("environments.surveys.edit.default_button_label")}
-                className="rounded-md"
-                value={endingCard.buttonLabel}
-                localSurvey={localSurvey}
-                elementIdx={questions.length + endingCardIndex}
-                isInvalid={isInvalid}
-                updateSurvey={updateSurvey}
-                selectedLanguageCode={selectedLanguageCode}
-                setSelectedLanguageCode={setSelectedLanguageCode}
-                locale={locale}
-                isStorageConfigured={isStorageConfigured}
-              />
-            </div>
-            <div className="space-y-2">
-              <Label>{t("environments.surveys.edit.button_url")}</Label>
-              <div className="rounded-md bg-white">
-                <RecallWrapper
-                  value={endingCard.buttonLink ?? ""}
-                  elementId={endingCard.id}
-                  onChange={(val, recallItems, fallbacks) => {
-                    const updatedValue = {
-                      ...endingCard,
-                      buttonLink:
-                        recallItems && fallbacks ? headlineToRecall(val, recallItems, fallbacks) : val,
-                    };
-
-                    updateSurvey(updatedValue);
-                  }}
-                  onAddFallback={() => {
-                    inputRef.current?.focus();
-                  }}
-                  isRecallAllowed
+      {!isVoiceChannel && (
+        <div className="mt-4">
+          <div className="flex items-center space-x-1">
+            <Switch
+              id="showButton"
+              checked={showEndingCardCTA}
+              onCheckedChange={() => {
+                if (showEndingCardCTA) {
+                  updateSurvey({ buttonLabel: undefined, buttonLink: undefined });
+                } else {
+                  updateSurvey({
+                    buttonLabel: { default: t("environments.surveys.edit.default_button_label") },
+                    buttonLink: "https://www.yourwebsite.com",
+                  });
+                }
+                setshowEndingCardCTA(!showEndingCardCTA);
+              }}
+            />
+            <Label htmlFor="showButton" className="cursor-pointer">
+              <div className="ml-2">
+                <h3 className="text-sm font-semibold text-slate-700">
+                  {t("environments.surveys.edit.show_button")}
+                </h3>
+                <p className="text-xs font-normal text-slate-500">
+                  {t("environments.surveys.edit.send_your_respondents_to_a_page_of_your_choice")}
+                </p>
+              </div>
+            </Label>
+          </div>
+          {showEndingCardCTA && (
+            <div className="border-1 mt-4 space-y-4 rounded-md border bg-slate-100 p-4 pt-2">
+              <div className="space-y-2">
+                <ElementFormInput
+                  id="buttonLabel"
+                  label={t("environments.surveys.edit.button_label")}
+                  placeholder={t("environments.surveys.edit.default_button_label")}
+                  className="rounded-md"
+                  value={endingCard.buttonLabel}
                   localSurvey={localSurvey}
-                  usedLanguageCode={"default"}
-                  render={({ value, onChange, highlightedJSX, children }) => {
-                    return (
-                      <div className="group relative">
-                        {/* The highlight container is absolutely positioned behind the input */}
-                        <div
-                          className={`no-scrollbar absolute top-0 z-0 mt-0.5 flex h-10 w-full overflow-scroll whitespace-nowrap px-3 py-2 text-center text-sm text-transparent`}
-                          dir="auto"
-                          key={highlightedJSX.toString()}>
-                          {highlightedJSX}
-                        </div>
-                        <Input
-                          ref={inputRef}
-                          id="buttonLink"
-                          name="buttonLink"
-                          className={`relative text-black caret-black ${!isExternalUrlsAllowed ? "cursor-not-allowed opacity-50" : ""}`}
-                          placeholder="https://example.com"
-                          value={
-                            recallToHeadline(
-                              {
-                                [selectedLanguageCode]: value,
-                              },
-                              localSurvey,
-                              false,
-                              "default"
-                            )[selectedLanguageCode]
-                          }
-                          onChange={(e) => isExternalUrlsAllowed && onChange(e.target.value)}
-                          disabled={!isExternalUrlsAllowed}
-                        />
-                        {children}
-                      </div>
-                    );
-                  }}
+                  elementIdx={questions.length + endingCardIndex}
+                  isInvalid={isInvalid}
+                  updateSurvey={updateSurvey}
+                  selectedLanguageCode={selectedLanguageCode}
+                  setSelectedLanguageCode={setSelectedLanguageCode}
+                  locale={locale}
+                  isStorageConfigured={isStorageConfigured}
                 />
               </div>
-              {!isExternalUrlsAllowed && (
-                <p className="text-xs text-slate-500">
-                  {t("environments.surveys.edit.external_urls_paywall_tooltip")}
-                </p>
-              )}
+              <div className="space-y-2">
+                <Label>{t("environments.surveys.edit.button_url")}</Label>
+                <div className="rounded-md bg-white">
+                  <RecallWrapper
+                    value={endingCard.buttonLink ?? ""}
+                    elementId={endingCard.id}
+                    onChange={(val, recallItems, fallbacks) => {
+                      const updatedValue = {
+                        ...endingCard,
+                        buttonLink:
+                          recallItems && fallbacks ? headlineToRecall(val, recallItems, fallbacks) : val,
+                      };
+
+                      updateSurvey(updatedValue);
+                    }}
+                    onAddFallback={() => {
+                      inputRef.current?.focus();
+                    }}
+                    isRecallAllowed
+                    localSurvey={localSurvey}
+                    usedLanguageCode={"default"}
+                    render={({ value, onChange, highlightedJSX, children }) => {
+                      return (
+                        <div className="group relative">
+                          {/* The highlight container is absolutely positioned behind the input */}
+                          <div
+                            className={`no-scrollbar absolute top-0 z-0 mt-0.5 flex h-10 w-full overflow-scroll whitespace-nowrap px-3 py-2 text-center text-sm text-transparent`}
+                            dir="auto"
+                            key={highlightedJSX.toString()}>
+                            {highlightedJSX}
+                          </div>
+                          <Input
+                            ref={inputRef}
+                            id="buttonLink"
+                            name="buttonLink"
+                            className={`relative text-black caret-black ${!isExternalUrlsAllowed ? "cursor-not-allowed opacity-50" : ""}`}
+                            placeholder="https://example.com"
+                            value={
+                              recallToHeadline(
+                                {
+                                  [selectedLanguageCode]: value,
+                                },
+                                localSurvey,
+                                false,
+                                "default"
+                              )[selectedLanguageCode]
+                            }
+                            onChange={(e) => isExternalUrlsAllowed && onChange(e.target.value)}
+                            disabled={!isExternalUrlsAllowed}
+                          />
+                          {children}
+                        </div>
+                      );
+                    }}
+                  />
+                </div>
+                {!isExternalUrlsAllowed && (
+                  <p className="text-xs text-slate-500">
+                    {t("environments.surveys.edit.external_urls_paywall_tooltip")}
+                  </p>
+                )}
+              </div>
             </div>
-          </div>
-        )}
-      </div>
+          )}
+        </div>
+      )}
     </form>
   );
 };
