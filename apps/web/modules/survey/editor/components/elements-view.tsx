@@ -815,6 +815,7 @@ export const ElementsView = ({
             locale={locale}
             isStorageConfigured={isStorageConfigured}
             isExternalUrlsAllowed={isExternalUrlsAllowed}
+            isVoiceChannel={isVoiceChannel}
           />
         </div>
       )}
@@ -891,6 +892,7 @@ export const ElementsView = ({
                   isStorageConfigured={isStorageConfigured}
                   quotas={quotas}
                   isExternalUrlsAllowed={isExternalUrlsAllowed}
+                  isVoiceChannel={isVoiceChannel}
                 />
               );
             })}

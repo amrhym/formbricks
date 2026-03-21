@@ -23,6 +23,7 @@ interface EditWelcomeCardProps {
   locale: TUserLocale;
   isStorageConfigured: boolean;
   isExternalUrlsAllowed?: boolean;
+  isVoiceChannel?: boolean;
 }
 
 export const EditWelcomeCard = ({
@@ -36,6 +37,7 @@ export const EditWelcomeCard = ({
   locale,
   isStorageConfigured = true,
   isExternalUrlsAllowed,
+  isVoiceChannel,
 }: EditWelcomeCardProps) => {
   const { t } = useTranslation();
 
@@ -67,7 +69,7 @@ export const EditWelcomeCard = ({
       <div
         className={cn(
           open ? "bg-slate-50" : "",
-          "flex w-10 items-center justify-center rounded-l-lg border-t border-b border-l group-aria-expanded:rounded-bl-none",
+          "flex w-10 items-center justify-center rounded-l-lg border-b border-l border-t group-aria-expanded:rounded-bl-none",
           isInvalid ? "bg-red-400" : "bg-white group-hover:bg-slate-50"
         )}>
         <Hand className="h-4 w-4" />
@@ -115,12 +117,27 @@ export const EditWelcomeCard = ({
             <div className="mt-3 flex w-full items-center justify-center">
               <FileInput
                 id="welcome-card-image"
-                allowedFileExtensions={["png", "jpeg", "jpg", "webp", "heic"]}
+                allowedFileExtensions={isVoiceChannel ? ["wav"] : ["png", "jpeg", "jpg", "webp", "heic"]}
                 environmentId={environmentId}
-                onFileUpload={(url: string[]) => {
-                  updateSurvey({ fileUrl: url[0] });
+                onFileUpload={(url: string[] | undefined, fileType: "image" | "video" | "audio") => {
+                  if (url) {
+                    if (fileType === "audio") {
+                      updateSurvey({ fileUrl: undefined, audioUrl: url[0] });
+                    } else {
+                      updateSurvey({ fileUrl: url[0], audioUrl: undefined });
+                    }
+                  } else {
+                    if (fileType === "audio") {
+                      updateSurvey({ audioUrl: undefined });
+                    } else {
+                      updateSurvey({ fileUrl: undefined });
+                    }
+                  }
                 }}
-                fileUrl={localSurvey?.welcomeCard?.fileUrl}
+                fileUrl={isVoiceChannel ? undefined : localSurvey?.welcomeCard?.fileUrl}
+                audioUrl={isVoiceChannel ? (localSurvey?.welcomeCard as any)?.audioUrl : undefined}
+                isVideoAllowed={!isVoiceChannel}
+                isAudioAllowed={isVoiceChannel}
                 isStorageConfigured={isStorageConfigured}
               />
             </div>
@@ -138,6 +155,7 @@ export const EditWelcomeCard = ({
                 locale={locale}
                 isStorageConfigured={isStorageConfigured}
                 isExternalUrlsAllowed={isExternalUrlsAllowed}
+                isVoiceChannel={isVoiceChannel}
               />
             </div>
             <div className="mt-3">

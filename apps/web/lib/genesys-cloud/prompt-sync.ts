@@ -11,6 +11,8 @@ interface SurveyForSync {
   id: string;
   name: string;
   elements: SurveyElement[];
+  welcomeAudioUrl?: string;
+  endingAudioUrl?: string;
 }
 
 interface PromptMapping {
@@ -89,6 +91,41 @@ export async function syncAudioPromptsToGenesys(
       synced++;
     } catch (error) {
       const msg = `Failed to sync prompt for element ${element.id}: ${error instanceof Error ? error.message : String(error)}`;
+      console.error(msg, error);
+      errors.push(msg);
+    }
+  }
+
+  // Sync welcome and ending audio if present
+  const specialAudios = [
+    { id: "welcome", audioUrl: survey.welcomeAudioUrl, label: "welcome" },
+    { id: "ending", audioUrl: survey.endingAudioUrl, label: "ending" },
+  ];
+
+  for (const special of specialAudios) {
+    if (!special.audioUrl) continue;
+    const promptName = `hivecfm_${survey.id}_${special.id}`.replace(/[^a-zA-Z0-9_]/g, "_");
+    try {
+      const prompt = await createPrompt(
+        token,
+        credentials.environmentUrl,
+        promptName,
+        `${special.label} audio for survey "${survey.name}"`
+      );
+      const existingIdx = updatedMappings.findIndex((m) => m.elementId === special.id);
+      if (existingIdx >= 0) {
+        updatedMappings[existingIdx] = { elementId: special.id, promptId: prompt.id, promptName };
+      } else {
+        updatedMappings.push({ elementId: special.id, promptId: prompt.id, promptName });
+      }
+
+      const audioResponse = await fetch(special.audioUrl);
+      if (!audioResponse.ok) continue;
+      const audioBuffer = await audioResponse.arrayBuffer();
+      await uploadPromptResource(token, credentials.environmentUrl, prompt.id, audioBuffer);
+      synced++;
+    } catch (error) {
+      const msg = `Failed to sync ${special.label} prompt: ${error instanceof Error ? error.message : String(error)}`;
       console.error(msg, error);
       errors.push(msg);
     }

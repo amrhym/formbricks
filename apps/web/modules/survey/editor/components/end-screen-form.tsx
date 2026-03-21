@@ -26,6 +26,7 @@ interface EndScreenFormProps {
   locale: TUserLocale;
   isStorageConfigured: boolean;
   isExternalUrlsAllowed: boolean;
+  isVoiceChannel?: boolean;
 }
 
 export const EndScreenForm = ({
@@ -39,6 +40,7 @@ export const EndScreenForm = ({
   locale,
   isStorageConfigured,
   isExternalUrlsAllowed,
+  isVoiceChannel,
 }: EndScreenFormProps) => {
   const { t } = useTranslation();
   const inputRef = useRef<HTMLInputElement>(null);
@@ -65,6 +67,7 @@ export const EndScreenForm = ({
         setSelectedLanguageCode={setSelectedLanguageCode}
         locale={locale}
         isStorageConfigured={isStorageConfigured}
+        isVoiceChannel={isVoiceChannel}
         autoFocus={!endingCard.headline?.default || endingCard.headline.default.trim() === ""}
       />
       <div>
@@ -136,7 +139,7 @@ export const EndScreenForm = ({
           </Label>
         </div>
         {showEndingCardCTA && (
-          <div className="mt-4 space-y-4 rounded-md border border-1 bg-slate-100 p-4 pt-2">
+          <div className="border-1 mt-4 space-y-4 rounded-md border bg-slate-100 p-4 pt-2">
             <div className="space-y-2">
               <ElementFormInput
                 id="buttonLabel"
@@ -180,7 +183,7 @@ export const EndScreenForm = ({
                       <div className="group relative">
                         {/* The highlight container is absolutely positioned behind the input */}
                         <div
-                          className={`no-scrollbar absolute top-0 z-0 mt-0.5 flex h-10 w-full overflow-scroll px-3 py-2 text-center text-sm whitespace-nowrap text-transparent`}
+                          className={`no-scrollbar absolute top-0 z-0 mt-0.5 flex h-10 w-full overflow-scroll whitespace-nowrap px-3 py-2 text-center text-sm text-transparent`}
                           dir="auto"
                           key={highlightedJSX.toString()}>
                           {highlightedJSX}

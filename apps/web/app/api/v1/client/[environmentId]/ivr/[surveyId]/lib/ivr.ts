@@ -323,9 +323,21 @@ export const linearizeSurveyForIvr = (
     welcomeMessage: survey.welcomeCard.enabled
       ? getDefaultLanguageText(survey.welcomeCard.headline, hiddenFields) || null
       : null,
-    welcomeAudioUrl: null,
+    welcomeAudioUrl: (survey.welcomeCard as any)?.audioUrl
+      ? buildMediaUrl(baseUrl, survey.environmentId, survey.id, "welcome")
+      : null,
+    welcomeGenesysPromptName: (survey.welcomeCard as any)?.audioUrl
+      ? `hivecfm_${survey.id}_welcome`.replace(/[^a-zA-Z0-9_]/g, "_")
+      : null,
     thankYouMessage: voiceConfig.thankYouMessage || firstEndingMessage,
-    thankYouAudioUrl: null,
+    thankYouAudioUrl:
+      survey.endings.length > 0 && (survey.endings[0] as any)?.audioUrl
+        ? buildMediaUrl(baseUrl, survey.environmentId, survey.id, "ending")
+        : null,
+    thankYouGenesysPromptName:
+      survey.endings.length > 0 && (survey.endings[0] as any)?.audioUrl
+        ? `hivecfm_${survey.id}_ending`.replace(/[^a-zA-Z0-9_]/g, "_")
+        : null,
     errorMessage: voiceConfig.errorMessage || "Invalid input, please try again",
     inputTimeout: voiceConfig.inputTimeout,
     maxRetries: voiceConfig.maxRetries,

@@ -52,10 +52,17 @@ export const syncToGenesysAction = authenticatedActionClient
           audioUrl: el.audioUrl,
         }));
 
+      // Get welcome and ending audio URLs
+      const welcomeAudioUrl = (survey.welcomeCard as any)?.audioUrl || undefined;
+      const endingAudioUrl =
+        survey.endings?.length > 0 ? (survey.endings[0] as any)?.audioUrl || undefined : undefined;
+
       const result = await syncAudioPromptsToGenesys(parsedInput.environmentId, {
         id: survey.id,
         name: survey.name,
         elements,
+        welcomeAudioUrl,
+        endingAudioUrl,
       });
 
       return result;
