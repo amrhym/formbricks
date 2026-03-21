@@ -119,23 +119,15 @@ export const EditWelcomeCard = ({
                 id="welcome-card-image"
                 allowedFileExtensions={isVoiceChannel ? ["wav"] : ["png", "jpeg", "jpg", "webp", "heic"]}
                 environmentId={environmentId}
-                onFileUpload={(url: string[] | undefined, fileType: "image" | "video" | "audio") => {
+                onFileUpload={(url: string[] | undefined) => {
                   if (url) {
-                    if (fileType === "audio") {
-                      updateSurvey({ fileUrl: undefined, audioUrl: url[0] });
-                    } else {
-                      updateSurvey({ fileUrl: url[0], audioUrl: undefined });
-                    }
+                    updateSurvey({ fileUrl: url[0] });
                   } else {
-                    if (fileType === "audio") {
-                      updateSurvey({ audioUrl: undefined });
-                    } else {
-                      updateSurvey({ fileUrl: undefined });
-                    }
+                    updateSurvey({ fileUrl: undefined });
                   }
                 }}
-                fileUrl={isVoiceChannel ? undefined : localSurvey?.welcomeCard?.fileUrl}
-                audioUrl={isVoiceChannel ? (localSurvey?.welcomeCard as any)?.audioUrl : undefined}
+                fileUrl={!isVoiceChannel ? localSurvey?.welcomeCard?.fileUrl : undefined}
+                audioUrl={isVoiceChannel ? localSurvey?.welcomeCard?.fileUrl : undefined}
                 isVideoAllowed={!isVoiceChannel}
                 isAudioAllowed={isVoiceChannel}
                 isStorageConfigured={isStorageConfigured}

@@ -53,9 +53,11 @@ export const syncToGenesysAction = authenticatedActionClient
         }));
 
       // Get welcome and ending audio URLs
-      const welcomeAudioUrl = (survey.welcomeCard as any)?.audioUrl || undefined;
+      const welcomeAudioUrl = survey.welcomeCard?.fileUrl || undefined;
       const endingAudioUrl =
-        survey.endings?.length > 0 ? (survey.endings[0] as any)?.audioUrl || undefined : undefined;
+        survey.endings?.length > 0 && (survey.endings[0] as any)?.type === "endScreen"
+          ? (survey.endings[0] as any)?.imageUrl || undefined
+          : undefined;
 
       const result = await syncAudioPromptsToGenesys(parsedInput.environmentId, {
         id: survey.id,
