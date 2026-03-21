@@ -59,21 +59,21 @@ export async function syncAudioPromptsToGenesys(
     try {
       let promptId: string;
 
-      if (existingMapping) {
-        promptId = existingMapping.promptId;
+      // Always create or find the prompt — handles deleted prompts gracefully
+      const prompt = await createPrompt(
+        token,
+        credentials.environmentUrl,
+        promptName,
+        `Audio prompt for survey "${survey.name}" element ${element.id}`
+      );
+      promptId = prompt.id;
+
+      // Update or add mapping
+      const existingIdx = updatedMappings.findIndex((m) => m.elementId === element.id);
+      if (existingIdx >= 0) {
+        updatedMappings[existingIdx] = { elementId: element.id, promptId, promptName };
       } else {
-        const prompt = await createPrompt(
-          token,
-          credentials.environmentUrl,
-          promptName,
-          `Audio prompt for survey "${survey.name}" element ${element.id}`
-        );
-        promptId = prompt.id;
-        updatedMappings.push({
-          elementId: element.id,
-          promptId,
-          promptName,
-        });
+        updatedMappings.push({ elementId: element.id, promptId, promptName });
       }
 
       // Download audio from the URL and upload to Genesys
