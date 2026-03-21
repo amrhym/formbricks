@@ -129,25 +129,33 @@ export async function uploadPromptResource(
   const resource = await response.json();
   const uploadUri = resource.uploadUri;
 
-  if (uploadUri) {
-    // Use native FormData (available in Node 18+) for proper multipart upload
-    const formData = new FormData();
-    const blob = new Blob([wavBuffer], { type: "audio/wav" });
-    formData.append("file", blob, `prompt_${promptId}.wav`);
-
-    const uploadResponse = await fetch(uploadUri, {
-      method: "POST",
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-      body: formData,
-    });
-
-    if (!uploadResponse.ok) {
-      const errorText = await uploadResponse.text().catch(() => "");
-      throw new Error(
-        `Failed to upload WAV to prompt resource: ${uploadResponse.status} ${errorText}`.trim()
-      );
-    }
+  if (!uploadUri) {
+    console.error("Genesys resource created but no uploadUri returned:", JSON.stringify(resource));
+    throw new Error(
+      `Genesys resource created but no uploadUri returned. Resource: ${JSON.stringify(resource).slice(0, 500)}`
+    );
   }
+
+  // Use native FormData (available in Node 18+) for proper multipart upload
+  const formData = new FormData();
+  const blob = new Blob([wavBuffer], { type: "audio/wav" });
+  formData.append("file", blob, `prompt_${promptId}.wav`);
+
+  const uploadResponse = await fetch(uploadUri, {
+    method: "POST",
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+    body: formData,
+  });
+
+  if (!uploadResponse.ok) {
+    const errorText = await uploadResponse.text().catch(() => "");
+    throw new Error(`Failed to upload WAV to prompt resource: ${uploadResponse.status} ${errorText}`.trim());
+  }
+
+  // Log success for debugging
+  console.log(
+    `Successfully uploaded WAV to Genesys prompt ${promptId}, uploadUri: ${uploadUri.slice(0, 100)}...`
+  );
 }
