@@ -2,6 +2,7 @@
 
 import { BrainCircuitIcon, Loader2, SparklesIcon } from "lucide-react";
 import { useState } from "react";
+import { generateInsightsAction } from "@/modules/ai/actions";
 import { Button } from "@/modules/ui/components/button";
 
 interface AiInsightsPanelProps {
@@ -18,21 +19,12 @@ export const AiInsightsPanel = ({ surveyId }: AiInsightsPanelProps) => {
     setLoading(true);
     setError(null);
     try {
-      const res = await fetch("/api/v1/management/ai/insights", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ surveyId, maxResponses: 100 }),
-      });
-      const data = await res.json();
-      if (!res.ok) {
-        setError(data.message || "Failed to generate insights");
-        return;
-      }
-      if (data.data?.insights) {
-        setInsights(data.data.insights.summary);
-        setResponseCount(data.data.insights.responseCount);
+      const result = await generateInsightsAction(surveyId);
+      if (result) {
+        setInsights(result.summary);
+        setResponseCount(result.responseCount);
       } else {
-        setError(data.data?.message || "No responses to analyze");
+        setError("No responses found to analyze");
       }
     } catch (err: any) {
       setError(err.message || "Failed to generate insights");
@@ -42,7 +34,7 @@ export const AiInsightsPanel = ({ surveyId }: AiInsightsPanelProps) => {
   };
 
   return (
-    <div className="rounded-lg border border-slate-200 bg-white">
+    <div className="mb-4 rounded-lg border border-slate-200 bg-white">
       <div className="flex items-center justify-between border-b border-slate-200 px-4 py-3">
         <div className="flex items-center gap-2">
           <BrainCircuitIcon className="h-5 w-5 text-purple-600" />
@@ -72,31 +64,8 @@ export const AiInsightsPanel = ({ surveyId }: AiInsightsPanelProps) => {
         {insights && (
           <div>
             <p className="mb-3 text-xs text-slate-400">Based on {responseCount} responses</p>
-            <div className="prose prose-sm max-w-none text-slate-700">
-              {insights.split("\n").map((line, i) => {
-                if (line.startsWith("**") && line.endsWith("**")) {
-                  return (
-                    <h4 key={i} className="mb-1 mt-3 text-sm font-semibold text-slate-800">
-                      {line.replace(/\*\*/g, "")}
-                    </h4>
-                  );
-                }
-                if (line.startsWith("- ") || line.startsWith("* ")) {
-                  return (
-                    <p key={i} className="ml-3 text-sm">
-                      {line}
-                    </p>
-                  );
-                }
-                if (line.trim()) {
-                  return (
-                    <p key={i} className="text-sm">
-                      {line}
-                    </p>
-                  );
-                }
-                return null;
-              })}
+            <div className="prose prose-sm max-w-none whitespace-pre-wrap text-sm text-slate-700">
+              {insights}
             </div>
           </div>
         )}

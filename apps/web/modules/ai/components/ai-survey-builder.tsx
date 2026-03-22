@@ -3,6 +3,7 @@
 import { Loader2, SparklesIcon, WandIcon } from "lucide-react";
 import { useState } from "react";
 import toast from "react-hot-toast";
+import { generateSurveyAction } from "@/modules/ai/actions";
 import { Button } from "@/modules/ui/components/button";
 import { Input } from "@/modules/ui/components/input";
 import { Label } from "@/modules/ui/components/label";
@@ -25,26 +26,13 @@ export const AiSurveyBuilder = ({ onSurveyGenerated }: AiSurveyBuilderProps) => 
     }
     setLoading(true);
     try {
-      const res = await fetch("/api/v1/management/ai/survey-generator", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          description,
-          industry: industry || undefined,
-          maxQuestions: 10,
-        }),
-      });
-      const data = await res.json();
-      if (!res.ok) {
-        toast.error(data.message || "Failed to generate survey");
-        return;
-      }
-      setGeneratedSurvey(data.data.survey);
+      const survey = await generateSurveyAction(description, industry || undefined);
+      setGeneratedSurvey(survey);
       toast.success(
-        `Survey "${data.data.survey.name}" generated with ${data.data.survey.blocks.reduce((sum: number, b: any) => sum + b.elements.length, 0)} questions`
+        `Survey "${survey.name}" generated with ${survey.blocks.reduce((sum: number, b: any) => sum + b.elements.length, 0)} questions`
       );
       if (onSurveyGenerated) {
-        onSurveyGenerated(data.data.survey);
+        onSurveyGenerated(survey);
       }
     } catch (err: any) {
       toast.error(err.message || "Failed to generate survey");
@@ -77,7 +65,6 @@ export const AiSurveyBuilder = ({ onSurveyGenerated }: AiSurveyBuilderProps) => 
           Close
         </button>
       </div>
-
       <div className="space-y-3">
         <div>
           <Label htmlFor="ai-description" className="text-sm">
@@ -117,7 +104,6 @@ export const AiSurveyBuilder = ({ onSurveyGenerated }: AiSurveyBuilderProps) => 
           )}
         </Button>
       </div>
-
       {generatedSurvey && (
         <div className="mt-4 rounded-md border border-purple-200 bg-white p-4">
           <h4 className="mb-2 text-sm font-semibold text-slate-800">{generatedSurvey.name}</h4>

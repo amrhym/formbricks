@@ -3,12 +3,9 @@
 import { BotIcon, CopyIcon, Loader2, SendIcon } from "lucide-react";
 import { useState } from "react";
 import toast from "react-hot-toast";
+import { dashboardQueryAction } from "@/modules/ai/actions";
 import { Button } from "@/modules/ui/components/button";
 import { Input } from "@/modules/ui/components/input";
-
-interface AiDashboardAssistantProps {
-  organizationId?: string;
-}
 
 interface QueryResult {
   sql: string;
@@ -17,7 +14,7 @@ interface QueryResult {
   explanation: string;
 }
 
-export const AiDashboardAssistant = ({ organizationId }: AiDashboardAssistantProps) => {
+export const AiDashboardAssistant = () => {
   const [query, setQuery] = useState("");
   const [loading, setLoading] = useState(false);
   const [result, setResult] = useState<QueryResult | null>(null);
@@ -27,17 +24,11 @@ export const AiDashboardAssistant = ({ organizationId }: AiDashboardAssistantPro
     if (!query.trim()) return;
     setLoading(true);
     try {
-      const res = await fetch("/api/v1/management/ai/dashboard-query", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ query, organizationId }),
-      });
-      const data = await res.json();
-      if (!res.ok) {
-        toast.error(data.message || "Failed to generate query");
+      const queryResult = await dashboardQueryAction(query);
+      if (!queryResult) {
+        toast.error("Could not generate query");
         return;
       }
-      const queryResult = data.data.result;
       setResult(queryResult);
       setHistory((prev) => [{ query, result: queryResult }, ...prev]);
       setQuery("");
@@ -59,12 +50,10 @@ export const AiDashboardAssistant = ({ organizationId }: AiDashboardAssistantPro
         <BotIcon className="h-5 w-5 text-purple-600" />
         <h3 className="text-sm font-semibold text-slate-800">AI Dashboard Assistant</h3>
       </div>
-
       <div className="p-4">
         <p className="mb-3 text-xs text-slate-500">
           Ask questions in natural language and get SQL queries for your dashboards.
         </p>
-
         <div className="flex gap-2">
           <Input
             placeholder="e.g. Show me NPS score by month for the last 6 months"
@@ -77,7 +66,6 @@ export const AiDashboardAssistant = ({ organizationId }: AiDashboardAssistantPro
             {loading ? <Loader2 className="h-4 w-4 animate-spin" /> : <SendIcon className="h-4 w-4" />}
           </Button>
         </div>
-
         <div className="mt-2 flex flex-wrap gap-1">
           {[
             "Response count per survey",
@@ -93,7 +81,6 @@ export const AiDashboardAssistant = ({ organizationId }: AiDashboardAssistantPro
             </button>
           ))}
         </div>
-
         {result && (
           <div className="mt-4 space-y-3">
             <div className="rounded-md border border-slate-200 bg-slate-50 p-3">
@@ -117,7 +104,6 @@ export const AiDashboardAssistant = ({ organizationId }: AiDashboardAssistantPro
             </p>
           </div>
         )}
-
         {history.length > 1 && (
           <div className="mt-4">
             <p className="mb-2 text-xs font-medium text-slate-500">History</p>
