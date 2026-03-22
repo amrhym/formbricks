@@ -73,7 +73,7 @@ Provide a structured summary with:
 5. **Alerts**: Urgent issues needing attention
 
 Keep it concise. Use bullet points.`,
-      { maxTokens: 2000 }
+      { maxTokens: 8000 }
     );
 
     return {

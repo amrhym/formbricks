@@ -62,12 +62,12 @@ Language: ${language}
 Max questions: ${maxQuestions}
 
 Mix question types. Start easy, end with open text. Return JSON only.`,
-      { maxTokens: 3000 }
+      { maxTokens: 8000 }
     );
 
     return result;
-  } catch (error) {
-    logger.error({ error }, "AI survey generation failed");
-    throw new Error("Failed to generate survey");
+  } catch (error: any) {
+    logger.error({ error: error.message }, "AI survey generation failed");
+    throw new Error(error.message || "Failed to generate survey");
   }
 };
