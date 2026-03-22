@@ -1,7 +1,6 @@
 "use client";
 
 import { Loader2, SparklesIcon, WandIcon } from "lucide-react";
-import { useRouter } from "next/navigation";
 import { useState } from "react";
 import toast from "react-hot-toast";
 import { Button } from "@/modules/ui/components/button";
@@ -9,12 +8,10 @@ import { Input } from "@/modules/ui/components/input";
 import { Label } from "@/modules/ui/components/label";
 
 interface AiSurveyBuilderProps {
-  environmentId: string;
   onSurveyGenerated?: (survey: any) => void;
 }
 
-export const AiSurveyBuilder = ({ environmentId, onSurveyGenerated }: AiSurveyBuilderProps) => {
-  const router = useRouter();
+export const AiSurveyBuilder = ({ onSurveyGenerated }: AiSurveyBuilderProps) => {
   const [description, setDescription] = useState("");
   const [industry, setIndustry] = useState("");
   const [loading, setLoading] = useState(false);
