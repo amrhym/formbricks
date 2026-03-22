@@ -1,3 +1,4 @@
+import { getServerSession } from "next-auth";
 import { NextRequest } from "next/server";
 import { z } from "zod";
 import { responses } from "@/app/lib/api/response";
@@ -5,7 +6,7 @@ import { transformErrorToDetails } from "@/app/lib/api/validator";
 import { isAIConfigured } from "@/lib/ai/client";
 import { generateSurveyInsights } from "@/lib/ai/response-summarizer";
 import { getSurvey } from "@/lib/survey/service";
-import { getServerSession } from "@/modules/auth/lib/authOptions";
+import { authOptions } from "@/modules/auth/lib/authOptions";
 
 const ZInsightsInput = z.object({
   surveyId: z.string(),
@@ -15,7 +16,7 @@ const ZInsightsInput = z.object({
 });
 
 export const POST = async (req: NextRequest) => {
-  const session = await getServerSession();
+  const session = await getServerSession(authOptions);
   if (!session?.user) {
     return responses.notAuthenticatedResponse();
   }

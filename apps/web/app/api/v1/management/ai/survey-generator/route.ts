@@ -1,10 +1,11 @@
+import { getServerSession } from "next-auth";
 import { NextRequest } from "next/server";
 import { z } from "zod";
 import { responses } from "@/app/lib/api/response";
 import { transformErrorToDetails } from "@/app/lib/api/validator";
 import { isAIConfigured } from "@/lib/ai/client";
 import { generateSurveyFromDescription } from "@/lib/ai/survey-generator";
-import { getServerSession } from "@/modules/auth/lib/authOptions";
+import { authOptions } from "@/modules/auth/lib/authOptions";
 
 const ZGenerateSurveyInput = z.object({
   description: z.string().min(10).max(1000),
@@ -14,7 +15,7 @@ const ZGenerateSurveyInput = z.object({
 });
 
 export const POST = async (req: NextRequest) => {
-  const session = await getServerSession();
+  const session = await getServerSession(authOptions);
   if (!session?.user) {
     return responses.notAuthenticatedResponse();
   }
