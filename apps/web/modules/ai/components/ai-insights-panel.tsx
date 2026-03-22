@@ -20,14 +20,18 @@ export const AiInsightsPanel = ({ surveyId }: AiInsightsPanelProps) => {
     setError(null);
     try {
       const result = await generateInsightsAction(surveyId);
+      if (!result) {
+        setError("No response from AI service");
+        return;
+      }
       if (result.ok) {
         setInsights(result.insights.summary);
         setResponseCount(result.insights.responseCount);
       } else {
-        setError(result.error);
+        setError(result.error || "Unknown error");
       }
     } catch (err: any) {
-      setError(err.message || "Failed to generate insights");
+      setError(String(err?.message || err || "Failed to generate insights"));
     } finally {
       setLoading(false);
     }

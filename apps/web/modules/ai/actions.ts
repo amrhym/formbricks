@@ -1,6 +1,7 @@
 "use server";
 
 import { getServerSession } from "next-auth";
+import { logger } from "@hivecfm/logger";
 import { isAIConfigured } from "@/lib/ai/client";
 import { generateDashboardQuery } from "@/lib/ai/dashboard-assistant";
 import { generateSurveyInsights } from "@/lib/ai/response-summarizer";
@@ -15,6 +16,7 @@ export const generateInsightsAction = async (
   { ok: true; insights: { summary: string; responseCount: number } } | { ok: false; error: string }
 > => {
   try {
+    logger.info({ surveyId }, "AI Insights: starting");
     const session = await getServerSession(authOptions);
     if (!session?.user) return { ok: false, error: "Not authenticated" };
     if (!isAIConfigured()) return { ok: false, error: "AI is not configured" };
@@ -27,6 +29,8 @@ export const generateInsightsAction = async (
         ? survey.questions
         : (survey.blocks?.flatMap((block: any) => block.elements) ?? []);
 
+    logger.info({ surveyId, questionCount: allQuestions.length }, "AI Insights: calling Kimi");
+
     const insights = await generateSurveyInsights({
       surveyId,
       surveyName: survey.name,
@@ -38,6 +42,8 @@ export const generateInsightsAction = async (
     });
 
     if (!insights) return { ok: false, error: "No responses found to analyze" };
+
+    logger.info({ surveyId, responseCount: insights.responseCount }, "AI Insights: success");
 
     return {
       ok: true,
