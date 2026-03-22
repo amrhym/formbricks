@@ -26,13 +26,17 @@ export const AiSurveyBuilder = ({ onSurveyGenerated }: AiSurveyBuilderProps) => 
     }
     setLoading(true);
     try {
-      const survey = await generateSurveyAction(description, industry || undefined);
-      setGeneratedSurvey(survey);
+      const result = await generateSurveyAction(description, industry || undefined);
+      if (!result.ok) {
+        toast.error(result.error);
+        return;
+      }
+      setGeneratedSurvey(result.survey);
       toast.success(
-        `Survey "${survey.name}" generated with ${survey.blocks.reduce((sum: number, b: any) => sum + b.elements.length, 0)} questions`
+        `Survey "${result.survey.name}" generated with ${result.survey.blocks.reduce((sum: number, b: any) => sum + b.elements.length, 0)} questions`
       );
       if (onSurveyGenerated) {
-        onSurveyGenerated(survey);
+        onSurveyGenerated(result.survey);
       }
     } catch (err: any) {
       toast.error(err.message || "Failed to generate survey");

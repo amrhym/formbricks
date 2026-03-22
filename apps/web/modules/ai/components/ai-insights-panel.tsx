@@ -20,11 +20,11 @@ export const AiInsightsPanel = ({ surveyId }: AiInsightsPanelProps) => {
     setError(null);
     try {
       const result = await generateInsightsAction(surveyId);
-      if (result) {
-        setInsights(result.summary);
-        setResponseCount(result.responseCount);
+      if (result.ok) {
+        setInsights(result.insights.summary);
+        setResponseCount(result.insights.responseCount);
       } else {
-        setError("No responses found to analyze");
+        setError(result.error);
       }
     } catch (err: any) {
       setError(err.message || "Failed to generate insights");

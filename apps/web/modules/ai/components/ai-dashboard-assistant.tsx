@@ -24,13 +24,13 @@ export const AiDashboardAssistant = () => {
     if (!query.trim()) return;
     setLoading(true);
     try {
-      const queryResult = await dashboardQueryAction(query);
-      if (!queryResult) {
-        toast.error("Could not generate query");
+      const actionResult = await dashboardQueryAction(query);
+      if (!actionResult.ok) {
+        toast.error(actionResult.error);
         return;
       }
-      setResult(queryResult);
-      setHistory((prev) => [{ query, result: queryResult }, ...prev]);
+      setResult(actionResult.result);
+      setHistory((prev) => [{ query, result: actionResult.result }, ...prev]);
       setQuery("");
     } catch (err: any) {
       toast.error(err.message || "Failed");
