@@ -8,6 +8,7 @@ import { sendTelemetryEvents } from "@/app/api/(internal)/pipeline/lib/telemetry
 import { ZPipelineInput } from "@/app/api/(internal)/pipeline/types/pipelines";
 import { responses } from "@/app/lib/api/response";
 import { transformErrorToDetails } from "@/app/lib/api/validator";
+import { applyAutoTags, autoTagResponse } from "@/lib/ai/auto-tagging";
 import { CRON_SECRET } from "@/lib/constants";
 import { generateStandardWebhookSignature } from "@/lib/crypto";
 import { pushResponseToHub } from "@/lib/hivecfm-hub/service";
@@ -309,6 +310,33 @@ export const POST = async (request: Request) => {
   if (event === "responseCreated") {
     // Send telemetry events
     await sendTelemetryEvents();
+  }
+
+  // AI Auto-Tagging (fire-and-forget on responseFinished)
+  if (event === "responseFinished" && response.finished) {
+    const allQuestionsForAI =
+      survey.questions.length > 0
+        ? survey.questions
+        : (survey.blocks?.flatMap((block: any) => block.elements) ?? []);
+
+    autoTagResponse({
+      responseData: response.data as Record<string, any>,
+      surveyName: survey.name,
+      questions: allQuestionsForAI.map((q: any) => ({
+        id: q.id,
+        type: q.type,
+        headline: q.headline,
+      })),
+      environmentId,
+    })
+      .then((result) => {
+        if (result.tags.length > 0) {
+          return applyAutoTags(response.id, environmentId, result.tags);
+        }
+      })
+      .catch((error) => {
+        logger.error({ error, responseId: response.id }, "AI auto-tagging failed");
+      });
   }
 
   return Response.json({ data: {} });
