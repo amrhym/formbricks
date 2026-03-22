@@ -1,7 +1,6 @@
-import { generateText } from "ai";
 import { prisma } from "@hivecfm/database";
 import { logger } from "@hivecfm/logger";
-import { getModel, isAIConfigured } from "./client";
+import { generateText, isAIConfigured } from "./client";
 
 interface SummarizeInput {
   surveyId: string;
@@ -45,7 +44,6 @@ export const generateSurveyInsights = async ({
 
   if (recentResponses.length === 0) return null;
 
-  // Build response summaries
   const responseTexts = recentResponses.map((r, idx) => {
     const data = r.data as Record<string, any>;
     const answers = questions
@@ -61,28 +59,25 @@ export const generateSurveyInsights = async ({
   });
 
   try {
-    const { text } = await generateText({
-      model: getModel(),
-      prompt: `You are a customer experience analyst. Analyze these ${recentResponses.length} survey responses and provide a concise executive summary.
-
-Survey: "${surveyName}"
-Period: ${dateFrom?.toISOString().split("T")[0] || "all time"} to ${dateTo?.toISOString().split("T")[0] || "now"}
+    const summary = await generateText(
+      "You are a customer experience analyst. Provide concise, actionable executive summaries.",
+      `Analyze these ${recentResponses.length} survey responses for "${surveyName}".
 
 ${responseTexts.join("\n\n")}
 
 Provide a structured summary with:
-1. **Overview**: 2-3 sentence summary of overall findings
-2. **Key Metrics**: Average scores, response rate trends
-3. **Top Themes**: Most common topics/issues (positive and negative)
-4. **Actionable Insights**: 3-5 specific recommendations
-5. **Alerts**: Any urgent issues that need immediate attention
+1. **Overview**: 2-3 sentence summary
+2. **Key Metrics**: Average scores, trends
+3. **Top Themes**: Most common topics (positive and negative)
+4. **Actionable Insights**: 3-5 recommendations
+5. **Alerts**: Urgent issues needing attention
 
-Keep it concise and actionable. Use bullet points. No fluff.`,
-      maxTokens: 2000,
-    });
+Keep it concise. Use bullet points.`,
+      { maxTokens: 2000 }
+    );
 
     return {
-      summary: text,
+      summary,
       generatedAt: new Date(),
       responseCount: recentResponses.length,
       surveyId,
