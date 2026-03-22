@@ -19,6 +19,7 @@ import { checkCompletedResponseQuota } from "@/lib/tenant/quota-enforcement";
 const ZIvrResponseInput = z.object({
   callId: z.string().min(1),
   callerNumber: z.string().optional(),
+  userId: z.string().optional(),
   answers: z.record(z.union([z.string(), z.number()])),
   finished: z.boolean(),
   language: z.string().optional(),
@@ -82,7 +83,8 @@ export const POST = withV1ApiWrapper({
       };
     }
 
-    const { callId, callerNumber, answers, finished, language, hiddenFields, meta } = inputValidation.data;
+    const { callId, callerNumber, userId, answers, finished, language, hiddenFields, meta } =
+      inputValidation.data;
 
     const survey = await getSurvey(surveyId);
     if (!survey) {
@@ -204,9 +206,13 @@ export const POST = withV1ApiWrapper({
       }
 
       // Create new response
+      // Use userId if provided, otherwise use callerNumber as userId for contact identification
+      const effectiveUserId = userId || callerNumber || undefined;
+
       const responseInput: TResponseInput = {
         environmentId,
         surveyId,
+        userId: effectiveUserId,
         finished,
         data,
         singleUseId: callId,
