@@ -5,6 +5,7 @@ import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import type { TTemplate } from "@hivecfm/types/templates";
 import { customSurveyTemplate } from "@/app/lib/templates";
+import { AiSurveyBuilder } from "@/modules/ai/components/ai-survey-builder";
 import { TemplateList } from "@/modules/survey/components/template-list";
 import { MenuBar } from "@/modules/survey/templates/components/menu-bar";
 import { PreviewSurvey } from "@/modules/ui/components/preview-survey";
@@ -39,13 +40,14 @@ export const TemplateContainerWithPreview = ({
       {isTemplatePage && <MenuBar />}
       <div className="relative z-0 flex flex-1 overflow-hidden">
         <div className="flex-1 flex-col overflow-auto bg-slate-50">
-          <div className="mt-6 mb-3 ml-6 flex flex-col items-center justify-between md:flex-row md:items-end">
+          <div className="mb-3 ml-6 mt-6 flex flex-col items-center justify-between md:flex-row md:items-end">
             <h1 className="text-2xl font-bold text-slate-800">
               {isTemplatePage
                 ? t("environments.surveys.templates.create_a_new_survey")
                 : t("environments.surveys.all_set_time_to_create_first_survey")}
             </h1>
-            <div className="px-6">
+            <div className="flex items-center gap-3 px-6">
+              <AiSurveyBuilder environmentId={environment.id} />
               <SearchBar
                 value={templateSearch ?? ""}
                 onChange={setTemplateSearch}

@@ -14,6 +14,7 @@ import { ResponseDataView } from "@/app/(app)/environments/[environmentId]/surve
 import { CustomFilter } from "@/app/(app)/environments/[environmentId]/surveys/[surveyId]/components/CustomFilter";
 import { getFormattedFilters } from "@/app/lib/surveys/surveys";
 import { replaceHeadlineRecall } from "@/lib/utils/recall";
+import { AiInsightsPanel } from "@/modules/ai/components/ai-insights-panel";
 
 interface ResponsePageProps {
   environment: TEnvironment;
@@ -141,6 +142,7 @@ export const ResponsePage = ({
       <div className="flex h-9 gap-1.5">
         <CustomFilter survey={surveyMemoized} />
       </div>
+      <AiInsightsPanel surveyId={surveyId} />
       <ResponseDataView
         survey={survey}
         responses={responses}

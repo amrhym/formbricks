@@ -2,6 +2,7 @@ import { BarChart3Icon, ExternalLinkIcon } from "lucide-react";
 import { Metadata } from "next";
 import Link from "next/link";
 import { getTranslate } from "@/lingodotdev/server";
+import { AiDashboardAssistant } from "@/modules/ai/components/ai-dashboard-assistant";
 import { getEnvironmentAuth } from "@/modules/environments/lib/utils";
 import { Button } from "@/modules/ui/components/button";
 import { PageContentWrapper } from "@/modules/ui/components/page-content-wrapper";
@@ -61,6 +62,9 @@ export const AnalyticsPage = async ({ params: paramsProps }: AnalyticsPageProps)
   return (
     <PageContentWrapper>
       <PageHeader pageTitle={t("common.analytics") || "Analytics"} cta={<AnalyticsButtons />} />
+      <div className="mb-4">
+        <AiDashboardAssistant />
+      </div>
       <div className="h-[calc(100vh-200px)] min-h-[600px]">
         <SupersetEmbed environmentId={params.environmentId} height="100%" />
       </div>
