@@ -32,7 +32,15 @@ export const generateInsightsAction = async (surveyId: string) => {
     })),
   });
 
-  return insights;
+  if (!insights) return null;
+
+  // Serialize Date for server action boundary
+  return {
+    summary: insights.summary,
+    responseCount: insights.responseCount,
+    surveyId: insights.surveyId,
+    generatedAt: insights.generatedAt.toISOString(),
+  };
 };
 
 export const generateSurveyAction = async (description: string, industry?: string) => {
