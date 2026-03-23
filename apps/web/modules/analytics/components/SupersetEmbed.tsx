@@ -12,9 +12,7 @@ import {
   SelectValue,
 } from "@/modules/ui/components/select";
 
-const SUPERSET_URL =
-  process.env.NEXT_PUBLIC_SUPERSET_BASE_URL ||
-  "https://superset.graypond-ce0467a0.westeurope.azurecontainerapps.io";
+const SUPERSET_URL = process.env.NEXT_PUBLIC_SUPERSET_BASE_URL || "https://superset.hivecfm.xcai.io";
 
 // Token refresh interval: refresh 2 minutes before the 15-min expiry
 const TOKEN_REFRESH_INTERVAL_MS = 13 * 60 * 1000;
