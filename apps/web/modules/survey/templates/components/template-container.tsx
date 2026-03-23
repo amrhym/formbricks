@@ -34,6 +34,13 @@ export const TemplateContainerWithPreview = ({
     initialTemplate.preset.blocks[0]?.elements[0]?.id || ""
   );
   const [templateSearch, setTemplateSearch] = useState<string | null>(null);
+  const [aiTemplate, setAiTemplate] = useState<TTemplate | null>(null);
+
+  const handleAiTemplateGenerated = (template: TTemplate) => {
+    setAiTemplate(template);
+    setActiveTemplate(template);
+    setActiveElementId(template.preset.blocks[0]?.elements[0]?.id || "");
+  };
 
   return (
     <div className="flex h-full flex-col">
@@ -47,7 +54,7 @@ export const TemplateContainerWithPreview = ({
                 : t("environments.surveys.all_set_time_to_create_first_survey")}
             </h1>
             <div className="flex items-center gap-3 px-6">
-              <AiSurveyBuilder environmentId={environment.id} userId={userId} />
+              <AiSurveyBuilder onTemplateGenerated={handleAiTemplateGenerated} />
               <SearchBar
                 value={templateSearch ?? ""}
                 onChange={setTemplateSearch}
@@ -56,6 +63,42 @@ export const TemplateContainerWithPreview = ({
               />
             </div>
           </div>
+
+          {aiTemplate && (
+            <div className="mx-6 mb-4">
+              <div className="mb-2 flex items-center gap-2">
+                <span className="rounded-full bg-purple-100 px-2 py-0.5 text-xs font-medium text-purple-700">
+                  AI Generated
+                </span>
+                <button
+                  onClick={() => setAiTemplate(null)}
+                  className="text-xs text-slate-400 hover:text-slate-600">
+                  Dismiss
+                </button>
+              </div>
+              <button
+                onClick={() => {
+                  setActiveTemplate(aiTemplate);
+                  setActiveElementId(aiTemplate.preset.blocks[0]?.elements[0]?.id || "");
+                }}
+                className={`w-full rounded-lg border-2 p-4 text-left transition-all ${
+                  activeTemplate.name === aiTemplate.name
+                    ? "border-purple-500 bg-purple-50 shadow-md"
+                    : "border-slate-200 bg-white hover:border-purple-300 hover:shadow-sm"
+                }`}>
+                <div className="flex items-center justify-between">
+                  <div>
+                    <h3 className="text-sm font-semibold text-slate-800">{aiTemplate.name}</h3>
+                    <p className="mt-0.5 text-xs text-slate-500">{aiTemplate.description}</p>
+                  </div>
+                  <span className="rounded bg-purple-100 px-2 py-1 text-xs font-medium text-purple-700">
+                    {aiTemplate.preset.blocks.reduce((s, b) => s + b.elements.length, 0)} questions
+                  </span>
+                </div>
+              </button>
+            </div>
+          )}
+
           <TemplateList
             environmentId={environment.id}
             project={project}
@@ -75,7 +118,7 @@ export const TemplateContainerWithPreview = ({
               project={project}
               environment={environment}
               languageCode={"default"}
-              isSpamProtectionAllowed={false} // setting it to false as this is a template
+              isSpamProtectionAllowed={false}
               publicDomain={publicDomain}
             />
           )}

@@ -1,21 +1,21 @@
 "use client";
 
 import { createId } from "@paralleldrive/cuid2";
-import { Loader2, RocketIcon, SparklesIcon, WandIcon } from "lucide-react";
-import { useRouter } from "next/navigation";
+import { Loader2, SparklesIcon, WandIcon } from "lucide-react";
 import { useState } from "react";
 import toast from "react-hot-toast";
-// Use API routes instead of server actions to avoid RSC serialization issues
+import { TTemplate } from "@hivecfm/types/templates";
 import { Button } from "@/modules/ui/components/button";
 import { Input } from "@/modules/ui/components/input";
 import { Label } from "@/modules/ui/components/label";
 
+// Use API routes instead of server actions to avoid RSC serialization issues
+
 interface AiSurveyBuilderProps {
-  environmentId: string;
-  userId: string;
+  onTemplateGenerated: (template: TTemplate) => void;
 }
 
-const convertToSurveyInput = (generated: any) => {
+const convertToTemplate = (generated: any): TTemplate => {
   const blocks = (generated.blocks || []).map((block: any) => ({
     id: createId(),
     name: block.name || "Block",
@@ -68,45 +68,34 @@ const convertToSurveyInput = (generated: any) => {
 
   return {
     name: generated.name || "AI Generated Survey",
-    type: "link" as const,
-    status: "draft" as const,
-    blocks,
-    welcomeCard: {
-      enabled: true,
-      headline: { default: generated.welcomeHeadline || "Welcome" },
-      subheader: generated.welcomeSubheader ? { default: generated.welcomeSubheader } : undefined,
-      timeToFinish: true,
-      showResponseCount: false,
-    },
-    endings: [
-      {
-        id: createId(),
-        type: "endScreen" as const,
-        headline: { default: generated.endingHeadline || "Thank you!" },
-        subheader: generated.endingSubheader ? { default: generated.endingSubheader } : undefined,
+    description: `AI-generated survey with ${blocks.reduce((s: number, b: any) => s + b.elements.length, 0)} questions`,
+    icon: undefined,
+    preset: {
+      name: generated.name || "AI Generated Survey",
+      blocks,
+      welcomeCard: {
+        enabled: true,
+        headline: { default: generated.welcomeHeadline || "Welcome" },
+        timeToFinish: true,
+        showResponseCount: false,
       },
-    ],
-    hiddenFields: { enabled: false, fieldIds: [] },
-    displayOption: "displayOnce" as const,
-    autoClose: null,
-    runOnDate: null,
-    closeOnDate: null,
-    delay: 0,
-    displayPercentage: null,
-    autoComplete: null,
-    isVerifyEmailEnabled: false,
-    styling: null,
-    languages: [],
+      endings: [
+        {
+          id: createId(),
+          type: "endScreen" as const,
+          headline: { default: generated.endingHeadline || "Thank you!" },
+          subheader: generated.endingSubheader ? { default: generated.endingSubheader } : undefined,
+        },
+      ],
+      hiddenFields: { enabled: false, fieldIds: [] },
+    },
   };
 };
 
-export const AiSurveyBuilder = ({ environmentId, userId }: AiSurveyBuilderProps) => {
-  const router = useRouter();
+export const AiSurveyBuilder = ({ onTemplateGenerated }: AiSurveyBuilderProps) => {
   const [description, setDescription] = useState("");
   const [industry, setIndustry] = useState("");
   const [loading, setLoading] = useState(false);
-  const [creating, setCreating] = useState(false);
-  const [generatedSurvey, setGeneratedSurvey] = useState<any>(null);
   const [showBuilder, setShowBuilder] = useState(false);
 
   const generateSurvey = async () => {
@@ -126,38 +115,16 @@ export const AiSurveyBuilder = ({ environmentId, userId }: AiSurveyBuilderProps)
         toast.error(result.error);
         return;
       }
-      setGeneratedSurvey(result.survey);
-      toast.success("Survey generated! Click 'Create & Edit' to start editing.");
+      const template = convertToTemplate(result.survey);
+      onTemplateGenerated(template);
+      setShowBuilder(false);
+      setDescription("");
+      setIndustry("");
+      toast.success(`"${template.name}" generated! Preview it and click "Use this template" to create.`);
     } catch (err: any) {
       toast.error(err.message || "Failed to generate survey");
     } finally {
       setLoading(false);
-    }
-  };
-
-  const createAndEdit = async () => {
-    if (!generatedSurvey) return;
-    setCreating(true);
-    try {
-      const surveyBody = { ...convertToSurveyInput(generatedSurvey), createdBy: userId };
-
-      const res = await fetch("/api/ai/create-survey", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ environmentId, surveyBody }),
-      });
-      const createResult = await res.json();
-
-      if (createResult.ok) {
-        toast.success("Survey created!");
-        router.push(`/environments/${environmentId}/surveys/${createResult.surveyId}/edit`);
-      } else {
-        toast.error(createResult.error || "Failed to create survey");
-      }
-    } catch (err: any) {
-      toast.error(err.message || "Failed to create survey");
-    } finally {
-      setCreating(false);
     }
   };
 
@@ -168,104 +135,78 @@ export const AiSurveyBuilder = ({ environmentId, userId }: AiSurveyBuilderProps)
         size="sm"
         onClick={() => setShowBuilder(true)}
         className="border-purple-200 bg-purple-50 text-purple-700 hover:bg-purple-100">
-        <WandIcon className="mr-1 h-4 w-4" />
+        <WandIcon className="mr-1.5 h-4 w-4" />
         AI Survey Builder
       </Button>
     );
   }
 
   return (
-    <div className="mb-6 rounded-lg border border-purple-200 bg-gradient-to-r from-purple-50 to-indigo-50 p-5">
-      <div className="mb-4 flex items-center gap-2">
-        <SparklesIcon className="h-5 w-5 text-purple-600" />
-        <h3 className="text-base font-semibold text-slate-800">AI Survey Builder</h3>
-        <button
-          onClick={() => setShowBuilder(false)}
-          className="ml-auto text-xs text-slate-400 hover:text-slate-600">
-          Close
-        </button>
-      </div>
-      <div className="space-y-3">
-        <div>
-          <Label htmlFor="ai-description" className="text-sm">
-            Describe the survey you want to create
-          </Label>
-          <Input
-            id="ai-description"
-            placeholder="e.g. Post-call satisfaction survey for banking customers with NPS and service quality questions"
-            value={description}
-            onChange={(e) => setDescription(e.target.value)}
-            className="mt-1"
-          />
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50">
+      <div className="mx-4 w-full max-w-lg rounded-xl border border-slate-200 bg-white shadow-2xl">
+        <div className="flex items-center justify-between border-b border-slate-200 px-6 py-4">
+          <div className="flex items-center gap-2">
+            <SparklesIcon className="h-5 w-5 text-purple-600" />
+            <h3 className="text-lg font-semibold text-slate-800">AI Survey Builder</h3>
+          </div>
+          <button
+            onClick={() => setShowBuilder(false)}
+            className="rounded-md p-1 text-slate-400 hover:bg-slate-100 hover:text-slate-600">
+            <svg className="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+            </svg>
+          </button>
         </div>
-        <div>
-          <Label htmlFor="ai-industry" className="text-sm">
-            Industry (optional)
-          </Label>
-          <Input
-            id="ai-industry"
-            placeholder="e.g. Banking, Healthcare, Retail, Telecom"
-            value={industry}
-            onChange={(e) => setIndustry(e.target.value)}
-            className="mt-1"
-          />
-        </div>
-        <Button
-          onClick={generateSurvey}
-          disabled={loading || creating}
-          className="bg-purple-600 hover:bg-purple-700">
-          {loading ? (
-            <>
-              <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-              Generating...
-            </>
-          ) : (
-            <>
-              <SparklesIcon className="mr-2 h-4 w-4" />
-              Generate Survey
-            </>
-          )}
-        </Button>
-      </div>
-      {generatedSurvey && (
-        <div className="mt-4 rounded-md border border-purple-200 bg-white p-4">
-          <div className="mb-3 flex items-center justify-between">
-            <h4 className="text-sm font-semibold text-slate-800">{generatedSurvey.name}</h4>
+        <div className="space-y-4 p-6">
+          <div>
+            <Label htmlFor="ai-description" className="text-sm font-medium">
+              What kind of survey do you need?
+            </Label>
+            <Input
+              id="ai-description"
+              placeholder="e.g. Post-call satisfaction survey for banking customers"
+              value={description}
+              onChange={(e) => setDescription(e.target.value)}
+              onKeyDown={(e) => e.key === "Enter" && !loading && generateSurvey()}
+              className="mt-1.5"
+              autoFocus
+            />
+          </div>
+          <div>
+            <Label htmlFor="ai-industry" className="text-sm font-medium">
+              Industry (optional)
+            </Label>
+            <Input
+              id="ai-industry"
+              placeholder="e.g. Banking, Healthcare, Retail, Telecom"
+              value={industry}
+              onChange={(e) => setIndustry(e.target.value)}
+              className="mt-1.5"
+            />
+          </div>
+          <div className="flex justify-end gap-3 pt-2">
+            <Button variant="secondary" onClick={() => setShowBuilder(false)} disabled={loading}>
+              Cancel
+            </Button>
             <Button
-              size="sm"
-              onClick={createAndEdit}
-              disabled={creating}
-              className="bg-green-600 hover:bg-green-700">
-              {creating ? (
+              onClick={generateSurvey}
+              disabled={loading || description.length < 10}
+              className="bg-purple-600 hover:bg-purple-700">
+              {loading ? (
                 <>
-                  <Loader2 className="mr-1 h-3 w-3 animate-spin" />
-                  Creating...
+                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                  Generating...
                 </>
               ) : (
                 <>
-                  <RocketIcon className="mr-1 h-3 w-3" />
-                  Create &amp; Edit
+                  <SparklesIcon className="mr-2 h-4 w-4" />
+                  Generate Template
                 </>
               )}
             </Button>
           </div>
-          <div className="space-y-1">
-            {generatedSurvey.blocks.map((block: any, bi: number) => (
-              <div key={bi}>
-                <p className="text-xs font-medium text-slate-500">{block.name}</p>
-                {block.elements.map((el: any, ei: number) => (
-                  <p key={ei} className="ml-3 text-xs text-slate-600">
-                    {bi * 10 + ei + 1}. [{el.type}] {el.headline?.default || "Untitled"}
-                  </p>
-                ))}
-              </div>
-            ))}
-          </div>
-          <p className="mt-2 text-xs text-slate-400">
-            Total: {generatedSurvey.blocks.reduce((s: number, b: any) => s + b.elements.length, 0)} questions
-          </p>
         </div>
-      )}
+      </div>
     </div>
   );
 };
