@@ -136,8 +136,7 @@ export const AiSurveyBuilder = ({ environmentId, userId }: AiSurveyBuilderProps)
     if (!generatedSurvey) return;
     setCreating(true);
     try {
-      const surveyBody = convertToSurveyInput(generatedSurvey);
-      surveyBody.createdBy = userId;
+      const surveyBody = { ...convertToSurveyInput(generatedSurvey), createdBy: userId };
 
       const createResult = await createSurveyAction({
         environmentId,
