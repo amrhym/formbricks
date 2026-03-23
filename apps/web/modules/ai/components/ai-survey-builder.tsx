@@ -3,6 +3,7 @@
 import { createId } from "@paralleldrive/cuid2";
 import { Loader2, SparklesIcon, WandIcon } from "lucide-react";
 import { useState } from "react";
+import { createPortal } from "react-dom";
 import toast from "react-hot-toast";
 import { TTemplate } from "@hivecfm/types/templates";
 import { Button } from "@/modules/ui/components/button";
@@ -141,8 +142,8 @@ export const AiSurveyBuilder = ({ onTemplateGenerated }: AiSurveyBuilderProps) =
     );
   }
 
-  return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50">
+  return createPortal(
+    <div className="fixed inset-0 z-[9999] flex items-center justify-center bg-black/50">
       <div className="mx-4 w-full max-w-lg rounded-xl border border-slate-200 bg-white shadow-2xl">
         <div className="flex items-center justify-between border-b border-slate-200 px-6 py-4">
           <div className="flex items-center gap-2">
@@ -207,6 +208,7 @@ export const AiSurveyBuilder = ({ onTemplateGenerated }: AiSurveyBuilderProps) =
           </div>
         </div>
       </div>
-    </div>
+    </div>,
+    document.body
   );
 };
