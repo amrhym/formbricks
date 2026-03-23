@@ -5,9 +5,7 @@ import { Loader2, RocketIcon, SparklesIcon, WandIcon } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import toast from "react-hot-toast";
-import { getFormattedErrorMessage } from "@/lib/utils/helper";
-import { generateSurveyAction } from "@/modules/ai/actions";
-import { createSurveyAction } from "@/modules/survey/components/template-list/actions";
+import { createSurveyFromAIAction, generateSurveyAction } from "@/modules/ai/actions";
 import { Button } from "@/modules/ui/components/button";
 import { Input } from "@/modules/ui/components/input";
 import { Label } from "@/modules/ui/components/label";
@@ -138,17 +136,13 @@ export const AiSurveyBuilder = ({ environmentId, userId }: AiSurveyBuilderProps)
     try {
       const surveyBody = { ...convertToSurveyInput(generatedSurvey), createdBy: userId };
 
-      const createResult = await createSurveyAction({
-        environmentId,
-        surveyBody,
-      });
+      const createResult = await createSurveyFromAIAction(environmentId, surveyBody);
 
-      if (createResult?.data) {
+      if (createResult.ok) {
         toast.success("Survey created!");
-        router.push(`/environments/${environmentId}/surveys/${createResult.data.id}/edit`);
+        router.push(`/environments/${environmentId}/surveys/${createResult.surveyId}/edit`);
       } else {
-        const errorMessage = getFormattedErrorMessage(createResult);
-        toast.error(errorMessage || "Failed to create survey");
+        toast.error(createResult.error || "Failed to create survey");
       }
     } catch (err: any) {
       toast.error(err.message || "Failed to create survey");
