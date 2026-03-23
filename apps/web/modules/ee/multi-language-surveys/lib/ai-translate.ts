@@ -9,7 +9,10 @@ import { authenticatedActionClient } from "@/lib/utils/action-client";
 import { checkAuthorizationUpdated } from "@/lib/utils/action-client/action-client-middleware";
 import { getOrganizationIdFromEnvironmentId } from "@/lib/utils/helper";
 
-const OPENAI_API_KEY = process.env.OPENAI_API_KEY;
+const AZURE_OPENAI_ENDPOINT = process.env.AZURE_OPENAI_ENDPOINT || "";
+const AZURE_OPENAI_KEY = process.env.AZURE_OPENAI_KEY || "";
+const AZURE_OPENAI_DEPLOYMENT = process.env.AZURE_OPENAI_DEPLOYMENT || "gpt-4o-mini";
+const AZURE_OPENAI_API_VERSION = process.env.AZURE_OPENAI_API_VERSION || "2024-06-01";
 
 const ZTranslateSurveyContentAction = z.object({
   environmentId: ZId,
@@ -23,8 +26,10 @@ async function translateTextsWithAI(
   sourceLanguageCode: string,
   targetLanguageCode: string
 ): Promise<string[]> {
-  if (!OPENAI_API_KEY) {
-    throw new Error("AI translation is not configured. OPENAI_API_KEY is missing.");
+  if (!AZURE_OPENAI_ENDPOINT || !AZURE_OPENAI_KEY) {
+    throw new Error(
+      "AI translation is not configured. AZURE_OPENAI_ENDPOINT and AZURE_OPENAI_KEY are required."
+    );
   }
 
   if (texts.length === 0) return [];
@@ -41,14 +46,15 @@ async function translateTextsWithAI(
 
   const numberedTexts = indexedTexts.map((item, i) => `[${i + 1}] ${item.text}`).join("\n");
 
-  const response = await fetch("https://api.openai.com/v1/chat/completions", {
+  const url = `${AZURE_OPENAI_ENDPOINT}/openai/deployments/${AZURE_OPENAI_DEPLOYMENT}/chat/completions?api-version=${AZURE_OPENAI_API_VERSION}`;
+
+  const response = await fetch(url, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
-      Authorization: `Bearer ${OPENAI_API_KEY}`,
+      "api-key": AZURE_OPENAI_KEY,
     },
     body: JSON.stringify({
-      model: "gpt-4o-mini",
       temperature: 0.1,
       messages: [
         {
