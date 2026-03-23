@@ -74,6 +74,49 @@ export const generateText = async (
 };
 
 /**
+ * Extract a JSON object or array from a string that may contain surrounding text.
+ */
+const extractJSON = (text: string): string => {
+  let cleaned = text.trim();
+
+  // Strip markdown code fences (handles whitespace variations)
+  cleaned = cleaned
+    .replace(/^```(?:json)?\s*\n?/g, "")
+    .replace(/\n?\s*```$/g, "")
+    .trim();
+
+  // If it already looks like JSON, return as-is
+  if (cleaned.startsWith("{") || cleaned.startsWith("[")) {
+    return cleaned;
+  }
+
+  // Find the first { or [ and match to the last } or ]
+  const objStart = cleaned.indexOf("{");
+  const arrStart = cleaned.indexOf("[");
+  let start: number;
+
+  if (objStart === -1 && arrStart === -1) {
+    return cleaned; // let JSON.parse produce a clear error
+  } else if (objStart === -1) {
+    start = arrStart;
+  } else if (arrStart === -1) {
+    start = objStart;
+  } else {
+    start = Math.min(objStart, arrStart);
+  }
+
+  const isArray = cleaned[start] === "[";
+  const closeChar = isArray ? "]" : "}";
+  const lastClose = cleaned.lastIndexOf(closeChar);
+
+  if (lastClose > start) {
+    return cleaned.substring(start, lastClose + 1);
+  }
+
+  return cleaned.substring(start);
+};
+
+/**
  * Generate a structured JSON response from the AI.
  */
 export const generateJSON = async <T>(
@@ -94,9 +137,12 @@ export const generateJSON = async <T>(
     options
   );
 
-  const cleaned = content
-    .replace(/^```(?:json)?\n?/g, "")
-    .replace(/\n?```$/g, "")
-    .trim();
-  return JSON.parse(cleaned) as T;
+  const jsonStr = extractJSON(content);
+
+  try {
+    return JSON.parse(jsonStr) as T;
+  } catch (e: any) {
+    logger.error({ raw: content.substring(0, 500) }, "Failed to parse AI JSON response");
+    throw new Error("AI returned an invalid response. Please try again.");
+  }
 };
