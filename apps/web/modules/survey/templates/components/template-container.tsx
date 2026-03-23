@@ -1,7 +1,9 @@
 "use client";
 
 import type { Environment, Project } from "@prisma/client";
+import { useRouter } from "next/navigation";
 import { useState } from "react";
+import toast from "react-hot-toast";
 import { useTranslation } from "react-i18next";
 import type { TTemplate } from "@hivecfm/types/templates";
 import { customSurveyTemplate } from "@/app/lib/templates";
@@ -30,6 +32,7 @@ export const TemplateContainerWithPreview = ({
   isAIEnabled = false,
 }: TemplateContainerWithPreviewProps) => {
   const { t } = useTranslation();
+  const router = useRouter();
   const initialTemplate = customSurveyTemplate(t);
   const [activeTemplate, setActiveTemplate] = useState<TTemplate>(initialTemplate);
   const [activeElementId, setActiveElementId] = useState<string>(
@@ -37,11 +40,41 @@ export const TemplateContainerWithPreview = ({
   );
   const [templateSearch, setTemplateSearch] = useState<string | null>(null);
   const [aiTemplate, setAiTemplate] = useState<TTemplate | null>(null);
+  const [aiCreating, setAiCreating] = useState(false);
 
   const handleAiTemplateGenerated = (template: TTemplate) => {
     setAiTemplate(template);
     setActiveTemplate(template);
     setActiveElementId(template.preset.blocks[0]?.elements[0]?.id || "");
+  };
+
+  const createAiSurvey = async () => {
+    if (!aiTemplate) return;
+    setAiCreating(true);
+    try {
+      const res = await fetch("/api/ai/create-survey", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          environmentId: environment.id,
+          surveyBody: {
+            ...aiTemplate.preset,
+            type: "link",
+            createdBy: userId,
+          },
+        }),
+      });
+      const result = await res.json();
+      if (result.ok) {
+        router.push(`/environments/${environment.id}/surveys/${result.surveyId}/edit`);
+      } else {
+        toast.error(result.error || "Failed to create survey");
+      }
+    } catch (err: any) {
+      toast.error(err.message || "Failed to create survey");
+    } finally {
+      setAiCreating(false);
+    }
   };
 
   return (
@@ -97,6 +130,15 @@ export const TemplateContainerWithPreview = ({
                     {aiTemplate.preset.blocks.reduce((s, b) => s + b.elements.length, 0)} questions
                   </span>
                 </div>
+                <button
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    createAiSurvey();
+                  }}
+                  disabled={aiCreating}
+                  className="mt-3 rounded-lg bg-slate-900 px-6 py-2.5 text-sm font-medium text-white hover:bg-slate-800 disabled:opacity-50">
+                  {aiCreating ? "Creating..." : t("environments.surveys.templates.use_this_template")}
+                </button>
               </button>
             </div>
           )}
