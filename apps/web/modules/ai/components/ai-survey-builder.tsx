@@ -1,21 +1,113 @@
 "use client";
 
-import { Loader2, SparklesIcon, WandIcon } from "lucide-react";
+import { createId } from "@paralleldrive/cuid2";
+import { Loader2, RocketIcon, SparklesIcon, WandIcon } from "lucide-react";
+import { useRouter } from "next/navigation";
 import { useState } from "react";
 import toast from "react-hot-toast";
+import { getFormattedErrorMessage } from "@/lib/utils/helper";
 import { generateSurveyAction } from "@/modules/ai/actions";
+import { createSurveyAction } from "@/modules/survey/components/template-list/actions";
 import { Button } from "@/modules/ui/components/button";
 import { Input } from "@/modules/ui/components/input";
 import { Label } from "@/modules/ui/components/label";
 
 interface AiSurveyBuilderProps {
-  onSurveyGenerated?: (survey: any) => void;
+  environmentId: string;
+  userId: string;
 }
 
-export const AiSurveyBuilder = ({ onSurveyGenerated }: AiSurveyBuilderProps) => {
+const convertToSurveyInput = (generated: any) => {
+  const blocks = (generated.blocks || []).map((block: any) => ({
+    id: createId(),
+    name: block.name || "Block",
+    elements: (block.elements || []).map((el: any) => {
+      const element: any = {
+        id: el.id || createId(),
+        type: el.type,
+        headline: el.headline || { default: "Untitled" },
+        required: el.required ?? true,
+      };
+      if (el.subheader) element.subheader = el.subheader;
+      if (el.type === "rating") {
+        element.range = el.range || 5;
+        element.scale = el.scale || "star";
+        element.lowerLabel = { default: "Not satisfied" };
+        element.upperLabel = { default: "Very satisfied" };
+      }
+      if (el.type === "nps") {
+        element.lowerLabel = { default: "Not likely" };
+        element.upperLabel = { default: "Very likely" };
+      }
+      if (el.type === "multipleChoiceSingle" || el.type === "multipleChoiceMulti") {
+        element.choices = (el.choices || []).map((c: any) => ({
+          id: c.id || createId(),
+          label: c.label || { default: "Option" },
+        }));
+        element.shuffleOption = "none";
+      }
+      if (el.type === "openText") {
+        element.placeholder = el.placeholder || { default: "Type your answer here..." };
+        element.longResponse = el.longResponse ?? true;
+        element.inputType = "text";
+      }
+      if (el.type === "cta") {
+        element.buttonLabel = { default: "Continue" };
+        element.dismissButtonLabel = { default: "Skip" };
+        element.buttonExternal = false;
+        element.html = { default: "" };
+      }
+      if (el.type === "consent") {
+        element.label = el.headline;
+        element.html = { default: "" };
+      }
+      if (el.type === "date") {
+        element.format = "M-d-y";
+      }
+      return element;
+    }),
+  }));
+
+  return {
+    name: generated.name || "AI Generated Survey",
+    type: "link" as const,
+    status: "draft" as const,
+    blocks,
+    welcomeCard: {
+      enabled: true,
+      headline: { default: generated.welcomeHeadline || "Welcome" },
+      subheader: generated.welcomeSubheader ? { default: generated.welcomeSubheader } : undefined,
+      timeToFinish: true,
+      showResponseCount: false,
+    },
+    endings: [
+      {
+        id: createId(),
+        type: "endScreen" as const,
+        headline: { default: generated.endingHeadline || "Thank you!" },
+        subheader: generated.endingSubheader ? { default: generated.endingSubheader } : undefined,
+      },
+    ],
+    hiddenFields: { enabled: false, fieldIds: [] },
+    displayOption: "displayOnce" as const,
+    autoClose: null,
+    runOnDate: null,
+    closeOnDate: null,
+    delay: 0,
+    displayPercentage: null,
+    autoComplete: null,
+    isVerifyEmailEnabled: false,
+    styling: null,
+    languages: [],
+  };
+};
+
+export const AiSurveyBuilder = ({ environmentId, userId }: AiSurveyBuilderProps) => {
+  const router = useRouter();
   const [description, setDescription] = useState("");
   const [industry, setIndustry] = useState("");
   const [loading, setLoading] = useState(false);
+  const [creating, setCreating] = useState(false);
   const [generatedSurvey, setGeneratedSurvey] = useState<any>(null);
   const [showBuilder, setShowBuilder] = useState(false);
 
@@ -32,16 +124,37 @@ export const AiSurveyBuilder = ({ onSurveyGenerated }: AiSurveyBuilderProps) => 
         return;
       }
       setGeneratedSurvey(result.survey);
-      toast.success(
-        `Survey "${result.survey.name}" generated with ${result.survey.blocks.reduce((sum: number, b: any) => sum + b.elements.length, 0)} questions`
-      );
-      if (onSurveyGenerated) {
-        onSurveyGenerated(result.survey);
-      }
+      toast.success("Survey generated! Click 'Create & Edit' to start editing.");
     } catch (err: any) {
       toast.error(err.message || "Failed to generate survey");
     } finally {
       setLoading(false);
+    }
+  };
+
+  const createAndEdit = async () => {
+    if (!generatedSurvey) return;
+    setCreating(true);
+    try {
+      const surveyBody = convertToSurveyInput(generatedSurvey);
+      surveyBody.createdBy = userId;
+
+      const createResult = await createSurveyAction({
+        environmentId,
+        surveyBody,
+      });
+
+      if (createResult?.data) {
+        toast.success("Survey created!");
+        router.push(`/environments/${environmentId}/surveys/${createResult.data.id}/edit`);
+      } else {
+        const errorMessage = getFormattedErrorMessage(createResult);
+        toast.error(errorMessage || "Failed to create survey");
+      }
+    } catch (err: any) {
+      toast.error(err.message || "Failed to create survey");
+    } finally {
+      setCreating(false);
     }
   };
 
@@ -88,17 +201,20 @@ export const AiSurveyBuilder = ({ onSurveyGenerated }: AiSurveyBuilderProps) => 
           </Label>
           <Input
             id="ai-industry"
-            placeholder="e.g. Banking, Healthcare, Retail"
+            placeholder="e.g. Banking, Healthcare, Retail, Telecom"
             value={industry}
             onChange={(e) => setIndustry(e.target.value)}
             className="mt-1"
           />
         </div>
-        <Button onClick={generateSurvey} disabled={loading} className="bg-purple-600 hover:bg-purple-700">
+        <Button
+          onClick={generateSurvey}
+          disabled={loading || creating}
+          className="bg-purple-600 hover:bg-purple-700">
           {loading ? (
             <>
               <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-              Generating Survey...
+              Generating...
             </>
           ) : (
             <>
@@ -110,7 +226,26 @@ export const AiSurveyBuilder = ({ onSurveyGenerated }: AiSurveyBuilderProps) => 
       </div>
       {generatedSurvey && (
         <div className="mt-4 rounded-md border border-purple-200 bg-white p-4">
-          <h4 className="mb-2 text-sm font-semibold text-slate-800">{generatedSurvey.name}</h4>
+          <div className="mb-3 flex items-center justify-between">
+            <h4 className="text-sm font-semibold text-slate-800">{generatedSurvey.name}</h4>
+            <Button
+              size="sm"
+              onClick={createAndEdit}
+              disabled={creating}
+              className="bg-green-600 hover:bg-green-700">
+              {creating ? (
+                <>
+                  <Loader2 className="mr-1 h-3 w-3 animate-spin" />
+                  Creating...
+                </>
+              ) : (
+                <>
+                  <RocketIcon className="mr-1 h-3 w-3" />
+                  Create &amp; Edit
+                </>
+              )}
+            </Button>
+          </div>
           <div className="space-y-1">
             {generatedSurvey.blocks.map((block: any, bi: number) => (
               <div key={bi}>
