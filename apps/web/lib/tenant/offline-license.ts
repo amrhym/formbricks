@@ -61,11 +61,6 @@ export async function activateOfflineLicense(token: string): Promise<TTenantLice
       },
     });
 
-    await prisma.organization.update({
-      where: { id: payload.orgId },
-      data: { isAIEnabled: payload.addonAiInsights },
-    });
-
     logger.info(
       { organizationId: payload.orgId, licenseKey: payload.licenseKey },
       "Offline license activated"

@@ -3,7 +3,7 @@ import { prisma } from "@hivecfm/database";
 
 /**
  * Check if AI features are enabled for an environment.
- * Looks up Organization.isAIEnabled via Environment → Project → Organization chain.
+ * Reads directly from TenantLicense.addonAiInsights via Environment → Project → Organization chain.
  */
 export const isAIEnabledForEnvironment = reactCache(async (environmentId: string): Promise<boolean> => {
   try {
@@ -13,14 +13,18 @@ export const isAIEnabledForEnvironment = reactCache(async (environmentId: string
         project: {
           select: {
             organization: {
-              select: { isAIEnabled: true },
+              select: {
+                tenantLicense: {
+                  select: { addonAiInsights: true },
+                },
+              },
             },
           },
         },
       },
     });
 
-    return environment?.project?.organization?.isAIEnabled ?? false;
+    return environment?.project?.organization?.tenantLicense?.addonAiInsights ?? false;
   } catch {
     return false;
   }
@@ -28,6 +32,7 @@ export const isAIEnabledForEnvironment = reactCache(async (environmentId: string
 
 /**
  * Check if Campaign Management addon is enabled for an environment.
+ * Reads directly from TenantLicense.addonCampaignManagement.
  */
 export const isCampaignEnabledForEnvironment = reactCache(async (environmentId: string): Promise<boolean> => {
   try {
@@ -38,7 +43,6 @@ export const isCampaignEnabledForEnvironment = reactCache(async (environmentId: 
           select: {
             organization: {
               select: {
-                id: true,
                 tenantLicense: {
                   select: { addonCampaignManagement: true },
                 },

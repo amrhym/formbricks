@@ -59,12 +59,6 @@ export const createLicense = async (
       select: tenantLicenseSelect,
     });
 
-    // Sync isAIEnabled on Organization
-    await prisma.organization.update({
-      where: { id: organizationId },
-      data: { isAIEnabled: input.addonAiInsights },
-    });
-
     logger.info({ organizationId }, "Tenant license created");
     return license as TTenantLicense;
   } catch (error) {
@@ -118,14 +112,6 @@ export const updateLicense = async (
       select: tenantLicenseSelect,
     });
 
-    // Sync isAIEnabled on Organization when addonAiInsights changes
-    if (data.addonAiInsights !== undefined) {
-      await prisma.organization.update({
-        where: { id: organizationId },
-        data: { isAIEnabled: data.addonAiInsights },
-      });
-    }
-
     logger.info({ organizationId }, "Tenant license updated");
     return license as TTenantLicense;
   } catch (error) {
@@ -165,12 +151,6 @@ export const activateLicense = async (
       where: { licenseKey },
       data: { isActive: true },
       select: tenantLicenseSelect,
-    });
-
-    // Sync isAIEnabled
-    await prisma.organization.update({
-      where: { id: organizationId },
-      data: { isAIEnabled: updated.addonAiInsights },
     });
 
     logger.info({ organizationId, licenseKey }, "Tenant license activated");
