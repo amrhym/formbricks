@@ -5,8 +5,7 @@ import { Loader2, RocketIcon, SparklesIcon, WandIcon } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import toast from "react-hot-toast";
-import { generateSurveyAction } from "@/modules/ai/actions";
-import { createSurveyFromAIAction } from "@/modules/ai/actions-create-survey";
+// Use API routes instead of server actions to avoid RSC serialization issues
 import { Button } from "@/modules/ui/components/button";
 import { Input } from "@/modules/ui/components/input";
 import { Label } from "@/modules/ui/components/label";
@@ -117,7 +116,12 @@ export const AiSurveyBuilder = ({ environmentId, userId }: AiSurveyBuilderProps)
     }
     setLoading(true);
     try {
-      const result = await generateSurveyAction(description, industry || undefined);
+      const res = await fetch("/api/ai/generate-survey", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ description, industry: industry || undefined, maxQuestions: 10 }),
+      });
+      const result = await res.json();
       if (!result.ok) {
         toast.error(result.error);
         return;
@@ -137,7 +141,12 @@ export const AiSurveyBuilder = ({ environmentId, userId }: AiSurveyBuilderProps)
     try {
       const surveyBody = { ...convertToSurveyInput(generatedSurvey), createdBy: userId };
 
-      const createResult = await createSurveyFromAIAction(environmentId, surveyBody);
+      const res = await fetch("/api/ai/create-survey", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ environmentId, surveyBody }),
+      });
+      const createResult = await res.json();
 
       if (createResult.ok) {
         toast.success("Survey created!");
