@@ -1,10 +1,11 @@
 import { logger } from "@hivecfm/logger";
 
-const KIMI_API_KEY = process.env.KIMI_API_KEY || "";
-const KIMI_BASE_URL = process.env.KIMI_BASE_URL || "https://api.kimi.com/coding/v1";
-const KIMI_MODEL = process.env.KIMI_MODEL || "kimi-for-coding";
+const AZURE_OPENAI_ENDPOINT = process.env.AZURE_OPENAI_ENDPOINT || "";
+const AZURE_OPENAI_KEY = process.env.AZURE_OPENAI_KEY || "";
+const AZURE_OPENAI_DEPLOYMENT = process.env.AZURE_OPENAI_DEPLOYMENT || "gpt-4o-mini";
+const AZURE_OPENAI_API_VERSION = process.env.AZURE_OPENAI_API_VERSION || "2024-06-01";
 
-export const isAIConfigured = () => !!KIMI_API_KEY;
+export const isAIConfigured = () => !!AZURE_OPENAI_ENDPOINT && !!AZURE_OPENAI_KEY;
 
 interface ChatMessage {
   role: "system" | "user" | "assistant";
@@ -21,25 +22,25 @@ interface ChatCompletionResponse {
 }
 
 /**
- * Call Kimi Code API (OpenAI-compatible with required User-Agent header).
+ * Call Azure OpenAI Chat Completions API.
  */
 const chatCompletion = async (
   messages: ChatMessage[],
   options?: { temperature?: number; maxTokens?: number }
 ): Promise<string> => {
   if (!isAIConfigured()) {
-    throw new Error("AI not configured: KIMI_API_KEY is not set");
+    throw new Error("AI not configured: AZURE_OPENAI_ENDPOINT and AZURE_OPENAI_KEY are required");
   }
 
-  const response = await fetch(`${KIMI_BASE_URL}/chat/completions`, {
+  const url = `${AZURE_OPENAI_ENDPOINT}/openai/deployments/${AZURE_OPENAI_DEPLOYMENT}/chat/completions?api-version=${AZURE_OPENAI_API_VERSION}`;
+
+  const response = await fetch(url, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
-      Authorization: `Bearer ${KIMI_API_KEY}`,
-      "User-Agent": "claude-code/1.0.0",
+      "api-key": AZURE_OPENAI_KEY,
     },
     body: JSON.stringify({
-      model: KIMI_MODEL,
       messages,
       temperature: options?.temperature ?? 0.3,
       max_tokens: options?.maxTokens ?? 4096,
@@ -48,8 +49,8 @@ const chatCompletion = async (
 
   if (!response.ok) {
     const errorText = await response.text();
-    logger.error({ status: response.status, error: errorText }, "Kimi API error");
-    throw new Error(`Kimi API error: ${response.status}`);
+    logger.error({ status: response.status, error: errorText }, "Azure OpenAI API error");
+    throw new Error(`Azure OpenAI API error: ${response.status}`);
   }
 
   const data: ChatCompletionResponse = await response.json();
@@ -79,24 +80,21 @@ export const generateText = async (
 const extractJSON = (text: string): string => {
   let cleaned = text.trim();
 
-  // Strip markdown code fences (handles whitespace variations)
   cleaned = cleaned
     .replace(/^```(?:json)?\s*\n?/g, "")
     .replace(/\n?\s*```$/g, "")
     .trim();
 
-  // If it already looks like JSON, return as-is
   if (cleaned.startsWith("{") || cleaned.startsWith("[")) {
     return cleaned;
   }
 
-  // Find the first { or [ and match to the last } or ]
   const objStart = cleaned.indexOf("{");
   const arrStart = cleaned.indexOf("[");
   let start: number;
 
   if (objStart === -1 && arrStart === -1) {
-    return cleaned; // let JSON.parse produce a clear error
+    return cleaned;
   } else if (objStart === -1) {
     start = arrStart;
   } else if (arrStart === -1) {
