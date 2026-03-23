@@ -91,6 +91,7 @@ const Page = async (props) => {
         isQuotasAllowed={isQuotasAllowed}
         quotas={quotas}
         initialResponses={initialResponses}
+        isAIEnabled={organization.isAIEnabled}
       />
     </PageContentWrapper>
   );

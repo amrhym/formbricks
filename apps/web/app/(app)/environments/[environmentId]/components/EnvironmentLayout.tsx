@@ -1,5 +1,6 @@
 import { MainNavigation } from "@/app/(app)/environments/[environmentId]/components/MainNavigation";
 import { TopControlBar } from "@/app/(app)/environments/[environmentId]/components/TopControlBar";
+import { isAIEnabledForEnvironment, isCampaignEnabledForEnvironment } from "@/lib/ai/permissions";
 import { IS_DEVELOPMENT, IS_FORMBRICKS_CLOUD } from "@/lib/constants";
 import { getPublicDomain } from "@/lib/getPublicUrl";
 import { getAccessFlags } from "@/lib/membership/utils";
@@ -75,6 +76,8 @@ export const EnvironmentLayout = async ({ layoutData, children }: EnvironmentLay
           isDevelopment={IS_DEVELOPMENT}
           membershipRole={membership.role}
           publicDomain={publicDomain}
+          isAIEnabled={await isAIEnabledForEnvironment(environment.id)}
+          isCampaignEnabled={await isCampaignEnabledForEnvironment(environment.id)}
         />
         <div id="mainContent" className="flex flex-1 flex-col overflow-hidden bg-slate-50">
           <TopControlBar

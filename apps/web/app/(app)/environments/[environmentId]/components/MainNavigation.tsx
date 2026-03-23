@@ -46,6 +46,8 @@ interface NavigationProps {
   isDevelopment: boolean;
   membershipRole?: TOrganizationRole;
   publicDomain: string;
+  isAIEnabled?: boolean;
+  isCampaignEnabled?: boolean;
 }
 
 export const MainNavigation = ({
@@ -55,6 +57,8 @@ export const MainNavigation = ({
   project,
   membershipRole,
   publicDomain,
+  isAIEnabled = false,
+  isCampaignEnabled = false,
 }: NavigationProps) => {
   const router = useRouter();
   const pathname = usePathname();
@@ -111,18 +115,26 @@ export const MainNavigation = ({
         icon: BarChart3Icon,
         isActive: pathname?.includes("/analytics"),
       },
-      {
-        name: "Insights",
-        href: `/environments/${environment.id}/insights/search`,
-        icon: SearchIcon,
-        isActive: pathname?.includes("/insights"),
-      },
-      {
-        name: t("common.campaigns") || "Campaigns",
-        href: `/environments/${environment.id}/campaigns`,
-        icon: SendIcon,
-        isActive: pathname?.includes("/campaigns"),
-      },
+      ...(isAIEnabled
+        ? [
+            {
+              name: "Insights",
+              href: `/environments/${environment.id}/insights/search`,
+              icon: SearchIcon,
+              isActive: pathname?.includes("/insights"),
+            },
+          ]
+        : []),
+      ...(isCampaignEnabled
+        ? [
+            {
+              name: t("common.campaigns") || "Campaigns",
+              href: `/environments/${environment.id}/campaigns`,
+              icon: SendIcon,
+              isActive: pathname?.includes("/campaigns"),
+            },
+          ]
+        : []),
       {
         name: t("common.api_docs") || "API Docs",
         href: `/environments/${environment.id}/api-docs`,
@@ -176,7 +188,7 @@ export const MainNavigation = ({
                 size="icon"
                 onClick={toggleSidebar}
                 className={cn(
-                  "rounded-xl bg-slate-50 p-1 text-slate-600 transition-all hover:bg-slate-100 focus:ring-0 focus:ring-transparent focus:outline-none"
+                  "rounded-xl bg-slate-50 p-1 text-slate-600 transition-all hover:bg-slate-100 focus:outline-none focus:ring-0 focus:ring-transparent"
                 )}>
                 {isCollapsed ? (
                   <PanelLeftOpenIcon strokeWidth={1.5} />

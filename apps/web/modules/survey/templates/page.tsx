@@ -1,4 +1,5 @@
 import { redirect } from "next/navigation";
+import { isAIEnabledForEnvironment } from "@/lib/ai/permissions";
 import { getPublicDomain } from "@/lib/getPublicUrl";
 import { getTranslate } from "@/lingodotdev/server";
 import { getEnvironmentAuth } from "@/modules/environments/lib/utils";
@@ -29,6 +30,7 @@ export const SurveyTemplatesPage = async (props: SurveyTemplateProps) => {
   }
 
   const publicDomain = getPublicDomain();
+  const isAIEnabled = await isAIEnabledForEnvironment(environmentId);
 
   return (
     <TemplateContainerWithPreview
@@ -36,6 +38,7 @@ export const SurveyTemplatesPage = async (props: SurveyTemplateProps) => {
       environment={environment}
       project={project}
       publicDomain={publicDomain}
+      isAIEnabled={isAIEnabled}
     />
   );
 };

@@ -28,6 +28,7 @@ interface ResponsePageProps {
   isQuotasAllowed: boolean;
   quotas: TSurveyQuota[];
   initialResponses?: TResponseWithQuotas[];
+  isAIEnabled?: boolean;
 }
 
 export const ResponsePage = ({
@@ -42,6 +43,7 @@ export const ResponsePage = ({
   isQuotasAllowed,
   quotas,
   initialResponses = [],
+  isAIEnabled = false,
 }: ResponsePageProps) => {
   const [responses, setResponses] = useState<TResponseWithQuotas[]>(initialResponses);
   const [page, setPage] = useState<number | null>(null);
@@ -142,7 +144,7 @@ export const ResponsePage = ({
       <div className="flex h-9 gap-1.5">
         <CustomFilter survey={surveyMemoized} />
       </div>
-      <AiInsightsPanel surveyId={surveyId} />
+      {isAIEnabled && <AiInsightsPanel surveyId={surveyId} />}
       <ResponseDataView
         survey={survey}
         responses={responses}

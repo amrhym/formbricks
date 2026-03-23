@@ -312,8 +312,8 @@ export const POST = async (request: Request) => {
     await sendTelemetryEvents();
   }
 
-  // AI Auto-Tagging (fire-and-forget on responseFinished)
-  if (event === "responseFinished" && response.finished) {
+  // AI Auto-Tagging (fire-and-forget on responseFinished, only if AI is enabled)
+  if (event === "responseFinished" && response.finished && organization.isAIEnabled) {
     const allQuestionsForAI =
       survey.questions.length > 0
         ? survey.questions

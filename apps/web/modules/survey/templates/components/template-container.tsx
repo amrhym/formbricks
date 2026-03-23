@@ -18,6 +18,7 @@ type TemplateContainerWithPreviewProps = {
   userId: string;
   isTemplatePage?: boolean;
   publicDomain: string;
+  isAIEnabled?: boolean;
 };
 
 export const TemplateContainerWithPreview = ({
@@ -26,6 +27,7 @@ export const TemplateContainerWithPreview = ({
   userId,
   isTemplatePage = true,
   publicDomain,
+  isAIEnabled = false,
 }: TemplateContainerWithPreviewProps) => {
   const { t } = useTranslation();
   const initialTemplate = customSurveyTemplate(t);
@@ -54,7 +56,7 @@ export const TemplateContainerWithPreview = ({
                 : t("environments.surveys.all_set_time_to_create_first_survey")}
             </h1>
             <div className="flex items-center gap-3 px-6">
-              <AiSurveyBuilder onTemplateGenerated={handleAiTemplateGenerated} />
+              {isAIEnabled && <AiSurveyBuilder onTemplateGenerated={handleAiTemplateGenerated} />}
               <SearchBar
                 value={templateSearch ?? ""}
                 onChange={setTemplateSearch}

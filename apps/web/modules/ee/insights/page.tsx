@@ -1,5 +1,6 @@
 import { SearchIcon } from "lucide-react";
 import { Metadata } from "next";
+import { isAIEnabledForEnvironment } from "@/lib/ai/permissions";
 import { IS_HIVECFM_HUB_CONFIGURED } from "@/lib/constants";
 import { getSurveys } from "@/lib/survey/service";
 import { getEnvironmentAuth } from "@/modules/environments/lib/utils";
@@ -21,7 +22,8 @@ export const InsightsSearchPage = async ({ params: paramsProps }: InsightsSearch
   const params = await paramsProps;
   await getEnvironmentAuth(params.environmentId);
 
-  if (!IS_HIVECFM_HUB_CONFIGURED) {
+  const isAIEnabled = await isAIEnabledForEnvironment(params.environmentId);
+  if (!isAIEnabled || !IS_HIVECFM_HUB_CONFIGURED) {
     return (
       <PageContentWrapper>
         <PageHeader pageTitle="Semantic Search" />
