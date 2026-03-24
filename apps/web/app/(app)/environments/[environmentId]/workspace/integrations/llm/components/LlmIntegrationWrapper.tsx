@@ -81,35 +81,16 @@ export const LlmIntegrationWrapper = ({ environmentId, llmIntegration }: LlmInte
     }
     setIsTesting(true);
     try {
-      if (provider === "azureOpenAI") {
-        const url = `${endpointUrl.replace(/\/$/, "")}/openai/deployments/${deploymentName}/chat/completions?api-version=${apiVersion}`;
-        const response = await fetch(url, {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            "api-key": apiKey,
-          },
-          body: JSON.stringify({
-            messages: [{ role: "user", content: "Hi" }],
-            max_tokens: 5,
-          }),
-        });
-        if (response.ok) {
-          toast.success("Connection successful");
-        } else {
-          toast.error("Connection failed: Unable to authenticate with Azure OpenAI");
-        }
+      const res = await fetch("/api/integrations/test-connection", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ type: "llm", config: buildCredentials() }),
+      });
+      const data = await res.json();
+      if (data.ok) {
+        toast.success(data.message || "Connection successful");
       } else {
-        const response = await fetch("https://api.openai.com/v1/models", {
-          headers: {
-            Authorization: `Bearer ${apiKey}`,
-          },
-        });
-        if (response.ok) {
-          toast.success("Connection successful");
-        } else {
-          toast.error("Connection failed: Unable to authenticate with OpenAI");
-        }
+        toast.error(data.error || "Connection failed");
       }
     } catch {
       toast.error("Connection test failed");

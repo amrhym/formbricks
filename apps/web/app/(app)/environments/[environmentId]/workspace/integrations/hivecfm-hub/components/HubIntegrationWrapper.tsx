@@ -46,19 +46,19 @@ export const HubIntegrationWrapper = ({ environmentId, hubIntegration }: HubInte
     }
     setIsTesting(true);
     try {
-      const response = await fetch(hubUrl.replace(/\/$/, "") + "/health", {
-        method: "GET",
-        headers: {
-          "x-api-key": apiKey,
-        },
+      const res = await fetch("/api/integrations/test-connection", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ type: "hub", config: { hubUrl, apiKey } }),
       });
-      if (response.ok) {
-        toast.success("Connection successful");
+      const data = await res.json();
+      if (data.ok) {
+        toast.success(data.message || "Connection successful");
       } else {
-        toast.error("Connection failed: Unable to reach HiveCFM Hub");
+        toast.error(data.error || "Connection failed");
       }
     } catch {
-      toast.error("Connection test failed: Unable to reach HiveCFM Hub");
+      toast.error("Connection test failed");
     } finally {
       setIsTesting(false);
     }

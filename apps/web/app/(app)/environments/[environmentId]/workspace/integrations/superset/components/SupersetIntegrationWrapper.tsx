@@ -63,22 +63,22 @@ export const SupersetIntegrationWrapper = ({
     }
     setIsTesting(true);
     try {
-      const response = await fetch(publicUrl.replace(/\/$/, "") + "/api/v1/security/login", {
+      const res = await fetch("/api/integrations/test-connection", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          username: adminUsername,
-          password: adminPassword,
-          provider: "db",
+          type: "superset",
+          config: { publicUrl, adminUsername, adminPassword },
         }),
       });
-      if (response.ok) {
-        toast.success("Connection successful");
+      const data = await res.json();
+      if (data.ok) {
+        toast.success(data.message || "Connection successful");
       } else {
-        toast.error("Connection failed: Unable to authenticate with Superset");
+        toast.error(data.error || "Connection failed");
       }
     } catch {
-      toast.error("Connection test failed: Unable to reach Superset");
+      toast.error("Connection test failed");
     } finally {
       setIsTesting(false);
     }
