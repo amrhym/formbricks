@@ -9,7 +9,7 @@ function getLicensePublicKeys(): string[] {
   if (!raw) return [];
   return raw
     .split("|")
-    .map((s) => s.trim())
+    .map((s) => s.trim().replace(/\\n/g, "\n"))
     .filter(Boolean);
 }
 
