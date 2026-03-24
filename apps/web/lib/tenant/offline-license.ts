@@ -1,10 +1,45 @@
 import "server-only";
 import { Prisma } from "@prisma/client";
 import { prisma } from "@hivecfm/database";
-import { LicenseTokenError, verifyLicenseToken } from "@hivecfm/license-crypto";
+import { LicenseTokenError, signLicenseData, verifyLicenseToken } from "@hivecfm/license-crypto";
 import { logger } from "@hivecfm/logger";
 import { DatabaseError, ResourceNotFoundError } from "@hivecfm/types/errors";
 import { TTenantLicense } from "@hivecfm/types/tenant";
+
+function getPrivateKey(): string | null {
+  const raw = process.env.HIVECFM_LICENSE_PRIVATE_KEY || process.env.HIVELIC_SIGNING_PRIVATE_KEY;
+  if (!raw) return null;
+  return raw.replace(/\\n/g, "\n").trim();
+}
+
+function computeLicenseSignature(payload: {
+  orgId: string;
+  licenseKey: string;
+  maxCompletedResponses: number;
+  maxUsers: number;
+  addonAiInsights: boolean;
+  addonCampaignManagement: boolean;
+  validFrom: string;
+  validUntil: string;
+}): string | null {
+  const privateKey = getPrivateKey();
+  if (!privateKey) return null;
+
+  return signLicenseData(
+    {
+      organizationId: payload.orgId,
+      licenseKey: payload.licenseKey,
+      maxCompletedResponses: payload.maxCompletedResponses,
+      maxUsers: payload.maxUsers,
+      addonAiInsights: payload.addonAiInsights,
+      addonCampaignManagement: payload.addonCampaignManagement,
+      validFrom: new Date(payload.validFrom).toISOString(),
+      validUntil: new Date(payload.validUntil).toISOString(),
+      isActive: true,
+    },
+    privateKey
+  );
+}
 
 function getPublicKeys(): string[] {
   const raw = process.env.HIVECFM_LICENSE_PUBLIC_KEY;
@@ -36,29 +71,25 @@ export async function activateOfflineLicense(token: string): Promise<TTenantLice
   }
 
   try {
+    // Compute signature so the license passes integrity checks
+    const signature = computeLicenseSignature(payload);
+
+    const licenseData = {
+      licenseKey: payload.licenseKey,
+      maxCompletedResponses: payload.maxCompletedResponses,
+      maxUsers: payload.maxUsers,
+      addonAiInsights: payload.addonAiInsights,
+      addonCampaignManagement: payload.addonCampaignManagement,
+      validFrom: new Date(payload.validFrom),
+      validUntil,
+      isActive: true,
+      ...(signature && { licenseSignature: signature }),
+    };
+
     const license = await prisma.tenantLicense.upsert({
       where: { organizationId: payload.orgId },
-      create: {
-        organizationId: payload.orgId,
-        licenseKey: payload.licenseKey,
-        maxCompletedResponses: payload.maxCompletedResponses,
-        maxUsers: payload.maxUsers,
-        addonAiInsights: payload.addonAiInsights,
-        addonCampaignManagement: payload.addonCampaignManagement,
-        validFrom: new Date(payload.validFrom),
-        validUntil,
-        isActive: true,
-      },
-      update: {
-        licenseKey: payload.licenseKey,
-        maxCompletedResponses: payload.maxCompletedResponses,
-        maxUsers: payload.maxUsers,
-        addonAiInsights: payload.addonAiInsights,
-        addonCampaignManagement: payload.addonCampaignManagement,
-        validFrom: new Date(payload.validFrom),
-        validUntil,
-        isActive: true,
-      },
+      create: { organizationId: payload.orgId, ...licenseData },
+      update: licenseData,
     });
 
     logger.info(
