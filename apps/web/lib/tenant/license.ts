@@ -25,6 +25,7 @@ const tenantLicenseSelect: Prisma.TenantLicenseSelect = {
   validFrom: true,
   validUntil: true,
   isActive: true,
+  licenseSignature: true,
   createdAt: true,
   updatedAt: true,
 };

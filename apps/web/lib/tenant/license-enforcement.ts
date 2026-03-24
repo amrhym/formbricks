@@ -1,7 +1,66 @@
 import "server-only";
 import { prisma } from "@hivecfm/database";
+import { type LicenseSignableData, verifyLicenseData } from "@hivecfm/license-crypto";
 import { logger } from "@hivecfm/logger";
 import { getLicense, isLicenseValid } from "./license";
+
+function getLicensePublicKeys(): string[] {
+  const raw = process.env.HIVECFM_LICENSE_PUBLIC_KEY;
+  if (!raw) return [];
+  return raw
+    .split("|")
+    .map((s) => s.trim())
+    .filter(Boolean);
+}
+
+/**
+ * Verify that the license data hasn't been tampered with.
+ * Returns true if signature is valid OR if no public keys are configured (grace mode).
+ */
+function verifyLicenseIntegrity(license: {
+  organizationId: string;
+  licenseKey: string;
+  maxCompletedResponses: number;
+  maxUsers: number;
+  addonAiInsights: boolean;
+  addonCampaignManagement: boolean;
+  validFrom: Date;
+  validUntil: Date;
+  isActive: boolean;
+  licenseSignature?: string | null;
+}): boolean {
+  const publicKeys = getLicensePublicKeys();
+
+  // Grace mode: if no public keys configured, skip verification
+  if (publicKeys.length === 0) return true;
+
+  // If signature is missing, license is unsigned (tampered or legacy)
+  if (!license.licenseSignature) {
+    logger.warn({ organizationId: license.organizationId }, "License has no signature — treating as invalid");
+    return false;
+  }
+
+  const data: LicenseSignableData = {
+    organizationId: license.organizationId,
+    licenseKey: license.licenseKey,
+    maxCompletedResponses: license.maxCompletedResponses,
+    maxUsers: license.maxUsers,
+    addonAiInsights: license.addonAiInsights,
+    addonCampaignManagement: license.addonCampaignManagement,
+    validFrom: license.validFrom.toISOString(),
+    validUntil: license.validUntil.toISOString(),
+    isActive: license.isActive,
+  };
+
+  const valid = verifyLicenseData(data, license.licenseSignature, publicKeys);
+  if (!valid) {
+    logger.error(
+      { organizationId: license.organizationId },
+      "License signature verification FAILED — license tampered"
+    );
+  }
+  return valid;
+}
 
 interface LicenseCheckResult {
   allowed: boolean;
@@ -85,6 +144,7 @@ export const checkAddonAccess = async (
     const license = await getLicense(organizationId);
     if (!license) return false; // No license = no access to addons
     if (!isLicenseValid(license)) return false;
+    if (!verifyLicenseIntegrity(license)) return false; // Tamper check
 
     if (addon === "aiInsights") return license.addonAiInsights;
     if (addon === "campaignManagement") return license.addonCampaignManagement;
@@ -113,6 +173,11 @@ export const checkLicenseValid = async (
     }
     if (now > license.validUntil) {
       return { valid: false, reason: "License has expired" };
+    }
+
+    // Verify cryptographic signature (tamper protection)
+    if (!verifyLicenseIntegrity(license)) {
+      return { valid: false, reason: "License integrity check failed" };
     }
 
     return { valid: true };

@@ -78,6 +78,7 @@ export const ZTenantLicense = z.object({
   validFrom: z.date(),
   validUntil: z.date(),
   isActive: z.boolean(),
+  licenseSignature: z.string().nullable().optional(),
   createdAt: z.date(),
   updatedAt: z.date(),
 });
@@ -101,6 +102,7 @@ export const ZTenantLicenseUpdate = z.object({
   validFrom: z.coerce.date().optional(),
   validUntil: z.coerce.date().optional(),
   isActive: z.boolean().optional(),
+  licenseSignature: z.string().optional(),
 });
 export type TTenantLicenseUpdate = z.infer<typeof ZTenantLicenseUpdate>;
 

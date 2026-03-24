@@ -795,6 +795,7 @@ model TenantLicense {
   validFrom               DateTime     @default(now()) @map(name: "valid_from")
   validUntil              DateTime     @map(name: "valid_until")
   isActive                Boolean      @default(true) @map(name: "is_active")
+  licenseSignature        String?      @map(name: "license_signature")
   createdAt               DateTime     @default(now()) @map(name: "created_at")
   updatedAt               DateTime     @updatedAt @map(name: "updated_at")
 
