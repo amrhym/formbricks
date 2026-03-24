@@ -2,10 +2,13 @@ import { z } from "zod";
 import { ZIntegrationAirtableConfig, ZIntegrationAirtableInput } from "./airtable";
 import { ZIntegrationGenesysCloudConfig, ZIntegrationGenesysCloudInput } from "./genesys-cloud";
 import { ZIntegrationGoogleSheetsConfig, ZIntegrationGoogleSheetsInput } from "./google-sheet";
+import { ZIntegrationHivecfmHubConfig, ZIntegrationHivecfmHubInput } from "./hivecfm-hub";
+import { ZIntegrationLlmConfig, ZIntegrationLlmInput } from "./llm";
 import { ZIntegrationNotionConfig, ZIntegrationNotionInput } from "./notion";
 import { ZIntegrationNovuConfig, ZIntegrationNovuInput } from "./novu";
 import { ZIntegrationSlackConfig, ZIntegrationSlackInput } from "./slack";
 import { ZIntegrationStorageConfig, ZIntegrationStorageInput } from "./storage";
+import { ZIntegrationSupersetConfig, ZIntegrationSupersetInput } from "./superset";
 
 export const ZIntegrationType = z.enum([
   "googleSheets",
@@ -16,6 +19,9 @@ export const ZIntegrationType = z.enum([
   "novu",
   "storage",
   "genesysCloud",
+  "superset",
+  "llm",
+  "hivecfmHub",
 ]);
 export type TIntegrationType = z.infer<typeof ZIntegrationType>;
 
@@ -27,6 +33,9 @@ export const ZIntegrationConfig = z.union([
   ZIntegrationNovuConfig,
   ZIntegrationStorageConfig,
   ZIntegrationGenesysCloudConfig,
+  ZIntegrationSupersetConfig,
+  ZIntegrationLlmConfig,
+  ZIntegrationHivecfmHubConfig,
 ]);
 
 export type TIntegrationConfig = z.infer<typeof ZIntegrationConfig>;
@@ -59,6 +68,9 @@ export const ZIntegrationInput = z.discriminatedUnion("type", [
   ZIntegrationNovuInput,
   ZIntegrationStorageInput,
   ZIntegrationGenesysCloudInput,
+  ZIntegrationSupersetInput,
+  ZIntegrationLlmInput,
+  ZIntegrationHivecfmHubInput,
 ]);
 export type TIntegrationInput = z.infer<typeof ZIntegrationInput>;
 

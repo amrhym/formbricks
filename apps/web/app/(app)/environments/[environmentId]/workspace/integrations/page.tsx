@@ -1,5 +1,5 @@
 import { TFunction } from "i18next";
-import { HardDriveIcon, PhoneIcon } from "lucide-react";
+import { BarChart3Icon, BrainCircuitIcon, HardDriveIcon, NetworkIcon, PhoneIcon } from "lucide-react";
 import Image from "next/image";
 import { redirect } from "next/navigation";
 import { TIntegrationType } from "@hivecfm/types/integration";
@@ -66,6 +66,9 @@ const Page = async (props) => {
   const isNovuIntegrationConnected = isIntegrationConnected("novu");
   const isStorageIntegrationConnected = isIntegrationConnected("storage");
   const isGenesysCloudIntegrationConnected = isIntegrationConnected("genesysCloud");
+  const isSupersetIntegrationConnected = isIntegrationConnected("superset");
+  const isLlmIntegrationConnected = isIntegrationConnected("llm");
+  const isHivecfmHubIntegrationConnected = isIntegrationConnected("hivecfmHub");
 
   const appSetupCompleted = !!environment?.appSetupCompleted;
   const integrationCards = [
@@ -173,6 +176,39 @@ const Page = async (props) => {
       icon: <PhoneIcon className="h-8 w-8 text-slate-900" />,
       connected: isGenesysCloudIntegrationConnected,
       statusText: isGenesysCloudIntegrationConnected ? t("common.connected") : t("common.not_connected"),
+      disabled: isReadOnly,
+    },
+    {
+      connectHref: `/environments/${params.environmentId}/workspace/integrations/superset`,
+      connectText: isSupersetIntegrationConnected ? t("common.manage") : t("common.connect"),
+      connectNewTab: false,
+      label: "Superset Analytics",
+      description: "Connect Apache Superset for embedded analytics dashboards",
+      icon: <BarChart3Icon className="h-8 w-8 text-slate-900" />,
+      connected: isSupersetIntegrationConnected,
+      statusText: isSupersetIntegrationConnected ? t("common.connected") : t("common.not_connected"),
+      disabled: isReadOnly,
+    },
+    {
+      connectHref: `/environments/${params.environmentId}/workspace/integrations/llm`,
+      connectText: isLlmIntegrationConnected ? t("common.manage") : t("common.connect"),
+      connectNewTab: false,
+      label: "AI / LLM Provider",
+      description: "Configure Azure OpenAI or OpenAI for AI-powered features",
+      icon: <BrainCircuitIcon className="h-8 w-8 text-slate-900" />,
+      connected: isLlmIntegrationConnected,
+      statusText: isLlmIntegrationConnected ? t("common.connected") : t("common.not_connected"),
+      disabled: isReadOnly,
+    },
+    {
+      connectHref: `/environments/${params.environmentId}/workspace/integrations/hivecfm-hub`,
+      connectText: isHivecfmHubIntegrationConnected ? t("common.manage") : t("common.connect"),
+      connectNewTab: false,
+      label: "HiveCFM Hub",
+      description: "Connect HiveCFM Hub for semantic search, sentiment analysis, and embeddings",
+      icon: <NetworkIcon className="h-8 w-8 text-slate-900" />,
+      connected: isHivecfmHubIntegrationConnected,
+      statusText: isHivecfmHubIntegrationConnected ? t("common.connected") : t("common.not_connected"),
       disabled: isReadOnly,
     },
     {
