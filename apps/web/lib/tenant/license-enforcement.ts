@@ -31,8 +31,11 @@ function verifyLicenseIntegrity(license: {
 }): boolean {
   const publicKeys = getLicensePublicKeys();
 
-  // Grace mode: if no public keys configured, skip verification
-  if (publicKeys.length === 0) return true;
+  // No public key = no way to verify = license invalid
+  if (publicKeys.length === 0) {
+    logger.error("HIVECFM_LICENSE_PUBLIC_KEY not configured — all licenses invalid");
+    return false;
+  }
 
   // If signature is missing, license is unsigned (tampered or legacy)
   if (!license.licenseSignature) {
