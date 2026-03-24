@@ -591,6 +591,9 @@ enum IntegrationType {
   novu
   storage
   genesysCloud
+  superset
+  llm
+  hivecfmHub
 }
 
 /// Represents third-party service integrations.
