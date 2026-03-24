@@ -45,6 +45,7 @@ export interface LicenseUpdateInput {
   validFrom?: string;
   validUntil?: string;
   isActive?: boolean;
+  licenseSignature?: string;
 }
 
 export interface LicenseActivateResult extends TenantLicense {
