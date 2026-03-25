@@ -12,7 +12,7 @@ import {
   SelectValue,
 } from "@/modules/ui/components/select";
 
-const SUPERSET_URL = process.env.NEXT_PUBLIC_SUPERSET_BASE_URL || "https://superset.hivecfm.xcai.io";
+const DEFAULT_SUPERSET_URL = process.env.NEXT_PUBLIC_SUPERSET_BASE_URL || "";
 
 // Token refresh interval: refresh 2 minutes before the 15-min expiry
 const TOKEN_REFRESH_INTERVAL_MS = 13 * 60 * 1000;
@@ -33,9 +33,15 @@ interface GuestTokenResponse {
 interface SupersetEmbedProps {
   environmentId: string;
   height?: string;
+  supersetUrl?: string;
 }
 
-export const SupersetEmbed = ({ environmentId, height = "100%" }: SupersetEmbedProps) => {
+export const SupersetEmbed = ({
+  environmentId,
+  height = "100%",
+  supersetUrl: supersetUrlProp,
+}: SupersetEmbedProps) => {
+  const SUPERSET_URL = supersetUrlProp || DEFAULT_SUPERSET_URL;
   const [dashboards, setDashboards] = useState<DashboardTemplate[]>([]);
   const [selectedDashboard, setSelectedDashboard] = useState<string>("");
   const [guestToken, setGuestToken] = useState<GuestTokenResponse | null>(null);
