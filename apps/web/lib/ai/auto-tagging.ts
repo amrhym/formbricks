@@ -21,7 +21,7 @@ export const autoTagResponse = async ({
   questions,
   environmentId,
 }: AutoTagInput): Promise<TaggingResult> => {
-  if (!isAIConfigured()) {
+  if (!(await isAIConfigured())) {
     return { tags: [], sentiment: "neutral", sentimentScore: 0 };
   }
 

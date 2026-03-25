@@ -26,7 +26,7 @@ export const generateSurveyInsights = async ({
   dateTo,
   maxResponses = 100,
 }: SummarizeInput): Promise<SurveyInsightsSummary | null> => {
-  if (!isAIConfigured()) return null;
+  if (!(await isAIConfigured())) return null;
 
   const where: any = { surveyId, finished: true };
   if (dateFrom || dateTo) {

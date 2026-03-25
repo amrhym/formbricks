@@ -20,7 +20,7 @@ export const POST = async (req: NextRequest) => {
     return responses.notAuthenticatedResponse();
   }
 
-  if (!isAIConfigured()) {
+  if (!(await isAIConfigured())) {
     return responses.badRequestResponse("AI is not configured. Set KIMI_API_KEY environment variable.");
   }
 

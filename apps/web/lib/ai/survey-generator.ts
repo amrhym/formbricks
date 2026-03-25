@@ -37,7 +37,7 @@ export const generateSurveyFromDescription = async ({
   language = "en",
   maxQuestions = 10,
 }: GenerateSurveyInput): Promise<GeneratedSurvey> => {
-  if (!isAIConfigured()) {
+  if (!(await isAIConfigured())) {
     throw new Error("AI is not configured");
   }
 

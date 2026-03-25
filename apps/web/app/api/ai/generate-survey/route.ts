@@ -9,7 +9,7 @@ export const POST = async (req: NextRequest) => {
     return Response.json({ ok: false, error: "Not authenticated" }, { status: 401 });
   }
 
-  if (!isAIConfigured()) {
+  if (!(await isAIConfigured())) {
     return Response.json({ ok: false, error: "AI is not configured" }, { status: 500 });
   }
 

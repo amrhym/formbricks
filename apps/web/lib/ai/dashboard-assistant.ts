@@ -28,7 +28,7 @@ export const generateDashboardQuery = async ({
   userQuery: string;
   organizationId: string;
 }): Promise<DashboardQueryResult | null> => {
-  if (!isAIConfigured()) return null;
+  if (!(await isAIConfigured())) return null;
 
   try {
     const text = await generateText(

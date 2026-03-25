@@ -1,11 +1,88 @@
+import { prisma } from "@hivecfm/database";
 import { logger } from "@hivecfm/logger";
 
-const AZURE_OPENAI_ENDPOINT = process.env.AZURE_OPENAI_ENDPOINT || "";
-const AZURE_OPENAI_KEY = process.env.AZURE_OPENAI_KEY || "";
-const AZURE_OPENAI_DEPLOYMENT = process.env.AZURE_OPENAI_DEPLOYMENT || "gpt-4o-mini";
-const AZURE_OPENAI_API_VERSION = process.env.AZURE_OPENAI_API_VERSION || "2024-06-01";
+interface LlmConfig {
+  provider: "azureOpenAI" | "openAI";
+  apiKey: string;
+  endpointUrl?: string;
+  deploymentName?: string;
+  apiVersion?: string;
+  model?: string;
+}
 
-export const isAIConfigured = () => !!AZURE_OPENAI_ENDPOINT && !!AZURE_OPENAI_KEY;
+let cachedConfig: LlmConfig | null = null;
+let cacheTime = 0;
+const CACHE_TTL = 60000; // 1 minute
+
+/**
+ * Load LLM config from integration table, fallback to env vars.
+ */
+async function getLlmConfig(): Promise<LlmConfig | null> {
+  if (cachedConfig && Date.now() - cacheTime < CACHE_TTL) {
+    return cachedConfig;
+  }
+
+  try {
+    // Try loading from any environment's LLM integration
+    const integration = await prisma.integration.findFirst({
+      where: { type: "llm" },
+      select: { config: true },
+    });
+
+    if (integration?.config) {
+      const key = (integration.config as any)?.key;
+      if (key?.apiKey) {
+        cachedConfig = key as LlmConfig;
+        cacheTime = Date.now();
+        return cachedConfig;
+      }
+    }
+  } catch {
+    // DB not available, fall through to env vars
+  }
+
+  // Fallback to env vars
+  const endpoint = process.env.AZURE_OPENAI_ENDPOINT;
+  const apiKey = process.env.AZURE_OPENAI_KEY;
+  if (endpoint && apiKey) {
+    cachedConfig = {
+      provider: "azureOpenAI",
+      apiKey,
+      endpointUrl: endpoint,
+      deploymentName: process.env.AZURE_OPENAI_DEPLOYMENT || "gpt-4o-mini",
+      apiVersion: process.env.AZURE_OPENAI_API_VERSION || "2024-06-01",
+    };
+    cacheTime = Date.now();
+    return cachedConfig;
+  }
+
+  const openaiKey = process.env.OPENAI_API_KEY;
+  if (openaiKey) {
+    cachedConfig = {
+      provider: "openAI",
+      apiKey: openaiKey,
+      model: "gpt-4o-mini",
+    };
+    cacheTime = Date.now();
+    return cachedConfig;
+  }
+
+  return null;
+}
+
+export const isAIConfigured = async (): Promise<boolean> => {
+  const config = await getLlmConfig();
+  return config !== null;
+};
+
+// Sync version for quick checks (uses cache only)
+export const isAIConfiguredSync = (): boolean => {
+  if (cachedConfig) return true;
+  // Check env vars as fallback
+  return (
+    !!(process.env.AZURE_OPENAI_ENDPOINT && process.env.AZURE_OPENAI_KEY) || !!process.env.OPENAI_API_KEY
+  );
+};
 
 interface ChatMessage {
   role: "system" | "user" | "assistant";
@@ -22,35 +99,48 @@ interface ChatCompletionResponse {
 }
 
 /**
- * Call Azure OpenAI Chat Completions API.
+ * Call LLM Chat Completions API (Azure OpenAI or OpenAI).
  */
 const chatCompletion = async (
   messages: ChatMessage[],
   options?: { temperature?: number; maxTokens?: number }
 ): Promise<string> => {
-  if (!isAIConfigured()) {
-    throw new Error("AI not configured: AZURE_OPENAI_ENDPOINT and AZURE_OPENAI_KEY are required");
+  const config = await getLlmConfig();
+  if (!config) {
+    throw new Error("AI not configured. Set up LLM integration or AZURE_OPENAI_ENDPOINT env vars.");
   }
 
-  const url = `${AZURE_OPENAI_ENDPOINT}/openai/deployments/${AZURE_OPENAI_DEPLOYMENT}/chat/completions?api-version=${AZURE_OPENAI_API_VERSION}`;
+  let url: string;
+  let headers: Record<string, string>;
+
+  if (config.provider === "azureOpenAI") {
+    url = `${config.endpointUrl}/openai/deployments/${config.deploymentName}/chat/completions?api-version=${config.apiVersion || "2024-06-01"}`;
+    headers = { "Content-Type": "application/json", "api-key": config.apiKey };
+  } else {
+    url = "https://api.openai.com/v1/chat/completions";
+    headers = { "Content-Type": "application/json", Authorization: `Bearer ${config.apiKey}` };
+  }
+
+  const body: any = {
+    messages,
+    temperature: options?.temperature ?? 0.3,
+    max_tokens: options?.maxTokens ?? 4096,
+  };
+
+  if (config.provider === "openAI") {
+    body.model = config.model || "gpt-4o-mini";
+  }
 
   const response = await fetch(url, {
     method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-      "api-key": AZURE_OPENAI_KEY,
-    },
-    body: JSON.stringify({
-      messages,
-      temperature: options?.temperature ?? 0.3,
-      max_tokens: options?.maxTokens ?? 4096,
-    }),
+    headers,
+    body: JSON.stringify(body),
   });
 
   if (!response.ok) {
     const errorText = await response.text();
-    logger.error({ status: response.status, error: errorText }, "Azure OpenAI API error");
-    throw new Error(`Azure OpenAI API error: ${response.status}`);
+    logger.error({ status: response.status, error: errorText }, "LLM API error");
+    throw new Error(`LLM API error: ${response.status}`);
   }
 
   const data: ChatCompletionResponse = await response.json();

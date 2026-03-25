@@ -14,7 +14,7 @@ export const generateInsightsAction = async (
 
     // Dynamic imports to avoid server action bundling issues
     const { isAIConfigured } = await import("@/lib/ai/client");
-    if (!isAIConfigured()) return { ok: false, error: "AI is not configured" };
+    if (!(await isAIConfigured())) return { ok: false, error: "AI is not configured" };
 
     const { getSurvey } = await import("@/lib/survey/service");
     const survey = await getSurvey(surveyId);
@@ -57,7 +57,7 @@ export const generateSurveyAction = async (
     if (!session?.user) return { ok: false, error: "Not authenticated" };
 
     const { isAIConfigured } = await import("@/lib/ai/client");
-    if (!isAIConfigured()) return { ok: false, error: "AI is not configured" };
+    if (!(await isAIConfigured())) return { ok: false, error: "AI is not configured" };
 
     const { generateSurveyFromDescription } = await import("@/lib/ai/survey-generator");
     const survey = await generateSurveyFromDescription({
@@ -81,7 +81,7 @@ export const dashboardQueryAction = async (
     if (!session?.user) return { ok: false, error: "Not authenticated" };
 
     const { isAIConfigured } = await import("@/lib/ai/client");
-    if (!isAIConfigured()) return { ok: false, error: "AI is not configured" };
+    if (!(await isAIConfigured())) return { ok: false, error: "AI is not configured" };
 
     const { getOrganizationsByUserId } = await import("@/lib/organization/service");
     const orgs = await getOrganizationsByUserId(session.user.id);

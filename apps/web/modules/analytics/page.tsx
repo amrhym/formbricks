@@ -2,6 +2,7 @@ import { BarChart3Icon, ExternalLinkIcon } from "lucide-react";
 import { Metadata } from "next";
 import Link from "next/link";
 import { isAIEnabledForEnvironment } from "@/lib/ai/permissions";
+import { getIntegrationByType } from "@/lib/integration/service";
 import { getTranslate } from "@/lingodotdev/server";
 import { AiDashboardAssistant } from "@/modules/ai/components/ai-dashboard-assistant";
 import { getEnvironmentAuth } from "@/modules/environments/lib/utils";
@@ -9,8 +10,6 @@ import { Button } from "@/modules/ui/components/button";
 import { PageContentWrapper } from "@/modules/ui/components/page-content-wrapper";
 import { PageHeader } from "@/modules/ui/components/page-header";
 import { SupersetEmbed } from "./components/SupersetEmbed";
-
-const SUPERSET_URL = process.env.NEXT_PUBLIC_SUPERSET_BASE_URL || "https://superset.hivecfm.xcai.io";
 
 export const metadata: Metadata = {
   title: "Analytics",
@@ -28,11 +27,16 @@ export const AnalyticsPage = async ({ params: paramsProps }: AnalyticsPageProps)
 
   const { isBilling } = await getEnvironmentAuth(params.environmentId);
 
+  // Read Superset URL from integration config, fallback to env var
+  const supersetIntegration = await getIntegrationByType(params.environmentId, "superset");
+  const supersetUrl =
+    (supersetIntegration?.config as any)?.key?.publicUrl || process.env.NEXT_PUBLIC_SUPERSET_BASE_URL || "";
+
   const AnalyticsButtons = () => {
     return (
       <div className="flex gap-2">
         <Button size="sm" variant="secondary" asChild>
-          <Link href={SUPERSET_URL} target="_blank" rel="noopener noreferrer">
+          <Link href={supersetUrl} target="_blank" rel="noopener noreferrer">
             Open in new tab
             <ExternalLinkIcon className="ml-2 h-4 w-4" />
           </Link>
@@ -69,7 +73,7 @@ export const AnalyticsPage = async ({ params: paramsProps }: AnalyticsPageProps)
         </div>
       )}
       <div className="h-[calc(100vh-200px)] min-h-[600px]">
-        <SupersetEmbed environmentId={params.environmentId} height="100%" />
+        <SupersetEmbed environmentId={params.environmentId} height="100%" supersetUrl={supersetUrl} />
       </div>
     </PageContentWrapper>
   );
