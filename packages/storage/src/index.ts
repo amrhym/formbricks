@@ -1,3 +1,3 @@
 export { deleteFile, getSignedDownloadUrl, getSignedUploadUrl, deleteFilesByPrefix } from "./service";
 export { type StorageError, StorageErrorCode } from "../types/error";
-export { setStorageConfigOverride } from "./client";
+export { setStorageConfigOverride, createS3Client, getActiveBucketName } from "./client";

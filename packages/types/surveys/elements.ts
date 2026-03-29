@@ -4,6 +4,16 @@ import { ZI18nString } from "../i18n";
 import { ZAllowedFileExtension } from "../storage";
 import { FORBIDDEN_IDS } from "./validation";
 
+// Audio source for IVR: TTS (default), uploaded file, or AI-generated
+export const ZAudioSource = z.enum(["tts", "upload", "generated"]).default("tts");
+export type TAudioSource = z.infer<typeof ZAudioSource>;
+
+// Preprocess wrapper: accepts legacy string URL OR i18n record { "default": "url", "en": "url" }
+export const ZAudioUrl = z.preprocess((val) => {
+  if (typeof val === "string") return { default: val };
+  return val;
+}, z.record(z.string(), z.string()).optional());
+
 // Element Type Enum (same as question types)
 export enum TSurveyElementTypeEnum {
   FileUpload = "fileUpload",
@@ -57,7 +67,9 @@ export const ZSurveyElementBase = z.object({
   subheader: ZI18nString.optional(),
   imageUrl: ZUrl.optional(),
   videoUrl: ZUrl.optional(),
-  audioUrl: ZUrl.optional(),
+  audioUrl: ZAudioUrl,
+  audioSource: ZAudioSource,
+  audioGenerationHash: z.record(z.string(), z.string()).optional(),
   required: z.boolean(),
   scale: z.enum(["number", "smiley", "star"]).optional(),
   range: z.union([z.literal(5), z.literal(3), z.literal(4), z.literal(7), z.literal(10)]).optional(),

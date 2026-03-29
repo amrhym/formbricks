@@ -13,6 +13,8 @@ import { findBlocksWithCyclicLogic } from "./blocks-validation";
 import {
   type TSurveyElement,
   TSurveyElementTypeEnum,
+  ZAudioSource,
+  ZAudioUrl,
   ZSurveyAddressElement,
   ZSurveyCTAElement,
   ZSurveyCalElement,
@@ -63,6 +65,8 @@ export const ZSurveyEndScreenCard = ZSurveyEndingBase.extend({
   buttonLink: ZUrl.optional(),
   imageUrl: ZUrl.optional(),
   videoUrl: ZUrl.optional(),
+  audioUrl: ZAudioUrl,
+  audioSource: ZAudioSource,
 });
 
 export type TSurveyEndScreenCard = z.infer<typeof ZSurveyEndScreenCard>;
@@ -144,6 +148,8 @@ export const ZSurveyWelcomeCard = z
     headline: ZI18nString.optional(),
     subheader: ZI18nString.optional(),
     fileUrl: ZUrl.optional(),
+    audioUrl: ZAudioUrl,
+    audioSource: ZAudioSource,
     buttonLabel: ZI18nString.optional(),
     timeToFinish: z.boolean().default(true),
     showResponseCount: z.boolean().default(false),
@@ -804,6 +810,11 @@ export const ZSurveyInlineTriggers = z.object({
 
 export type TSurveyInlineTriggers = z.infer<typeof ZSurveyInlineTriggers>;
 
+export const ZVoiceConfig = z.object({
+  ttsProvider: z.enum(["google"]).optional(),
+  voices: z.record(z.string(), z.string()).optional(),
+});
+
 export const ZSurvey = z
   .object({
     id: z.string().cuid2(),
@@ -902,6 +913,7 @@ export const ZSurvey = z
     languages: z.array(ZSurveyLanguage),
     metadata: ZSurveyMetadata,
     slug: ZSurveySlug.nullable(),
+    voiceConfig: ZVoiceConfig.optional(),
     customHeadScripts: z.string().nullish(),
     customHeadScriptsMode: z.enum(["add", "replace"]).nullish(),
     reviewNote: z.string().nullable(),
