@@ -3,7 +3,7 @@ import { generateJSON, isAIConfigured } from "@/lib/ai/client";
 
 export const POST = async (req: NextRequest) => {
   try {
-    if (!isAIConfigured()) {
+    if (!(await isAIConfigured())) {
       return Response.json({ error: "AI not configured" }, { status: 500 });
     }
 

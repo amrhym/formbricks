@@ -7,12 +7,53 @@ import {
   S3_ENDPOINT_URL,
   S3_FORCE_PATH_STYLE,
   S3_INTERNAL_ENDPOINT,
+  S3_PUBLIC_ENDPOINT_URL,
   S3_REGION,
   S3_SECRET_KEY,
 } from "./constants";
 
-// Cached singleton instance of S3Client
+// Runtime config override (set from DB integration)
+interface S3ConfigOverride {
+  client: S3Client;
+  bucketName: string;
+  endpointUrl?: string;
+  internalEndpoint?: string;
+  publicEndpointUrl?: string;
+}
+
+let configOverride: S3ConfigOverride | undefined;
+
+// Cached singleton instance of S3Client (env-based fallback)
 let cachedS3Client: S3Client | undefined;
+
+/**
+ * Override the S3 config at runtime (used to inject credentials from DB integration).
+ * Pass undefined to revert to env-based config.
+ */
+export const setStorageConfigOverride = (override: S3ConfigOverride | undefined): void => {
+  configOverride = override;
+  cachedS3Client = undefined; // reset env-based cache so it re-initializes if override is cleared
+};
+
+/** Returns the active bucket name (override takes priority over env). */
+export const getActiveBucketName = (): string | undefined => {
+  return configOverride?.bucketName ?? S3_BUCKET_NAME;
+};
+
+/** Returns the active public endpoint URL (override takes priority over env). */
+export const getActivePublicEndpointUrl = (): string | undefined => {
+  return configOverride?.publicEndpointUrl ?? S3_PUBLIC_ENDPOINT_URL;
+};
+
+/** Returns the active public-facing S3 endpoint (override takes priority over env). */
+export const getActiveEndpointUrl = (): string | undefined => {
+  return configOverride?.endpointUrl ?? S3_ENDPOINT_URL;
+};
+
+/** Returns the active internal S3 endpoint (override takes priority over env). */
+export const getActiveInternalEndpoint = (): string | undefined => {
+  return configOverride?.internalEndpoint ?? S3_INTERNAL_ENDPOINT;
+};
 
 /**
  * Create an S3 client from environment variables
@@ -75,13 +116,16 @@ export const getCachedS3Client = (): S3Client | undefined => {
 };
 
 /**
- * Create an S3 client from an existing client or from environment variables
- * @param s3Client - An existing S3 client
- * @returns An S3 client or undefined if the S3 credentials are not set in the environment variables or if there is an error creating the client
+ * Create an S3 client from an existing client or from environment variables.
+ * If a runtime config override is set (from DB integration), uses that first.
  */
 export const createS3Client = (s3Client?: S3Client): S3Client | undefined => {
   if (s3Client) {
     return s3Client;
+  }
+  // Use DB-injected override if available
+  if (configOverride) {
+    return configOverride.client;
   }
   return getCachedS3Client();
 };

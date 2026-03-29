@@ -2,18 +2,35 @@ import "server-only";
 import { logger } from "@hivecfm/logger";
 import { supersetClient } from "./client";
 
+// Gamma role ID in Superset - used for dashboard viewer access
+const SUPERSET_GAMMA_ROLE_ID = 4;
+
+/**
+ * Get all dataset IDs from Superset.
+ * RLS rules must reference specific datasets to apply.
+ */
+async function getAllDatasetIds(): Promise<number[]> {
+  const result = (await supersetClient.apiRequest("GET", "/api/v1/dataset/?q=(page_size:200)")) as {
+    result: { id: number }[];
+  };
+  return result.result.map((d) => d.id);
+}
+
 /**
  * Create an RLS rule in Superset for a new tenant.
  * This ensures all Superset queries for this tenant are scoped to their data.
  */
 export const createRLSRule = async (organizationId: string, orgName: string): Promise<void> => {
   try {
+    const datasetIds = await getAllDatasetIds();
     await supersetClient.apiRequest("POST", "/api/v1/rowlevelsecurity/", {
       name: `tenant_${organizationId}`,
       description: `RLS rule for organization: ${orgName}`,
       filter_type: "Regular",
       clause: `"organizationId" = '${organizationId}'`,
       group_key: organizationId,
+      tables: datasetIds,
+      roles: [SUPERSET_GAMMA_ROLE_ID],
     });
 
     logger.info({ tenantId: organizationId }, "Superset RLS rule created");

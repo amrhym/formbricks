@@ -12,6 +12,7 @@ import { Result, err, ok } from "@hivecfm/types/error-handlers";
 import { TAccessType } from "@hivecfm/types/storage";
 import { WEBAPP_URL } from "@/lib/constants";
 import { getPublicDomain } from "@/lib/getPublicUrl";
+import { initStorageFromDB } from "@/lib/storage/client";
 import { sanitizeFileName } from "./utils";
 
 export const getSignedUrlForUpload = async (
@@ -31,6 +32,7 @@ export const getSignedUrlForUpload = async (
     StorageError
   >
 > => {
+  await initStorageFromDB();
   try {
     const safeFileName = sanitizeFileName(fileName);
     if (!safeFileName) {
@@ -77,6 +79,7 @@ export const getSignedUrlForDownload = async (
   environmentId: string,
   accessType: TAccessType
 ): Promise<Result<string, StorageError>> => {
+  await initStorageFromDB();
   try {
     const fileNameDecoded = decodeURIComponent(fileName);
     const fileKey = `${environmentId}/${accessType}/${fileNameDecoded}`;
@@ -98,9 +101,13 @@ export const getSignedUrlForDownload = async (
 };
 
 // We don't need to return or throw any errors, even if the file doesn't exist, we should not fail the request, nor log any errors, those will be handled by the deleteFile function
-export const deleteFile = async (environmentId: string, accessType: TAccessType, fileName: string) =>
-  await deleteFileFromS3(`${environmentId}/${accessType}/${fileName}`);
+export const deleteFile = async (environmentId: string, accessType: TAccessType, fileName: string) => {
+  await initStorageFromDB();
+  return deleteFileFromS3(`${environmentId}/${accessType}/${fileName}`);
+};
 
 // We don't need to return or throw any errors, even if the files don't exist, we should not fail the request, nor log any errors, those will be handled by the deleteFilesByPrefix function
-export const deleteFilesByEnvironmentId = async (environmentId: string) =>
-  await deleteFilesByPrefix(environmentId);
+export const deleteFilesByEnvironmentId = async (environmentId: string) => {
+  await initStorageFromDB();
+  return deleteFilesByPrefix(environmentId);
+};

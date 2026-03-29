@@ -39,6 +39,9 @@ export const StorageWrapper = ({ environmentId, storageIntegration }: StorageWra
   const [endpointUrl, setEndpointUrl] = useState(
     existingCreds?.provider === "minio" ? existingCreds.endpointUrl : ""
   );
+  const [internalEndpointUrl, setInternalEndpointUrl] = useState(
+    existingCreds?.provider === "minio" ? (existingCreds.internalEndpointUrl ?? "") : ""
+  );
   const [forcePathStyle, setForcePathStyle] = useState(
     existingCreds?.provider === "minio" ? (existingCreds.forcePathStyle ?? true) : true
   );
@@ -83,6 +86,7 @@ export const StorageWrapper = ({ environmentId, storageIntegration }: StorageWra
       return {
         provider: "minio" as const,
         endpointUrl,
+        internalEndpointUrl: internalEndpointUrl || undefined,
         accessKey,
         secretKey,
         bucketName,
@@ -298,7 +302,7 @@ export const StorageWrapper = ({ environmentId, storageIntegration }: StorageWra
         {provider === "minio" && (
           <>
             <div>
-              <Label htmlFor="storage-endpoint-url">Endpoint URL</Label>
+              <Label htmlFor="storage-endpoint-url">Endpoint URL (public)</Label>
               <Input
                 id="storage-endpoint-url"
                 type="text"
@@ -307,6 +311,24 @@ export const StorageWrapper = ({ environmentId, storageIntegration }: StorageWra
                 placeholder="https://minio.example.com"
                 className="mt-1"
               />
+              <p className="mt-1 text-xs text-slate-400">
+                The URL browsers use to access MinIO (e.g. through nginx reverse proxy).
+              </p>
+            </div>
+            <div>
+              <Label htmlFor="storage-internal-endpoint-url">Internal Endpoint URL (optional)</Label>
+              <Input
+                id="storage-internal-endpoint-url"
+                type="text"
+                value={internalEndpointUrl}
+                onChange={(e) => setInternalEndpointUrl(e.target.value)}
+                placeholder="http://minio:9000"
+                className="mt-1"
+              />
+              <p className="mt-1 text-xs text-slate-400">
+                Direct MinIO URL for server-side operations (Docker network). Falls back to public URL if
+                empty.
+              </p>
             </div>
             <div>
               <Label htmlFor="storage-access-key">Access Key</Label>

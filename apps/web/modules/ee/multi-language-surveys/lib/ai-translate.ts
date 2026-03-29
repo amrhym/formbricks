@@ -1,18 +1,13 @@
 "use server";
 
 import { z } from "zod";
-import { logger } from "@hivecfm/logger";
 import { ZId } from "@hivecfm/types/common";
 import { OperationNotAllowedError } from "@hivecfm/types/errors";
+import { generateText } from "@/lib/ai/client";
 import { checkAddonAccess } from "@/lib/tenant/license-enforcement";
 import { authenticatedActionClient } from "@/lib/utils/action-client";
 import { checkAuthorizationUpdated } from "@/lib/utils/action-client/action-client-middleware";
 import { getOrganizationIdFromEnvironmentId } from "@/lib/utils/helper";
-
-const AZURE_OPENAI_ENDPOINT = process.env.AZURE_OPENAI_ENDPOINT || "";
-const AZURE_OPENAI_KEY = process.env.AZURE_OPENAI_KEY || "";
-const AZURE_OPENAI_DEPLOYMENT = process.env.AZURE_OPENAI_DEPLOYMENT || "gpt-4o-mini";
-const AZURE_OPENAI_API_VERSION = process.env.AZURE_OPENAI_API_VERSION || "2024-06-01";
 
 const ZTranslateSurveyContentAction = z.object({
   environmentId: ZId,
@@ -26,12 +21,6 @@ async function translateTextsWithAI(
   sourceLanguageCode: string,
   targetLanguageCode: string
 ): Promise<string[]> {
-  if (!AZURE_OPENAI_ENDPOINT || !AZURE_OPENAI_KEY) {
-    throw new Error(
-      "AI translation is not configured. AZURE_OPENAI_ENDPOINT and AZURE_OPENAI_KEY are required."
-    );
-  }
-
   if (texts.length === 0) return [];
 
   // Filter out empty strings and track their positions
@@ -46,41 +35,13 @@ async function translateTextsWithAI(
 
   const numberedTexts = indexedTexts.map((item, i) => `[${i + 1}] ${item.text}`).join("\n");
 
-  const url = `${AZURE_OPENAI_ENDPOINT}/openai/deployments/${AZURE_OPENAI_DEPLOYMENT}/chat/completions?api-version=${AZURE_OPENAI_API_VERSION}`;
-
-  const response = await fetch(url, {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-      "api-key": AZURE_OPENAI_KEY,
-    },
-    body: JSON.stringify({
-      temperature: 0.1,
-      messages: [
-        {
-          role: "system",
-          content: `You are a professional translator. Translate the following numbered texts from "${sourceLanguageCode}" to "${targetLanguageCode}".
+  const systemPrompt = `You are a professional translator. Translate the following numbered texts from "${sourceLanguageCode}" to "${targetLanguageCode}".
 Keep the same numbering format [1], [2], etc.
 Preserve any HTML tags, placeholders like {{variable}}, and formatting exactly as-is.
 Only translate the human-readable text content.
-Return ONLY the numbered translations, nothing else.`,
-        },
-        {
-          role: "user",
-          content: numberedTexts,
-        },
-      ],
-    }),
-  });
+Return ONLY the numbered translations, nothing else.`;
 
-  if (!response.ok) {
-    const error = await response.text();
-    logger.error({ status: response.status, error }, "OpenAI API error during translation");
-    throw new Error(`AI translation failed: ${response.status}`);
-  }
-
-  const data = await response.json();
-  const content: string = data.choices?.[0]?.message?.content ?? "";
+  const content = await generateText(systemPrompt, numberedTexts, { temperature: 0.1 });
 
   // Parse the numbered responses
   const results = new Array(texts.length).fill("");

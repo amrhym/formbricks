@@ -35,7 +35,12 @@ deployment:
   nodeSelector: {}
 
   # Additional labels for Deployment
-  additionalLabels: {}
+  # Standard HiveCFM tags — override per environment in helmfile
+  additionalLabels:
+    project: hivecfm
+    owner: xic-platform
+    cleanup-group: hivecfm
+    cost-center: xic-hivecfm
 
   # Additional pod labels to be used in the Service's label selector
   additionalPodLabels: {}

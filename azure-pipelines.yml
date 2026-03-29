@@ -11,6 +11,7 @@ variables:
   containerRegistry: hivecfmregistry.azurecr.io
   tag: $(Build.BuildId)
   DOCKER_BUILDKIT: 1
+  resourceTags: 'project=hivecfm environment=dev owner=xic-platform cleanup-group=hivecfm-dev cost-center=xic-hivecfm managed-by=azure-devops'
 
 stages:
 - stage: Build
@@ -80,10 +81,12 @@ stages:
           --name hivecfm-core \
           --resource-group rg-hivecfm \
           --image $(containerRegistry)/hivecfm-core:$(tag) \
+          --tags $(resourceTags) \
           || az containerapp update \
             --name hivecfm-core \
             --resource-group rg-hivecfm \
-            --image $(containerRegistry)/hivecfm-core:latest
+            --image $(containerRegistry)/hivecfm-core:latest \
+            --tags $(resourceTags)
       displayName: Deploy hivecfm-core
 
   - job: DeployLicensePortal
@@ -95,8 +98,10 @@ stages:
           --name license-portal \
           --resource-group rg-hivecfm \
           --image $(containerRegistry)/hivecfm-license-portal:$(tag) \
+          --tags $(resourceTags) \
           || az containerapp update \
             --name license-portal \
             --resource-group rg-hivecfm \
-            --image $(containerRegistry)/hivecfm-license-portal:latest
+            --image $(containerRegistry)/hivecfm-license-portal:latest \
+            --tags $(resourceTags)
       displayName: Deploy license-portal

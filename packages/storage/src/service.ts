@@ -14,14 +14,14 @@ import {
 import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
 import { logger } from "@hivecfm/logger";
 import { type Result, type StorageError, StorageErrorCode, err, ok } from "../types/error";
-import { createS3Client } from "./client";
 import {
-  S3_BUCKET_NAME,
-  S3_ENDPOINT_URL,
-  S3_INTERNAL_ENDPOINT,
-  S3_PUBLIC_ENDPOINT_URL,
-  STORAGE_PROVIDER,
-} from "./constants";
+  createS3Client,
+  getActiveBucketName,
+  getActiveEndpointUrl,
+  getActiveInternalEndpoint,
+  getActivePublicEndpointUrl,
+} from "./client";
+import { STORAGE_PROVIDER } from "./constants";
 
 const isAzureBlob = () => STORAGE_PROVIDER === "azureBlob";
 
@@ -67,7 +67,8 @@ export const getSignedUploadUrl = async (
       ? [["content-length-range", 0, maxSize]]
       : undefined;
 
-    if (!S3_BUCKET_NAME) {
+    const activeBucket = getActiveBucketName();
+    if (!activeBucket) {
       logger.error("Failed to get signed upload URL: S3 bucket name is not set");
       return err({
         code: StorageErrorCode.S3CredentialsError,
@@ -76,7 +77,7 @@ export const getSignedUploadUrl = async (
 
     const { fields, url } = await createPresignedPost(s3Client, {
       Expires: 2 * 60, // 2 minutes
-      Bucket: S3_BUCKET_NAME,
+      Bucket: activeBucket,
       Key: `${filePath}/${fileName}`,
       Fields: {
         "Content-Type": contentType,
@@ -88,9 +89,10 @@ export const getSignedUploadUrl = async (
     // If a public endpoint is configured and the S3 endpoint is internal,
     // rewrite the presigned POST URL so browsers can reach it.
     let browserUrl = url;
-    const sdkEndpoint = S3_INTERNAL_ENDPOINT || S3_ENDPOINT_URL;
-    if (S3_PUBLIC_ENDPOINT_URL && sdkEndpoint) {
-      browserUrl = url.replace(sdkEndpoint, S3_PUBLIC_ENDPOINT_URL);
+    const sdkEndpoint = getActiveInternalEndpoint() || getActiveEndpointUrl();
+    const publicEndpoint = getActivePublicEndpointUrl();
+    if (publicEndpoint && sdkEndpoint) {
+      browserUrl = url.replace(sdkEndpoint, publicEndpoint);
     }
 
     return ok({
@@ -126,7 +128,8 @@ export const getSignedDownloadUrl = async (fileKey: string): Promise<Result<stri
       });
     }
 
-    if (!S3_BUCKET_NAME) {
+    const activeBucket = getActiveBucketName();
+    if (!activeBucket) {
       return err({
         code: StorageErrorCode.S3CredentialsError,
       });
@@ -134,7 +137,7 @@ export const getSignedDownloadUrl = async (fileKey: string): Promise<Result<stri
 
     // Check if file exists before generating signed URL
     const headObjectCommand = new HeadObjectCommand({
-      Bucket: S3_BUCKET_NAME,
+      Bucket: activeBucket,
       Key: fileKey,
     });
 
@@ -155,7 +158,7 @@ export const getSignedDownloadUrl = async (fileKey: string): Promise<Result<stri
     }
 
     const getObjectCommand = new GetObjectCommand({
-      Bucket: S3_BUCKET_NAME,
+      Bucket: activeBucket,
       Key: fileKey,
     });
 
@@ -188,14 +191,15 @@ export const deleteFile = async (fileKey: string): Promise<Result<void, StorageE
       });
     }
 
-    if (!S3_BUCKET_NAME) {
+    const activeBucket = getActiveBucketName();
+    if (!activeBucket) {
       return err({
         code: StorageErrorCode.S3CredentialsError,
       });
     }
 
     const deleteObjectCommand = new DeleteObjectCommand({
-      Bucket: S3_BUCKET_NAME,
+      Bucket: activeBucket,
       Key: fileKey,
     });
 
@@ -231,7 +235,8 @@ export const deleteFilesByPrefix = async (prefix: string): Promise<Result<void, 
       });
     }
 
-    if (!S3_BUCKET_NAME) {
+    const activeBucket = getActiveBucketName();
+    if (!activeBucket) {
       return err({
         code: StorageErrorCode.S3CredentialsError,
       });
@@ -250,7 +255,7 @@ export const deleteFilesByPrefix = async (prefix: string): Promise<Result<void, 
     const paginator = paginateListObjectsV2(
       { client: s3Client },
       {
-        Bucket: S3_BUCKET_NAME,
+        Bucket: activeBucket,
         Prefix: normalizedPrefix,
       }
     );
@@ -270,7 +275,7 @@ export const deleteFilesByPrefix = async (prefix: string): Promise<Result<void, 
       const batch = keys.slice(i, i + 1000);
 
       const deleteObjectsCommand = new DeleteObjectsCommand({
-        Bucket: S3_BUCKET_NAME,
+        Bucket: activeBucket,
         Delete: {
           Objects: batch,
         },

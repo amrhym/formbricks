@@ -7,6 +7,8 @@ export type TStorageProvider = z.infer<typeof ZStorageProvider>;
 export const ZStorageMinioCredential = z.object({
   provider: z.literal("minio"),
   endpointUrl: z.string().url(),
+  internalEndpointUrl: z.string().optional(),
+  publicEndpointUrl: z.string().optional(),
   accessKey: z.string().min(1),
   secretKey: z.string().min(1),
   bucketName: z.string().min(1),

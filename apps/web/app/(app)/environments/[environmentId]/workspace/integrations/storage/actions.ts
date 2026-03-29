@@ -39,7 +39,7 @@ export const testStorageConnectionAction = authenticatedActionClient
 
     if (creds.provider === "minio") {
       const s3Client = new S3Client({
-        endpoint: creds.endpointUrl,
+        endpoint: creds.internalEndpointUrl || creds.endpointUrl,
         region: creds.region || "us-east-1",
         forcePathStyle: creds.forcePathStyle ?? true,
         credentials: { accessKeyId: creds.accessKey, secretAccessKey: creds.secretKey },
