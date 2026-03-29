@@ -264,6 +264,17 @@ curl -X POST "${ivrResponseUrl}" \\
           </div>
         </div>
 
+        <div className="mt-4 rounded-md bg-blue-50 p-3">
+          <p className="text-sm font-medium text-blue-800">Multi-Language Architect Flow</p>
+          <ol className="mt-1 list-decimal pl-4 text-xs text-blue-700">
+            <li>Add a language selection menu (e.g., &quot;Press 1 for Arabic, Press 2 for English&quot;)</li>
+            <li>Set Flow.language based on DTMF input</li>
+            <li>Call GetPromptNames with the selected language</li>
+            <li>Play language-specific prompts for each question</li>
+            <li>Include language in SubmitAnswer payload</li>
+          </ol>
+        </div>
+
         <p className="text-xs text-slate-400">
           Replace <code className="rounded bg-slate-200 px-1">YOUR_API_KEY</code> with your actual API key
           from Settings &gt; API Keys.
@@ -290,7 +301,7 @@ curl -X POST "${ivrResponseUrl}" \\
       actionType: "custom",
       config: {
         request: {
-          requestUrlTemplate: `${baseUrl}/api/v1/client/${environmentId}/ivr/\${input.surveyId}`,
+          requestUrlTemplate: `${baseUrl}/api/v1/client/${environmentId}/ivr/\${input.surveyId}?lang=\${input.language}`,
           requestType: "GET",
           headers: { "x-Api-Key": "YOUR_API_KEY" },
           requestTemplate: "${input.rawRequest}",
@@ -311,7 +322,10 @@ curl -X POST "${ivrResponseUrl}" \\
           inputSchema: {
             title: "Input",
             type: "object",
-            properties: { surveyId: { type: "string" } },
+            properties: {
+              surveyId: { type: "string" },
+              language: { type: "string", description: "ISO language code (e.g. ar, en)" },
+            },
             additionalProperties: true,
           },
         },
@@ -339,7 +353,7 @@ curl -X POST "${ivrResponseUrl}" \\
       actionType: "custom",
       config: {
         request: {
-          requestUrlTemplate: `${baseUrl}/api/v1/client/${environmentId}/ivr/\${input.surveyId}/prompts`,
+          requestUrlTemplate: `${baseUrl}/api/v1/client/${environmentId}/ivr/\${input.surveyId}/prompts?lang=\${input.language}`,
           requestType: "GET",
           headers: { "x-Api-Key": "YOUR_API_KEY" },
           requestTemplate: "${input.rawRequest}",
@@ -359,7 +373,10 @@ curl -X POST "${ivrResponseUrl}" \\
           inputSchema: {
             title: "Input",
             type: "object",
-            properties: { surveyId: { type: "string" } },
+            properties: {
+              surveyId: { type: "string" },
+              language: { type: "string", description: "ISO language code (required)" },
+            },
             additionalProperties: true,
           },
         },
@@ -391,7 +408,7 @@ curl -X POST "${ivrResponseUrl}" \\
           requestType: "POST",
           headers: { "x-Api-Key": "YOUR_API_KEY" },
           requestTemplate:
-            '{ "callId": "${input.callId}", "callerNumber": "${input.callerNumber}", "finished": ${input.finished}, "answers": { "${input.questionId}": "${input.answerValue}" } }',
+            '{ "callId": "${input.callId}", "callerNumber": "${input.callerNumber}", "language": "${input.language}", "finished": ${input.finished}, "answers": { "${input.questionId}": "${input.answerValue}" } }',
         },
         response: {
           translationMap: {
@@ -414,6 +431,7 @@ curl -X POST "${ivrResponseUrl}" \\
               surveyId: { type: "string" },
               callId: { type: "string" },
               callerNumber: { type: "string" },
+              language: { type: "string", description: "Caller language code" },
               questionId: { type: "string" },
               answerValue: { type: "string" },
               finished: { type: "boolean" },
