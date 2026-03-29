@@ -75,19 +75,21 @@ export interface IvrSurveyResponse {
   questions: IvrQuestion[];
 }
 
-const getDefaultLanguageText = (
+const getLanguageText = (
   i18nString?: Record<string, string>,
+  langCode?: string,
   hiddenFields?: Record<string, string>
 ): string | null => {
   if (!i18nString) return null;
-  const text = i18nString.default || null;
+  const text = (langCode && i18nString[langCode]) || i18nString.default || null;
   if (!text || !hiddenFields || Object.keys(hiddenFields).length === 0) return text;
   return text.includes("#recall:") ? parseRecallInfo(text, hiddenFields) : text;
 };
 
 const buildInputConfig = (
   element: TSurveyElement,
-  hiddenFields?: Record<string, string>
+  hiddenFields?: Record<string, string>,
+  lang?: string
 ): IvrInputConfig | null => {
   switch (element.type) {
     case TSurveyElementTypeEnum.NPS:
@@ -105,7 +107,7 @@ const buildInputConfig = (
         inputType: "dtmf_choice",
         options: choices.map((choice, index) => ({
           key: String(index + 1),
-          label: getDefaultLanguageText(choice.label, hiddenFields) || `Option ${index + 1}`,
+          label: getLanguageText(choice.label, lang, hiddenFields) || `Option ${index + 1}`,
         })),
       };
     }
@@ -135,9 +137,11 @@ const buildMediaUrl = (
   baseUrl: string,
   environmentId: string,
   surveyId: string,
-  questionId: string
+  questionId: string,
+  lang?: string
 ): string => {
-  return `${baseUrl}/api/v1/client/${environmentId}/ivr/${surveyId}/media/${questionId}`;
+  const url = `${baseUrl}/api/v1/client/${environmentId}/ivr/${surveyId}/media/${questionId}`;
+  return lang ? `${url}?lang=${lang}` : url;
 };
 
 // ─── Lightweight condition evaluator for hidden fields at IVR GET time ───
@@ -276,10 +280,17 @@ const filterBlocksByLogic = (survey: TSurvey, hiddenFields: Record<string, strin
 export const linearizeSurveyForIvr = (
   survey: TSurvey,
   baseUrl: string,
-  hiddenFields: Record<string, string> = {}
+  hiddenFields: Record<string, string> = {},
+  lang?: string
 ): IvrSurveyResponse => {
   const questions: IvrQuestion[] = [];
   let questionIndex = 0;
+
+  // Compute language metadata
+  const defaultLangCode = survey.languages?.find((l: any) => l.default)?.language?.code || "default";
+  const availableLanguages = survey.languages
+    ?.filter((l: any) => l.enabled)
+    .map((l: any) => l.language?.code) || ["default"];
 
   // Get voice channel config if available
   const channelConfig = survey.channelId ? (survey as any).channel?.config : null;
@@ -305,24 +316,32 @@ export const linearizeSurveyForIvr = (
         continue;
       }
 
-      const inputConfig = buildInputConfig(element, hiddenFields);
+      const inputConfig = buildInputConfig(element, hiddenFields, lang);
       if (!inputConfig) continue;
 
       questionIndex++;
+
+      // Resolve audio URL from i18n map
+      const audioUrlMap = element.audioUrl as Record<string, string> | undefined;
+      const resolvedAudioKey = lang && audioUrlMap?.[lang] ? lang : "default";
+      const rawAudioUrl = audioUrlMap?.[resolvedAudioKey] || null;
+
+      // Build prompt suffix for non-default languages
+      const promptSuffix = lang && lang !== defaultLangCode ? `_${lang}` : "";
 
       questions.push({
         questionId: element.id,
         questionIndex,
         blockId: block.id,
         blockName: block.name,
-        questionText: getDefaultLanguageText(element.headline, hiddenFields) || "",
-        subheader: getDefaultLanguageText(element.subheader, hiddenFields) || null,
-        audioUrl: element.audioUrl
-          ? buildMediaUrl(baseUrl, survey.environmentId, survey.id, element.id)
+        questionText: getLanguageText(element.headline, lang, hiddenFields) || "",
+        subheader: getLanguageText(element.subheader, lang, hiddenFields) || null,
+        audioUrl: rawAudioUrl
+          ? buildMediaUrl(baseUrl, survey.environmentId, survey.id, element.id, lang)
           : null,
         audioSource: element.audioSource || "tts",
-        genesysPromptName: element.audioUrl
-          ? `hivecfm_${survey.id}_${element.id}`.replace(/[^a-zA-Z0-9_]/g, "_")
+        genesysPromptName: rawAudioUrl
+          ? `hivecfm_${survey.id}_${element.id}${promptSuffix}`.replace(/[^a-zA-Z0-9_]/g, "_")
           : null,
         type: element.type,
         required: element.required,
@@ -334,38 +353,52 @@ export const linearizeSurveyForIvr = (
   // Build welcome/thank you messages from survey endings
   const firstEndingMessage =
     survey.endings.length > 0 && survey.endings[0].type === "endScreen"
-      ? getDefaultLanguageText(survey.endings[0].headline, hiddenFields)
+      ? getLanguageText(survey.endings[0].headline, lang, hiddenFields)
       : null;
+
+  // Resolve welcome card audio from i18n map
+  const welcomeAudioUrlMap = (survey.welcomeCard as any)?.audioUrl as Record<string, string> | undefined;
+  const welcomeAudioKey = lang && welcomeAudioUrlMap?.[lang] ? lang : "default";
+  const welcomeRawAudioUrl = welcomeAudioUrlMap?.[welcomeAudioKey] || null;
+
+  // Resolve ending card audio from i18n map
+  const endingAudioUrlMap =
+    survey.endings.length > 0 && survey.endings[0].type === "endScreen"
+      ? ((survey.endings[0] as any)?.audioUrl as Record<string, string> | undefined)
+      : undefined;
+  const endingAudioKey = lang && endingAudioUrlMap?.[lang] ? lang : "default";
+  const endingRawAudioUrl = endingAudioUrlMap?.[endingAudioKey] || null;
+
+  // Build prompt suffix for non-default languages
+  const configPromptSuffix = lang && lang !== defaultLangCode ? `_${lang}` : "";
 
   const surveyConfig: IvrSurveyConfig = {
     id: survey.id,
     name: survey.name,
     totalQuestions: questions.length,
-    language: survey.languages?.length > 0 ? survey.languages[0] : "default",
-    availableLanguages: survey.languages || ["default"],
+    language: lang || defaultLangCode,
+    availableLanguages,
     welcomeMessage: survey.welcomeCard.enabled
-      ? getDefaultLanguageText(survey.welcomeCard.headline, hiddenFields) || null
+      ? getLanguageText(survey.welcomeCard.headline, lang, hiddenFields) || null
       : null,
-    welcomeAudioUrl: survey.welcomeCard?.fileUrl
-      ? buildMediaUrl(baseUrl, survey.environmentId, survey.id, "welcome")
+    welcomeAudioUrl: welcomeRawAudioUrl
+      ? buildMediaUrl(baseUrl, survey.environmentId, survey.id, "welcome", lang)
       : null,
     welcomeAudioSource: (survey.welcomeCard as any)?.audioSource || "tts",
-    welcomeGenesysPromptName: survey.welcomeCard?.fileUrl
-      ? `hivecfm_${survey.id}_welcome`.replace(/[^a-zA-Z0-9_]/g, "_")
+    welcomeGenesysPromptName: welcomeRawAudioUrl
+      ? `hivecfm_${survey.id}_welcome${configPromptSuffix}`.replace(/[^a-zA-Z0-9_]/g, "_")
       : null,
     thankYouMessage: voiceConfig.thankYouMessage || firstEndingMessage,
-    thankYouAudioUrl:
-      survey.endings.length > 0 && survey.endings[0].type === "endScreen" && survey.endings[0].imageUrl
-        ? buildMediaUrl(baseUrl, survey.environmentId, survey.id, "ending")
-        : null,
+    thankYouAudioUrl: endingRawAudioUrl
+      ? buildMediaUrl(baseUrl, survey.environmentId, survey.id, "ending", lang)
+      : null,
     thankYouAudioSource:
       survey.endings.length > 0 && survey.endings[0].type === "endScreen"
         ? (survey.endings[0] as any).audioSource || "tts"
         : "tts",
-    thankYouGenesysPromptName:
-      survey.endings.length > 0 && survey.endings[0].type === "endScreen" && survey.endings[0].imageUrl
-        ? `hivecfm_${survey.id}_ending`.replace(/[^a-zA-Z0-9_]/g, "_")
-        : null,
+    thankYouGenesysPromptName: endingRawAudioUrl
+      ? `hivecfm_${survey.id}_ending${configPromptSuffix}`.replace(/[^a-zA-Z0-9_]/g, "_")
+      : null,
     errorMessage: voiceConfig.errorMessage || "Invalid input, please try again",
     inputTimeout: voiceConfig.inputTimeout,
     maxRetries: voiceConfig.maxRetries,

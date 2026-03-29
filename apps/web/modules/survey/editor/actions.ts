@@ -169,6 +169,11 @@ export const updateSurveyAction = authenticatedActionClient.schema(ZSurvey).acti
 
       // Sync audio prompts to Genesys Cloud for voice surveys
       if (result.type === "voice") {
+        const endScreenEnding =
+          result.endings?.length > 0 && (result.endings[0] as any)?.type === "endScreen"
+            ? (result.endings[0] as any)
+            : undefined;
+
         syncAudioPromptsToGenesys(result.environmentId, {
           id: result.id,
           name: result.name,
@@ -176,8 +181,14 @@ export const updateSurveyAction = authenticatedActionClient.schema(ZSurvey).acti
             .flatMap((b: any) => b.elements ?? [])
             .map((el: any) => ({
               id: el.id,
-              audioUrl: el.audioUrl,
+              audioUrl: el.audioUrl as Record<string, string> | undefined,
+              audioSource: el.audioSource as string | undefined,
             })),
+          welcomeAudioUrl: (result.welcomeCard as any)?.audioUrl as Record<string, string> | undefined,
+          welcomeAudioSource: (result.welcomeCard as any)?.audioSource as string | undefined,
+          endingAudioUrl: endScreenEnding?.audioUrl as Record<string, string> | undefined,
+          endingAudioSource: endScreenEnding?.audioSource as string | undefined,
+          languages: result.languages as any,
         }).catch((err) => console.error("Failed to sync Genesys prompts:", err));
       }
 

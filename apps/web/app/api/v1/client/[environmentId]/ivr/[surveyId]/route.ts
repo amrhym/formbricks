@@ -55,7 +55,7 @@ export const GET = withV1ApiWrapper({
     try {
       // Extract hidden fields from query params
       // Known non-hidden-field params to exclude
-      const reservedParams = new Set(["environmentId", "surveyId"]);
+      const reservedParams = new Set(["environmentId", "surveyId", "lang"]);
       const hiddenFields: Record<string, string> = {};
       for (const [key, value] of req.nextUrl.searchParams.entries()) {
         if (!reservedParams.has(key)) {
@@ -63,9 +63,12 @@ export const GET = withV1ApiWrapper({
         }
       }
 
+      // Extract lang parameter
+      const lang = req.nextUrl.searchParams.get("lang") || undefined;
+
       // Use the request origin or WEBAPP_URL as the base for media URLs
       const baseUrl = req ? `${req.nextUrl.protocol}//${req.nextUrl.host}` : WEBAPP_URL;
-      const ivrData = linearizeSurveyForIvr(survey, baseUrl, hiddenFields);
+      const ivrData = linearizeSurveyForIvr(survey, baseUrl, hiddenFields, lang);
       return {
         response: responses.successResponse(ivrData, true),
       };

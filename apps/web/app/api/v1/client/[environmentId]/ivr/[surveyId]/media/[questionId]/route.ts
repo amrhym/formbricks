@@ -40,9 +40,12 @@ const parseStorageUrl = (
   }
 };
 
-export const GET = async (_request: NextRequest, props: { params: Promise<Params> }): Promise<Response> => {
+export const GET = async (request: NextRequest, props: { params: Promise<Params> }): Promise<Response> => {
   const params = await props.params;
   const { environmentId, surveyId, questionId } = params;
+
+  // Extract lang parameter
+  const lang = request.nextUrl.searchParams.get("lang") || undefined;
 
   const environmentIdValidation = ZEnvironmentId.safeParse(environmentId);
   if (!environmentIdValidation.success) {
@@ -66,31 +69,59 @@ export const GET = async (_request: NextRequest, props: { params: Promise<Params
     );
   }
 
-  // Find the element across all blocks
-  let targetElement: TSurveyElement | null = null;
-  for (const block of survey.blocks) {
-    for (const element of block.elements) {
-      if (element.id === questionId) {
-        targetElement = element;
-        break;
-      }
+  // Helper to resolve audio URL from an i18n record or legacy string
+  const resolveAudioUrl = (audioUrlField: unknown): string | null => {
+    if (typeof audioUrlField === "string") {
+      return audioUrlField; // legacy
+    } else if (audioUrlField && typeof audioUrlField === "object") {
+      const map = audioUrlField as Record<string, string>;
+      return (lang && map[lang]) || map["default"] || null;
     }
-    if (targetElement) break;
-  }
+    return null;
+  };
 
-  if (!targetElement) {
-    return responses.notFoundResponse("Question", questionId, true);
-  }
+  // Handle special IDs: welcome and ending
+  let resolvedAudioUrl: string | null = null;
 
-  if (!targetElement.audioUrl) {
-    return responses.notFoundResponse("Audio", questionId, true);
+  if (questionId === "welcome") {
+    resolvedAudioUrl = resolveAudioUrl((survey.welcomeCard as any)?.audioUrl);
+    if (!resolvedAudioUrl) {
+      return responses.notFoundResponse("Audio", questionId, true);
+    }
+  } else if (questionId === "ending") {
+    const ending = survey.endings.length > 0 ? survey.endings[0] : null;
+    resolvedAudioUrl = resolveAudioUrl((ending as any)?.audioUrl);
+    if (!resolvedAudioUrl) {
+      return responses.notFoundResponse("Audio", questionId, true);
+    }
+  } else {
+    // Find the element across all blocks
+    let targetElement: TSurveyElement | null = null;
+    for (const block of survey.blocks) {
+      for (const element of block.elements) {
+        if (element.id === questionId) {
+          targetElement = element;
+          break;
+        }
+      }
+      if (targetElement) break;
+    }
+
+    if (!targetElement) {
+      return responses.notFoundResponse("Question", questionId, true);
+    }
+
+    resolvedAudioUrl = resolveAudioUrl(targetElement.audioUrl);
+    if (!resolvedAudioUrl) {
+      return responses.notFoundResponse("Audio", questionId, true);
+    }
   }
 
   // Parse the storage URL to get file info for S3 download
-  const storageInfo = parseStorageUrl(targetElement.audioUrl);
+  const storageInfo = parseStorageUrl(resolvedAudioUrl);
   if (!storageInfo) {
     // If audioUrl is an external URL (not in our storage), redirect to it
-    return Response.redirect(targetElement.audioUrl, 302);
+    return Response.redirect(resolvedAudioUrl, 302);
   }
 
   const signedUrlResult = await getSignedUrlForDownload(
@@ -101,7 +132,7 @@ export const GET = async (_request: NextRequest, props: { params: Promise<Params
 
   if (!signedUrlResult.ok) {
     logger.error(
-      { error: signedUrlResult.error, questionId, audioUrl: targetElement.audioUrl },
+      { error: signedUrlResult.error, questionId, audioUrl: resolvedAudioUrl },
       "Failed to get signed URL for IVR audio"
     );
     return responses.notFoundResponse("Audio file", questionId, true);

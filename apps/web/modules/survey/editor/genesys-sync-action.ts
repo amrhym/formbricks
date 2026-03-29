@@ -49,22 +49,31 @@ export const syncToGenesysAction = authenticatedActionClient
         .flatMap((b: any) => b.elements ?? [])
         .map((el: any) => ({
           id: el.id,
-          audioUrl: el.audioUrl,
+          audioUrl: el.audioUrl as Record<string, string> | undefined,
+          audioSource: el.audioSource as string | undefined,
         }));
 
-      // Get welcome and ending audio URLs
-      const welcomeAudioUrl = survey.welcomeCard?.fileUrl || undefined;
-      const endingAudioUrl =
+      // Get welcome and ending audio
+      const welcomeAudioUrl = (survey.welcomeCard as any)?.audioUrl as Record<string, string> | undefined;
+      const welcomeAudioSource = (survey.welcomeCard as any)?.audioSource as string | undefined;
+
+      // Get ending audio (first endScreen ending)
+      const endScreenEnding =
         survey.endings?.length > 0 && (survey.endings[0] as any)?.type === "endScreen"
-          ? (survey.endings[0] as any)?.imageUrl || undefined
+          ? (survey.endings[0] as any)
           : undefined;
+      const endingAudioUrl = endScreenEnding?.audioUrl as Record<string, string> | undefined;
+      const endingAudioSource = endScreenEnding?.audioSource as string | undefined;
 
       const result = await syncAudioPromptsToGenesys(parsedInput.environmentId, {
         id: survey.id,
         name: survey.name,
         elements,
         welcomeAudioUrl,
+        welcomeAudioSource,
         endingAudioUrl,
+        endingAudioSource,
+        languages: survey.languages as any,
       });
 
       return result;

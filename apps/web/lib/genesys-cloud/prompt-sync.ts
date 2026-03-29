@@ -1,24 +1,36 @@
 import { TIntegrationGenesysCloud } from "@hivecfm/types/integration/genesys-cloud";
 import { createOrUpdateIntegration, getIntegrationByType } from "@/lib/integration/service";
 import { createPrompt, getAccessToken, uploadPromptResource } from "./client";
+import { toGenesysLanguage } from "./language-map";
 
 interface SurveyElement {
   id: string;
-  audioUrl?: string;
+  audioUrl?: Record<string, string>;
+  audioSource?: string;
+}
+
+interface SurveyLanguage {
+  language: { code: string };
+  default: boolean;
+  enabled: boolean;
 }
 
 interface SurveyForSync {
   id: string;
   name: string;
   elements: SurveyElement[];
-  welcomeAudioUrl?: string;
-  endingAudioUrl?: string;
+  welcomeAudioUrl?: Record<string, string>;
+  welcomeAudioSource?: string;
+  endingAudioUrl?: Record<string, string>;
+  endingAudioSource?: string;
+  languages?: SurveyLanguage[];
 }
 
 interface PromptMapping {
   elementId: string;
   promptId: string;
   promptName: string;
+  language?: string;
 }
 
 export interface SyncResult {
@@ -28,6 +40,38 @@ export interface SyncResult {
   errors: string[];
 }
 
+/**
+ * Download audio from a URL and upload it as a Genesys prompt resource.
+ * Returns true on success.
+ */
+async function downloadAndUpload(
+  token: string,
+  environmentUrl: string,
+  promptId: string,
+  audioUrl: string,
+  genesysLanguage: string,
+  label: string,
+  errors: string[]
+): Promise<boolean> {
+  const audioResponse = await fetch(audioUrl);
+  if (!audioResponse.ok) {
+    const msg = `Failed to download audio for ${label}: ${audioResponse.status}`;
+    console.error(msg);
+    errors.push(msg);
+    return false;
+  }
+  const audioBuffer = await audioResponse.arrayBuffer();
+  await uploadPromptResource(token, environmentUrl, promptId, audioBuffer, genesysLanguage);
+  return true;
+}
+
+/**
+ * Sync audio prompts to Genesys Cloud with per-language support.
+ *
+ * For each element/card with audioSource !== "tts", we iterate over enabled languages
+ * and create a separate prompt resource for each language that has an audio URL.
+ * The default language prompt keeps the base name; other languages get a `_${langCode}` suffix.
+ */
 export async function syncAudioPromptsToGenesys(
   environmentId: string,
   survey: SurveyForSync
@@ -44,100 +88,117 @@ export async function syncAudioPromptsToGenesys(
   const credentials = integration.config.key;
   const existingData = (integration.config.data ?? []) as PromptMapping[];
 
-  const elementsWithAudio = survey.elements.filter((el) => el.audioUrl);
-  if (elementsWithAudio.length === 0) {
-    return { success: true, synced: 0, total: 0, errors: [] };
-  }
+  // Determine enabled languages and default language code
+  const enabledLanguages = survey.languages?.filter((l) => l.enabled) ?? [];
+  const defaultLangCode = survey.languages?.find((l) => l.default)?.language?.code || "default";
 
   const token = await getAccessToken(credentials);
   const updatedMappings: PromptMapping[] = [...existingData];
   const errors: string[] = [];
   let synced = 0;
+  let total = 0;
 
-  for (const element of elementsWithAudio) {
-    const promptName = `hivecfm_${survey.id}_${element.id}`.replace(/[^a-zA-Z0-9_]/g, "_");
+  /**
+   * Process an audio URL map for a given element/card across all enabled languages.
+   */
+  async function syncAudioItem(
+    itemId: string,
+    audioUrlMap: Record<string, string> | undefined,
+    audioSource: string | undefined,
+    descriptionPrefix: string
+  ): Promise<void> {
+    // Skip TTS-only items — those don't need prompt uploads
+    if (!audioUrlMap || audioSource === "tts") return;
 
-    try {
-      let promptId: string;
+    // Determine which languages to sync
+    const languagesToSync =
+      enabledLanguages.length > 0
+        ? enabledLanguages
+        : // Fallback: single default language based on audioUrl keys
+          [{ language: { code: defaultLangCode }, default: true, enabled: true }];
 
-      // Always create or find the prompt — handles deleted prompts gracefully
-      const prompt = await createPrompt(
-        token,
-        credentials.environmentUrl,
-        promptName,
-        `Audio prompt for survey "${survey.name}" element ${element.id}`
-      );
-      promptId = prompt.id;
+    for (const lang of languagesToSync) {
+      const langCode = lang.language.code;
+      const isDefault = lang.default;
 
-      // Update or add mapping
-      const existingIdx = updatedMappings.findIndex((m) => m.elementId === element.id);
-      if (existingIdx >= 0) {
-        updatedMappings[existingIdx] = { elementId: element.id, promptId, promptName };
-      } else {
-        updatedMappings.push({ elementId: element.id, promptId, promptName });
-      }
+      // Look up audio URL: default language uses the "default" key, others use the lang code
+      const audioKey = isDefault ? "default" : langCode;
+      const audioUrl = audioUrlMap[audioKey];
+      if (!audioUrl) continue;
 
-      // Download audio from the URL and upload to Genesys
-      const audioResponse = await fetch(element.audioUrl!);
-      if (!audioResponse.ok) {
-        const msg = `Failed to download audio for element ${element.id}: ${audioResponse.status}`;
-        console.error(msg);
+      total++;
+
+      // Prompt name: no suffix for default language, _langCode for others
+      const baseName = `hivecfm_${survey.id}_${itemId}`.replace(/[^a-zA-Z0-9_]/g, "_");
+      const promptName = isDefault ? baseName : `${baseName}_${langCode}`;
+      const genesysLanguage = toGenesysLanguage(langCode);
+
+      try {
+        // Create or find the prompt in Genesys
+        const prompt = await createPrompt(
+          token,
+          credentials.environmentUrl,
+          promptName,
+          `${descriptionPrefix} (${langCode}) for survey "${survey.name}"`
+        );
+
+        // Update or add mapping (keyed by elementId + language)
+        const mappingKey = isDefault ? itemId : `${itemId}_${langCode}`;
+        const existingIdx = updatedMappings.findIndex((m) => m.elementId === mappingKey);
+        const mapping: PromptMapping = {
+          elementId: mappingKey,
+          promptId: prompt.id,
+          promptName,
+          language: langCode,
+        };
+        if (existingIdx >= 0) {
+          updatedMappings[existingIdx] = mapping;
+        } else {
+          updatedMappings.push(mapping);
+        }
+
+        // Download and upload audio
+        const uploaded = await downloadAndUpload(
+          token,
+          credentials.environmentUrl,
+          prompt.id,
+          audioUrl,
+          genesysLanguage,
+          `${itemId} [${langCode}]`,
+          errors
+        );
+        if (uploaded) synced++;
+      } catch (error) {
+        const msg = `Failed to sync prompt for ${itemId} [${langCode}]: ${error instanceof Error ? error.message : String(error)}`;
+        console.error(msg, error);
         errors.push(msg);
-        continue;
       }
-      const audioBuffer = await audioResponse.arrayBuffer();
-
-      await uploadPromptResource(token, credentials.environmentUrl, promptId, audioBuffer);
-      synced++;
-    } catch (error) {
-      const msg = `Failed to sync prompt for element ${element.id}: ${error instanceof Error ? error.message : String(error)}`;
-      console.error(msg, error);
-      errors.push(msg);
     }
   }
 
-  // Sync welcome and ending audio if present
-  const specialAudios = [
-    { id: "welcome", audioUrl: survey.welcomeAudioUrl, label: "welcome" },
-    { id: "ending", audioUrl: survey.endingAudioUrl, label: "ending" },
-  ];
-
-  for (const special of specialAudios) {
-    if (!special.audioUrl) continue;
-    const promptName = `hivecfm_${survey.id}_${special.id}`.replace(/[^a-zA-Z0-9_]/g, "_");
-    try {
-      const prompt = await createPrompt(
-        token,
-        credentials.environmentUrl,
-        promptName,
-        `${special.label} audio for survey "${survey.name}"`
-      );
-      const existingIdx = updatedMappings.findIndex((m) => m.elementId === special.id);
-      if (existingIdx >= 0) {
-        updatedMappings[existingIdx] = { elementId: special.id, promptId: prompt.id, promptName };
-      } else {
-        updatedMappings.push({ elementId: special.id, promptId: prompt.id, promptName });
-      }
-
-      const audioResponse = await fetch(special.audioUrl);
-      if (!audioResponse.ok) continue;
-      const audioBuffer = await audioResponse.arrayBuffer();
-      await uploadPromptResource(token, credentials.environmentUrl, prompt.id, audioBuffer);
-      synced++;
-    } catch (error) {
-      const msg = `Failed to sync ${special.label} prompt: ${error instanceof Error ? error.message : String(error)}`;
-      console.error(msg, error);
-      errors.push(msg);
-    }
+  // Sync element audio prompts
+  for (const element of survey.elements) {
+    await syncAudioItem(
+      element.id,
+      element.audioUrl,
+      element.audioSource,
+      `Audio prompt for element ${element.id}`
+    );
   }
+
+  // Sync welcome card audio
+  await syncAudioItem("welcome", survey.welcomeAudioUrl, survey.welcomeAudioSource, "Welcome audio");
+
+  // Sync ending card audio
+  await syncAudioItem("ending", survey.endingAudioUrl, survey.endingAudioSource, "Ending audio");
 
   // Save updated mappings back to the integration config
   try {
-    // Clean mappings — only keep valid fields, strip any corrupt data
     const cleanMappings = updatedMappings.map((m) => ({
       elementId: m.elementId,
       promptId: m.promptId,
       promptName: m.promptName,
+      ...(m.language ? { language: m.language } : {}),
     }));
     await createOrUpdateIntegration(environmentId, {
       type: "genesysCloud",
@@ -155,7 +216,7 @@ export async function syncAudioPromptsToGenesys(
   return {
     success: errors.length === 0,
     synced,
-    total: elementsWithAudio.length,
+    total,
     errors,
   };
 }
