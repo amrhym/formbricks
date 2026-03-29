@@ -1,6 +1,6 @@
 "use client";
 
-import { PhoneIcon, Volume2Icon } from "lucide-react";
+import { MicIcon, PhoneIcon, Volume2Icon } from "lucide-react";
 import { useMemo } from "react";
 import { useTranslation } from "react-i18next";
 import { TSurveyElementTypeEnum } from "@hivecfm/types/surveys/elements";
@@ -51,6 +51,10 @@ export const VoicePreviewPanel = ({ survey, activeElementId, languageCode }: Voi
     return elements.findIndex((el) => el.id === activeElement.id);
   }, [elements, activeElement]);
 
+  const audioUrlMap = activeElement?.audioUrl as Record<string, string> | undefined;
+  const resolvedAudioUrl = audioUrlMap?.[languageCode] || audioUrlMap?.["default"] || null;
+  const audioSource = (activeElement as any)?.audioSource || "tts";
+
   const ttsText = useMemo(() => {
     if (!activeElement) return "";
     return activeElement.headline?.[languageCode] || activeElement.headline?.default || "";
@@ -89,7 +93,7 @@ export const VoicePreviewPanel = ({ survey, activeElementId, languageCode }: Voi
             </div>
           )}
 
-          {/* TTS Text */}
+          {/* TTS Text / Audio Player */}
           {ttsText ? (
             <div className="mb-4 rounded-lg border border-orange-200 bg-orange-50 p-3">
               <div className="mb-1 flex items-center gap-1.5">
@@ -98,7 +102,16 @@ export const VoicePreviewPanel = ({ survey, activeElementId, languageCode }: Voi
                   {t("environments.surveys.edit.tts_output", "TTS Output")}
                 </span>
               </div>
-              <p className="text-sm leading-relaxed text-slate-700">{ttsText}</p>
+              {audioSource !== "tts" && resolvedAudioUrl ? (
+                <audio src={resolvedAudioUrl} controls className="h-8 w-full" />
+              ) : (
+                <div className="flex items-center gap-2">
+                  <span className="rounded bg-blue-100 px-1.5 py-0.5 text-xs font-medium text-blue-700">
+                    TTS
+                  </span>
+                  <p className="text-sm leading-relaxed text-slate-700">{ttsText}</p>
+                </div>
+              )}
             </div>
           ) : (
             <div className="mb-4 rounded-lg border border-dashed border-slate-300 p-3 text-center text-sm text-slate-400">
@@ -106,27 +119,34 @@ export const VoicePreviewPanel = ({ survey, activeElementId, languageCode }: Voi
             </div>
           )}
 
-          {/* DTMF Keypad Mappings */}
-          {dtmfOptions.length > 0 && (
-            <div className="rounded-lg border border-slate-200 bg-slate-50 p-3">
-              <div className="mb-2 text-xs font-semibold text-slate-500">
-                {t("environments.surveys.edit.dtmf_input", "DTMF Input")}
-              </div>
-              <div className="space-y-1.5">
-                {dtmfOptions.map((option, idx) => (
-                  <div key={idx} className="flex items-center gap-2">
-                    <div
-                      className={cn(
-                        "flex h-6 w-6 flex-shrink-0 items-center justify-center rounded text-xs font-bold",
-                        "bg-slate-700 text-white"
-                      )}>
-                      {activeElement?.type === TSurveyElementTypeEnum.NPS ? idx : idx + 1}
-                    </div>
-                    <span className="text-xs text-slate-600">{option}</span>
-                  </div>
-                ))}
-              </div>
+          {/* DTMF Keypad Mappings / OpenText Indicator */}
+          {activeElement?.type === "openText" ? (
+            <div className="flex items-center gap-2 rounded-md bg-amber-50 p-2">
+              <MicIcon className="h-4 w-4 text-amber-600" />
+              <span className="text-xs text-amber-700">Caller speaks their answer</span>
             </div>
+          ) : (
+            dtmfOptions.length > 0 && (
+              <div className="rounded-lg border border-slate-200 bg-slate-50 p-3">
+                <div className="mb-2 text-xs font-semibold text-slate-500">
+                  {t("environments.surveys.edit.dtmf_input", "DTMF Input")}
+                </div>
+                <div className="space-y-1.5">
+                  {dtmfOptions.map((option, idx) => (
+                    <div key={idx} className="flex items-center gap-2">
+                      <div
+                        className={cn(
+                          "flex h-6 w-6 flex-shrink-0 items-center justify-center rounded text-xs font-bold",
+                          "bg-slate-700 text-white"
+                        )}>
+                        {activeElement?.type === TSurveyElementTypeEnum.NPS ? idx : idx + 1}
+                      </div>
+                      <span className="text-xs text-slate-600">{option}</span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )
           )}
 
           {/* Element type badge */}
