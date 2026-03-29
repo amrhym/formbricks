@@ -133,6 +133,7 @@ export const VOICE_COMPATIBLE_ELEMENT_TYPES: TSurveyElementTypeEnum[] = [
   TSurveyElementTypeEnum.Rating, // 1-5 or 1-10 keypad input
   TSurveyElementTypeEnum.MultipleChoiceSingle, // max 9 options, mapped to digits 1-9
   TSurveyElementTypeEnum.CTA, // press 1 to continue
+  TSurveyElementTypeEnum.OpenText, // speech input
 ];
 
 // Max options for multiple choice in voice channel (DTMF digits 1-9)

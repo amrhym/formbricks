@@ -26,7 +26,13 @@ interface IvrInputConfigDtmfChoice {
   options: IvrInputConfigDtmfOption[];
 }
 
-type IvrInputConfig = IvrInputConfigNumeric | IvrInputConfigDtmfChoice;
+interface IvrInputConfigSpeech {
+  inputType: "speech";
+  maxDurationSeconds: number;
+  silenceTimeoutSeconds: number;
+}
+
+type IvrInputConfig = IvrInputConfigNumeric | IvrInputConfigDtmfChoice | IvrInputConfigSpeech;
 
 export interface IvrQuestion {
   questionId: string;
@@ -36,6 +42,7 @@ export interface IvrQuestion {
   questionText: string;
   subheader: string | null;
   audioUrl: string | null;
+  audioSource: string;
   genesysPromptName: string | null;
   type: string;
   required: boolean;
@@ -46,11 +53,15 @@ export interface IvrSurveyConfig {
   id: string;
   name: string;
   totalQuestions: number;
+  language: string;
+  availableLanguages: string[];
   welcomeMessage: string | null;
   welcomeAudioUrl: string | null;
+  welcomeAudioSource: string;
   welcomeGenesysPromptName: string | null;
   thankYouMessage: string | null;
   thankYouAudioUrl: string | null;
+  thankYouAudioSource: string;
   thankYouGenesysPromptName: string | null;
   errorMessage: string | null;
   inputTimeout: number;
@@ -103,6 +114,13 @@ const buildInputConfig = (
       return {
         inputType: "dtmf_choice",
         options: [{ key: "1", label: "Continue" }],
+      };
+
+    case TSurveyElementTypeEnum.OpenText:
+      return {
+        inputType: "speech",
+        maxDurationSeconds: 30,
+        silenceTimeoutSeconds: 3,
       };
 
     default:
@@ -302,6 +320,7 @@ export const linearizeSurveyForIvr = (
         audioUrl: element.audioUrl
           ? buildMediaUrl(baseUrl, survey.environmentId, survey.id, element.id)
           : null,
+        audioSource: element.audioSource || "tts",
         genesysPromptName: element.audioUrl
           ? `hivecfm_${survey.id}_${element.id}`.replace(/[^a-zA-Z0-9_]/g, "_")
           : null,
@@ -322,12 +341,15 @@ export const linearizeSurveyForIvr = (
     id: survey.id,
     name: survey.name,
     totalQuestions: questions.length,
+    language: survey.languages?.length > 0 ? survey.languages[0] : "default",
+    availableLanguages: survey.languages || ["default"],
     welcomeMessage: survey.welcomeCard.enabled
       ? getDefaultLanguageText(survey.welcomeCard.headline, hiddenFields) || null
       : null,
     welcomeAudioUrl: survey.welcomeCard?.fileUrl
       ? buildMediaUrl(baseUrl, survey.environmentId, survey.id, "welcome")
       : null,
+    welcomeAudioSource: (survey.welcomeCard as any)?.audioSource || "tts",
     welcomeGenesysPromptName: survey.welcomeCard?.fileUrl
       ? `hivecfm_${survey.id}_welcome`.replace(/[^a-zA-Z0-9_]/g, "_")
       : null,
@@ -336,6 +358,10 @@ export const linearizeSurveyForIvr = (
       survey.endings.length > 0 && survey.endings[0].type === "endScreen" && survey.endings[0].imageUrl
         ? buildMediaUrl(baseUrl, survey.environmentId, survey.id, "ending")
         : null,
+    thankYouAudioSource:
+      survey.endings.length > 0 && survey.endings[0].type === "endScreen"
+        ? (survey.endings[0] as any).audioSource || "tts"
+        : "tts",
     thankYouGenesysPromptName:
       survey.endings.length > 0 && survey.endings[0].type === "endScreen" && survey.endings[0].imageUrl
         ? `hivecfm_${survey.id}_ending`.replace(/[^a-zA-Z0-9_]/g, "_")
