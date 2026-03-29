@@ -17,6 +17,7 @@ import {
   ZSurveyEndScreenCard,
   ZSurveyRedirectUrlCard,
 } from "@hivecfm/types/surveys/types";
+import { migrateVoiceSurveyAudio } from "@/lib/survey/audio-migration";
 import { getFormattedErrorMessage } from "@/lib/utils/helper";
 import { createSegmentAction } from "@/modules/ee/contacts/segments/actions";
 import { TSurveyDraft } from "@/modules/survey/editor/types/survey";
@@ -245,8 +246,9 @@ export const SurveyMenuBar = ({
     try {
       const segment = await handleSegmentUpdate();
       clearSurveyLocalStorage();
+      const migratedSurvey = migrateVoiceSurveyAudio(localSurvey);
       const updatedSurveyResponse = await updateSurveyDraftAction({
-        ...localSurvey,
+        ...migratedSurvey,
         segment,
       } as unknown as TSurveyDraft);
 
@@ -317,7 +319,8 @@ export const SurveyMenuBar = ({
 
       const segment = await handleSegmentUpdate();
       clearSurveyLocalStorage();
-      const updatedSurveyResponse = await updateSurveyAction({ ...localSurvey, segment });
+      const migratedSurvey = migrateVoiceSurveyAudio(localSurvey);
+      const updatedSurveyResponse = await updateSurveyAction({ ...migratedSurvey, segment });
 
       setIsSurveySaving(false);
       if (updatedSurveyResponse?.data) {
@@ -367,9 +370,10 @@ export const SurveyMenuBar = ({
       const status = "inProgress";
       const segment = await handleSegmentUpdate();
       clearSurveyLocalStorage();
+      const migratedSurvey = migrateVoiceSurveyAudio(localSurvey);
 
       await updateSurveyAction({
-        ...localSurvey,
+        ...migratedSurvey,
         status,
         segment,
       });
@@ -403,8 +407,9 @@ export const SurveyMenuBar = ({
       // Save the draft first
       const segment = await handleSegmentUpdate();
       clearSurveyLocalStorage();
+      const migratedSurvey = migrateVoiceSurveyAudio(localSurvey);
       await updateSurveyDraftAction({
-        ...localSurvey,
+        ...migratedSurvey,
         segment,
       } as unknown as TSurveyDraft);
 

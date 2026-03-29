@@ -3,10 +3,14 @@
 import * as Collapsible from "@radix-ui/react-collapsible";
 import { Hand } from "lucide-react";
 import { usePathname } from "next/navigation";
+import { useMemo } from "react";
 import { useTranslation } from "react-i18next";
+import { TAudioSource } from "@hivecfm/types/surveys/elements";
 import { TSurvey, TSurveyWelcomeCard } from "@hivecfm/types/surveys/types";
 import { TUserLocale } from "@hivecfm/types/user";
 import { cn } from "@/lib/cn";
+import { handleFileUpload } from "@/modules/storage/file-upload";
+import { AudioSourceControl } from "@/modules/survey/components/audio-source-control";
 import { ElementFormInput } from "@/modules/survey/components/element-form-input";
 import { FileInput } from "@/modules/ui/components/file-input";
 import { Label } from "@/modules/ui/components/label";
@@ -43,6 +47,12 @@ export const EditWelcomeCard = ({
 
   const path = usePathname();
   const environmentId = path?.split("/environments/")[1]?.split("/")[0];
+
+  const defaultLanguageCode = useMemo(
+    () => localSurvey.languages.filter((lang) => lang.default)[0]?.language.code ?? "default",
+    [localSurvey.languages]
+  );
+  const currentLanguage = selectedLanguageCode === defaultLanguageCode ? "default" : selectedLanguageCode;
 
   let open = activeElementId == "start";
 
@@ -111,30 +121,59 @@ export const EditWelcomeCard = ({
         </Collapsible.CollapsibleTrigger>
         <Collapsible.CollapsibleContent className={`flex flex-col px-4 ${open && "pb-6"}`}>
           <form>
-            <div className="mt-2">
-              <Label htmlFor="companyLogo">
-                {isVoiceChannel ? "Welcome Audio" : t("environments.surveys.edit.company_logo")}
-              </Label>
-            </div>
-            <div className="mt-3 flex w-full items-center justify-center">
-              <FileInput
-                id="welcome-card-image"
-                allowedFileExtensions={isVoiceChannel ? ["wav"] : ["png", "jpeg", "jpg", "webp", "heic"]}
-                environmentId={environmentId}
-                onFileUpload={(url: string[] | undefined) => {
-                  if (url) {
-                    updateSurvey({ fileUrl: url[0] });
-                  } else {
-                    updateSurvey({ fileUrl: undefined });
-                  }
-                }}
-                fileUrl={!isVoiceChannel ? localSurvey?.welcomeCard?.fileUrl : undefined}
-                audioUrl={isVoiceChannel ? localSurvey?.welcomeCard?.fileUrl : undefined}
-                isVideoAllowed={!isVoiceChannel}
-                isAudioAllowed={isVoiceChannel}
-                isStorageConfigured={isStorageConfigured}
-              />
-            </div>
+            {isVoiceChannel ? (
+              <div className="mt-3">
+                <AudioSourceControl
+                  environmentId={localSurvey.environmentId}
+                  audioSource={(localSurvey.welcomeCard as any).audioSource || "tts"}
+                  audioUrl={localSurvey.welcomeCard.audioUrl as Record<string, string> | undefined}
+                  currentLanguage={currentLanguage}
+                  cardType="welcome"
+                  cardHeadline={localSurvey.welcomeCard.headline}
+                  cardSubheader={localSurvey.welcomeCard.subheader}
+                  surveyVoiceConfig={(localSurvey as any).voiceConfig}
+                  onAudioSourceChange={(source: TAudioSource) => {
+                    updateSurvey({ audioSource: source } as any);
+                  }}
+                  onAudioUrlChange={(url: Record<string, string>) => {
+                    updateSurvey({ audioUrl: url } as any);
+                  }}
+                  onFileUpload={async (file: File) => {
+                    const result = await handleFileUpload(file, localSurvey.environmentId, ["wav", "mp3"]);
+                    if (result?.url) {
+                      const existingAudioUrl =
+                        (localSurvey.welcomeCard.audioUrl as Record<string, string>) || {};
+                      const newAudioUrl = { ...existingAudioUrl, [currentLanguage]: result.url };
+                      updateSurvey({ audioUrl: newAudioUrl, audioSource: "upload" } as any);
+                    }
+                  }}
+                />
+              </div>
+            ) : (
+              <>
+                <div className="mt-2">
+                  <Label htmlFor="companyLogo">{t("environments.surveys.edit.company_logo")}</Label>
+                </div>
+                <div className="mt-3 flex w-full items-center justify-center">
+                  <FileInput
+                    id="welcome-card-image"
+                    allowedFileExtensions={["png", "jpeg", "jpg", "webp", "heic"]}
+                    environmentId={environmentId}
+                    onFileUpload={(url: string[] | undefined) => {
+                      if (url) {
+                        updateSurvey({ fileUrl: url[0] });
+                      } else {
+                        updateSurvey({ fileUrl: undefined });
+                      }
+                    }}
+                    fileUrl={localSurvey?.welcomeCard?.fileUrl}
+                    isVideoAllowed={true}
+                    isAudioAllowed={false}
+                    isStorageConfigured={isStorageConfigured}
+                  />
+                </div>
+              </>
+            )}
             <div className="mt-3">
               <ElementFormInput
                 id="headline"

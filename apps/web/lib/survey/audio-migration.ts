@@ -1,3 +1,5 @@
+import { TSurvey } from "@hivecfm/types/surveys/types";
+
 const AUDIO_EXTENSIONS = [".wav", ".mp3", ".ogg", ".m4a"];
 
 function isAudioUrl(url: string | undefined): boolean {
@@ -10,7 +12,7 @@ function isAudioUrl(url: string | undefined): boolean {
  * Called before saving a voice survey in the editor.
  * Returns a modified survey object (does not mutate input).
  */
-export function migrateVoiceSurveyAudio<T extends Record<string, any>>(survey: T): T {
+export function migrateVoiceSurveyAudio(survey: TSurvey): TSurvey {
   if (survey.type !== "voice") return survey;
 
   const result = { ...survey };
@@ -20,19 +22,19 @@ export function migrateVoiceSurveyAudio<T extends Record<string, any>>(survey: T
     result.welcomeCard = {
       ...result.welcomeCard,
       audioUrl: { default: result.welcomeCard.fileUrl },
-      audioSource: "upload",
+      audioSource: "upload" as const,
       fileUrl: undefined,
     };
   }
 
   // Ending cards: move imageUrl audio to audioUrl if audioUrl not set
   if (result.endings) {
-    result.endings = result.endings.map((ending: any) => {
+    result.endings = result.endings.map((ending) => {
       if (ending.type === "endScreen" && ending.imageUrl && isAudioUrl(ending.imageUrl) && !ending.audioUrl) {
         return {
           ...ending,
           audioUrl: { default: ending.imageUrl },
-          audioSource: "upload",
+          audioSource: "upload" as const,
           imageUrl: undefined,
         };
       }
