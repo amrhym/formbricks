@@ -17,6 +17,8 @@ import { createI18nString, extractLanguageCodes } from "@/lib/i18n/utils";
 import { useSyncScroll } from "@/lib/utils/hooks/useSyncScroll";
 import { recallToHeadline } from "@/lib/utils/recall";
 import { LocalizedEditor } from "@/modules/ee/multi-language-surveys/components/localized-editor";
+import { handleFileUpload } from "@/modules/storage/file-upload";
+import { AudioSourceControl } from "@/modules/survey/components/audio-source-control";
 import { MultiLangWrapper } from "@/modules/survey/components/element-form-input/components/multi-lang-wrapper";
 import { RecallWrapper } from "@/modules/survey/components/element-form-input/components/recall-wrapper";
 import { getElementsFromBlocks } from "@/modules/survey/lib/client-utils";
@@ -435,43 +437,91 @@ export const ElementFormInput = ({
           </div>
         )}
         <div className="flex flex-col gap-4" ref={animationParent}>
-          {showImageUploader && id === "headline" && (
+          {showImageUploader && id === "headline" && isVoiceChannel && (
+            <AudioSourceControl
+              environmentId={localSurvey.environmentId}
+              audioSource={
+                isEndingCard && endingCard
+                  ? (endingCard as any).audioSource || "tts"
+                  : (currentElement as any)?.audioSource || "tts"
+              }
+              audioUrl={
+                isEndingCard && endingCard
+                  ? ((endingCard as any).audioUrl as Record<string, string> | undefined)
+                  : ((currentElement as any)?.audioUrl as Record<string, string> | undefined)
+              }
+              currentLanguage={
+                selectedLanguageCode === defaultLanguageCode ? "default" : selectedLanguageCode
+              }
+              element={isEndingCard ? undefined : currentElement}
+              cardType={isEndingCard ? "ending" : undefined}
+              cardHeadline={
+                isEndingCard && endingCard?.type === "endScreen" ? endingCard.headline : undefined
+              }
+              cardSubheader={
+                isEndingCard && endingCard?.type === "endScreen" ? (endingCard as any).subheader : undefined
+              }
+              surveyVoiceConfig={(localSurvey as any).voiceConfig}
+              onAudioSourceChange={(source) => {
+                if (isEndingCard && updateSurvey) {
+                  updateSurvey({ audioSource: source } as any);
+                } else if (updateElement) {
+                  updateElement(elementIdx, { audioSource: source } as any);
+                }
+              }}
+              onAudioUrlChange={(url) => {
+                if (isEndingCard && updateSurvey) {
+                  updateSurvey({ audioUrl: url } as any);
+                } else if (updateElement) {
+                  updateElement(elementIdx, { audioUrl: url } as any);
+                }
+              }}
+              onAudioHashChange={(hash) => {
+                if (isEndingCard && updateSurvey) {
+                  updateSurvey({ audioGenerationHash: hash } as any);
+                } else if (updateElement) {
+                  updateElement(elementIdx, { audioGenerationHash: hash } as any);
+                }
+              }}
+              onFileUpload={async (file) => {
+                const result = await handleFileUpload(file, localSurvey.environmentId, ["wav", "mp3"]);
+                if (result?.url) {
+                  const lang =
+                    selectedLanguageCode === defaultLanguageCode ? "default" : selectedLanguageCode;
+                  const existingAudioUrl =
+                    isEndingCard && endingCard
+                      ? ((endingCard as any).audioUrl as Record<string, string>) || {}
+                      : ((currentElement as any)?.audioUrl as Record<string, string>) || {};
+                  const newAudioUrl = { ...existingAudioUrl, [lang]: result.url };
+                  if (isEndingCard && updateSurvey) {
+                    updateSurvey({ audioUrl: newAudioUrl, audioSource: "upload" } as any);
+                  } else if (updateElement) {
+                    updateElement(elementIdx, { audioUrl: newAudioUrl, audioSource: "upload" } as any);
+                  }
+                }
+              }}
+            />
+          )}
+
+          {showImageUploader && id === "headline" && !isVoiceChannel && (
             <FileInput
               id="element-image"
-              allowedFileExtensions={isVoiceChannel ? ["wav"] : ["png", "jpeg", "jpg", "webp", "heic"]}
+              allowedFileExtensions={["png", "jpeg", "jpg", "webp", "heic"]}
               environmentId={localSurvey.environmentId}
               onFileUpload={(url: string[] | undefined, fileType: "image" | "video" | "audio") => {
                 if (url) {
-                  let update;
-                  if (isEndingCard && isVoiceChannel && fileType === "audio") {
-                    // Voice ending cards store audio in imageUrl field
-                    update = { imageUrl: url[0], videoUrl: undefined };
-                  } else {
-                    update =
-                      fileType === "audio"
-                        ? { audioUrl: url[0], imageUrl: undefined, videoUrl: undefined }
-                        : fileType === "video"
-                          ? { videoUrl: url[0], imageUrl: undefined, audioUrl: undefined }
-                          : { imageUrl: url[0], videoUrl: undefined, audioUrl: undefined };
-                  }
+                  const update =
+                    fileType === "video"
+                      ? { videoUrl: url[0], imageUrl: undefined, audioUrl: undefined }
+                      : { imageUrl: url[0], videoUrl: undefined, audioUrl: undefined };
                   if ((isWelcomeCard || isEndingCard) && updateSurvey) {
                     updateSurvey(update);
                   } else if (updateElement) {
                     updateElement(elementIdx, update);
                   }
                 } else {
-                  // File removed
-                  let clearUpdate;
-                  if (isEndingCard && isVoiceChannel && fileType === "audio") {
-                    clearUpdate = { imageUrl: undefined };
-                  } else {
-                    clearUpdate =
-                      fileType === "audio"
-                        ? { audioUrl: undefined }
-                        : fileType === "video"
-                          ? { videoUrl: undefined }
-                          : { imageUrl: undefined };
-                  }
+                  const clearUpdate =
+                    fileType === "video" ? { videoUrl: undefined } : { imageUrl: undefined };
                   if ((isWelcomeCard || isEndingCard) && updateSurvey) {
                     updateSurvey(clearUpdate);
                   } else if (updateElement) {
@@ -481,9 +531,8 @@ export const ElementFormInput = ({
               }}
               fileUrl={getFileUrl()}
               videoUrl={getVideoUrl()}
-              audioUrl={getAudioUrl()}
-              isVideoAllowed={!isVoiceChannel}
-              isAudioAllowed={isVoiceChannel}
+              isVideoAllowed={true}
+              isAudioAllowed={false}
               maxSizeInMB={5}
               isStorageConfigured={isStorageConfigured}
             />
