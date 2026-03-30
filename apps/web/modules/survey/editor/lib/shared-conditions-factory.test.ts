@@ -140,7 +140,12 @@ describe("shared-conditions-factory", () => {
 
     styling: {},
     triggers: [],
-    welcomeCard: { enabled: false, timeToFinish: false, showResponseCount: false },
+    welcomeCard: {
+      enabled: false,
+      timeToFinish: false,
+      showResponseCount: false,
+      audioSource: "tts" as const,
+    },
 
     hiddenFields: { enabled: false },
     displayOption: "displayOnce",

@@ -103,6 +103,7 @@ describe("Metadata Utils", () => {
           enabled: true,
           timeToFinish: false,
           showResponseCount: false,
+          audioSource: "tts" as const,
           headline: {
             default: "Welcome Headline",
           },
@@ -197,6 +198,7 @@ describe("Metadata Utils", () => {
           enabled: true,
           timeToFinish: false,
           showResponseCount: false,
+          audioSource: "tts" as const,
           headline: {
             default: "<p>Welcome <strong>Headline</strong></p>",
           },
@@ -228,6 +230,7 @@ describe("Metadata Utils", () => {
           enabled: true,
           timeToFinish: false,
           showResponseCount: false,
+          audioSource: "tts" as const,
           headline: {
             default: "Welcome #recall:name/fallback:User#",
           },

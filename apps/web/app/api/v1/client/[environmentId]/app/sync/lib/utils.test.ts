@@ -107,6 +107,7 @@ describe("replaceAttributeRecall", () => {
         buttonLabel: { default: "Start" },
         timeToFinish: false,
         showResponseCount: false,
+        audioSource: "tts",
       },
     };
 
@@ -212,6 +213,7 @@ describe("replaceAttributeRecall", () => {
         buttonLabel: { default: "Start" },
         timeToFinish: false,
         showResponseCount: false,
+        audioSource: "tts",
       },
       endings: [
         {

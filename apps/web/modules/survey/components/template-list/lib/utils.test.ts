@@ -18,7 +18,12 @@ describe("Template utils", () => {
       description: "Template description",
       preset: {
         name: "$[projectName] Feedback",
-        welcomeCard: { enabled: false, timeToFinish: false, showResponseCount: false },
+        welcomeCard: {
+          enabled: false,
+          timeToFinish: false,
+          showResponseCount: false,
+          audioSource: "tts" as const,
+        },
         blocks: [
           {
             id: "block1",

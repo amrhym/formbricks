@@ -50,7 +50,6 @@ export const mockOpenTextQuestion: TSurveyOpenTextQuestion = {
     max: 1000,
     enabled: true,
   },
-  audioSource: "tts",
 };
 
 export const mockSingleSelectQuestion: TSurveyMultipleChoiceQuestion = {
@@ -79,7 +78,6 @@ export const mockSingleSelectQuestion: TSurveyMultipleChoiceQuestion = {
     default: "Can't do both.",
   },
   shuffleOption: "none",
-  audioSource: "tts",
 };
 
 export const mockMultiSelectQuestion: TSurveyMultipleChoiceQuestion = {
@@ -111,7 +109,6 @@ export const mockMultiSelectQuestion: TSurveyMultipleChoiceQuestion = {
   id: "cpydxgsmjg8q9iwfa8wj4ida",
   type: TSurveyQuestionTypeEnum.MultipleChoiceMulti,
   isDraft: true,
-  audioSource: "tts",
 };
 
 export const mockPictureSelectQuestion: TSurveyPictureSelectionQuestion = {
@@ -136,7 +133,6 @@ export const mockPictureSelectQuestion: TSurveyPictureSelectionQuestion = {
   id: "a8monbe8hq0mivh3irfhd3i5",
   type: TSurveyQuestionTypeEnum.PictureSelection,
   isDraft: true,
-  audioSource: "tts",
 };
 
 export const mockRatingQuestion: TSurveyRatingQuestion = {
@@ -159,7 +155,6 @@ export const mockRatingQuestion: TSurveyRatingQuestion = {
   id: "waldsboahjtgqhg5p18d1awz",
   type: TSurveyQuestionTypeEnum.Rating,
   isDraft: true,
-  audioSource: "tts",
 };
 
 export const mockNpsQuestion: TSurveyNPSQuestion = {
@@ -177,7 +172,6 @@ export const mockNpsQuestion: TSurveyNPSQuestion = {
   type: TSurveyQuestionTypeEnum.NPS,
   isDraft: true,
   isColorCodingEnabled: false,
-  audioSource: "tts",
 };
 
 export const mockCtaQuestion: TSurveyCTAElement = {
@@ -206,7 +200,6 @@ export const mockConsentQuestion: TSurveyConsentQuestion = {
   id: "av561aoif3i2hjlsl6krnsfm",
   type: TSurveyQuestionTypeEnum.Consent,
   isDraft: true,
-  audioSource: "tts",
 };
 
 export const mockDateQuestion: TSurveyDateQuestion = {
@@ -218,7 +211,6 @@ export const mockDateQuestion: TSurveyDateQuestion = {
   id: "ts2f6v2oo9jfmfli9kk6lki9",
   type: TSurveyQuestionTypeEnum.Date,
   isDraft: true,
-  audioSource: "tts",
 };
 
 export const mockFileUploadQuestion: TSurveyFileUploadQuestion = {
@@ -230,7 +222,6 @@ export const mockFileUploadQuestion: TSurveyFileUploadQuestion = {
   id: "ozzxo2jj1s6mj56c79q8pbef",
   type: TSurveyQuestionTypeEnum.FileUpload,
   isDraft: true,
-  audioSource: "tts",
 };
 
 export const mockCalQuestion: TSurveyCalQuestion = {
@@ -246,7 +237,6 @@ export const mockCalQuestion: TSurveyCalQuestion = {
   id: "o3bnux6p42u9ew9d02l14r26",
   type: TSurveyQuestionTypeEnum.Cal,
   isDraft: true,
-  audioSource: "tts",
 };
 
 export const mockEndings = [

@@ -26,6 +26,7 @@ const convertToTemplate = (generated: any): TTemplate => {
         type: el.type,
         headline: el.headline || { default: "Untitled" },
         required: el.required ?? true,
+        audioSource: "tts",
       };
       if (el.subheader) element.subheader = el.subheader;
       if (el.type === "rating") {
@@ -79,6 +80,7 @@ const convertToTemplate = (generated: any): TTemplate => {
         headline: { default: generated.welcomeHeadline || "Welcome" },
         timeToFinish: true,
         showResponseCount: false,
+        audioSource: "tts" as const,
       },
       endings: [
         {

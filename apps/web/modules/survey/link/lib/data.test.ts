@@ -81,6 +81,7 @@ describe("data", () => {
         headline: { default: "Welcome" },
         subheader: { default: "" },
         buttonLabel: { default: "Start" },
+        audioSource: "tts" as const,
       },
       questions: [],
       endings: [],

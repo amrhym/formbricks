@@ -72,6 +72,7 @@ describe("Quota Utils", () => {
       buttonLabel: { default: "Next" },
       timeToFinish: false,
       showResponseCount: false,
+      audioSource: "tts" as const,
     },
     questions: [
       {

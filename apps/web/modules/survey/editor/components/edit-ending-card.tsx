@@ -120,7 +120,7 @@ export const EditEndingCard = ({
       }
 
       const updatedEndings = prevSurvey.endings.map((ending, idx) =>
-        idx === endingCardIndex ? { ...ending, ...filteredData } : ending
+        idx === endingCardIndex ? ({ ...ending, ...filteredData } as typeof ending) : ending
       );
       return { ...prevSurvey, endings: updatedEndings };
     });

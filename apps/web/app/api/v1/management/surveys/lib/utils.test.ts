@@ -93,7 +93,7 @@ const baseSurveyData: TSurveyCreateInputWithEnvironmentId = {
   endings: [],
   languages: [],
   type: "link",
-  welcomeCard: { enabled: false, showResponseCount: false, timeToFinish: false },
+  welcomeCard: { enabled: false, showResponseCount: false, timeToFinish: false, audioSource: "tts" as const },
   followUps: [],
 };
 

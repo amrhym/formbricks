@@ -100,6 +100,7 @@ export const mockSurvey: TSurvey = {
     },
     timeToFinish: false,
     showResponseCount: false,
+    audioSource: "tts",
   },
   questions: [
     {

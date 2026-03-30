@@ -5605,6 +5605,7 @@ export const previewSurvey = (projectName: string, t: TFunction): TSurvey => {
       headline: createI18nString(t("templates.preview_survey_welcome_card_headline"), []),
       timeToFinish: false,
       showResponseCount: false,
+      audioSource: "tts",
     },
     styling: null,
     segment: null,

@@ -97,6 +97,7 @@ export const hiddenFieldsDefault: TSurveyHiddenFields = {
 export const getDefaultWelcomeCard = (t: TFunction): TSurveyWelcomeCard => {
   return {
     enabled: false,
+    audioSource: "tts",
     headline: createI18nString(t("templates.default_welcome_card_headline"), []),
     subheader: createI18nString(t("templates.default_welcome_card_html"), []),
     buttonLabel: createI18nString(t("templates.default_welcome_card_button_label"), []),

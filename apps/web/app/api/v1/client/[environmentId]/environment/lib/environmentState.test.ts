@@ -117,7 +117,12 @@ const mockSurveys: TSurvey[] = [
     styling: null,
     surveyClosedMessage: null,
     hiddenFields: { enabled: false },
-    welcomeCard: { enabled: false, showResponseCount: false, timeToFinish: false },
+    welcomeCard: {
+      enabled: false,
+      showResponseCount: false,
+      timeToFinish: false,
+      audioSource: "tts" as const,
+    },
     variables: [],
     createdBy: null,
     recaptcha: { enabled: false, threshold: 0.5 },
