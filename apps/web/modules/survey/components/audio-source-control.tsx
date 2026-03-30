@@ -67,12 +67,31 @@ export const AudioSourceControl = ({
     }
   }, [element, cardType, cardHeadline, cardSubheader, ttsLang]);
 
+  // Map ISO language codes to Google TTS language codes and default voices
+  const LANG_TO_TTS: Record<string, { code: string; voice: string }> = {
+    ar: { code: "ar-XA", voice: "ar-XA-Standard-A" },
+    en: { code: "en-US", voice: "en-US-Standard-C" },
+    fr: { code: "fr-FR", voice: "fr-FR-Standard-A" },
+    es: { code: "es-ES", voice: "es-ES-Standard-A" },
+    de: { code: "de-DE", voice: "de-DE-Standard-A" },
+    tr: { code: "tr-TR", voice: "tr-TR-Standard-A" },
+    ur: { code: "ur-PK", voice: "ur-PK-Standard-A" },
+    hi: { code: "hi-IN", voice: "hi-IN-Standard-A" },
+  };
+
   const handleGenerate = async () => {
+    // Use actual language code (not "default") for TTS
+    const actualLang = scriptLanguageCode || ttsLang;
+    const ttsMapping = LANG_TO_TTS[actualLang] || {
+      code: `${actualLang}-${actualLang.toUpperCase()}`,
+      voice: `${actualLang}-${actualLang.toUpperCase()}-Standard-A`,
+    };
+
     const voiceName =
       surveyVoiceConfig?.voices?.[currentLanguage] ||
-      surveyVoiceConfig?.voices?.["default"] ||
-      "en-US-Standard-C";
-    const langCode = currentLanguage === "default" ? "ar-XA" : currentLanguage;
+      surveyVoiceConfig?.voices?.[actualLang] ||
+      ttsMapping.voice;
+    const langCode = ttsMapping.code;
 
     setIsGenerating(true);
     try {
