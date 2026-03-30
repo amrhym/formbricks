@@ -499,6 +499,7 @@ export const mockSurvey: TSurvey = {
       },
       buttonLink: "https://formbricks.com",
       buttonLabel: { default: "Create your own Survey" },
+      audioSource: "tts",
     },
   ],
   hiddenFields: {

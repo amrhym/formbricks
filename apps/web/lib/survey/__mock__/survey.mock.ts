@@ -216,6 +216,7 @@ const baseSurveyProperties = {
       id: "umyknohldc7w26ocjdhaa62c",
       type: "endScreen" as const,
       headline: { default: "Thank You!", de: "Danke!" },
+      audioSource: "tts" as const,
     },
   ],
   hiddenFields: { enabled: false },

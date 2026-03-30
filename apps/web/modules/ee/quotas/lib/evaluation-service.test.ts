@@ -88,6 +88,7 @@ describe("Quota Evaluation Service", () => {
         subheader: { default: "Survey completed" },
         buttonLink: "https://example.com",
         buttonLabel: { default: "Done" },
+        audioSource: "tts" as const,
       },
     ],
     hiddenFields: { enabled: true, fieldIds: [] },

@@ -44,6 +44,7 @@ describe("Survey Builder", () => {
         type: "endScreen",
         headline: { default: "templates.default_ending_card_headline" },
         subheader: { default: "templates.default_ending_card_subheader" },
+        audioSource: "tts",
       });
       expect(endingCard.id).toBeDefined();
       expect(endingCard).toHaveProperty("buttonLabel");

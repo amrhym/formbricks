@@ -134,6 +134,7 @@ export const mockSurvey: TSurvey = {
       buttonLabel: {
         default: "Visit our website‌‌‍‍‌‍‍‍‌‌‌‍‍‌‍‌‍‌‌‌‌‌‍‌‍‌‌",
       },
+      audioSource: "tts",
     },
   ],
   hiddenFields: {

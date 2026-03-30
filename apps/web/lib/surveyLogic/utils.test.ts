@@ -81,6 +81,7 @@ describe("surveyLogic", () => {
         buttonLabel: {
           default: "Create your own Survey‌‌‍‍‌‍‍‍‌‌‌‍‍‌‍‌‍‌‌‌‌‌‍‌‍‌‌",
         },
+        audioSource: "tts" as const,
       },
     ],
     hiddenFields: {

@@ -55,6 +55,7 @@ const mockTemplate: TXMTemplate = {
       id: "e1",
       type: "endScreen",
       headline: { default: "Thank you for completing the survey!" },
+      audioSource: "tts" as const,
     },
   ],
   styling: {

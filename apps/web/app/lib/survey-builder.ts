@@ -85,6 +85,7 @@ export const getDefaultEndingCard = (languages: TSurveyLanguage[], t: TFunction)
     subheader: createI18nString(t("templates.default_ending_card_subheader"), languageCodes),
     buttonLabel: createI18nString(t("templates.default_ending_card_button_label"), languageCodes),
     buttonLink: "https://www.yourwebsite.com",
+    audioSource: "tts",
   };
 };
 

@@ -125,6 +125,7 @@ describe("replaceAttributeRecall", () => {
           subheader: { default: "Your plan: recall:plan" },
           buttonLabel: { default: "Finish" },
           buttonLink: "https://example.com",
+          audioSource: "tts",
         } as unknown as TSurveyEnding,
       ],
     };
@@ -217,6 +218,7 @@ describe("replaceAttributeRecall", () => {
           type: "endScreen",
           headline: { default: "Thank you!" },
           buttonLabel: { default: "Finish" },
+          audioSource: "tts",
         } as unknown as TSurveyEnding,
       ],
     };

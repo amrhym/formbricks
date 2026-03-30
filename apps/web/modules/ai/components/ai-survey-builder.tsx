@@ -86,6 +86,7 @@ const convertToTemplate = (generated: any): TTemplate => {
           type: "endScreen" as const,
           headline: { default: generated.endingHeadline || "Thank you!" },
           subheader: generated.endingSubheader ? { default: generated.endingSubheader } : undefined,
+          audioSource: "tts" as const,
         },
       ],
       hiddenFields: { enabled: false, fieldIds: [] },

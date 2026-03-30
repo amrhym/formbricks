@@ -215,6 +215,7 @@ describe("utils", () => {
             type: "endScreen",
             headline: createI18nString("End Screen", surveyLanguageCodes),
             subheader: createI18nString("Thanks for your input", surveyLanguageCodes),
+            audioSource: "tts",
           } as any,
         ],
         delay: 0,

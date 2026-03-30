@@ -885,7 +885,14 @@ describe("Logic Fallback Transformation", () => {
   });
 
   test("should handle logicFallback pointing to ending", () => {
-    const endings = [{ id: "end1", type: "endScreen" as const, headline: { default: "Thank you" } }];
+    const endings = [
+      {
+        id: "end1",
+        type: "endScreen" as const,
+        headline: { default: "Thank you" },
+        audioSource: "tts" as const,
+      },
+    ];
     const questions = [
       {
         id: "q1",
@@ -939,7 +946,14 @@ describe("Logic Fallback Transformation", () => {
   });
 
   test("should handle block logicFallback pointing to ending", () => {
-    const endings = [{ id: "end1", type: "endScreen" as const, headline: { default: "Thank you" } }];
+    const endings = [
+      {
+        id: "end1",
+        type: "endScreen" as const,
+        headline: { default: "Thank you" },
+        audioSource: "tts" as const,
+      },
+    ];
     const blocks = [
       {
         id: "b1",
@@ -1024,7 +1038,14 @@ describe("Edge Cases", () => {
   });
 
   test("should handle jump to ending in logic actions", () => {
-    const endings = [{ id: "end1", type: "endScreen" as const, headline: { default: "Thank you" } }];
+    const endings = [
+      {
+        id: "end1",
+        type: "endScreen" as const,
+        headline: { default: "Thank you" },
+        audioSource: "tts" as const,
+      },
+    ];
     const questions = [
       {
         id: "q1",
@@ -1069,7 +1090,14 @@ describe("Edge Cases", () => {
   });
 
   test("should handle jump to ending in reverse transformation", () => {
-    const endings = [{ id: "end1", type: "endScreen" as const, headline: { default: "Thank you" } }];
+    const endings = [
+      {
+        id: "end1",
+        type: "endScreen" as const,
+        headline: { default: "Thank you" },
+        audioSource: "tts" as const,
+      },
+    ];
     const blocks = [
       {
         id: "b1",

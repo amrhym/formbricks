@@ -88,6 +88,7 @@ describe("checkExternalUrlsPermission", () => {
           type: "endScreen",
           headline: createI18nString("Thank you", ["en"]),
           buttonLink: "https://example.com",
+          audioSource: "tts" as const,
         },
       ],
     };
@@ -109,6 +110,7 @@ describe("checkExternalUrlsPermission", () => {
           type: "endScreen",
           headline: createI18nString("Thank you", ["en"]),
           buttonLink: "https://example.com",
+          audioSource: "tts" as const,
         },
       ],
     };
@@ -133,6 +135,7 @@ describe("checkExternalUrlsPermission", () => {
           type: "endScreen",
           headline: createI18nString("Thank you", ["en"]),
           buttonLink: "https://example.com",
+          audioSource: "tts" as const,
         },
       ],
     };
@@ -145,6 +148,7 @@ describe("checkExternalUrlsPermission", () => {
           type: "endScreen",
           headline: createI18nString("Thank you very much", ["en"]),
           buttonLink: "https://example.com",
+          audioSource: "tts" as const,
         },
       ],
     };
@@ -166,6 +170,7 @@ describe("checkExternalUrlsPermission", () => {
           type: "endScreen",
           headline: createI18nString("Thank you", ["en"]),
           buttonLink: "https://example.com",
+          audioSource: "tts" as const,
         },
       ],
     };
@@ -178,6 +183,7 @@ describe("checkExternalUrlsPermission", () => {
           type: "endScreen",
           headline: createI18nString("Thank you", ["en"]),
           buttonLink: "https://different-url.com",
+          audioSource: "tts" as const,
         },
       ],
     };
@@ -198,6 +204,7 @@ describe("checkExternalUrlsPermission", () => {
           id: "end1",
           type: "endScreen",
           headline: createI18nString("Thank you", ["en"]),
+          audioSource: "tts" as const,
         },
       ],
     };
@@ -460,6 +467,7 @@ describe("checkExternalUrlsPermission", () => {
           id: "end1",
           type: "endScreen",
           headline: createI18nString("Thank you", ["en"]),
+          audioSource: "tts" as const,
         },
       ],
     };

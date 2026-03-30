@@ -224,6 +224,7 @@ describe("validation.isEndingCardValid", () => {
     type: "endScreen",
     headline: { default: "Thank You", en: "Thank You", de: "Danke" },
     subheader: { default: "Done", en: "Done", de: "Fertig" },
+    audioSource: "tts" as const,
   };
 
   const baseRedirectUrlCard: TSurveyRedirectUrlCard = {
@@ -926,7 +927,12 @@ describe("validation.isSurveyValid", () => {
         },
       ],
       endings: [
-        { id: "end1", type: "endScreen", headline: { default: "Thanks", en: "Thanks", de: "Danke" } },
+        {
+          id: "end1",
+          type: "endScreen",
+          headline: { default: "Thanks", en: "Thanks", de: "Danke" },
+          audioSource: "tts" as const,
+        },
       ],
       welcomeCard: {
         enabled: true,

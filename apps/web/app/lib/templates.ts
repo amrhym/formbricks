@@ -5659,6 +5659,7 @@ export const previewSurvey = (projectName: string, t: TFunction): TSurvey => {
         type: "endScreen",
         headline: createI18nString(t("templates.preview_survey_ending_card_headline"), []),
         subheader: createI18nString(t("templates.preview_survey_ending_card_description"), []),
+        audioSource: "tts",
       },
     ],
     hiddenFields: {
