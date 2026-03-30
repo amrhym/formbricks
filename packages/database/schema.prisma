@@ -594,6 +594,7 @@ enum IntegrationType {
   superset
   llm
   hivecfmHub
+  googleAi
 }
 
 /// Represents third-party service integrations.
