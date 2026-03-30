@@ -48,7 +48,7 @@
     "output": {
       "successSchema": {
         "properties": {
-          "questions": { "type": "array" },
+          "questions": { "items": { "type": "object" }, "type": "array" },
           "survey": { "type": "object" }
         },
         "title": "GetSurveyQuestions Output",

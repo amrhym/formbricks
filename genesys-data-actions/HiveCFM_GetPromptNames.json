@@ -48,7 +48,7 @@
     "output": {
       "successSchema": {
         "properties": {
-          "availableLanguages": { "type": "array" },
+          "availableLanguages": { "items": { "type": "string" }, "type": "array" },
           "prompts": { "type": "object" },
           "requestedLanguage": { "type": "string" }
         },
