@@ -42,6 +42,7 @@ describe("surveyLogic", () => {
       },
       timeToFinish: false,
       showResponseCount: false,
+      audioSource: "tts" as const,
     },
     blocks: [
       {
@@ -60,6 +61,7 @@ describe("surveyLogic", () => {
             placeholder: {
               default: "example@email.com",
             },
+            audioSource: "tts" as const,
           },
         ],
       },
@@ -760,6 +762,7 @@ describe("surveyLogic", () => {
               required: true,
               inputType: "number",
               charLimit: { enabled: false },
+              audioSource: "tts" as const,
             },
             {
               id: "mcSingle",
@@ -772,6 +775,7 @@ describe("surveyLogic", () => {
                 { id: "other", label: { default: "Other" } },
               ],
               shuffleOption: "none",
+              audioSource: "tts" as const,
             },
             {
               id: "mcMulti",
@@ -783,6 +787,7 @@ describe("surveyLogic", () => {
                 { id: "choice2", label: { default: "Choice 2" } },
               ],
               shuffleOption: "none",
+              audioSource: "tts" as const,
             },
             {
               id: "matrixQ",
@@ -798,6 +803,7 @@ describe("surveyLogic", () => {
                 { id: "col-2", label: { default: "Column 2" } },
               ],
               shuffleOption: "none",
+              audioSource: "tts" as const,
             },
             {
               id: "pictureQ",
@@ -809,6 +815,7 @@ describe("surveyLogic", () => {
                 { id: "pic1", imageUrl: "url1" },
                 { id: "pic2", imageUrl: "url2" },
               ],
+              audioSource: "tts" as const,
             },
             {
               id: "dateQ",
@@ -816,6 +823,7 @@ describe("surveyLogic", () => {
               format: "M-d-y",
               headline: { default: "Date Question" },
               required: true,
+              audioSource: "tts" as const,
             },
             {
               id: "fileQ",
@@ -823,6 +831,7 @@ describe("surveyLogic", () => {
               allowMultipleFiles: false,
               headline: { default: "File Upload" },
               required: true,
+              audioSource: "tts" as const,
             },
           ],
         },
@@ -1021,6 +1030,7 @@ describe("surveyLogic", () => {
               required: true,
               inputType: "text",
               charLimit: { enabled: false },
+              audioSource: "tts" as const,
             },
           ],
         },
@@ -1339,6 +1349,7 @@ describe("surveyLogic", () => {
               inputType: "number",
               placeholder: { default: "Enter a number" },
               charLimit: { enabled: false },
+              audioSource: "tts" as const,
             },
           ],
         },

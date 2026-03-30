@@ -14,6 +14,7 @@ export const survey: Pick<Survey, "id" | "questions" | "blocks"> = {
       charLimit: {
         enabled: false,
       },
+      audioSource: "tts",
     },
   ],
   blocks: [
@@ -30,6 +31,7 @@ export const survey: Pick<Survey, "id" | "questions" | "blocks"> = {
           charLimit: 1000,
           subheader: { default: "" },
           placeholder: { default: "" },
+          audioSource: "tts" as const,
         },
       ],
     },

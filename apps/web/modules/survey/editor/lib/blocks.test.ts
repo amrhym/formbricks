@@ -32,6 +32,7 @@ const createMockElement = (id: string): TSurveyElement => ({
   inputType: "text",
   longAnswer: true,
   charLimit: { enabled: false },
+  audioSource: "tts" as const,
 });
 
 const createMockBlock = (id: string, name: string, elements: TSurveyElement[] = []): TSurveyBlock => ({
@@ -59,6 +60,7 @@ const createMockSurvey = (blocks: TSurveyBlock[] = []): TSurvey => ({
     headline: { default: "Welcome" },
     timeToFinish: false,
     showResponseCount: false,
+    audioSource: "tts" as const,
   },
   questions: [],
   blocks,

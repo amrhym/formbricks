@@ -69,6 +69,7 @@ describe("Response Processing", () => {
       inputType: "text" as const,
       longAnswer: false,
       charLimit: { enabled: false },
+      audioSource: "tts" as const,
     };
 
     const mockRankingQuestion = {
@@ -81,6 +82,7 @@ describe("Response Processing", () => {
         { id: "2", label: { default: "Choice 2" } },
       ],
       shuffleOption: "none" as const,
+      audioSource: "tts" as const,
     };
 
     const mockFileUploadQuestion = {
@@ -89,6 +91,7 @@ describe("Response Processing", () => {
       headline: { default: "Test Question" },
       required: true,
       allowMultipleFiles: true,
+      audioSource: "tts" as const,
     };
 
     const mockPictureSelectionQuestion = {
@@ -101,6 +104,7 @@ describe("Response Processing", () => {
         { id: "1", imageUrl: "image1.jpg", label: { default: "Choice 1" } },
         { id: "2", imageUrl: "image2.jpg", label: { default: "Choice 2" } },
       ],
+      audioSource: "tts" as const,
     };
 
     test("should handle ranking type with string input", () => {
@@ -197,6 +201,7 @@ describe("Response Processing", () => {
               inputType: "text" as const,
               longAnswer: false,
               charLimit: { enabled: false },
+              audioSource: "tts" as const,
             },
             {
               id: "q2",
@@ -209,6 +214,7 @@ describe("Response Processing", () => {
               ],
               shuffleOption: "none" as const,
               buttonLabel: { default: "Next" },
+              audioSource: "tts" as const,
             },
           ],
         },
@@ -244,6 +250,7 @@ describe("Response Processing", () => {
         enabled: false,
         timeToFinish: false,
         showResponseCount: false,
+        audioSource: "tts" as const,
       },
       showLanguageSwitch: false,
       isBackButtonHidden: false,
@@ -356,6 +363,7 @@ describe("Response Processing", () => {
                 inputType: "text" as const,
                 longAnswer: false,
                 charLimit: { enabled: false },
+                audioSource: "tts" as const,
               },
             ],
           },

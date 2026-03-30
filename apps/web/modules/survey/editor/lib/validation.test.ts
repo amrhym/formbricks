@@ -195,6 +195,7 @@ describe("validation.isWelcomeCardValid", () => {
     subheader: { default: "<p>Info</p>", en: "<p>Info</p>", de: "<p>Infos</p>" },
     timeToFinish: false,
     showResponseCount: false,
+    audioSource: "tts" as const,
   };
 
   test("should return true for a valid welcome card", () => {
@@ -314,6 +315,7 @@ describe("validation.validateElement", () => {
         max: 100,
         min: 0,
       },
+      audioSource: "tts" as const,
     };
 
     test("should return true for a valid OpenText element", () => {
@@ -354,6 +356,7 @@ describe("validation.validateElement", () => {
         { id: "c1", label: { default: "Option 1", en: "Option 1", de: "Option 1" } },
         { id: "c2", label: { default: "Option 2", en: "Option 2", de: "Option 2" } },
       ],
+      audioSource: "tts" as const,
     };
 
     test("should return true for a valid MultipleChoiceSingle element", () => {
@@ -380,6 +383,7 @@ describe("validation.validateElement", () => {
       headline: { default: "Consent", en: "Consent", de: "Zustimmung" },
       label: { default: "I agree", en: "I agree", de: "Ich stimme zu" },
       subheader: { default: "Details...", en: "Details...", de: "Details..." },
+      audioSource: "tts" as const,
     };
 
     test("should return true for a valid Consent element", () => {
@@ -403,6 +407,7 @@ describe("validation.validateElement", () => {
         { id: "c2", label: { default: "Option 2", en: "Option 2", de: "Option 2" } },
       ],
       shuffleOption: "none",
+      audioSource: "tts" as const,
     };
 
     test("should return true for a valid MultipleChoiceMulti element", () => {
@@ -443,6 +448,7 @@ describe("validation.validateElement", () => {
         { id: "p2", imageUrl: "https://example.com/img2.jpg" },
       ],
       allowMulti: false,
+      audioSource: "tts" as const,
     };
 
     test("should return true for a valid PictureSelection element with 2+ choices", () => {
@@ -475,6 +481,7 @@ describe("validation.validateElement", () => {
       subheader: { default: "Click below", en: "Click below", de: "Klicke unten" },
       buttonExternal: false,
       required: false,
+      audioSource: "tts" as const,
     };
 
     test("should return true for a valid CTA element without external button", () => {
@@ -526,6 +533,7 @@ describe("validation.validateElement", () => {
         { id: "c2", label: { default: "Col 2", en: "Col 2", de: "Spalte 2" } },
       ],
       shuffleOption: "none",
+      audioSource: "tts" as const,
     };
 
     test("should return true for a valid Matrix element", () => {
@@ -604,6 +612,7 @@ describe("validation.validateElement", () => {
         required: false,
         placeholder: { default: "Company", en: "Company", de: "Firma" },
       },
+      audioSource: "tts" as const,
     };
 
     test("should return true for a valid ContactInfo element", () => {
@@ -659,6 +668,7 @@ describe("validation.validateElement", () => {
         required: false,
         placeholder: { default: "Country", en: "Country", de: "Land" },
       },
+      audioSource: "tts" as const,
     };
 
     test("should return true for a valid Address element", () => {
@@ -701,6 +711,7 @@ describe("validation.validateElement", () => {
       lowerLabel: { default: "Bad", en: "Bad", de: "Schlecht" },
       upperLabel: { default: "Good", en: "Good", de: "Gut" },
       isColorCodingEnabled: false,
+      audioSource: "tts" as const,
     };
 
     test("should return true for a valid Rating element with valid upperLabel and lowerLabel", () => {
@@ -746,6 +757,7 @@ describe("validation.validateElement", () => {
       lowerLabel: { default: "Not Likely", en: "Not Likely", de: "Unwahrscheinlich" },
       upperLabel: { default: "Very Likely", en: "Very Likely", de: "Sehr wahrscheinlich" },
       isColorCodingEnabled: false,
+      audioSource: "tts" as const,
     };
 
     test("should return true for a valid NPS element with valid upperLabel and lowerLabel", () => {
@@ -779,6 +791,7 @@ describe("validation.validateElement", () => {
         subheader: { default: "Enter here", en: "Enter here", de: "" }, // Invalid
         inputType: "text",
         charLimit: { enabled: false },
+        audioSource: "tts" as const,
       };
       expect(validation.validateElement(q, surveyLanguagesEnabled)).toBe(false);
     });
@@ -791,6 +804,7 @@ describe("validation.validateElement", () => {
         subheader: { default: "", en: "", de: "" },
         inputType: "text",
         charLimit: { enabled: false },
+        audioSource: "tts" as const,
       };
       expect(validation.validateElement(q, surveyLanguagesEnabled)).toBe(true);
     });
@@ -803,6 +817,7 @@ describe("validation.validateElement", () => {
         subheader: { default: "Some text", en: "Some text", de: "" }, // de empty but only default language
         inputType: "text",
         charLimit: { enabled: false },
+        audioSource: "tts" as const,
       };
       expect(validation.validateElement(q, surveyLanguagesOnlyDefault)).toBe(true);
     });
@@ -821,6 +836,7 @@ describe("validation.validateSurveyElementsInBatch", () => {
       min: 0,
     },
     required: false,
+    audioSource: "tts" as const,
   };
 
   const q2Invalid: TSurveyOpenTextElement = {
@@ -834,6 +850,7 @@ describe("validation.validateSurveyElementsInBatch", () => {
       min: 0,
     },
     required: false,
+    audioSource: "tts" as const,
   };
 
   test("should return empty array if invalidElements is null", () => {
@@ -903,6 +920,7 @@ describe("validation.isSurveyValid", () => {
               charLimit: {
                 enabled: false,
               },
+              audioSource: "tts" as const,
             },
           ],
         },
@@ -910,7 +928,11 @@ describe("validation.isSurveyValid", () => {
       endings: [
         { id: "end1", type: "endScreen", headline: { default: "Thanks", en: "Thanks", de: "Danke" } },
       ],
-      welcomeCard: { enabled: true, headline: { default: "Welcome", en: "Welcome", de: "Willkommen" } },
+      welcomeCard: {
+        enabled: true,
+        headline: { default: "Welcome", en: "Welcome", de: "Willkommen" },
+        audioSource: "tts" as const,
+      },
       languages: surveyLanguagesEnabled,
       triggers: [],
       recontactDays: null,
@@ -941,6 +963,7 @@ describe("validation.isSurveyValid", () => {
         min: 0,
       },
       required: false,
+      audioSource: "tts" as const,
     });
     expect(validation.isSurveyValid(baseSurvey, "de", mockT)).toBe(false);
     expect(toast.error).toHaveBeenCalledWith("environments.surveys.edit.fallback_missing");

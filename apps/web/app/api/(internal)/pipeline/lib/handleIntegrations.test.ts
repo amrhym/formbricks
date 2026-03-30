@@ -112,6 +112,7 @@ const mockSurvey = {
           charLimit: 1000,
           subheader: { default: "" },
           placeholder: { default: "" },
+          audioSource: "tts",
         },
         {
           id: questionId2,
@@ -124,6 +125,7 @@ const mockSurvey = {
           ],
           shuffleOption: "none",
           subheader: { default: "" },
+          audioSource: "tts",
         },
         {
           id: questionId3,
@@ -136,6 +138,7 @@ const mockSurvey = {
           ],
           allowMultiple: false,
           subheader: { default: "" },
+          audioSource: "tts",
         },
       ],
     },

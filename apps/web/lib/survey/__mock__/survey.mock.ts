@@ -180,6 +180,7 @@ const mockQuestion = {
   charLimit: {
     enabled: false,
   },
+  audioSource: "tts" as const,
 };
 
 const mockWelcomeCard: TSurveyWelcomeCard = {
@@ -187,6 +188,7 @@ const mockWelcomeCard: TSurveyWelcomeCard = {
   headline: { default: "My welcome card", de: "Meine Willkommenskarte" },
   timeToFinish: false,
   showResponseCount: false,
+  audioSource: "tts" as const,
 };
 
 const baseSurveyProperties = {
@@ -367,6 +369,7 @@ export const mockSurveyWithLogic: TSurvey = {
           charLimit: {
             enabled: false,
           },
+          audioSource: "tts" as const,
         },
         {
           id: "q2",
@@ -377,6 +380,7 @@ export const mockSurveyWithLogic: TSurvey = {
           charLimit: {
             enabled: false,
           },
+          audioSource: "tts" as const,
         },
         {
           id: "q3",
@@ -387,6 +391,7 @@ export const mockSurveyWithLogic: TSurvey = {
           charLimit: {
             enabled: false,
           },
+          audioSource: "tts" as const,
         },
         {
           id: "q4",
@@ -400,6 +405,7 @@ export const mockSurveyWithLogic: TSurvey = {
           ],
           required: true,
           shuffleOption: "none" as const,
+          audioSource: "tts" as const,
         },
         {
           id: "q5",
@@ -410,6 +416,7 @@ export const mockSurveyWithLogic: TSurvey = {
           charLimit: {
             enabled: false,
           },
+          audioSource: "tts" as const,
         },
         {
           id: "q6",
@@ -423,6 +430,7 @@ export const mockSurveyWithLogic: TSurvey = {
             { id: "sojc5wwxc5gxrnuib30w7t6s", label: { default: "hehe" } },
           ],
           shuffleOption: "none" as const,
+          audioSource: "tts" as const,
         },
       ],
       logic: [

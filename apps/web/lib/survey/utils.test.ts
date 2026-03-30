@@ -286,6 +286,7 @@ describe("checkForInvalidMediaInBlocks", () => {
             headline: { default: "Question" },
             required: false,
             inputType: "text",
+            audioSource: "tts" as const,
           } as unknown as TSurveyElement,
         ],
       },

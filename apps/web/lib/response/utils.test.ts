@@ -730,6 +730,7 @@ describe("extractChoiceIdsFromResponse", () => {
       },
     ],
     shuffleOption: "none" as const,
+    audioSource: "tts" as const,
   };
 
   const multipleChoiceSingleQuestion = {
@@ -748,6 +749,7 @@ describe("extractChoiceIdsFromResponse", () => {
       },
     ],
     shuffleOption: "none" as const,
+    audioSource: "tts" as const,
   };
 
   const textQuestion = {
@@ -757,6 +759,7 @@ describe("extractChoiceIdsFromResponse", () => {
     required: false,
     inputType: "text" as const,
     charLimit: { enabled: false, min: 0, max: 0 },
+    audioSource: "tts" as const,
   };
 
   describe("multipleChoiceMulti questions", () => {
