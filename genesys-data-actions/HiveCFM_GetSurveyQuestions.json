@@ -39,7 +39,7 @@
             "type": "string"
           }
         },
-        "required": ["HOST", "ENVIRONMENT_ID", "SURVEY_ID", "API_KEY"],
+        "required": ["HOST", "ENVIRONMENT_ID", "SURVEY_ID", "API_KEY", "LANGUAGE"],
         "title": "GetSurveyQuestions Input",
         "type": "object"
       }
