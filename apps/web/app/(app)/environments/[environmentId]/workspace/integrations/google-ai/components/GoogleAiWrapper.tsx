@@ -134,7 +134,7 @@ export const GoogleAiWrapper = ({ environmentId, integration }: GoogleAiWrapperP
             Save
           </Button>
           {isConnected && (
-            <Button variant="warn" size="sm" onClick={handleDisconnect}>
+            <Button variant="destructive" size="sm" onClick={handleDisconnect}>
               Disconnect
             </Button>
           )}
