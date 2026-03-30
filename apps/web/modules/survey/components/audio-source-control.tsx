@@ -88,16 +88,12 @@ export const AudioSourceControl = ({
   };
 
   const handleGenerate = async () => {
-    // Use actual language code (not "default") for TTS
-    const actualLang = scriptLanguageCode || ttsLang;
-    const ttsMapping = LANG_TO_TTS[actualLang] || {
-      code: `${actualLang}-${actualLang.toUpperCase()}`,
-      voice: `${actualLang}-${actualLang.toUpperCase()}-Standard-A`,
-    };
+    // ttsLang is already resolved to a real ISO code (never "default")
+    const ttsMapping = LANG_TO_TTS[ttsLang] || LANG_TO_TTS["en"]!;
 
     const voiceName =
       surveyVoiceConfig?.voices?.[currentLanguage] ||
-      surveyVoiceConfig?.voices?.[actualLang] ||
+      surveyVoiceConfig?.voices?.[ttsLang] ||
       ttsMapping.voice;
     const langCode = ttsMapping.code;
 
