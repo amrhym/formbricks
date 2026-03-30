@@ -1,0 +1,617 @@
+inboundCall:
+  name: " HiveCFM IVR Survey"
+  description: ""
+  division: Home
+  startUpRef: "/inboundCall/menus/menu[Main Menu_10]"
+  defaultLanguage: en-us
+  supportedLanguages:
+    en-us:
+      defaultLanguageSkill:
+        noValue: true
+      textToSpeech:
+        defaultEngine:
+          voice: Jill
+  initialGreeting:
+    tts: "."
+  variables:
+    - stringVariable:
+        name: Flow.callerNumber
+        initialValue:
+          noValue: true
+    - stringVariable:
+        name: Flow.callId
+        initialValue:
+          noValue: true
+    - integerVariable:
+        name: Flow.currentIndex
+        initialValue:
+          noValue: true
+    - stringVariable:
+        name: Flow.currentInputType
+        initialValue:
+          noValue: true
+    - integerVariable:
+        name: Flow.currentMax
+        initialValue:
+          noValue: true
+    - integerVariable:
+        name: Flow.currentMin
+        initialValue:
+          noValue: true
+    - stringVariable:
+        name: Flow.currentPromptName
+        initialValue:
+          noValue: true
+    - stringVariable:
+        name: Flow.currentQuestionId
+        initialValue:
+          noValue: true
+    - stringVariable:
+        name: Flow.currentQuestionText
+        initialValue:
+          noValue: true
+    - stringVariable:
+        name: Flow.dtmfInput
+        initialValue:
+          noValue: true
+    - integerCollectionVariable:
+        name: Flow.inputMaxes
+        initialValue:
+          noValue: true
+    - integerCollectionVariable:
+        name: Flow.inputMins
+        initialValue:
+          noValue: true
+    - stringCollectionVariable:
+        name: Flow.inputTypes
+        initialValue:
+          noValue: true
+    - booleanVariable:
+        name: Flow.isFinished
+        initialValue:
+          noValue: true
+    - stringCollectionVariable:
+        name: Flow.promptNames
+        initialValue:
+          noValue: true
+    - stringCollectionVariable:
+        name: Flow.questionIds
+        initialValue:
+          noValue: true
+    - stringVariable:
+        name: Flow.questionsJson
+        initialValue:
+          noValue: true
+    - stringVariable:
+        name: Flow.responseId
+        initialValue:
+          noValue: true
+    - integerVariable:
+        name: Flow.retryCount
+        initialValue:
+          noValue: true
+    - stringVariable:
+        name: Flow.surveyId
+        initialValue:
+          noValue: true
+    - stringVariable:
+        name: Flow.thankYouPromptName
+        initialValue:
+          noValue: true
+    - integerVariable:
+        name: Flow.totalQuestions
+        initialValue:
+          noValue: true
+    - stringVariable:
+        name: Flow.welcomePromptName
+        initialValue:
+          noValue: true
+    - stringVariable:
+        name: Flow.language
+        initialValue:
+          lit: "ar"
+  settingsActionDefaults:
+    playAudioOnSilence:
+      timeout:
+        lit:
+          seconds: 40
+    detectSilence:
+      timeout:
+        lit:
+          seconds: 40
+    callData:
+      processingPrompt:
+        noValue: true
+    collectInput:
+      noEntryTimeout:
+        lit:
+          seconds: 5
+    dialByExtension:
+      interDigitTimeout:
+        lit:
+          seconds: 6
+    transferToUser:
+      connectTimeout:
+        noValue: true
+    transferToNumber:
+      connectTimeout:
+        noValue: true
+    transferToGroup:
+      connectTimeout:
+        noValue: true
+    transferToFlowSecure:
+      connectTimeout:
+        lit:
+          seconds: 15
+  settingsErrorHandling:
+    errorHandling:
+      disconnect:
+        none: true
+    preHandlingAudio:
+      tts: Sorry, an error occurred. Please try your call again.
+  settingsMenu:
+    extensionDialingMaxDelay:
+      lit:
+        seconds: 1
+    listenForExtensionDialing:
+      lit: true
+    menuSelectionTimeout:
+      lit:
+        seconds: 10
+    repeatCount:
+      lit: 3
+  settingsPrompts:
+    ensureAudioInPrompts: false
+    promptMediaToValidate:
+      - mediaType: audio
+      - mediaType: tts
+  settingsSpeechRec:
+    completeMatchTimeout:
+      lit:
+        ms: 100
+    incompleteMatchTimeout:
+      lit:
+        ms: 1500
+    maxSpeechLengthTimeout:
+      lit:
+        seconds: 20
+    minConfidenceLevel:
+      lit: 50
+    asrCompanyDir: none
+    asrEnabledOnFlow: true
+    suppressRecording: true
+  menus:
+    - menu:
+        name: Main Menu
+        refId: Main Menu_10
+        audio:
+          tts: "."
+        settingsMenu:
+          extensionDialingMaxDelay:
+            noValue: true
+          listenForExtensionDialing:
+            noValue: true
+          menuSelectionTimeout:
+            lit:
+              seconds: 2
+          repeatCount:
+            lit: 0
+        settingsSpeechRec:
+          completeMatchTimeout:
+            noValue: true
+          incompleteMatchTimeout:
+            noValue: true
+          maxSpeechLengthTimeout:
+            noValue: true
+          minConfidenceLevel:
+            noValue: true
+        choices:
+          - menuTask:
+              name: main
+              refId: main_12
+              globalDtmf: false
+              globalSpeechRecTerms: false
+              task:
+                actions:
+                  - updateData:
+                      name: Update Data
+                      statements:
+                        - string:
+                            variable: Flow.surveyId
+                            value:
+                              lit: cmmhqli7b001is201cjbsiyvd
+                        - string:
+                            variable: Flow.callId
+                            value:
+                              exp: Call.ConversationId
+                  - updateData:
+                      name: Update Data
+                      statements:
+                        - string:
+                            variable: Flow.callerNumber
+                            value:
+                              exp: Call.Ani
+                        - string:
+                            variable: Flow.questionsJson
+                            value:
+                              lit: ""
+                        - integer:
+                            variable: Flow.totalQuestions
+                            value:
+                              lit: 0
+                        - integer:
+                            variable: Flow.currentIndex
+                            value:
+                              lit: 0
+                        - string:
+                            variable: Flow.currentQuestionId
+                            value:
+                              lit: ""
+                        - string:
+                            variable: Flow.currentQuestionText
+                            value:
+                              lit: ""
+                        - string:
+                            variable: Flow.currentPromptName
+                            value:
+                              lit: ""
+                        - string:
+                            variable: Flow.currentInputType
+                            value:
+                              lit: ""
+                        - integer:
+                            variable: Flow.currentMin
+                            value:
+                              lit: 0
+                        - integer:
+                            variable: Flow.currentMax
+                            value:
+                              lit: 10
+                        - string:
+                            variable: Flow.dtmfInput
+                            value:
+                              lit: ""
+                        - boolean:
+                            variable: Flow.isFinished
+                            value:
+                              lit: false
+                        - string:
+                            variable: Flow.responseId
+                            value:
+                              lit: ""
+                        - integer:
+                            variable: Flow.retryCount
+                            value:
+                              lit: 0
+                        - stringCollection:
+                            variable: Flow.questionIds
+                            value:
+                              lit: []
+                        - stringCollection:
+                            variable: Flow.promptNames
+                            value:
+                              lit: []
+                        - stringCollection:
+                            variable: Flow.inputTypes
+                            value:
+                              lit: []
+                        - integerCollection:
+                            variable: Flow.inputMins
+                            value:
+                              lit: []
+                        - integerCollection:
+                            variable: Flow.inputMaxes
+                            value:
+                              lit: []
+                        - string:
+                            variable: Flow.welcomePromptName
+                            value:
+                              lit: ""
+                        - string:
+                            variable: Flow.thankYouPromptName
+                            value:
+                              lit: ""
+                  - callData:
+                      name: Call Data Action
+                      processingPrompt:
+                        noValue: true
+                      timeout:
+                        lit:
+                          minutes: 1
+                      category:
+                        Web Services Data Actions new for hive:
+                          dataAction:
+                            HiveCFM_GetSurveyQuestions:
+                              inputs:
+                                API_KEY:
+                                  exp: "\"fbk_E_mYMBhfDZFRO3Iq_2oGA-9AA-3cpui-Evub3hC9WFs\""
+                                ENVIRONMENT_ID:
+                                  exp: "\"cmk8wiqhz0007qq0125pkcm21\""
+                                HOST:
+                                  exp: "\"hivecfm.xcai.io\""
+                                LANGUAGE:
+                                  exp: Flow.language
+                                SURVEY_ID:
+                                  exp: Flow.surveyId
+                      outputs:
+                        success:
+                          actions:
+                            - decision:
+                                name: Has Questions?
+                                condition:
+                                  exp: Flow.totalQuestions > 0
+                                outputs:
+                                  "yes":
+                                    actions:
+                                      - decision:
+                                          name: Play Welcome Prompt?
+                                          condition:
+                                            exp: Flow.welcomePromptName != "" AND Flow.welcomePromptName != NOT_SET
+                                          outputs:
+                                            "yes":
+                                              actions:
+                                                - playAudio:
+                                                    name: Play Audio
+                                                    audio:
+                                                      exp: AudioPlaybackOptions(ToAudio(FindUserPrompt(Flow.welcomePromptName)), true)
+                                      - updateData:
+                                          name: Initialize Index
+                                          statements:
+                                            - integer:
+                                                variable: Flow.currentIndex
+                                                value:
+                                                  lit: 0
+                                      - jumpToTask:
+                                          name: Jump to Reusable Task
+                                          targetTaskRef: "/inboundCall/tasks/task[AskQuestion_24]"
+                                  "no":
+                                    actions:
+                                      - playAudio:
+                                          name: Play Audio
+                                          audio:
+                                            tts: Sorry, this survey is not available.
+                                      - disconnect:
+                                          name: Disconnect
+                        failure:
+                          actions:
+                            - disconnect:
+                                name: Disconnect
+                        timeout:
+                          actions:
+                            - disconnect:
+                                name: Disconnect
+              speechRecTerms:
+                en-us:
+                  terms:
+                    - "0"
+        defaultChildMenuRef: "./choices/menuTask[main_12]"
+  tasks:
+    - task:
+        name: AskQuestion
+        refId: AskQuestion_24
+        actions:
+          - decision:
+              name: All Questions Done?
+              condition:
+                exp: Flow.currentIndex >= Flow.totalQuestions
+              outputs:
+                "yes":
+                  actions:
+                    - jumpToTask:
+                        name: Jump to Reusable Task
+                        targetTaskRef: "/inboundCall/tasks/task[EndSurvey_53]"
+                "no":
+                  actions:
+                    - updateData:
+                        name: Extract Current Question
+                        statements:
+                          - string:
+                              variable: Flow.currentQuestionId
+                              value:
+                                exp: " Flow.questionIds[Flow.currentIndex]"
+                          - string:
+                              variable: Flow.currentPromptName
+                              value:
+                                exp: Flow.promptNames[Flow.currentIndex]
+                          - string:
+                              variable: Flow.currentInputType
+                              value:
+                                exp: Flow.inputTypes[Flow.currentIndex]
+                          - integer:
+                              variable: Flow.currentMin
+                              value:
+                                exp: Flow.inputMins[Flow.currentIndex]
+                          - integer:
+                              variable: Flow.currentMax
+                              value:
+                                exp: Flow.inputMaxes[Flow.currentIndex]
+                          - boolean:
+                              variable: Flow.isFinished
+                              value:
+                                exp: "(Flow.currentIndex == Flow.totalQuestions - 1)"
+                          - integer:
+                              variable: Flow.retryCount
+                              value:
+                                lit: 0
+                    - jumpToTask:
+                        name: Jump to Reusable Task
+                        targetTaskRef: "/inboundCall/tasks/task[PlayAndCollect_28]"
+    - task:
+        name: PlayAndCollect
+        refId: PlayAndCollect_28
+        actions:
+          - decision:
+              name: Has Prompt Name?
+              condition:
+                exp: Flow.currentPromptName != "" AND Flow.currentPromptName != NOT_SET
+          - collectInput:
+              name: Collect Input
+              inputData:
+                var: Flow.dtmfInput
+              digits:
+                range:
+                  min: 1
+                  max: 2
+              interDigitTimeout:
+                lit:
+                  seconds: 1
+              noEntryTimeout:
+                lit:
+                  seconds: 8
+              inputAudio:
+                exp: AudioPlaybackOptions(ToAudio(FindUserPrompt(Flow.currentPromptName)), true)
+              acceptJustStar:
+                lit: false
+              acceptJustPound:
+                lit: false
+              verificationType: none
+              outputs:
+                success:
+                  actions:
+                    - jumpToTask:
+                        name: Jump to Reusable Task
+                        targetTaskRef: "/inboundCall/tasks/task[SubmitAndNext_41]"
+                failure:
+                  actions:
+                    - updateData:
+                        name: Update Data
+                        statements:
+                          - integer:
+                              variable: Flow.retryCount
+                              value:
+                                exp: Flow.retryCount + 1
+                    - decision:
+                        name: Decision
+                        condition:
+                          exp: Flow.retryCount >= 3
+                        outputs:
+                          "yes":
+                            actions:
+                              - updateData:
+                                  name: Update Data
+                                  statements:
+                                    - integer:
+                                        variable: Flow.currentIndex
+                                        value:
+                                          exp: Flow.currentIndex + 1
+                              - jumpToTask:
+                                  name: Jump to Reusable Task
+                                  targetTaskRef: "/inboundCall/tasks/task[AskQuestion_24]"
+                          "no":
+                            actions:
+                              - playAudio:
+                                  name: Play Audio
+                                  audio:
+                                    tts: We didn't receive your input. Please try again.
+                              - jumpToTask:
+                                  name: Jump to Reusable Task
+                                  targetTaskRef: "/inboundCall/tasks/task[PlayAndCollect_28]"
+    - task:
+        name: SubmitAndNext
+        refId: SubmitAndNext_41
+        actions:
+          - decision:
+              name: Validate Numeric Input
+              condition:
+                exp: Flow.currentInputType == "numeric"
+              outputs:
+                "yes":
+                  actions:
+                    - decision:
+                        name: Decision
+                        condition:
+                          exp: "ToInt(Flow.dtmfInput) >= Flow.currentMin \nAND ToInt(Flow.dtmfInput) <= Flow.currentMax"
+                        outputs:
+                          "no":
+                            actions:
+                              - playAudio:
+                                  name: Play Audio
+                                  audio:
+                                    tts: "\"Invalid input. Please enter a number between \"\n                  + ToString(Flow.currentMin) + \" and \" + ToString(Flow.currentMax)"
+                              - updateData:
+                                  name: Update Data
+                                  statements:
+                                    - integer:
+                                        variable: Flow.retryCount
+                                        value:
+                                          exp: Flow.retryCount + 1
+                              - decision:
+                                  name: Decision
+                                  condition:
+                                    exp: "Flow.retryCount >= 3 "
+                                  outputs:
+                                    "no":
+                                      actions:
+                                        - jumpToTask:
+                                            name: Jump to Reusable Task
+                                            targetTaskRef: "/inboundCall/tasks/task[PlayAndCollect_28]"
+          - callData:
+              name: Call Data Action
+              processingPrompt:
+                noValue: true
+              timeout:
+                lit:
+                  minutes: 1
+              category:
+                Web Services Data Actions new for hive:
+                  dataAction:
+                    HiveCFM_SubmitAnswer:
+                      inputs:
+                        ANSWERS_JSON:
+                          exp: "\"{ \\\"\" + Flow.currentQuestionId + \"\\\": \\\"\" + Flow.dtmfInput + \"\\\" }\""
+                        API_KEY:
+                          exp: "\"fbk_E_mYMBhfDZFRO3Iq_2oGA-9AA-3cpui-Evub3hC9WFs\""
+                        CALLER_NUMBER:
+                          exp: Flow.callerNumber
+                        CALL_ID:
+                          exp: Flow.callId
+                        ENVIRONMENT_ID:
+                          exp: "\"cmk8wiqhz0007qq0125pkcm21\""
+                        FINISHED:
+                          exp: Flow.isFinished
+                        HIDDEN_FIELDS_JSON:
+                          exp: "\"{}\""
+                        HOST:
+                          exp: "\"hivecfm.xcai.io\""
+                        LANGUAGE:
+                          exp: Flow.language
+                        SURVEY_ID:
+                          exp: Flow.surveyId
+                      successOutputs:
+                        message:
+                          noValue: true
+                        responseId:
+                          var: Flow.responseId
+          - updateData:
+              name: Update Data
+              statements:
+                - integer:
+                    variable: Flow.currentIndex
+                    value:
+                      exp: Flow.currentIndex + 1
+          - jumpToTask:
+              name: Jump to Reusable Task
+              targetTaskRef: "/inboundCall/tasks/task[AskQuestion_24]"
+    - task:
+        name: EndSurvey
+        refId: EndSurvey_53
+        actions:
+          - decision:
+              name: Play Thank You Prompt?
+              condition:
+                exp: Flow.thankYouPromptName != "" AND Flow.thankYouPromptName != NOT_SET
+              outputs:
+                "yes":
+                  actions:
+                    - playAudio:
+                        name: Play Audio
+                        audio:
+                          exp: AudioPlaybackOptions(ToAudio(FindUserPrompt(Flow.thankYouPromptName)), true)
+                "no":
+                  actions:
+                    - playAudio:
+                        name: Play Audio
+                        audio:
+                          tts: Thank you for completing our survey. Your feedback is important to us. Goodbye.
+          - disconnect:
+              name: Disconnect

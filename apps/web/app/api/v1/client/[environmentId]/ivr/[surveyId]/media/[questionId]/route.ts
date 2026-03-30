@@ -21,8 +21,16 @@ const parseStorageUrl = (
   url: string
 ): { environmentId: string; accessType: "public" | "private"; fileName: string } | null => {
   try {
-    const urlObj = new URL(url);
-    const parts = urlObj.pathname.split("/storage/");
+    // Handle both full URLs and relative paths like /storage/envId/public/file.wav
+    let pathToParse: string;
+    if (url.startsWith("http")) {
+      const urlObj = new URL(url);
+      pathToParse = urlObj.pathname;
+    } else {
+      pathToParse = url;
+    }
+
+    const parts = pathToParse.split("/storage/");
     if (parts.length < 2) return null;
 
     const segments = parts[1].split("/");
