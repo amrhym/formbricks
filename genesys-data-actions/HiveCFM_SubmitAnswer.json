@@ -21,7 +21,7 @@
       "inputSchema": {
         "properties": {
           "ANSWERS_JSON": {
-            "description": "JSON object mapping questionId to answer value, e.g. {\"q1\": 8, \"q2\": \"1\"}",
+            "description": "JSON answers: {\"q1\": 8, \"q2\": \"1\"}",
             "type": "string"
           },
           "API_KEY": {
@@ -29,11 +29,11 @@
             "type": "string"
           },
           "CALLER_NUMBER": {
-            "description": "Caller's phone number",
+            "description": "Caller phone number",
             "type": "string"
           },
           "CALL_ID": {
-            "description": "Unique call identifier from the IVR system",
+            "description": "Unique call identifier",
             "type": "string"
           },
           "ENVIRONMENT_ID": {
@@ -41,11 +41,11 @@
             "type": "string"
           },
           "FINISHED": {
-            "description": "Whether the survey is complete (true) or partial (false)",
+            "description": "true if survey complete",
             "type": "boolean"
           },
           "HIDDEN_FIELDS_JSON": {
-            "description": "JSON object with hidden field key-value pairs, e.g. {\"branchName\": \"Riyadh\"}",
+            "description": "JSON hidden fields: {\"branchName\": \"Riyadh\"}",
             "type": "string"
           },
           "HOST": {
@@ -53,7 +53,7 @@
             "type": "string"
           },
           "LANGUAGE": {
-            "description": "Caller's selected language code (e.g. ar, en)",
+            "description": "Language code: ar, en, etc.",
             "type": "string"
           },
           "SURVEY_ID": {
@@ -87,5 +87,6 @@
     }
   },
   "integrationType": "custom-rest-actions",
-  "name": "HiveCFM_SubmitAnswer"
+  "name": "HiveCFM_SubmitAnswer",
+  "secure": {}
 }

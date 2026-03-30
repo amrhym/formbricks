@@ -5,6 +5,7 @@
       "headers": {
         "x-Api-Key": "${input.API_KEY}"
       },
+      "requestTemplate": "${input.rawRequest}",
       "requestType": "GET",
       "requestUrlTemplate": "https://${input.HOST}/api/v1/client/${input.ENVIRONMENT_ID}/ivr/${input.SURVEY_ID}/prompts?lang=${input.LANGUAGE}"
     },
@@ -31,7 +32,7 @@
             "type": "string"
           },
           "LANGUAGE": {
-            "description": "ISO language code (required, e.g. ar, en). Determines which language-suffixed prompts to return.",
+            "description": "Language code: ar, en, etc.",
             "type": "string"
           },
           "SURVEY_ID": {
@@ -47,18 +48,8 @@
     "output": {
       "successSchema": {
         "properties": {
-          "availableLanguages": { "items": { "type": "string" }, "type": "array" },
-          "prompts": {
-            "additionalProperties": {
-              "properties": {
-                "language": { "type": "string" },
-                "promptId": { "type": "string" },
-                "promptName": { "type": "string" }
-              },
-              "type": "object"
-            },
-            "type": "object"
-          },
+          "availableLanguages": { "type": "array" },
+          "prompts": { "type": "object" },
           "requestedLanguage": { "type": "string" }
         },
         "title": "GetPromptNames Output",
@@ -67,5 +58,6 @@
     }
   },
   "integrationType": "custom-rest-actions",
-  "name": "HiveCFM_GetPromptNames"
+  "name": "HiveCFM_GetPromptNames",
+  "secure": {}
 }

@@ -5,6 +5,7 @@
       "headers": {
         "x-Api-Key": "${input.API_KEY}"
       },
+      "requestTemplate": "${input.rawRequest}",
       "requestType": "GET",
       "requestUrlTemplate": "https://${input.HOST}/api/v1/client/${input.ENVIRONMENT_ID}/ivr/${input.SURVEY_ID}?lang=${input.LANGUAGE}"
     },
@@ -31,7 +32,7 @@
             "type": "string"
           },
           "LANGUAGE": {
-            "description": "ISO language code (e.g. ar, en). Leave empty for default language.",
+            "description": "Language code: ar, en, etc.",
             "type": "string"
           },
           "SURVEY_ID": {
@@ -47,51 +48,8 @@
     "output": {
       "successSchema": {
         "properties": {
-          "questions": {
-            "items": {
-              "properties": {
-                "audioSource": { "type": "string" },
-                "audioUrl": { "type": "string" },
-                "genesysPromptName": { "type": "string" },
-                "inputConfig": {
-                  "properties": {
-                    "inputType": { "type": "string" },
-                    "max": { "type": "integer" },
-                    "maxDurationSeconds": { "type": "integer" },
-                    "min": { "type": "integer" },
-                    "silenceTimeoutSeconds": { "type": "integer" }
-                  },
-                  "type": "object"
-                },
-                "questionId": { "type": "string" },
-                "questionIndex": { "type": "integer" },
-                "questionText": { "type": "string" },
-                "required": { "type": "boolean" },
-                "type": { "type": "string" }
-              },
-              "type": "object"
-            },
-            "type": "array"
-          },
-          "survey": {
-            "properties": {
-              "availableLanguages": { "items": { "type": "string" }, "type": "array" },
-              "bargeinEnabled": { "type": "boolean" },
-              "id": { "type": "string" },
-              "inputTimeout": { "type": "integer" },
-              "language": { "type": "string" },
-              "maxRetries": { "type": "integer" },
-              "name": { "type": "string" },
-              "thankYouAudioSource": { "type": "string" },
-              "thankYouAudioUrl": { "type": "string" },
-              "thankYouMessage": { "type": "string" },
-              "totalQuestions": { "type": "integer" },
-              "welcomeAudioSource": { "type": "string" },
-              "welcomeAudioUrl": { "type": "string" },
-              "welcomeMessage": { "type": "string" }
-            },
-            "type": "object"
-          }
+          "questions": { "type": "array" },
+          "survey": { "type": "object" }
         },
         "title": "GetSurveyQuestions Output",
         "type": "object"
@@ -99,5 +57,6 @@
     }
   },
   "integrationType": "custom-rest-actions",
-  "name": "HiveCFM_GetSurveyQuestions"
+  "name": "HiveCFM_GetSurveyQuestions",
+  "secure": {}
 }
