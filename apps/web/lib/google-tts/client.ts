@@ -67,9 +67,13 @@ export async function synthesizeSpeech(request: SynthesizeRequest): Promise<Buff
   }
 
   const data = await response.json();
-  const mulawBuffer = Buffer.from(data.audioContent, "base64");
-  // Wrap MULAW data in WAV container (u-law format, 8kHz, mono)
-  return addWavHeader(mulawBuffer, 8000, 8, 1, 7);
+  const audioBuffer = Buffer.from(data.audioContent, "base64");
+  // Google MULAW response may already be WAV-wrapped — check for RIFF header
+  if (audioBuffer.length > 4 && audioBuffer.toString("ascii", 0, 4) === "RIFF") {
+    return audioBuffer; // Already a valid WAV file
+  }
+  // Raw MULAW data — wrap in WAV container
+  return addWavHeader(audioBuffer, 8000, 8, 1, 7);
 }
 
 export async function listVoices(languageCode?: string): Promise<Voice[]> {
