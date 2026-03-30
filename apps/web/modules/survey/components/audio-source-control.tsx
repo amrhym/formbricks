@@ -49,7 +49,8 @@ export const AudioSourceControl = ({
   const [scriptText, setScriptText] = useState("");
   const audioRef = useRef<HTMLAudioElement>(null);
 
-  const currentAudioUrl = audioUrl?.[currentLanguage] || audioUrl?.["default"];
+  // Each language has its own audio — no fallback to "default"
+  const currentAudioUrl = audioUrl?.[currentLanguage];
 
   useEffect(() => {
     checkTtsConfiguredAction({}).then((r) => setIsTtsConfigured(r?.data?.configured || false));
