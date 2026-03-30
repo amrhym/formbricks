@@ -23,7 +23,7 @@ async function getApiKey(): Promise<string | null> {
 
   try {
     const integration = await prisma.integration.findFirst({
-      where: { type: "googleAi" as any },
+      where: { type: "googleAi" },
       select: { config: true },
     });
     const key = (integration?.config as any)?.key?.apiKey;

@@ -1,6 +1,7 @@
 import { z } from "zod";
 import { ZIntegrationAirtableConfig, ZIntegrationAirtableInput } from "./airtable";
 import { ZIntegrationGenesysCloudConfig, ZIntegrationGenesysCloudInput } from "./genesys-cloud";
+import { ZIntegrationGoogleAiConfig, ZIntegrationGoogleAiInput } from "./google-ai";
 import { ZIntegrationGoogleSheetsConfig, ZIntegrationGoogleSheetsInput } from "./google-sheet";
 import { ZIntegrationHivecfmHubConfig, ZIntegrationHivecfmHubInput } from "./hivecfm-hub";
 import { ZIntegrationLlmConfig, ZIntegrationLlmInput } from "./llm";
@@ -22,6 +23,7 @@ export const ZIntegrationType = z.enum([
   "superset",
   "llm",
   "hivecfmHub",
+  "googleAi",
 ]);
 export type TIntegrationType = z.infer<typeof ZIntegrationType>;
 
@@ -36,6 +38,7 @@ export const ZIntegrationConfig = z.union([
   ZIntegrationSupersetConfig,
   ZIntegrationLlmConfig,
   ZIntegrationHivecfmHubConfig,
+  ZIntegrationGoogleAiConfig,
 ]);
 
 export type TIntegrationConfig = z.infer<typeof ZIntegrationConfig>;
@@ -71,6 +74,7 @@ export const ZIntegrationInput = z.discriminatedUnion("type", [
   ZIntegrationSupersetInput,
   ZIntegrationLlmInput,
   ZIntegrationHivecfmHubInput,
+  ZIntegrationGoogleAiInput,
 ]);
 export type TIntegrationInput = z.infer<typeof ZIntegrationInput>;
 

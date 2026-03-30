@@ -1,0 +1,103 @@
+{
+  "actionType": "custom",
+  "config": {
+    "request": {
+      "headers": {
+        "x-Api-Key": "${input.API_KEY}"
+      },
+      "requestType": "GET",
+      "requestUrlTemplate": "https://${input.HOST}/api/v1/client/${input.ENVIRONMENT_ID}/ivr/${input.SURVEY_ID}?lang=${input.LANGUAGE}"
+    },
+    "response": {
+      "successTemplate": "${rawResult}",
+      "translationMap": {},
+      "translationMapDefaults": {}
+    }
+  },
+  "contract": {
+    "input": {
+      "inputSchema": {
+        "properties": {
+          "API_KEY": {
+            "description": "HiveCFM API key",
+            "type": "string"
+          },
+          "ENVIRONMENT_ID": {
+            "description": "HiveCFM environment ID",
+            "type": "string"
+          },
+          "HOST": {
+            "description": "HiveCFM hostname (e.g. hivecfm.xcai.io)",
+            "type": "string"
+          },
+          "LANGUAGE": {
+            "description": "ISO language code (e.g. ar, en). Leave empty for default language.",
+            "type": "string"
+          },
+          "SURVEY_ID": {
+            "description": "Survey ID to fetch",
+            "type": "string"
+          }
+        },
+        "required": ["HOST", "ENVIRONMENT_ID", "SURVEY_ID", "API_KEY"],
+        "title": "GetSurveyQuestions Input",
+        "type": "object"
+      }
+    },
+    "output": {
+      "successSchema": {
+        "properties": {
+          "questions": {
+            "items": {
+              "properties": {
+                "audioSource": { "type": "string" },
+                "audioUrl": { "type": "string" },
+                "genesysPromptName": { "type": "string" },
+                "inputConfig": {
+                  "properties": {
+                    "inputType": { "type": "string" },
+                    "max": { "type": "integer" },
+                    "maxDurationSeconds": { "type": "integer" },
+                    "min": { "type": "integer" },
+                    "silenceTimeoutSeconds": { "type": "integer" }
+                  },
+                  "type": "object"
+                },
+                "questionId": { "type": "string" },
+                "questionIndex": { "type": "integer" },
+                "questionText": { "type": "string" },
+                "required": { "type": "boolean" },
+                "type": { "type": "string" }
+              },
+              "type": "object"
+            },
+            "type": "array"
+          },
+          "survey": {
+            "properties": {
+              "availableLanguages": { "items": { "type": "string" }, "type": "array" },
+              "bargeinEnabled": { "type": "boolean" },
+              "id": { "type": "string" },
+              "inputTimeout": { "type": "integer" },
+              "language": { "type": "string" },
+              "maxRetries": { "type": "integer" },
+              "name": { "type": "string" },
+              "thankYouAudioSource": { "type": "string" },
+              "thankYouAudioUrl": { "type": "string" },
+              "thankYouMessage": { "type": "string" },
+              "totalQuestions": { "type": "integer" },
+              "welcomeAudioSource": { "type": "string" },
+              "welcomeAudioUrl": { "type": "string" },
+              "welcomeMessage": { "type": "string" }
+            },
+            "type": "object"
+          }
+        },
+        "title": "GetSurveyQuestions Output",
+        "type": "object"
+      }
+    }
+  },
+  "integrationType": "custom-rest-actions",
+  "name": "HiveCFM_GetSurveyQuestions"
+}

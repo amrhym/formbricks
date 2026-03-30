@@ -53,7 +53,10 @@ async function downloadAndUpload(
   label: string,
   errors: string[]
 ): Promise<boolean> {
-  const audioResponse = await fetch(audioUrl);
+  // Convert relative storage paths to absolute URLs
+  const WEBAPP_URL = process.env.WEBAPP_URL || "https://hivecfm.xcai.io";
+  const fullUrl = audioUrl.startsWith("http") ? audioUrl : `${WEBAPP_URL}${audioUrl}`;
+  const audioResponse = await fetch(fullUrl);
   if (!audioResponse.ok) {
     const msg = `Failed to download audio for ${label}: ${audioResponse.status}`;
     console.error(msg);

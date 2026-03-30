@@ -1,0 +1,82 @@
+{
+  "actionType": "custom",
+  "config": {
+    "request": {
+      "headers": {
+        "Content-Type": "application/json",
+        "x-Api-Key": "${input.API_KEY}"
+      },
+      "requestTemplate": "{ \"callId\": \"${input.CALL_ID}\", \"callerNumber\": \"${input.CALLER_NUMBER}\", \"language\": \"${input.LANGUAGE}\", \"answers\": ${input.ANSWERS_JSON}, \"finished\": ${input.FINISHED}, \"hiddenFields\": ${input.HIDDEN_FIELDS_JSON} }",
+      "requestType": "POST",
+      "requestUrlTemplate": "https://${input.HOST}/api/v1/client/${input.ENVIRONMENT_ID}/ivr/${input.SURVEY_ID}/responses"
+    },
+    "response": {
+      "successTemplate": "${rawResult}",
+      "translationMap": {},
+      "translationMapDefaults": {}
+    }
+  },
+  "contract": {
+    "input": {
+      "inputSchema": {
+        "properties": {
+          "ANSWERS_JSON": {
+            "description": "JSON object mapping questionId to answer value, e.g. {\"q1\": 8, \"q2\": \"1\"}",
+            "type": "string"
+          },
+          "API_KEY": {
+            "description": "HiveCFM API key",
+            "type": "string"
+          },
+          "CALLER_NUMBER": {
+            "description": "Caller's phone number",
+            "type": "string"
+          },
+          "CALL_ID": {
+            "description": "Unique call identifier from the IVR system",
+            "type": "string"
+          },
+          "ENVIRONMENT_ID": {
+            "description": "HiveCFM environment ID",
+            "type": "string"
+          },
+          "FINISHED": {
+            "description": "Whether the survey is complete (true) or partial (false)",
+            "type": "boolean"
+          },
+          "HIDDEN_FIELDS_JSON": {
+            "description": "JSON object with hidden field key-value pairs, e.g. {\"branchName\": \"Riyadh\"}",
+            "type": "string"
+          },
+          "HOST": {
+            "description": "HiveCFM hostname (e.g. hivecfm.xcai.io)",
+            "type": "string"
+          },
+          "LANGUAGE": {
+            "description": "Caller's selected language code (e.g. ar, en)",
+            "type": "string"
+          },
+          "SURVEY_ID": {
+            "description": "Survey ID",
+            "type": "string"
+          }
+        },
+        "required": ["HOST", "ENVIRONMENT_ID", "SURVEY_ID", "API_KEY", "CALL_ID", "ANSWERS_JSON", "FINISHED"],
+        "title": "SubmitAnswer Input",
+        "type": "object"
+      }
+    },
+    "output": {
+      "successSchema": {
+        "properties": {
+          "message": { "type": "string" },
+          "responseId": { "type": "string" }
+        },
+        "title": "SubmitAnswer Output",
+        "type": "object"
+      }
+    }
+  },
+  "integrationType": "custom-rest-actions",
+  "name": "HiveCFM_SubmitAnswer"
+}

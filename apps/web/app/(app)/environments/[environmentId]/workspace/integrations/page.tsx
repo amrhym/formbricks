@@ -69,6 +69,7 @@ const Page = async (props) => {
   const isSupersetIntegrationConnected = isIntegrationConnected("superset");
   const isLlmIntegrationConnected = isIntegrationConnected("llm");
   const isHivecfmHubIntegrationConnected = isIntegrationConnected("hivecfmHub");
+  const isGoogleAiIntegrationConnected = isIntegrationConnected("googleAi" as any);
 
   const appSetupCompleted = !!environment?.appSetupCompleted;
   const integrationCards = [
@@ -176,6 +177,17 @@ const Page = async (props) => {
       icon: <PhoneIcon className="h-8 w-8 text-slate-900" />,
       connected: isGenesysCloudIntegrationConnected,
       statusText: isGenesysCloudIntegrationConnected ? t("common.connected") : t("common.not_connected"),
+      disabled: isReadOnly,
+    },
+    {
+      connectHref: `/environments/${params.environmentId}/workspace/integrations/google-ai`,
+      connectText: isGoogleAiIntegrationConnected ? t("common.manage") : t("common.connect"),
+      connectNewTab: false,
+      label: "Google AI (TTS)",
+      description: "Generate voice audio for IVR surveys using Google Cloud Text-to-Speech",
+      icon: <BrainCircuitIcon className="h-8 w-8 text-slate-900" />,
+      connected: isGoogleAiIntegrationConnected,
+      statusText: isGoogleAiIntegrationConnected ? t("common.connected") : t("common.not_connected"),
       disabled: isReadOnly,
     },
     {

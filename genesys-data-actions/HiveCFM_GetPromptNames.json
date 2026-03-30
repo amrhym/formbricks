@@ -1,0 +1,71 @@
+{
+  "actionType": "custom",
+  "config": {
+    "request": {
+      "headers": {
+        "x-Api-Key": "${input.API_KEY}"
+      },
+      "requestType": "GET",
+      "requestUrlTemplate": "https://${input.HOST}/api/v1/client/${input.ENVIRONMENT_ID}/ivr/${input.SURVEY_ID}/prompts?lang=${input.LANGUAGE}"
+    },
+    "response": {
+      "successTemplate": "${rawResult}",
+      "translationMap": {},
+      "translationMapDefaults": {}
+    }
+  },
+  "contract": {
+    "input": {
+      "inputSchema": {
+        "properties": {
+          "API_KEY": {
+            "description": "HiveCFM API key",
+            "type": "string"
+          },
+          "ENVIRONMENT_ID": {
+            "description": "HiveCFM environment ID",
+            "type": "string"
+          },
+          "HOST": {
+            "description": "HiveCFM hostname (e.g. hivecfm.xcai.io)",
+            "type": "string"
+          },
+          "LANGUAGE": {
+            "description": "ISO language code (required, e.g. ar, en). Determines which language-suffixed prompts to return.",
+            "type": "string"
+          },
+          "SURVEY_ID": {
+            "description": "Survey ID",
+            "type": "string"
+          }
+        },
+        "required": ["HOST", "ENVIRONMENT_ID", "SURVEY_ID", "API_KEY", "LANGUAGE"],
+        "title": "GetPromptNames Input",
+        "type": "object"
+      }
+    },
+    "output": {
+      "successSchema": {
+        "properties": {
+          "availableLanguages": { "items": { "type": "string" }, "type": "array" },
+          "prompts": {
+            "additionalProperties": {
+              "properties": {
+                "language": { "type": "string" },
+                "promptId": { "type": "string" },
+                "promptName": { "type": "string" }
+              },
+              "type": "object"
+            },
+            "type": "object"
+          },
+          "requestedLanguage": { "type": "string" }
+        },
+        "title": "GetPromptNames Output",
+        "type": "object"
+      }
+    }
+  },
+  "integrationType": "custom-rest-actions",
+  "name": "HiveCFM_GetPromptNames"
+}
