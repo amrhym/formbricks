@@ -311,18 +311,6 @@ export const ElementFormInput = ({
     } else return currentElement.videoUrl;
   };
 
-  const getAudioUrl = (): string | undefined => {
-    if (isWelcomeCard) return undefined;
-    // For voice channel ending cards, audio is stored in imageUrl field
-    if (isEndingCard) {
-      if (isVoiceChannel && endingCard && endingCard.type === "endScreen") {
-        return endingCard.imageUrl;
-      }
-      return undefined;
-    }
-    return currentElement?.audioUrl;
-  };
-
   const debouncedHandleUpdate = useMemo(() => debounce((value) => handleUpdate(value), 100), [handleUpdate]);
 
   const [animationParent] = useAutoAnimate();
