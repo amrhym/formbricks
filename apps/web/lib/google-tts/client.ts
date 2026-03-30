@@ -55,7 +55,8 @@ export async function synthesizeSpeech(request: SynthesizeRequest): Promise<Buff
     body: JSON.stringify({
       input: { text: request.text },
       voice: { languageCode: request.languageCode, name: request.voiceName },
-      audioConfig: { audioEncoding: "LINEAR16", sampleRateHertz: 8000 },
+      // MULAW 8kHz mono — standard telephony format, compatible with Genesys Cloud
+      audioConfig: { audioEncoding: "MULAW", sampleRateHertz: 8000 },
     }),
   });
 
@@ -66,8 +67,9 @@ export async function synthesizeSpeech(request: SynthesizeRequest): Promise<Buff
   }
 
   const data = await response.json();
-  const pcmBuffer = Buffer.from(data.audioContent, "base64");
-  return addWavHeader(pcmBuffer, 8000, 16, 1);
+  const mulawBuffer = Buffer.from(data.audioContent, "base64");
+  // Wrap MULAW data in WAV container (u-law format, 8kHz, mono)
+  return addWavHeader(mulawBuffer, 8000, 8, 1, 7);
 }
 
 export async function listVoices(languageCode?: string): Promise<Voice[]> {
@@ -85,7 +87,17 @@ export async function listVoices(languageCode?: string): Promise<Voice[]> {
   return data.voices || [];
 }
 
-function addWavHeader(pcmData: Buffer, sampleRate: number, bitsPerSample: number, channels: number): Buffer {
+/**
+ * Wrap raw audio data in a WAV container.
+ * @param audioFormat 1=PCM, 7=MULAW (u-law)
+ */
+function addWavHeader(
+  pcmData: Buffer,
+  sampleRate: number,
+  bitsPerSample: number,
+  channels: number,
+  audioFormat: number = 1
+): Buffer {
   const byteRate = (sampleRate * bitsPerSample * channels) / 8;
   const blockAlign = (bitsPerSample * channels) / 8;
   const dataSize = pcmData.length;
@@ -96,7 +108,7 @@ function addWavHeader(pcmData: Buffer, sampleRate: number, bitsPerSample: number
   header.write("WAVE", 8);
   header.write("fmt ", 12);
   header.writeUInt32LE(16, 16);
-  header.writeUInt16LE(1, 20);
+  header.writeUInt16LE(audioFormat, 20);
   header.writeUInt16LE(channels, 22);
   header.writeUInt32LE(sampleRate, 24);
   header.writeUInt32LE(byteRate, 28);
