@@ -333,6 +333,23 @@ inboundCall:
                                   exp: Flow.language
                                 SURVEY_ID:
                                   exp: Flow.surveyId
+                              successOutputs:
+                                totalQuestions:
+                                  var: Flow.totalQuestions
+                                welcomePromptName:
+                                  var: Flow.welcomePromptName
+                                thankYouPromptName:
+                                  var: Flow.thankYouPromptName
+                                questionIds:
+                                  var: Flow.questionIds
+                                promptNames:
+                                  var: Flow.promptNames
+                                inputTypes:
+                                  var: Flow.inputTypes
+                                inputMins:
+                                  var: Flow.inputMins
+                                inputMaxes:
+                                  var: Flow.inputMaxes
                       outputs:
                         success:
                           actions:

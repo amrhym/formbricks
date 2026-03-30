@@ -10,35 +10,46 @@
       "requestUrlTemplate": "https://${input.HOST}/api/v1/client/${input.ENVIRONMENT_ID}/ivr/${input.SURVEY_ID}?lang=${input.LANGUAGE}"
     },
     "response": {
-      "successTemplate": "${rawResult}",
-      "translationMap": {},
-      "translationMapDefaults": {}
+      "successTemplate": "{ \"totalQuestions\": ${totalQuestions}, \"welcomeMessage\": ${welcomeMessage}, \"welcomePromptName\": ${welcomePromptName}, \"welcomeAudioSource\": ${welcomeAudioSource}, \"thankYouMessage\": ${thankYouMessage}, \"thankYouPromptName\": ${thankYouPromptName}, \"thankYouAudioSource\": ${thankYouAudioSource}, \"inputTimeout\": ${inputTimeout}, \"maxRetries\": ${maxRetries}, \"questionIds\": ${questionIds}, \"promptNames\": ${promptNames}, \"questionTexts\": ${questionTexts}, \"inputTypes\": ${inputTypes}, \"inputMins\": ${inputMins}, \"inputMaxes\": ${inputMaxes}, \"audioSources\": ${audioSources} }",
+      "translationMap": {
+        "audioSources": "$.questions[*].audioSource",
+        "inputMaxes": "$.questions[*].inputConfig.max",
+        "inputMins": "$.questions[*].inputConfig.min",
+        "inputTimeout": "$.survey.inputTimeout",
+        "inputTypes": "$.questions[*].inputConfig.inputType",
+        "maxRetries": "$.survey.maxRetries",
+        "promptNames": "$.questions[*].genesysPromptName",
+        "questionIds": "$.questions[*].questionId",
+        "questionTexts": "$.questions[*].questionText",
+        "thankYouAudioSource": "$.survey.thankYouAudioSource",
+        "thankYouMessage": "$.survey.thankYouMessage",
+        "thankYouPromptName": "$.survey.thankYouGenesysPromptName",
+        "totalQuestions": "$.survey.totalQuestions",
+        "welcomeAudioSource": "$.survey.welcomeAudioSource",
+        "welcomeMessage": "$.survey.welcomeMessage",
+        "welcomePromptName": "$.survey.welcomeGenesysPromptName"
+      },
+      "translationMapDefaults": {
+        "inputTimeout": "5",
+        "maxRetries": "3",
+        "thankYouAudioSource": "\"tts\"",
+        "thankYouMessage": "\"\"",
+        "thankYouPromptName": "\"\"",
+        "welcomeAudioSource": "\"tts\"",
+        "welcomeMessage": "\"\"",
+        "welcomePromptName": "\"\""
+      }
     }
   },
   "contract": {
     "input": {
       "inputSchema": {
         "properties": {
-          "API_KEY": {
-            "description": "HiveCFM API key",
-            "type": "string"
-          },
-          "ENVIRONMENT_ID": {
-            "description": "HiveCFM environment ID",
-            "type": "string"
-          },
-          "HOST": {
-            "description": "HiveCFM hostname (e.g. hivecfm.xcai.io)",
-            "type": "string"
-          },
-          "LANGUAGE": {
-            "description": "Language code: ar, en, etc.",
-            "type": "string"
-          },
-          "SURVEY_ID": {
-            "description": "Survey ID to fetch",
-            "type": "string"
-          }
+          "API_KEY": { "description": "HiveCFM API key", "type": "string" },
+          "ENVIRONMENT_ID": { "description": "HiveCFM environment ID", "type": "string" },
+          "HOST": { "description": "HiveCFM hostname (e.g. hivecfm.xcai.io)", "type": "string" },
+          "LANGUAGE": { "description": "Language code: ar, en, etc.", "type": "string" },
+          "SURVEY_ID": { "description": "Survey ID to fetch", "type": "string" }
         },
         "required": ["HOST", "ENVIRONMENT_ID", "SURVEY_ID", "API_KEY", "LANGUAGE"],
         "title": "GetSurveyQuestions Input",
@@ -48,8 +59,22 @@
     "output": {
       "successSchema": {
         "properties": {
-          "questions": { "items": { "type": "object" }, "type": "array" },
-          "survey": { "type": "object" }
+          "audioSources": { "items": { "type": "string" }, "type": "array" },
+          "inputMaxes": { "items": { "type": "integer" }, "type": "array" },
+          "inputMins": { "items": { "type": "integer" }, "type": "array" },
+          "inputTimeout": { "type": "integer" },
+          "inputTypes": { "items": { "type": "string" }, "type": "array" },
+          "maxRetries": { "type": "integer" },
+          "promptNames": { "items": { "type": "string" }, "type": "array" },
+          "questionIds": { "items": { "type": "string" }, "type": "array" },
+          "questionTexts": { "items": { "type": "string" }, "type": "array" },
+          "thankYouAudioSource": { "type": "string" },
+          "thankYouMessage": { "type": "string" },
+          "thankYouPromptName": { "type": "string" },
+          "totalQuestions": { "type": "integer" },
+          "welcomeAudioSource": { "type": "string" },
+          "welcomeMessage": { "type": "string" },
+          "welcomePromptName": { "type": "string" }
         },
         "title": "GetSurveyQuestions Output",
         "type": "object"
