@@ -442,6 +442,7 @@ export const ElementFormInput = ({
                 selectedLanguageCode === defaultLanguageCode ? "default" : selectedLanguageCode
               }
               scriptLanguageCode={selectedLanguageCode}
+              defaultLanguageCode={defaultLanguageCode}
               element={isEndingCard ? undefined : currentElement}
               cardType={isEndingCard ? "ending" : undefined}
               cardHeadline={

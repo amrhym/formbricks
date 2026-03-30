@@ -129,6 +129,7 @@ export const EditWelcomeCard = ({
                   audioUrl={localSurvey.welcomeCard.audioUrl as Record<string, string> | undefined}
                   currentLanguage={currentLanguage}
                   scriptLanguageCode={defaultLanguageCode}
+                  defaultLanguageCode={defaultLanguageCode}
                   cardType="welcome"
                   cardHeadline={localSurvey.welcomeCard.headline}
                   cardSubheader={localSurvey.welcomeCard.subheader}

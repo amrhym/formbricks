@@ -17,6 +17,7 @@ interface AudioSourceControlProps {
   audioUrl: Record<string, string> | undefined;
   currentLanguage: string; // i18n key: "default" or "en", "ar", etc.
   scriptLanguageCode?: string; // actual ISO code for TTS script: "en", "ar" (never "default")
+  defaultLanguageCode?: string; // actual ISO code of the survey's default language (e.g. "en")
   element?: any;
   cardType?: "welcome" | "ending";
   cardHeadline?: Record<string, string>;
@@ -34,6 +35,7 @@ export const AudioSourceControl = ({
   audioUrl,
   currentLanguage,
   scriptLanguageCode,
+  defaultLanguageCode,
   element,
   cardType,
   cardHeadline,
@@ -56,17 +58,14 @@ export const AudioSourceControl = ({
     checkTtsConfiguredAction({}).then((r) => setIsTtsConfigured(r?.data?.configured || false));
   }, []);
 
-  // Use the actual ISO language code for script templates (never "default")
-  const ttsLang =
-    scriptLanguageCode && scriptLanguageCode !== "default" ? scriptLanguageCode : currentLanguage;
-  console.log(
-    "[AudioSourceControl] scriptLanguageCode:",
-    scriptLanguageCode,
-    "currentLanguage:",
-    currentLanguage,
-    "ttsLang:",
-    ttsLang
-  );
+  // Resolve actual ISO language code for TTS templates (never "default")
+  // Priority: scriptLanguageCode > currentLanguage (if not "default") > defaultLanguageCode > "en"
+  const ttsLang = (() => {
+    if (scriptLanguageCode && scriptLanguageCode !== "default") return scriptLanguageCode;
+    if (currentLanguage && currentLanguage !== "default") return currentLanguage;
+    if (defaultLanguageCode && defaultLanguageCode !== "default") return defaultLanguageCode;
+    return "en";
+  })();
 
   useEffect(() => {
     if (element) {
