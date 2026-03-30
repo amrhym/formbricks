@@ -61,6 +61,7 @@ export const buildMultipleChoiceElement = ({
     }),
     shuffleOption: shuffleOption || "none",
     required: required ?? false,
+    audioSource: "tts",
   };
 };
 
@@ -89,6 +90,7 @@ export const buildOpenTextElement = ({
     placeholder: placeholder ? createI18nString(placeholder, []) : undefined,
     headline: createI18nString(headline, []),
     required: required ?? false,
+    audioSource: "tts",
     longAnswer,
     charLimit: {
       enabled: false,
@@ -125,6 +127,7 @@ export const buildRatingElement = ({
     scale,
     range,
     required: required ?? false,
+    audioSource: "tts",
     isColorCodingEnabled,
     lowerLabel: lowerLabel ? createI18nString(lowerLabel, []) : undefined,
     upperLabel: upperLabel ? createI18nString(upperLabel, []) : undefined,
@@ -150,6 +153,7 @@ export const buildConsentElement = ({
     subheader: createI18nString(subheader, []),
     headline: createI18nString(headline, []),
     required: required ?? false,
+    audioSource: "tts",
     label: createI18nString(label, []),
   };
 };
@@ -178,6 +182,7 @@ export const buildCTAElement = ({
     headline: createI18nString(headline, []),
     ctaButtonLabel: ctaButtonLabel ? createI18nString(ctaButtonLabel, []) : undefined,
     required: required ?? false,
+    audioSource: "tts",
     buttonExternal: buttonExternal ?? false,
     buttonUrl,
   };
@@ -206,6 +211,7 @@ export const buildNPSElement = ({
     subheader: subheader ? createI18nString(subheader, []) : undefined,
     headline: createI18nString(headline, []),
     required: required ?? false,
+    audioSource: "tts",
     isColorCodingEnabled,
     lowerLabel: lowerLabel ? createI18nString(lowerLabel, []) : undefined,
     upperLabel: upperLabel ? createI18nString(upperLabel, []) : undefined,

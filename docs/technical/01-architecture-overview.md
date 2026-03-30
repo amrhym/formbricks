@@ -279,27 +279,27 @@ graph LR
 
 ### Build & Dev Tools
 
-| Technology | Version | Purpose |
-|---|---|---|
-| **Turborepo** | 2.5.3 | Monorepo build orchestration with caching |
-| **pnpm** | 9.15.9 | Package manager with workspace support |
-| **Vite** | 6.4.1 | Build tool for library packages (ESM + CJS + UMD) |
-| **Vitest** | 3.1.3 | Unit testing framework with V8 coverage |
-| **Playwright** | 1.56.1 | End-to-end browser testing |
-| **Storybook** | 10.0.8 | Component development and documentation |
-| **ESLint** | 8.57.0 | Code linting |
-| **Husky** | 9.1.7 | Git hooks for pre-commit formatting |
+| Technology     | Version | Purpose                                           |
+| -------------- | ------- | ------------------------------------------------- |
+| **Turborepo**  | 2.5.3   | Monorepo build orchestration with caching         |
+| **pnpm**       | 9.15.9  | Package manager with workspace support            |
+| **Vite**       | 6.4.1   | Build tool for library packages (ESM + CJS + UMD) |
+| **Vitest**     | 3.1.3   | Unit testing framework with V8 coverage           |
+| **Playwright** | 1.56.1  | End-to-end browser testing                        |
+| **Storybook**  | 10.0.8  | Component development and documentation           |
+| **ESLint**     | 8.57.0  | Code linting                                      |
+| **Husky**      | 9.1.7   | Git hooks for pre-commit formatting               |
 
 ### Database & Storage
 
-| Technology | Version | Purpose |
-|---|---|---|
-| **PostgreSQL** | 17 (pgvector image) | Primary relational database |
-| **pgvector** | (bundled) | Vector similarity search extension |
-| **Prisma** | 6.14.0 | ORM, schema management, migrations |
-| **Valkey/Redis** | latest | Caching, rate limiting, session storage |
-| **MinIO** | latest | S3-compatible object storage |
-| **AWS S3 SDK** | 3.879.0 | S3 client library for storage operations |
+| Technology       | Version             | Purpose                                  |
+| ---------------- | ------------------- | ---------------------------------------- |
+| **PostgreSQL**   | 17 (pgvector image) | Primary relational database              |
+| **pgvector**     | (bundled)           | Vector similarity search extension       |
+| **Prisma**       | 6.14.0              | ORM, schema management, migrations       |
+| **Valkey/Redis** | latest              | Caching, rate limiting, session storage  |
+| **MinIO**        | latest              | S3-compatible object storage             |
+| **AWS S3 SDK**   | 3.879.0             | S3 client library for storage operations |
 
 ### Authentication & Security
 

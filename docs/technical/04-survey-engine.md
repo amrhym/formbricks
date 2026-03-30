@@ -200,23 +200,23 @@ Email surveys are distributed through the Campaign system using the HiveCFM noti
 
 Not all element types work on all channels. The codebase defines explicit compatibility lists:
 
-| Element Type | Web | Mobile | Link | Voice | WhatsApp | SMS | Email |
-|---|---|---|---|---|---|---|---|
-| NPS | Yes | Yes | Yes | Yes | Yes | Yes | Yes |
-| Rating | Yes | Yes | Yes | Yes | Yes | Yes | Yes |
-| MultipleChoiceSingle | Yes | Yes | Yes | Yes (max 9) | Yes | Yes | Yes |
-| MultipleChoiceMulti | Yes | Yes | Yes | No | Yes | Yes | Yes |
-| OpenText | Yes | Yes | Yes | No | Yes | Yes | Yes |
-| CTA | Yes | Yes | Yes | Yes | Yes | Yes | Yes |
-| Consent | Yes | Yes | Yes | No | Yes | Yes | Yes |
-| FileUpload | Yes | Yes | Yes | No | No | No | Yes |
-| PictureSelection | Yes | Yes | Yes | No | No | No | Yes |
-| Date | Yes | Yes | Yes | No | No | No | Yes |
-| Matrix | Yes | Yes | Yes | No | No | No | Yes |
-| Address | Yes | Yes | Yes | No | No | No | Yes |
-| Ranking | Yes | Yes | Yes | No | No | No | Yes |
-| ContactInfo | Yes | Yes | Yes | No | No | No | Yes |
-| Cal | Yes | Yes | Yes | No | No | No | Yes |
+| Element Type         | Web | Mobile | Link | Voice       | WhatsApp | SMS | Email |
+| -------------------- | --- | ------ | ---- | ----------- | -------- | --- | ----- |
+| NPS                  | Yes | Yes    | Yes  | Yes         | Yes      | Yes | Yes   |
+| Rating               | Yes | Yes    | Yes  | Yes         | Yes      | Yes | Yes   |
+| MultipleChoiceSingle | Yes | Yes    | Yes  | Yes (max 9) | Yes      | Yes | Yes   |
+| MultipleChoiceMulti  | Yes | Yes    | Yes  | No          | Yes      | Yes | Yes   |
+| OpenText             | Yes | Yes    | Yes  | No          | Yes      | Yes | Yes   |
+| CTA                  | Yes | Yes    | Yes  | Yes         | Yes      | Yes | Yes   |
+| Consent              | Yes | Yes    | Yes  | No          | Yes      | Yes | Yes   |
+| FileUpload           | Yes | Yes    | Yes  | No          | No       | No  | Yes   |
+| PictureSelection     | Yes | Yes    | Yes  | No          | No       | No  | Yes   |
+| Date                 | Yes | Yes    | Yes  | No          | No       | No  | Yes   |
+| Matrix               | Yes | Yes    | Yes  | No          | No       | No  | Yes   |
+| Address              | Yes | Yes    | Yes  | No          | No       | No  | Yes   |
+| Ranking              | Yes | Yes    | Yes  | No          | No       | No  | Yes   |
+| ContactInfo          | Yes | Yes    | Yes  | No          | No       | No  | Yes   |
+| Cal                  | Yes | Yes    | Yes  | No          | No       | No  | Yes   |
 
 Helper functions from `channel.ts`:
 - `isElementVoiceCompatible(elementType)` -- checks against `VOICE_COMPATIBLE_ELEMENT_TYPES`

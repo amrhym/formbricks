@@ -1,0 +1,197 @@
+{
+  "active": "2be14ead8a683cf3",
+  "lastOpenFiles": [
+    "superpowers/plans/2026-03-30-ivr-voice-enhancements.md",
+    "superpowers/plans",
+    "superpowers/specs/2026-03-30-ivr-voice-enhancements-design.md",
+    "superpowers/specs",
+    "superpowers",
+    "dof-tp-subscription-inventory.md",
+    "dof-tp-hivecfm-deployment-plan.md",
+    "azure-environment-setup.md"
+  ],
+  "left": {
+    "children": [
+      {
+        "children": [
+          {
+            "id": "df569e2061ead154",
+            "state": {
+              "icon": "lucide-folder-closed",
+              "state": {
+                "autoReveal": false,
+                "sortOrder": "alphabetical"
+              },
+              "title": "Files",
+              "type": "file-explorer"
+            },
+            "type": "leaf"
+          },
+          {
+            "id": "f1fc1c17e98188ad",
+            "state": {
+              "icon": "lucide-search",
+              "state": {
+                "collapseAll": false,
+                "explainSearch": false,
+                "extraContext": false,
+                "matchingCase": false,
+                "query": "",
+                "sortOrder": "alphabetical"
+              },
+              "title": "Search",
+              "type": "search"
+            },
+            "type": "leaf"
+          },
+          {
+            "id": "7b9215be6f63b358",
+            "state": {
+              "icon": "lucide-bookmark",
+              "state": {},
+              "title": "Bookmarks",
+              "type": "bookmarks"
+            },
+            "type": "leaf"
+          }
+        ],
+        "id": "37e23f65602cc1eb",
+        "type": "tabs"
+      }
+    ],
+    "direction": "horizontal",
+    "id": "60f48b524e15c7f2",
+    "type": "split",
+    "width": 300
+  },
+  "left-ribbon": {
+    "hiddenItems": {
+      "bases:Create new base": false,
+      "canvas:Create new canvas": false,
+      "command-palette:Open command palette": false,
+      "daily-notes:Open today's daily note": false,
+      "graph:Open graph view": false,
+      "switcher:Open quick switcher": false,
+      "templates:Insert template": false
+    }
+  },
+  "main": {
+    "children": [
+      {
+        "children": [
+          {
+            "id": "2be14ead8a683cf3",
+            "state": {
+              "icon": "lucide-file",
+              "state": {
+                "file": "dof-tp-hivecfm-deployment-plan.md",
+                "mode": "source",
+                "source": false
+              },
+              "title": "dof-tp-hivecfm-deployment-plan",
+              "type": "markdown"
+            },
+            "type": "leaf"
+          }
+        ],
+        "id": "fbe650b2c170cabc",
+        "type": "tabs"
+      }
+    ],
+    "direction": "vertical",
+    "id": "59f52d5ee1687b18",
+    "type": "split"
+  },
+  "right": {
+    "children": [
+      {
+        "children": [
+          {
+            "id": "6ba226d3752b6119",
+            "state": {
+              "icon": "links-coming-in",
+              "state": {
+                "backlinkCollapsed": false,
+                "collapseAll": false,
+                "extraContext": false,
+                "file": "dof-tp-hivecfm-deployment-plan.md",
+                "searchQuery": "",
+                "showSearch": false,
+                "sortOrder": "alphabetical",
+                "unlinkedCollapsed": true
+              },
+              "title": "Backlinks for dof-tp-hivecfm-deployment-plan",
+              "type": "backlink"
+            },
+            "type": "leaf"
+          },
+          {
+            "id": "a5d0bc49d4832f79",
+            "state": {
+              "icon": "links-going-out",
+              "state": {
+                "file": "dof-tp-hivecfm-deployment-plan.md",
+                "linksCollapsed": false,
+                "unlinkedCollapsed": true
+              },
+              "title": "Outgoing links from dof-tp-hivecfm-deployment-plan",
+              "type": "outgoing-link"
+            },
+            "type": "leaf"
+          },
+          {
+            "id": "e174b7ba6552c37c",
+            "state": {
+              "icon": "lucide-tags",
+              "state": {
+                "searchQuery": "",
+                "showSearch": false,
+                "sortOrder": "frequency",
+                "useHierarchy": true
+              },
+              "title": "Tags",
+              "type": "tag"
+            },
+            "type": "leaf"
+          },
+          {
+            "id": "02c902288b802287",
+            "state": {
+              "icon": "lucide-archive",
+              "state": {
+                "searchQuery": "",
+                "showSearch": false,
+                "sortOrder": "frequency"
+              },
+              "title": "All properties",
+              "type": "all-properties"
+            },
+            "type": "leaf"
+          },
+          {
+            "id": "9c5bf182fd677930",
+            "state": {
+              "icon": "lucide-list",
+              "state": {
+                "file": "dof-tp-hivecfm-deployment-plan.md",
+                "followCursor": false,
+                "searchQuery": "",
+                "showSearch": false
+              },
+              "title": "Outline of dof-tp-hivecfm-deployment-plan",
+              "type": "outline"
+            },
+            "type": "leaf"
+          }
+        ],
+        "id": "2a649ef7da85410e",
+        "type": "tabs"
+      }
+    ],
+    "collapsed": true,
+    "direction": "horizontal",
+    "id": "ee69eaf754e22366",
+    "type": "split",
+    "width": 300
+  }
+}
