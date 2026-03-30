@@ -107,6 +107,7 @@ export const AudioSourceControl = ({
         fileName: `tts-${element?.id || cardType}-${currentLanguage}-${Date.now()}.wav`,
       });
 
+      console.log("[AudioSourceControl] generateAudioAction result:", JSON.stringify(result));
       if (result?.data) {
         const newAudioUrl = { ...(audioUrl || {}), [currentLanguage]: result.data.fileUrl };
         onAudioUrlChange(newAudioUrl);
@@ -115,9 +116,15 @@ export const AudioSourceControl = ({
           const existingHash = (element as any)?.audioGenerationHash || {};
           onAudioHashChange({ ...existingHash, [currentLanguage]: result.data.hash });
         }
+      } else {
+        console.error("[AudioSourceControl] Generate failed:", JSON.stringify(result));
+        alert(
+          `Generate failed: ${JSON.stringify(result?.serverError || result?.validationErrors || "Unknown error")}`
+        );
       }
-    } catch {
-      // error handled by action client toast
+    } catch (err) {
+      console.error("[AudioSourceControl] Generate exception:", err);
+      alert(`Generate error: ${err}`);
     } finally {
       setIsGenerating(false);
     }
