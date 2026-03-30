@@ -42,6 +42,7 @@ describe("Survey Logic", () => {
             required: true,
             inputType: "text",
             charLimit: { enabled: false },
+            audioSource: "tts" as const,
           },
           {
             id: "q2",
@@ -51,6 +52,7 @@ describe("Survey Logic", () => {
             required: true,
             inputType: "number",
             charLimit: { enabled: false },
+            audioSource: "tts" as const,
           },
           {
             id: "q3",
@@ -58,6 +60,7 @@ describe("Survey Logic", () => {
             headline: { default: "Question 3" },
             subheader: { default: "Select one option" },
             required: true,
+            audioSource: "tts" as const,
             choices: [
               { id: "opt1", label: { default: "Option 1", es: "Opción 1" } },
               { id: "opt2", label: { default: "Option 2", es: "Opción 2" } },
@@ -70,6 +73,7 @@ describe("Survey Logic", () => {
             headline: { default: "Question 4" },
             subheader: { default: "Select multiple options" },
             required: true,
+            audioSource: "tts" as const,
             choices: [
               { id: "opt1", label: { default: "Option 1", es: "Opción 1" } },
               { id: "opt2", label: { default: "Option 2", es: "Opción 2" } },
@@ -83,6 +87,7 @@ describe("Survey Logic", () => {
             subheader: { default: "Select a date" },
             required: true,
             format: "d-M-y",
+            audioSource: "tts" as const,
           },
           {
             id: "q6",
@@ -91,6 +96,7 @@ describe("Survey Logic", () => {
             subheader: { default: "Upload a file" },
             required: true,
             allowMultipleFiles: true,
+            audioSource: "tts" as const,
           },
           {
             id: "q7",
@@ -99,6 +105,7 @@ describe("Survey Logic", () => {
             subheader: { default: "Select pictures" },
             required: true,
             allowMulti: true,
+            audioSource: "tts" as const,
             choices: [
               { id: "pic1", imageUrl: "url1" },
               { id: "pic2", imageUrl: "url2" },
@@ -110,6 +117,7 @@ describe("Survey Logic", () => {
             headline: { default: "Question 8" },
             subheader: { default: "Matrix question" },
             required: true,
+            audioSource: "tts" as const,
             rows: [
               { id: "row1", label: { default: "Row 1", es: "Fila 1" } },
               { id: "row2", label: { default: "Row 2", es: "Fila 2" } },
@@ -141,6 +149,7 @@ describe("Survey Logic", () => {
       enabled: true,
       showResponseCount: true,
       timeToFinish: true,
+      audioSource: "tts" as const,
     },
     triggers: [],
     styling: null,
@@ -939,6 +948,7 @@ describe("Survey Logic", () => {
                 buttonExternal: true,
                 buttonUrl: "https://example.com",
                 ctaButtonLabel: { default: "Click Me" },
+                audioSource: "tts" as const,
               },
             ],
           },
@@ -1280,6 +1290,7 @@ describe("Survey Logic", () => {
                 headline: { default: "Date Question 1" },
                 required: true,
                 format: "d-M-y",
+                audioSource: "tts" as const,
               },
               {
                 id: "dateQ2",
@@ -1287,6 +1298,7 @@ describe("Survey Logic", () => {
                 headline: { default: "Date Question 2" },
                 required: true,
                 format: "d-M-y",
+                audioSource: "tts" as const,
               },
             ],
           },
@@ -1335,6 +1347,7 @@ describe("Survey Logic", () => {
                 type: TSurveyElementTypeEnum.MultipleChoiceMulti,
                 headline: { default: "Multiple Choice" },
                 required: true,
+                audioSource: "tts" as const,
                 choices: [
                   { id: "opt1", label: { default: "Option 1" } },
                   { id: "opt2", label: { default: "Option 2" } },
@@ -1464,6 +1477,7 @@ describe("Survey Logic", () => {
                 type: TSurveyElementTypeEnum.MultipleChoiceSingle,
                 headline: { default: "Multiple Choice With Other" },
                 required: true,
+                audioSource: "tts" as const,
                 choices: [
                   { id: "opt1", label: { default: "Option 1" } },
                   { id: "opt2", label: { default: "Option 2" } },

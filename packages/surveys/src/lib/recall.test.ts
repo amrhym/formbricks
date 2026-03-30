@@ -160,6 +160,7 @@ describe("parseRecallInformation", () => {
     required: false,
     inputType: "text",
     charLimit: { enabled: false },
+    audioSource: "tts" as const,
   };
 
   test("should replace recall info in headline", () => {
