@@ -3,7 +3,7 @@
 import { BrainCircuitIcon, CheckCircle2Icon, XCircleIcon } from "lucide-react";
 import { useState } from "react";
 import { TIntegration, TIntegrationInput } from "@hivecfm/types/integration";
-import { createOrUpdateIntegrationAction } from "@/modules/integrations/actions";
+import { createOrUpdateIntegrationAction } from "@/app/(app)/environments/[environmentId]/workspace/integrations/actions";
 import { Button } from "@/modules/ui/components/button";
 import { Input } from "@/modules/ui/components/input";
 import { Label } from "@/modules/ui/components/label";
