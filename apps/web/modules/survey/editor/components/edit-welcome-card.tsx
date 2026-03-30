@@ -128,6 +128,7 @@ export const EditWelcomeCard = ({
                   audioSource={(localSurvey.welcomeCard as any).audioSource || "tts"}
                   audioUrl={localSurvey.welcomeCard.audioUrl as Record<string, string> | undefined}
                   currentLanguage={currentLanguage}
+                  scriptLanguageCode={defaultLanguageCode}
                   cardType="welcome"
                   cardHeadline={localSurvey.welcomeCard.headline}
                   cardSubheader={localSurvey.welcomeCard.subheader}

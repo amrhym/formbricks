@@ -15,7 +15,8 @@ interface AudioSourceControlProps {
   environmentId: string;
   audioSource: TAudioSource;
   audioUrl: Record<string, string> | undefined;
-  currentLanguage: string;
+  currentLanguage: string; // i18n key: "default" or "en", "ar", etc.
+  scriptLanguageCode?: string; // actual ISO code for TTS script: "en", "ar" (never "default")
   element?: any;
   cardType?: "welcome" | "ending";
   cardHeadline?: Record<string, string>;
@@ -32,6 +33,7 @@ export const AudioSourceControl = ({
   audioSource,
   audioUrl,
   currentLanguage,
+  scriptLanguageCode,
   element,
   cardType,
   cardHeadline,
@@ -53,13 +55,16 @@ export const AudioSourceControl = ({
     checkTtsConfiguredAction({}).then((r) => setIsTtsConfigured(r?.data?.configured || false));
   }, []);
 
+  // Use the actual ISO language code for script templates (never "default")
+  const ttsLang = scriptLanguageCode || (currentLanguage === "default" ? "default" : currentLanguage);
+
   useEffect(() => {
     if (element) {
-      setScriptText(buildIvrScript(element, currentLanguage));
+      setScriptText(buildIvrScript(element, ttsLang));
     } else if (cardType) {
-      setScriptText(buildCardScript(cardHeadline, cardSubheader, currentLanguage));
+      setScriptText(buildCardScript(cardHeadline, cardSubheader, ttsLang));
     }
-  }, [element, cardType, cardHeadline, cardSubheader, currentLanguage]);
+  }, [element, cardType, cardHeadline, cardSubheader, ttsLang]);
 
   const handleGenerate = async () => {
     const voiceName =
