@@ -26,6 +26,7 @@ interface AudioSourceControlProps {
   onAudioSourceChange: (source: TAudioSource) => void;
   onAudioUrlChange: (audioUrl: Record<string, string>) => void;
   onAudioHashChange?: (hash: Record<string, string>) => void;
+  onAudioGenerated?: (data: { audioUrl: Record<string, string>; audioSource: TAudioSource }) => void;
   onFileUpload: (file: File) => void;
 }
 
@@ -44,6 +45,7 @@ export const AudioSourceControl = ({
   onAudioSourceChange,
   onAudioUrlChange,
   onAudioHashChange,
+  onAudioGenerated,
   onFileUpload,
 }: AudioSourceControlProps) => {
   const [isTtsConfigured, setIsTtsConfigured] = useState(false);
@@ -110,8 +112,13 @@ export const AudioSourceControl = ({
       console.log("[AudioSourceControl] generateAudioAction result:", JSON.stringify(result));
       if (result?.data) {
         const newAudioUrl = { ...(audioUrl || {}), [currentLanguage]: result.data.fileUrl };
-        onAudioUrlChange(newAudioUrl);
-        onAudioSourceChange("generated");
+        // Use atomic callback if available (prevents stale closure issue)
+        if (onAudioGenerated) {
+          onAudioGenerated({ audioUrl: newAudioUrl, audioSource: "generated" });
+        } else {
+          onAudioUrlChange(newAudioUrl);
+          onAudioSourceChange("generated");
+        }
         if (onAudioHashChange) {
           const existingHash = (element as any)?.audioGenerationHash || {};
           onAudioHashChange({ ...existingHash, [currentLanguage]: result.data.hash });

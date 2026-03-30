@@ -140,6 +140,9 @@ export const EditWelcomeCard = ({
                   onAudioUrlChange={(url: Record<string, string>) => {
                     updateSurvey({ audioUrl: url } as any);
                   }}
+                  onAudioGenerated={({ audioUrl: url, audioSource: source }) => {
+                    updateSurvey({ audioUrl: url, audioSource: source } as any);
+                  }}
                   onFileUpload={async (file: File) => {
                     const result = await handleFileUpload(file, localSurvey.environmentId, ["wav", "mp3"]);
                     if (result?.url) {

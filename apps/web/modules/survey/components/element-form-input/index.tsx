@@ -473,6 +473,13 @@ export const ElementFormInput = ({
                   updateElement(elementIdx, { audioGenerationHash: hash } as any);
                 }
               }}
+              onAudioGenerated={({ audioUrl: url, audioSource: source }) => {
+                if (isEndingCard && updateSurvey) {
+                  updateSurvey({ audioUrl: url, audioSource: source } as any);
+                } else if (updateElement) {
+                  updateElement(elementIdx, { audioUrl: url, audioSource: source } as any);
+                }
+              }}
               onFileUpload={async (file) => {
                 const result = await handleFileUpload(file, localSurvey.environmentId, ["wav", "mp3"]);
                 if (result?.url) {
