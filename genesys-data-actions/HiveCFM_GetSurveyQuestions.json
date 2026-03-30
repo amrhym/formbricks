@@ -58,5 +58,5 @@
   },
   "integrationType": "custom-rest-actions",
   "name": "HiveCFM_GetSurveyQuestions",
-  "secure": {}
+  "secure": false
 }

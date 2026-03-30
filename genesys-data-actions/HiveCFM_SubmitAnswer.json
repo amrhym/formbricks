@@ -88,5 +88,5 @@
   },
   "integrationType": "custom-rest-actions",
   "name": "HiveCFM_SubmitAnswer",
-  "secure": {}
+  "secure": false
 }
