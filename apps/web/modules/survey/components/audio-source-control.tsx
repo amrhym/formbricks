@@ -57,7 +57,16 @@ export const AudioSourceControl = ({
   }, []);
 
   // Use the actual ISO language code for script templates (never "default")
-  const ttsLang = scriptLanguageCode || (currentLanguage === "default" ? "default" : currentLanguage);
+  const ttsLang =
+    scriptLanguageCode && scriptLanguageCode !== "default" ? scriptLanguageCode : currentLanguage;
+  console.log(
+    "[AudioSourceControl] scriptLanguageCode:",
+    scriptLanguageCode,
+    "currentLanguage:",
+    currentLanguage,
+    "ttsLang:",
+    ttsLang
+  );
 
   useEffect(() => {
     if (element) {
