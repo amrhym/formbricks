@@ -11,6 +11,7 @@ export const mockSurvey: TEnvironmentStateSurvey = {
   name: "Test Survey",
   welcomeCard: {
     enabled: false,
+    audioSource: "tts" as const,
     timeToFinish: false,
     showResponseCount: false,
     headline: {
