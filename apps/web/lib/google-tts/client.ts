@@ -68,7 +68,10 @@ export async function synthesizeSpeech(request: SynthesizeRequest): Promise<Buff
 
   const data = await response.json();
   const audioBuffer = Buffer.from(data.audioContent, "base64");
-  // LINEAR16 returns raw PCM — always needs WAV header
+  // Google may return raw PCM or WAV-wrapped — check for existing RIFF header
+  if (audioBuffer.length > 4 && audioBuffer.toString("ascii", 0, 4) === "RIFF") {
+    return audioBuffer; // Already a valid WAV file
+  }
   return addWavHeader(audioBuffer, 8000, 16, 1);
 }
 
