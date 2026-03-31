@@ -120,47 +120,29 @@ export async function syncAudioPromptsToGenesys(
         : // Fallback: single default language based on audioUrl keys
           [{ language: { code: defaultLangCode }, default: true, enabled: true }];
 
-    for (const lang of languagesToSync) {
-      const langCode = lang.language.code;
-      const isDefault = lang.default;
+    // Single prompt per element — all languages as resources on the same prompt
+    const baseName = `hivecfm_${survey.id}_${itemId}`.replace(/[^a-zA-Z0-9_]/g, "_");
 
-      // Look up audio URL: default language uses the "default" key, others use the lang code
-      const audioKey = isDefault ? "default" : langCode;
-      const audioUrl = audioUrlMap[audioKey];
-      if (!audioUrl) continue;
+    try {
+      // Create or find the prompt in Genesys
+      const prompt = await createPrompt(
+        token,
+        credentials.environmentUrl,
+        baseName,
+        `${descriptionPrefix} for survey "${survey.name}"`
+      );
 
-      total++;
+      // Upload each language as a resource on this single prompt
+      for (const lang of languagesToSync) {
+        const langCode = lang.language.code;
+        const isDefault = lang.default;
+        const audioKey = isDefault ? "default" : langCode;
+        const audioUrl = audioUrlMap[audioKey];
+        if (!audioUrl) continue;
 
-      // Prompt name: no suffix for default language, _langCode for others
-      const baseName = `hivecfm_${survey.id}_${itemId}`.replace(/[^a-zA-Z0-9_]/g, "_");
-      const promptName = isDefault ? baseName : `${baseName}_${langCode}`;
-      const genesysLanguage = toGenesysLanguage(langCode);
+        total++;
+        const genesysLanguage = toGenesysLanguage(langCode);
 
-      try {
-        // Create or find the prompt in Genesys
-        const prompt = await createPrompt(
-          token,
-          credentials.environmentUrl,
-          promptName,
-          `${descriptionPrefix} (${langCode}) for survey "${survey.name}"`
-        );
-
-        // Update or add mapping (keyed by elementId + language)
-        const mappingKey = isDefault ? itemId : `${itemId}_${langCode}`;
-        const existingIdx = updatedMappings.findIndex((m) => m.elementId === mappingKey);
-        const mapping: PromptMapping = {
-          elementId: mappingKey,
-          promptId: prompt.id,
-          promptName,
-          language: langCode,
-        };
-        if (existingIdx >= 0) {
-          updatedMappings[existingIdx] = mapping;
-        } else {
-          updatedMappings.push(mapping);
-        }
-
-        // Download and upload audio
         const uploaded = await downloadAndUpload(
           token,
           credentials.environmentUrl,
@@ -171,11 +153,24 @@ export async function syncAudioPromptsToGenesys(
           errors
         );
         if (uploaded) synced++;
-      } catch (error) {
-        const msg = `Failed to sync prompt for ${itemId} [${langCode}]: ${error instanceof Error ? error.message : String(error)}`;
-        console.error(msg, error);
-        errors.push(msg);
       }
+
+      // Store mapping (single prompt, no language suffix)
+      const existingIdx = updatedMappings.findIndex((m) => m.elementId === itemId);
+      const mapping: PromptMapping = {
+        elementId: itemId,
+        promptId: prompt.id,
+        promptName: baseName,
+      };
+      if (existingIdx >= 0) {
+        updatedMappings[existingIdx] = mapping;
+      } else {
+        updatedMappings.push(mapping);
+      }
+    } catch (error) {
+      const msg = `Failed to sync prompt for ${itemId}: ${error instanceof Error ? error.message : String(error)}`;
+      console.error(msg, error);
+      errors.push(msg);
     }
   }
 

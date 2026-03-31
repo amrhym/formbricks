@@ -336,9 +336,7 @@ export const linearizeSurveyForIvr = (
       const resolvedAudioKey = lang && audioUrlMap?.[lang] ? lang : "default";
       const rawAudioUrl = audioUrlMap?.[resolvedAudioKey] || null;
 
-      // Build prompt suffix for non-default languages
-      const promptSuffix = lang && lang !== defaultLangCode ? `_${lang}` : "";
-
+      // Single prompt per element — Genesys uses flow language to pick the right resource
       questions.push({
         questionId: element.id,
         questionIndex,
@@ -351,7 +349,7 @@ export const linearizeSurveyForIvr = (
           : null,
         audioSource: element.audioSource || "tts",
         genesysPromptName: rawAudioUrl
-          ? `hivecfm_${survey.id}_${element.id}${promptSuffix}`.replace(/[^a-zA-Z0-9_]/g, "_")
+          ? `hivecfm_${survey.id}_${element.id}`.replace(/[^a-zA-Z0-9_]/g, "_")
           : null,
         type: element.type,
         required: element.required,
@@ -380,7 +378,7 @@ export const linearizeSurveyForIvr = (
   const endingRawAudioUrl = endingAudioUrlMap?.[endingAudioKey] || null;
 
   // Build prompt suffix for non-default languages
-  const configPromptSuffix = lang && lang !== defaultLangCode ? `_${lang}` : "";
+  // No language suffix — single prompt per element, Genesys uses flow language to pick resource
 
   const surveyConfig: IvrSurveyConfig = {
     id: survey.id,
@@ -396,7 +394,7 @@ export const linearizeSurveyForIvr = (
       : null,
     welcomeAudioSource: (survey.welcomeCard as any)?.audioSource || "tts",
     welcomeGenesysPromptName: welcomeRawAudioUrl
-      ? `hivecfm_${survey.id}_welcome${configPromptSuffix}`.replace(/[^a-zA-Z0-9_]/g, "_")
+      ? `hivecfm_${survey.id}_welcome`.replace(/[^a-zA-Z0-9_]/g, "_")
       : null,
     thankYouMessage: voiceConfig.thankYouMessage || firstEndingMessage,
     thankYouAudioUrl: endingRawAudioUrl
@@ -407,7 +405,7 @@ export const linearizeSurveyForIvr = (
         ? (survey.endings[0] as any).audioSource || "tts"
         : "tts",
     thankYouGenesysPromptName: endingRawAudioUrl
-      ? `hivecfm_${survey.id}_ending${configPromptSuffix}`.replace(/[^a-zA-Z0-9_]/g, "_")
+      ? `hivecfm_${survey.id}_ending`.replace(/[^a-zA-Z0-9_]/g, "_")
       : null,
     errorMessage: voiceConfig.errorMessage || "Invalid input, please try again",
     inputTimeout: voiceConfig.inputTimeout,
