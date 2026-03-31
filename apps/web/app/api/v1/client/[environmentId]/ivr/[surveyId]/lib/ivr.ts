@@ -23,11 +23,15 @@ interface IvrInputConfigDtmfOption {
 
 interface IvrInputConfigDtmfChoice {
   inputType: "dtmf_choice";
+  min: number;
+  max: number;
   options: IvrInputConfigDtmfOption[];
 }
 
 interface IvrInputConfigSpeech {
   inputType: "speech";
+  min: number;
+  max: number;
   maxDurationSeconds: number;
   silenceTimeoutSeconds: number;
 }
