@@ -6,7 +6,7 @@
         "Content-Type": "application/json",
         "x-Api-Key": "${input.API_KEY}"
       },
-      "requestTemplate": "{ \"callId\": \"${input.CALL_ID}\", \"callerNumber\": \"${input.CALLER_NUMBER}\", \"language\": \"${input.LANGUAGE}\", \"answers\": ${input.ANSWERS_JSON}, \"finished\": ${input.FINISHED}, \"hiddenFields\": ${input.HIDDEN_FIELDS_JSON} }",
+      "requestTemplate": "{ \"callId\": \"${input.CALL_ID}\", \"callerNumber\": \"${input.CALLER_NUMBER}\", \"language\": \"${input.LANGUAGE}\", \"answers\": ${input.ANSWERS_JSON}, \"finished\": ${input.FINISHED} }",
       "requestType": "POST",
       "requestUrlTemplate": "https://${input.HOST}/api/v1/client/${input.ENVIRONMENT_ID}/ivr/${input.SURVEY_ID}/responses"
     },
