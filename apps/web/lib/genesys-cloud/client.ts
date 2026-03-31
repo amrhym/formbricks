@@ -110,13 +110,22 @@ export async function uploadPromptResource(
   });
 
   if (response.status === 409) {
-    // Resource already exists — delete it and recreate to get a fresh uploadUri
-    await fetch(`${environmentUrl}/api/v2/architect/prompts/${promptId}/resources/${language}`, {
-      method: "DELETE",
+    // Resource already exists — list resources, find matching language, delete by ID
+    const listRes = await fetch(`${environmentUrl}/api/v2/architect/prompts/${promptId}/resources`, {
       headers: { Authorization: `Bearer ${token}` },
     });
-    // Wait briefly for deletion to propagate
-    await new Promise((r) => setTimeout(r, 1000));
+    if (listRes.ok) {
+      const resources = await listRes.json();
+      const entities = resources.entities || resources;
+      const existing = Array.isArray(entities) ? entities.find((r: any) => r.language === language) : null;
+      if (existing?.id) {
+        await fetch(`${environmentUrl}/api/v2/architect/prompts/${promptId}/resources/${existing.id}`, {
+          method: "DELETE",
+          headers: { Authorization: `Bearer ${token}` },
+        });
+        await new Promise((r) => setTimeout(r, 1500));
+      }
+    }
     // Recreate
     response = await fetch(`${environmentUrl}/api/v2/architect/prompts/${promptId}/resources`, {
       method: "POST",
