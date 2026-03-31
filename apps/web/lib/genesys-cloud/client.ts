@@ -110,35 +110,71 @@ export async function uploadPromptResource(
   });
 
   if (response.status === 409) {
-    // Resource already exists — list resources, find matching language, delete by ID
-    const listRes = await fetch(`${environmentUrl}/api/v2/architect/prompts/${promptId}/resources`, {
-      headers: { Authorization: `Bearer ${token}` },
-    });
-    if (listRes.ok) {
-      const resources = await listRes.json();
-      const entities = resources.entities || resources;
-      const existing = Array.isArray(entities) ? entities.find((r: any) => r.language === language) : null;
-      if (existing?.id) {
-        await fetch(`${environmentUrl}/api/v2/architect/prompts/${promptId}/resources/${existing.id}`, {
-          method: "DELETE",
+    // Resource already exists — GET it to find uploadUri, then just re-upload the audio
+    const getRes = await fetch(
+      `${environmentUrl}/api/v2/architect/prompts/${promptId}/resources/${language}`,
+      { headers: { Authorization: `Bearer ${token}` } }
+    );
+    if (getRes.ok) {
+      // Use the existing resource — we'll upload the new audio to it directly
+      const existingResource = await getRes.json();
+      console.log(`[Genesys] Resource exists for ${language}, re-uploading audio to existing resource`);
+
+      // Upload new audio directly using PUT on the existing resource
+      const formData = new FormData();
+      const blob = new Blob([wavBuffer], { type: "audio/wav" });
+      formData.append("file", blob, `prompt_${promptId}.wav`);
+
+      const uploadUri = existingResource.uploadUri;
+      if (uploadUri) {
+        const uploadRes = await fetch(uploadUri, {
+          method: "POST",
           headers: { Authorization: `Bearer ${token}` },
+          body: formData,
         });
-        await new Promise((r) => setTimeout(r, 1500));
+        if (uploadRes.ok) {
+          console.log(`Successfully re-uploaded WAV to existing Genesys prompt ${promptId}`);
+          return;
+        }
       }
+
+      // If no uploadUri on existing resource, try PUT to update and get a new uploadUri
+      const putRes = await fetch(
+        `${environmentUrl}/api/v2/architect/prompts/${promptId}/resources/${existingResource.id}`,
+        {
+          method: "PUT",
+          headers: { Authorization: `Bearer ${token}`, "Content-Type": "application/json" },
+          body: JSON.stringify({ language, mediaUri: `prompt://${promptId}`, ttsString: "" }),
+        }
+      );
+      if (putRes.ok) {
+        const updatedResource = await putRes.json();
+        if (updatedResource.uploadUri) {
+          const formData2 = new FormData();
+          const blob2 = new Blob([wavBuffer], { type: "audio/wav" });
+          formData2.append("file", blob2, `prompt_${promptId}.wav`);
+          await fetch(updatedResource.uploadUri, {
+            method: "POST",
+            headers: { Authorization: `Bearer ${token}` },
+            body: formData2,
+          });
+          console.log(`Successfully uploaded WAV via PUT to Genesys prompt ${promptId}`);
+          return;
+        }
+      }
+
+      // Last resort: delete the entire prompt and recreate from scratch
+      console.log(`[Genesys] Deleting entire prompt ${promptId} to recreate`);
+      await fetch(`${environmentUrl}/api/v2/architect/prompts/${promptId}`, {
+        method: "DELETE",
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      await new Promise((r) => setTimeout(r, 2000));
+      // Will fall through to the error below and caller will retry
     }
-    // Recreate
-    response = await fetch(`${environmentUrl}/api/v2/architect/prompts/${promptId}/resources`, {
-      method: "POST",
-      headers: {
-        Authorization: `Bearer ${token}`,
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        language,
-        mediaUri: `prompt://${promptId}`,
-        ttsString: "",
-      }),
-    });
+    // If we got here, the 409 couldn't be resolved
+    const errorText = await response.text().catch(() => "");
+    throw new Error(`Failed to create prompt resource: 409 ${errorText}`);
   }
 
   if (!response.ok) {
