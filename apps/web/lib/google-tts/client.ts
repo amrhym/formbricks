@@ -55,8 +55,8 @@ export async function synthesizeSpeech(request: SynthesizeRequest): Promise<Buff
     body: JSON.stringify({
       input: { text: request.text },
       voice: { languageCode: request.languageCode, name: request.voiceName },
-      // MULAW 8kHz mono — standard telephony format, compatible with Genesys Cloud
-      audioConfig: { audioEncoding: "MULAW", sampleRateHertz: 8000 },
+      // LINEAR16 PCM 8kHz mono — Genesys Cloud prompts require standard PCM WAV
+      audioConfig: { audioEncoding: "LINEAR16", sampleRateHertz: 8000 },
     }),
   });
 
@@ -68,12 +68,8 @@ export async function synthesizeSpeech(request: SynthesizeRequest): Promise<Buff
 
   const data = await response.json();
   const audioBuffer = Buffer.from(data.audioContent, "base64");
-  // Google MULAW response may already be WAV-wrapped — check for RIFF header
-  if (audioBuffer.length > 4 && audioBuffer.toString("ascii", 0, 4) === "RIFF") {
-    return audioBuffer; // Already a valid WAV file
-  }
-  // Raw MULAW data — wrap in WAV container
-  return addWavHeader(audioBuffer, 8000, 8, 1, 7);
+  // LINEAR16 returns raw PCM — always needs WAV header
+  return addWavHeader(audioBuffer, 8000, 16, 1);
 }
 
 export async function listVoices(languageCode?: string): Promise<Voice[]> {
