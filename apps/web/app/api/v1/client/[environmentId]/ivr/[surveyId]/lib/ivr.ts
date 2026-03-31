@@ -105,6 +105,8 @@ const buildInputConfig = (
       const choices = mcElement.choices.slice(0, VOICE_MAX_MULTIPLE_CHOICE_OPTIONS);
       return {
         inputType: "dtmf_choice",
+        min: 1,
+        max: choices.length,
         options: choices.map((choice, index) => ({
           key: String(index + 1),
           label: getLanguageText(choice.label, lang, hiddenFields) || `Option ${index + 1}`,
@@ -115,12 +117,16 @@ const buildInputConfig = (
     case TSurveyElementTypeEnum.CTA:
       return {
         inputType: "dtmf_choice",
+        min: 1,
+        max: 1,
         options: [{ key: "1", label: "Continue" }],
       };
 
     case TSurveyElementTypeEnum.OpenText:
       return {
         inputType: "speech",
+        min: 0,
+        max: 0,
         maxDurationSeconds: 30,
         silenceTimeoutSeconds: 3,
       };
