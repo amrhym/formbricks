@@ -95,20 +95,8 @@ export async function uploadPromptResource(
   wavBuffer: ArrayBuffer,
   language: string = "en-us"
 ): Promise<void> {
-  // Delete existing resource first so we always replace the audio
-  const deleteRes = await fetch(
-    `${environmentUrl}/api/v2/architect/prompts/${promptId}/resources/${language}`,
-    {
-      method: "DELETE",
-      headers: { Authorization: `Bearer ${token}` },
-    }
-  );
-  // 404 is fine — means no existing resource
-  if (!deleteRes.ok && deleteRes.status !== 404) {
-    // Non-critical — continue to create
-  }
-
-  const response = await fetch(`${environmentUrl}/api/v2/architect/prompts/${promptId}/resources`, {
+  // Try to create resource; if it already exists (409), get the existing one instead
+  let response = await fetch(`${environmentUrl}/api/v2/architect/prompts/${promptId}/resources`, {
     method: "POST",
     headers: {
       Authorization: `Bearer ${token}`,
@@ -120,6 +108,29 @@ export async function uploadPromptResource(
       ttsString: "",
     }),
   });
+
+  if (response.status === 409) {
+    // Resource already exists — delete it and recreate to get a fresh uploadUri
+    await fetch(`${environmentUrl}/api/v2/architect/prompts/${promptId}/resources/${language}`, {
+      method: "DELETE",
+      headers: { Authorization: `Bearer ${token}` },
+    });
+    // Wait briefly for deletion to propagate
+    await new Promise((r) => setTimeout(r, 1000));
+    // Recreate
+    response = await fetch(`${environmentUrl}/api/v2/architect/prompts/${promptId}/resources`, {
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${token}`,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        language,
+        mediaUri: `prompt://${promptId}`,
+        ttsString: "",
+      }),
+    });
+  }
 
   if (!response.ok) {
     const errorText = await response.text();
