@@ -127,6 +127,23 @@ export const POST = withV1ApiWrapper({
       }
     }
 
+    // Convert DTMF digits to choice IDs for MultipleChoiceSingle questions
+    for (const block of survey.blocks) {
+      for (const element of block.elements) {
+        if (element.type === "multipleChoiceSingle" && data[element.id] !== undefined) {
+          const mcElement = element as any;
+          const dtmfDigit = Number(data[element.id]);
+          // DTMF digits are 1-indexed: "1" = first choice, "2" = second choice
+          if (!isNaN(dtmfDigit) && dtmfDigit >= 1 && dtmfDigit <= (mcElement.choices?.length || 0)) {
+            const selectedChoice = mcElement.choices[dtmfDigit - 1];
+            if (selectedChoice?.id) {
+              data[element.id] = selectedChoice.id;
+            }
+          }
+        }
+      }
+    }
+
     // Pre-flight license enforcement
     const organization = await getOrganizationByEnvironmentId(environmentId);
     if (organization) {
