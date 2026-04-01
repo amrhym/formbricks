@@ -150,21 +150,30 @@ export const RenderResponse: React.FC<RenderResponseProps> = ({
       break;
     case TSurveyElementTypeEnum.MultipleChoiceMulti:
     case TSurveyElementTypeEnum.MultipleChoiceSingle:
-    case TSurveyElementTypeEnum.Ranking:
+    case TSurveyElementTypeEnum.Ranking: {
+      // Resolve choice ID to label for display
+      const resolveChoiceValue = (val: string): { value: string; id: string } => {
+        const valStr = val.toString();
+        // Check if the stored value is a choice ID
+        const choiceById = (element as any).choices?.find((c: any) => c.id === valStr);
+        if (choiceById) {
+          const langCode = getLanguageCode(survey.languages, language);
+          const label =
+            getLocalizedValue(choiceById.label, langCode) ||
+            getLocalizedValue(choiceById.label, "default") ||
+            valStr;
+          return { value: label, id: choiceById.id };
+        }
+        // Fallback: value is a label — find its ID
+        const choiceId = getChoiceIdByValue(valStr, element);
+        return { value: valStr, id: choiceId };
+      };
+
       if (typeof responseData === "string" || typeof responseData === "number") {
-        const choiceId = getChoiceIdByValue(responseData.toString(), element);
-        return (
-          <ResponseBadges
-            items={[{ value: responseData.toString(), id: choiceId }]}
-            isExpanded={isExpanded}
-            showId={showId}
-          />
-        );
+        const resolved = resolveChoiceValue(responseData.toString());
+        return <ResponseBadges items={[resolved]} isExpanded={isExpanded} showId={showId} />;
       } else if (Array.isArray(responseData)) {
-        const itemsArray = responseData.map((choice) => {
-          const choiceId = getChoiceIdByValue(choice, element);
-          return { value: choice, id: choiceId };
-        });
+        const itemsArray = responseData.map((choice) => resolveChoiceValue(choice));
         return (
           <>
             {element.type === TSurveyElementTypeEnum.Ranking ? (
@@ -176,6 +185,7 @@ export const RenderResponse: React.FC<RenderResponseProps> = ({
         );
       }
       break;
+    }
 
     default:
       if (
