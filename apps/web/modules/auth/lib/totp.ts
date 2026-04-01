@@ -9,14 +9,14 @@ import { keyDecoder, keyEncoder } from "@otplib/plugin-thirty-two";
  * @param token - The token.
  * @param secret - The base32-encoded shared secret.
  * @param opts - The AuthenticatorOptions object.
- * @param opts.window - The amount of past and future tokens considered valid. Either a single value or array of `[past, future]`. Default: `[1, 0]`
+ * @param opts.window - The amount of past and future tokens considered valid. Either a single value or array of `[past, future]`. Default: `[2, 1]`
  */
 export const totpAuthenticatorCheck = (
   token: string,
   secret: string,
   opts: Partial<AuthenticatorOptions> = {}
 ) => {
-  const { window = [1, 0], ...rest } = opts;
+  const { window = [2, 1], ...rest } = opts;
   const authenticator = new Authenticator({
     createDigest,
     createRandomBytes,

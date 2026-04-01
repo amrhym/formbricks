@@ -46,7 +46,7 @@ describe("totpAuthenticatorCheck", () => {
       createRandomBytes,
       keyDecoder,
       keyEncoder,
-      window: [1, 0],
+      window: [2, 1],
     });
     expect(checkMock).toHaveBeenCalledWith(token, secret);
     expect(result).toBe(true);
