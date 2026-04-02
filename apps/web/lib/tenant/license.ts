@@ -2,6 +2,7 @@ import "server-only";
 import { Prisma } from "@prisma/client";
 import crypto from "crypto";
 import { prisma } from "@hivecfm/database";
+import { EMBEDDED_PRIVATE_KEY, signLicenseData } from "@hivecfm/license-crypto";
 import { logger } from "@hivecfm/logger";
 import { ZId } from "@hivecfm/types/common";
 import { DatabaseError, ResourceNotFoundError } from "@hivecfm/types/errors";
@@ -13,6 +14,12 @@ import {
   ZTenantLicenseUpdate,
 } from "@hivecfm/types/tenant";
 import { validateInputs } from "@/lib/utils/validate";
+
+function getSigningKey(): string {
+  const raw = process.env.HIVECFM_LICENSE_PRIVATE_KEY || process.env.HIVELIC_SIGNING_PRIVATE_KEY;
+  if (raw) return raw.replace(/\\n/g, "\n").trim();
+  return EMBEDDED_PRIVATE_KEY;
+}
 
 const tenantLicenseSelect: Prisma.TenantLicenseSelect = {
   id: true,
@@ -45,6 +52,23 @@ export const createLicense = async (
 
   try {
     const licenseKey = generateLicenseKey();
+    const validFrom = input.validFrom ?? new Date();
+
+    // Sign the license data so it passes integrity checks
+    const signature = signLicenseData(
+      {
+        organizationId,
+        licenseKey,
+        maxCompletedResponses: input.maxCompletedResponses,
+        maxUsers: input.maxUsers,
+        addonAiInsights: input.addonAiInsights,
+        addonCampaignManagement: input.addonCampaignManagement,
+        validFrom: validFrom.toISOString(),
+        validUntil: input.validUntil.toISOString(),
+        isActive: true,
+      },
+      getSigningKey()
+    );
 
     const license = await prisma.tenantLicense.create({
       data: {
@@ -54,13 +78,14 @@ export const createLicense = async (
         maxUsers: input.maxUsers,
         addonAiInsights: input.addonAiInsights,
         addonCampaignManagement: input.addonCampaignManagement,
-        validFrom: input.validFrom ?? new Date(),
+        validFrom,
         validUntil: input.validUntil,
+        licenseSignature: signature,
       },
       select: tenantLicenseSelect,
     });
 
-    logger.info({ organizationId }, "Tenant license created");
+    logger.info({ organizationId }, "Tenant license created (signed)");
     return license as TTenantLicense;
   } catch (error) {
     if (error instanceof Prisma.PrismaClientKnownRequestError) {

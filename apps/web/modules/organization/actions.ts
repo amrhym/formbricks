@@ -5,6 +5,7 @@ import { OperationNotAllowedError } from "@hivecfm/types/errors";
 import { TUserNotificationSettings } from "@hivecfm/types/user";
 import { createMembership } from "@/lib/membership/service";
 import { createOrganization } from "@/lib/organization/service";
+import { createLicense } from "@/lib/tenant/license";
 import { updateUser } from "@/lib/user/service";
 import { authenticatedActionClient } from "@/lib/utils/action-client";
 import { AuthenticatedActionClientCtx } from "@/lib/utils/action-client/types/context";
@@ -29,6 +30,17 @@ export const createOrganizationAction = authenticatedActionClient.schema(ZCreate
 
       const newOrganization = await createOrganization({
         name: parsedInput.organizationName,
+      });
+
+      // Auto-create trial license for new organization
+      const validUntil = new Date();
+      validUntil.setDate(validUntil.getDate() + 7); // 7-day trial
+      await createLicense(newOrganization.id, {
+        maxCompletedResponses: 500,
+        maxUsers: 5,
+        addonAiInsights: true,
+        addonCampaignManagement: true,
+        validUntil,
       });
 
       await createMembership(newOrganization.id, ctx.user.id, {

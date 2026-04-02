@@ -1,15 +1,21 @@
 import "server-only";
 import { Prisma } from "@prisma/client";
 import { prisma } from "@hivecfm/database";
-import { LicenseTokenError, signLicenseData, verifyLicenseToken } from "@hivecfm/license-crypto";
+import {
+  EMBEDDED_PRIVATE_KEY,
+  EMBEDDED_PUBLIC_KEY,
+  LicenseTokenError,
+  signLicenseData,
+  verifyLicenseToken,
+} from "@hivecfm/license-crypto";
 import { logger } from "@hivecfm/logger";
 import { DatabaseError, ResourceNotFoundError } from "@hivecfm/types/errors";
 import { TTenantLicense } from "@hivecfm/types/tenant";
 
-function getPrivateKey(): string | null {
+function getPrivateKey(): string {
   const raw = process.env.HIVECFM_LICENSE_PRIVATE_KEY || process.env.HIVELIC_SIGNING_PRIVATE_KEY;
-  if (!raw) return null;
-  return raw.replace(/\\n/g, "\n").trim();
+  if (raw) return raw.replace(/\\n/g, "\n").trim();
+  return EMBEDDED_PRIVATE_KEY;
 }
 
 function computeLicenseSignature(payload: {
@@ -21,9 +27,8 @@ function computeLicenseSignature(payload: {
   addonCampaignManagement: boolean;
   validFrom: string;
   validUntil: string;
-}): string | null {
+}): string {
   const privateKey = getPrivateKey();
-  if (!privateKey) return null;
 
   return signLicenseData(
     {
@@ -43,20 +48,17 @@ function computeLicenseSignature(payload: {
 
 function getPublicKeys(): string[] {
   const raw = process.env.HIVECFM_LICENSE_PUBLIC_KEY;
-  if (!raw) return [];
-  return raw
-    .split("|")
-    .map((k) => k.replace(/\\n/g, "\n").trim())
-    .filter(Boolean);
+  if (raw) {
+    return raw
+      .split("|")
+      .map((k) => k.replace(/\\n/g, "\n").trim())
+      .filter(Boolean);
+  }
+  return [EMBEDDED_PUBLIC_KEY];
 }
 
 export async function activateOfflineLicense(token: string): Promise<TTenantLicense> {
   const publicKeys = getPublicKeys();
-  if (publicKeys.length === 0) {
-    throw new Error(
-      "No license public keys configured. Set HIVECFM_LICENSE_PUBLIC_KEY environment variable."
-    );
-  }
 
   const payload = verifyLicenseToken(token, publicKeys);
 
@@ -83,7 +85,7 @@ export async function activateOfflineLicense(token: string): Promise<TTenantLice
       validFrom: new Date(payload.validFrom),
       validUntil,
       isActive: true,
-      ...(signature && { licenseSignature: signature }),
+      licenseSignature: signature,
     };
 
     const license = await prisma.tenantLicense.upsert({

@@ -70,10 +70,21 @@ export const POST = withV1ApiWrapper({
       auditLog.targetId = result.organization.id;
       auditLog.newObject = result;
 
-      // Create license if provided in input
+      // Create license (use input if provided, otherwise auto-create trial)
       let license: Awaited<ReturnType<typeof createLicense>> | null = null;
       if (inputValidation.data.license) {
         license = await createLicense(result.organization.id, inputValidation.data.license);
+      } else {
+        // Auto-create trial license for new tenants
+        const validUntil = new Date();
+        validUntil.setDate(validUntil.getDate() + 7); // 7-day trial
+        license = await createLicense(result.organization.id, {
+          maxCompletedResponses: 500,
+          maxUsers: 5,
+          addonAiInsights: true,
+          addonCampaignManagement: true,
+          validUntil,
+        });
       }
 
       // Run full provisioning for external services

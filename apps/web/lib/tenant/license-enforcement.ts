@@ -1,21 +1,23 @@
 import "server-only";
 import { prisma } from "@hivecfm/database";
-import { type LicenseSignableData, verifyLicenseData } from "@hivecfm/license-crypto";
+import { EMBEDDED_PUBLIC_KEY, type LicenseSignableData, verifyLicenseData } from "@hivecfm/license-crypto";
 import { logger } from "@hivecfm/logger";
 import { getLicense, isLicenseValid } from "./license";
 
 function getLicensePublicKeys(): string[] {
   const raw = process.env.HIVECFM_LICENSE_PUBLIC_KEY;
-  if (!raw) return [];
-  return raw
-    .split("|")
-    .map((s) => s.trim().replace(/\\n/g, "\n"))
-    .filter(Boolean);
+  if (raw) {
+    return raw
+      .split("|")
+      .map((s) => s.trim().replace(/\\n/g, "\n"))
+      .filter(Boolean);
+  }
+  return [EMBEDDED_PUBLIC_KEY];
 }
 
 /**
  * Verify that the license data hasn't been tampered with.
- * Returns true if signature is valid OR if no public keys are configured (grace mode).
+ * Returns true if the signature is valid against configured or embedded public keys.
  */
 function verifyLicenseIntegrity(license: {
   organizationId: string;
@@ -30,12 +32,6 @@ function verifyLicenseIntegrity(license: {
   licenseSignature?: string | null;
 }): boolean {
   const publicKeys = getLicensePublicKeys();
-
-  // No public key = no way to verify = license invalid
-  if (publicKeys.length === 0) {
-    logger.error("HIVECFM_LICENSE_PUBLIC_KEY not configured — all licenses invalid");
-    return false;
-  }
 
   // If signature is missing, license is unsigned (tampered or legacy)
   if (!license.licenseSignature) {
