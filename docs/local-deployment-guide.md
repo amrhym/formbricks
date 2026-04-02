@@ -125,7 +125,7 @@ docker compose logs -f hivecfm-core
 
 ## Step 5: Create Hub Database
 
-The Hub uses a separate database on the same PostgreSQL instance:
+The Hub uses a separate database on the Core's PostgreSQL:
 
 ```bash
 docker exec hivecfm-postgres psql -U postgres -c "CREATE DATABASE hivecfm_hub;" 2>/dev/null || true
@@ -133,10 +133,31 @@ docker exec hivecfm-postgres psql -U postgres -c "CREATE DATABASE hivecfm_hub;" 
 
 ## Step 6: Start Hub Services
 
+The Hub must join the Core's Docker network (`hivecfm-network`) so they can communicate. Before starting, create or update the Hub's `docker-compose.override.yml` to connect to the Core's network:
+
 ```bash
 cd ../hivecfm-hub
+
+cat > docker-compose.override.yml << 'EOF'
+services:
+  hub-api:
+    networks:
+      - default
+      - hivecfm-network
+    environment:
+      DATABASE_URL: postgres://postgres:postgres@hivecfm-postgres:5432/hivecfm_hub?sslmode=disable
+    ports:
+      - "127.0.0.1:8090:8080"
+
+networks:
+  hivecfm-network:
+    external: true
+EOF
+
 docker compose up -d
 ```
+
+> **Why?** Core creates `hivecfm-network`. The Hub joins it via the override file so `hivecfm-hub-api` can reach `hivecfm-postgres` and Core can reach `http://hivecfm-hub-api:8080`.
 
 This starts:
 - **hivecfm-hub-api** — Go API server (semantic search, AI enrichment, feedback ingestion)
