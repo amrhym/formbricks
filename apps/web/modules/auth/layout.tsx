@@ -22,11 +22,9 @@ export const AuthLayout = async ({ children }: { children: React.ReactNode }) =>
   return (
     <>
       <Toaster />
-      <div className="min-h-screen bg-white">
+      <div className="min-h-screen bg-slate-200">
         <div className="isolate">
-          <div className="flex min-h-screen bg-gradient-to-br from-blue-50 via-white to-purple-50">
-            {children}
-          </div>
+          <div className="flex min-h-screen">{children}</div>
         </div>
       </div>
     </>
