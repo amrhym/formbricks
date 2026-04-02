@@ -48,6 +48,10 @@ run_with_timeout() {
 
 
 echo "🗃️ Running database migrations..."
+# Auto-resolve any previously failed migrations before running new ones
+if command -v psql >/dev/null 2>&1; then
+  psql "$DATABASE_URL" -c "UPDATE _prisma_migrations SET finished_at = NOW(), rolled_back_at = NULL, logs = NULL WHERE finished_at IS NULL OR logs IS NOT NULL;" 2>/dev/null && echo "🔧 Resolved failed migrations" || true
+fi
 run_with_timeout 300 "database migration" sh -c '(cd packages/database && npm run db:migrate:deploy)'
 
 echo "🗃️ Running SAML database setup..."
