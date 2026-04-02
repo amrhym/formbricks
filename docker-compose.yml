@@ -210,27 +210,6 @@ services:
       - hivecfm-network
 
   # =============================================================================
-  # Mock Salesforce CRM (JSON Server)
-  # Simulates Salesforce case management for closed-loop feedback routing
-  # =============================================================================
-  mock-salesforce:
-    image: node:22-alpine
-    container_name: hivecfm-mock-salesforce
-    working_dir: /data
-    command: sh -c "npm install -g json-server@0.17.4 && json-server --watch db.json --host 0.0.0.0 --port 3000"
-    ports:
-      - "127.0.0.1:3003:3000"
-    volumes:
-      - ./mock-salesforce/db.json:/data/db.json
-    healthcheck:
-      <<: *healthcheck-defaults
-      test: ["CMD-SHELL", "node -e \"require('http').get('http://localhost:3000/cases', r => process.exit(r.statusCode === 200 ? 0 : 1)).on('error', () => process.exit(1))\""]
-      start_period: 30s
-    restart: unless-stopped
-    networks:
-      - hivecfm-network
-
-  # =============================================================================
   # Apache Superset Analytics
   # Using official Apache Superset image
   # =============================================================================
