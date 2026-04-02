@@ -162,6 +162,10 @@ RUN chmod -R 755 ./node_modules/zod
 COPY --from=installer /app/scripts/rls ./scripts/rls
 RUN chown -R nextjs:nextjs ./scripts/rls && chmod -R 755 ./scripts/rls
 
+# Copy Superset views SQL (applied after migrations in startup script)
+COPY --from=installer /app/scripts/superset ./scripts/superset
+RUN chown -R nextjs:nextjs ./scripts/superset && chmod -R 755 ./scripts/superset
+
 RUN npm install -g prisma@6
 
 # Create a startup script to handle the conditional logic
