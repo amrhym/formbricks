@@ -1,684 +1,343 @@
-# HiveCFM Azure Environment Setup
+# HiveCFM Azure Environment Setup — NPRD & PRD
+
+**Subscription:** dof-tp-subscription (ce8d1d77-7bc4-4e74-8795-0a75acbb20d5)
+**Region:** UAE North
+**Network:** 172.31.8.0/23 (new subnet within existing VWAN hub-spoke)
+**Domain:** hivecfm.io
+
+---
 
 ## Architecture Overview
 
 ```mermaid
 graph TB
-    subgraph "rg-hivecfm (Shared Infrastructure)"
-        ACR["Container Registry<br/>hivecfmregistry"]
-        BUILD["Build VM<br/>hivecfmbuild<br/>Standard B2s"]
-        ADO["Azure DevOps<br/>CI/CD Pipeline"]
-    end
+    subgraph "dof-tp-subscription — UAE North"
+        subgraph "Existing Virtual WAN Hub (172.31.4.0/23)"
+            VWAN["AZISTNW-UAE-HUB01"]
+            FW["Azure Firewall Premium"]
+        end
 
-    subgraph "rg-hivecfm-dev (Non-Production)"
-        DEV_ENV["Container Apps Environment"]
-        DEV_PG["PostgreSQL (Burstable)"]
-        DEV_REDIS["Redis (Basic)"]
-        DEV_BLOB["Blob Storage (LRS)"]
-    end
+        subgraph "New: AZISTNPRD-UAE-HIVE-ACA-VNET01 (172.31.8.0/24)"
+            NPRD_ACA["NPRD Container Apps"]
+            NPRD_DATA["NPRD Data Services"]
+            NPRD_MON["NPRD Monitoring"]
+        end
 
-    subgraph "rg-hivecfm-prod (Production)"
-        PROD_ENV["Container Apps Environment (HA)"]
-        PROD_PG["PostgreSQL (General Purpose + HA)"]
-        PROD_REDIS["Redis (Standard)"]
-        PROD_BLOB["Blob Storage (GRS)"]
-    end
+        subgraph "New: AZISTPRD-UAE-HIVE-ACA-VNET01 (172.31.9.0/24)"
+            PRD_ACA["PRD Container Apps (HA)"]
+            PRD_DATA["PRD Data Services (Zone Redundant)"]
+            PRD_MON["PRD Monitoring"]
+        end
 
-    ADO -->|Trigger| BUILD
-    BUILD -->|Push Image| ACR
-    ACR -->|Pull| DEV_ENV
-    ACR -->|Pull| PROD_ENV
+        subgraph "Shared"
+            FD["Azure Front Door + WAF"]
+            ACR["Container Registry"]
+        end
+
+        VWAN ---|"Peered"| NPRD_ACA
+        VWAN ---|"Peered"| PRD_ACA
+        FD --> NPRD_ACA
+        FD --> PRD_ACA
+    end
 ```
 
 ---
 
-## Non-Production Environment
+## Network Architecture
+
+### Subnet Allocation (172.31.8.0/23 = 512 IPs split into NPRD + PRD)
+
+| Subnet | CIDR | Purpose | Environment |
+|--------|------|---------|-------------|
+| `AZISTNPRD-UAE-HIVE-ACA-SNET01` | 172.31.8.0/25 | Container Apps Environment | NPRD |
+| `AZISTNPRD-UAE-HIVE-PVT-SNET02` | 172.31.8.128/26 | Private Endpoints (PostgreSQL, Redis, Blob) | NPRD |
+| `AZISTNPRD-UAE-HIVE-MON-SNET03` | 172.31.8.192/26 | Monitoring (Grafana, Loki) | NPRD |
+| `AZISTPRD-UAE-HIVE-ACA-SNET01` | 172.31.9.0/25 | Container Apps Environment | PRD |
+| `AZISTPRD-UAE-HIVE-PVT-SNET02` | 172.31.9.128/26 | Private Endpoints (PostgreSQL, Redis, Blob) | PRD |
+| `AZISTPRD-UAE-HIVE-MON-SNET03` | 172.31.9.192/26 | Monitoring (Grafana, Loki) | PRD |
+
+---
+
+## Resource Groups
+
+| Resource Group | Purpose | Resources |
+|----------------|---------|-----------|
+| `AZISTNPRD-UAE-HIVECFM-RG01` | Non-production HiveCFM platform | ACA, PostgreSQL, Redis, Blob, KV, Monitoring |
+| `AZISTPRD-UAE-HIVECFM-RG01` | Production HiveCFM platform (HA) | ACA, PostgreSQL, Redis, Blob, KV, Monitoring |
+| `AZIST-UAE-HIVECFM-SHARED-RG01` | Shared resources | ACR, Front Door, WAF, DNS |
+
+---
+
+## Non-Production (NPRD) Environment
+
+### Container Apps
+
+| Azure Resource Name | Container App Name | Service | Image | CPU | Memory | Replicas | Tags |
+|--------------------|--------------------|---------|-------|-----|--------|----------|------|
+| **Container Apps Environment** | | | | | | | |
+| `AZISTNPRD-UAE-HIVE-CEAPP01` | — | Container Environment | — | — | — | — | `project:hivecfm` `env:nprd` `managed-by:azure-devops` |
+| **Container Apps** | | | | | | | |
+| `azistnprd-uae-hive-capp01` | hivecfm-core | HiveCFM Core (Next.js) | `hivecfmacr.azurecr.io/hivecfm-core:latest` | 1 vCPU | 2 GB | 1 | `project:hivecfm` `env:nprd` `service:hivecfm-core` |
+| `azistnprd-uae-hive-capp02` | hivecfm-hub | HiveCFM Hub API (Go) | `hivecfmacr.azurecr.io/hivecfm-hub:latest` | 0.5 vCPU | 1 GB | 1 | `project:hivecfm` `env:nprd` `service:hivecfm-hub` |
+| `azistnprd-uae-hive-capp03` | n8n | n8n Workflow Automation | `n8nio/n8n:latest` | 0.5 vCPU | 1 GB | 1 | `project:hivecfm` `env:nprd` `service:n8n` |
+| `azistnprd-uae-hive-capp04` | superset | Apache Superset Analytics | `apache/superset:3.1.0` | 0.5 vCPU | 1 GB | 1 | `project:hivecfm` `env:nprd` `service:superset` |
+| `azistnprd-uae-hive-capp05` | grafana | Grafana (Logs Dashboard) | `grafana/grafana:11.0.0` | 0.25 vCPU | 0.5 GB | 1 | `project:hivecfm` `env:nprd` `service:grafana` |
+| `azistnprd-uae-hive-capp06` | loki | Grafana Loki (Log Aggregation) | `grafana/loki:3.0.0` | 0.25 vCPU | 0.5 GB | 1 | `project:hivecfm` `env:nprd` `service:loki` |
+| `azistnprd-uae-hive-capp07` | promtail | Promtail (Log Collector) | `grafana/promtail:3.0.0` | 0.25 vCPU | 0.5 GB | 1 | `project:hivecfm` `env:nprd` `service:promtail` |
+
+### Data Services
+
+| Azure Resource Name | Type | SKU | Details | Tags |
+|--------------------|------|-----|---------|------|
+| `azistnprd-uae-hivecfm-psql01` | PostgreSQL Flexible Server | Burstable B2s | v17, 64GB, no HA | `project:hivecfm` `env:nprd` `service:postgresql` |
+| `azistnprd-uae-hivecfm-redis01` | Azure Cache for Redis | Basic C1 (1GB) | No replication | `project:hivecfm` `env:nprd` `service:redis` |
+| `azistnprduaehivecfmst01` | Storage Account (Blob) | Standard_LRS | StorageV2, Containers: `hivecfm-uploads` | `project:hivecfm` `env:nprd` `service:blob-storage` |
+
+### Security & Monitoring
+
+| Azure Resource Name | Type | Details | Tags |
+|--------------------|------|---------|------|
+| `AZISTNPRD-UAE-HIVECFM-KV01` | Key Vault | Standard, Soft delete enabled | `project:hivecfm` `env:nprd` `service:keyvault` |
+| `AZISTNPRD-UAE-HIVECFM-LAW01` | Log Analytics Workspace | 30-day retention | `project:hivecfm` `env:nprd` `service:log-analytics` |
+
+### Private Endpoints (NPRD)
+
+| Resource | Private Endpoint Name | Private DNS Zone |
+|----------|----------------------|------------------|
+| PostgreSQL | `azistnprd-uae-hivecfm-psql01-pe` | `privatelink.postgres.database.azure.com` |
+| Redis | `azistnprd-uae-hivecfm-redis01-pe` | `privatelink.redis.cache.windows.net` |
+| Blob Storage | `azistnprduaehivecfmst01-pe` | `privatelink.blob.core.windows.net` |
+| Key Vault | `AZISTNPRD-UAE-HIVECFM-KV01-pe` | `privatelink.vaultcore.azure.net` |
+
+---
+
+## Production (PRD) Environment — HA / Zone-Redundant
+
+### Container Apps
+
+| Azure Resource Name | Container App Name | Service | Image | CPU | Memory | Min Replicas | Max Replicas | Tags |
+|--------------------|--------------------|---------|-------|-----|--------|-------------|-------------|------|
+| **Container Apps Environment** | | | | | | | | |
+| `AZISTPRD-UAE-HIVE-CEAPP01` | — | Container Environment | — | — | — | — | — | `project:hivecfm` `env:prd` `managed-by:azure-devops` |
+| **Container Apps** | | | | | | | | |
+| `azistprd-uae-hive-capp01` | hivecfm-core | HiveCFM Core (Next.js) | `hivecfmacr.azurecr.io/hivecfm-core:latest` | 2 vCPU | 4 GB | **2** | **4** | `project:hivecfm` `env:prd` `service:hivecfm-core` |
+| `azistprd-uae-hive-capp02` | hivecfm-hub | HiveCFM Hub API (Go) | `hivecfmacr.azurecr.io/hivecfm-hub:latest` | 1 vCPU | 2 GB | **2** | **3** | `project:hivecfm` `env:prd` `service:hivecfm-hub` |
+| `azistprd-uae-hive-capp03` | n8n | n8n Workflow Automation | `n8nio/n8n:latest` | 1 vCPU | 2 GB | **2** | **2** | `project:hivecfm` `env:prd` `service:n8n` |
+| `azistprd-uae-hive-capp04` | superset | Apache Superset Analytics | `apache/superset:3.1.0` | 1 vCPU | 2 GB | **2** | **3** | `project:hivecfm` `env:prd` `service:superset` |
+| `azistprd-uae-hive-capp05` | grafana | Grafana (Logs Dashboard) | `grafana/grafana:11.0.0` | 0.5 vCPU | 1 GB | **1** | **2** | `project:hivecfm` `env:prd` `service:grafana` |
+| `azistprd-uae-hive-capp06` | loki | Grafana Loki (Log Aggregation) | `grafana/loki:3.0.0` | 0.5 vCPU | 1 GB | **1** | **2** | `project:hivecfm` `env:prd` `service:loki` |
+| `azistprd-uae-hive-capp07` | promtail | Promtail (Log Collector) | `grafana/promtail:3.0.0` | 0.25 vCPU | 0.5 GB | **1** | **1** | `project:hivecfm` `env:prd` `service:promtail` |
+
+### Data Services (Zone-Redundant HA)
+
+| Azure Resource Name | Type | SKU | Details | Tags |
+|--------------------|------|-----|---------|------|
+| `azistprd-uae-hivecfm-psql01` | PostgreSQL Flexible Server | **GP D2ds_v5** | v17, 128GB, **Zone-Redundant HA** | `project:hivecfm` `env:prd` `service:postgresql` |
+| `azistprd-uae-hivecfm-redis01` | Azure Cache for Redis | **Standard C1** (1GB) | **Replicated**, SLA-backed | `project:hivecfm` `env:prd` `service:redis` |
+| `azistprduaehivecfmst01` | Storage Account (Blob) | **Standard_ZRS** | StorageV2, Zone-Redundant, Containers: `hivecfm-uploads` | `project:hivecfm` `env:prd` `service:blob-storage` |
+
+### Security & Monitoring
+
+| Azure Resource Name | Type | Details | Tags |
+|--------------------|------|---------|------|
+| `AZISTPRD-UAE-HIVECFM-KV01` | Key Vault | Standard, Soft delete, Purge protection | `project:hivecfm` `env:prd` `service:keyvault` |
+| `AZISTPRD-UAE-HIVECFM-LAW01` | Log Analytics Workspace | 90-day retention | `project:hivecfm` `env:prd` `service:log-analytics` |
+
+### Private Endpoints (PRD)
+
+| Resource | Private Endpoint Name | Private DNS Zone |
+|----------|----------------------|------------------|
+| PostgreSQL | `azistprd-uae-hivecfm-psql01-pe` | `privatelink.postgres.database.azure.com` |
+| Redis | `azistprd-uae-hivecfm-redis01-pe` | `privatelink.redis.cache.windows.net` |
+| Blob Storage | `azistprduaehivecfmst01-pe` | `privatelink.blob.core.windows.net` |
+| Key Vault | `AZISTPRD-UAE-HIVECFM-KV01-pe` | `privatelink.vaultcore.azure.net` |
+
+---
+
+## Shared Resources
+
+| Azure Resource Name | Type | Details | Tags |
+|--------------------|------|---------|------|
+| `hivecfmacr` | Azure Container Registry | **Standard** SKU, Geo-replicated to UAE North | `project:hivecfm` `env:shared` `service:acr` |
+| `AZIST-UAE-HIVECFM-AFD01` | Azure Front Door | **Standard** with WAF, SSL termination | `project:hivecfm` `env:shared` `service:front-door` |
+| `AZIST-UAE-HIVECFM-WAF01` | WAF Policy | OWASP 3.2, DDoS Protection, Rate limiting | `project:hivecfm` `env:shared` `service:waf` |
+
+---
+
+## DNS Records — hivecfm.io
+
+### Non-Production (NPRD)
+
+| DNS Record | Type | Value | Service |
+|-----------|------|-------|---------|
+| `nprd-uae-core.hivecfm.io` | CNAME | `AZIST-UAE-HIVECFM-AFD01.azurefd.net` | HiveCFM Core |
+| `nprd-uae-hub.hivecfm.io` | CNAME | `AZIST-UAE-HIVECFM-AFD01.azurefd.net` | HiveCFM Hub API |
+| `nprd-uae-n8n.hivecfm.io` | CNAME | `AZIST-UAE-HIVECFM-AFD01.azurefd.net` | n8n |
+| `nprd-uae-superset.hivecfm.io` | CNAME | `AZIST-UAE-HIVECFM-AFD01.azurefd.net` | Superset |
+| `nprd-uae-grafana.hivecfm.io` | CNAME | `AZIST-UAE-HIVECFM-AFD01.azurefd.net` | Grafana |
+
+### Production (PRD)
+
+| DNS Record | Type | Value | Service |
+|-----------|------|-------|---------|
+| `prd-uae-core.hivecfm.io` | CNAME | `AZIST-UAE-HIVECFM-AFD01.azurefd.net` | HiveCFM Core |
+| `prd-uae-hub.hivecfm.io` | CNAME | `AZIST-UAE-HIVECFM-AFD01.azurefd.net` | HiveCFM Hub API |
+| `prd-uae-n8n.hivecfm.io` | CNAME | `AZIST-UAE-HIVECFM-AFD01.azurefd.net` | n8n |
+| `prd-uae-superset.hivecfm.io` | CNAME | `AZIST-UAE-HIVECFM-AFD01.azurefd.net` | Superset |
+| `prd-uae-grafana.hivecfm.io` | CNAME | `AZIST-UAE-HIVECFM-AFD01.azurefd.net` | Grafana |
+| `app.hivecfm.io` | CNAME | `AZIST-UAE-HIVECFM-AFD01.azurefd.net` | Production alias (user-facing) |
+
+> **Note:** All DNS records point to Azure Front Door. Front Door routes to the correct backend based on the hostname. SSL certificates are managed by Front Door (auto-provisioned via Azure Managed Certificates).
+
+---
+
+## Azure Front Door Routing Rules
+
+| Route Name | Frontend Host | Backend Pool | Path |
+|-----------|---------------|-------------|------|
+| `nprd-core` | `nprd-uae-core.hivecfm.io` | NPRD Container Apps → `azistnprd-uae-hive-capp01` | `/*` |
+| `nprd-hub` | `nprd-uae-hub.hivecfm.io` | NPRD Container Apps → `azistnprd-uae-hive-capp02` | `/*` |
+| `nprd-n8n` | `nprd-uae-n8n.hivecfm.io` | NPRD Container Apps → `azistnprd-uae-hive-capp03` | `/*` |
+| `nprd-superset` | `nprd-uae-superset.hivecfm.io` | NPRD Container Apps → `azistnprd-uae-hive-capp04` | `/*` |
+| `nprd-grafana` | `nprd-uae-grafana.hivecfm.io` | NPRD Container Apps → `azistnprd-uae-hive-capp05` | `/*` |
+| `prd-core` | `prd-uae-core.hivecfm.io` + `app.hivecfm.io` | PRD Container Apps → `azistprd-uae-hive-capp01` | `/*` |
+| `prd-hub` | `prd-uae-hub.hivecfm.io` | PRD Container Apps → `azistprd-uae-hive-capp02` | `/*` |
+| `prd-n8n` | `prd-uae-n8n.hivecfm.io` | PRD Container Apps → `azistprd-uae-hive-capp03` | `/*` |
+| `prd-superset` | `prd-uae-superset.hivecfm.io` | PRD Container Apps → `azistprd-uae-hive-capp04` | `/*` |
+| `prd-grafana` | `prd-uae-grafana.hivecfm.io` | PRD Container Apps → `azistprd-uae-hive-capp05` | `/*` |
+
+---
+
+## PRD HA / Redundancy Design
 
 ```mermaid
 graph TB
-    subgraph "rg-hivecfm-dev"
-        subgraph "Container Apps Environment"
-            direction TB
-            CORE["hivecfm-core<br/>1 vCPU | 2GB<br/>1 replica"]
-            HUB["hivecfm-hub<br/>0.5 vCPU | 1GB<br/>1 replica"]
-            N8N["n8n<br/>0.5 vCPU | 1GB<br/>1 replica"]
-            SUPERSET["superset<br/>0.5 vCPU | 1GB<br/>1 replica"]
-            LICENSE["license-portal<br/>0.25 vCPU | 0.5GB<br/>1 replica"]
-        end
-
-        PG["Azure PostgreSQL<br/>Burstable B2s<br/>128GB Storage"]
-        REDIS["Azure Cache Redis<br/>Basic C1 | 1GB"]
-        BLOB["Azure Blob Storage<br/>Standard LRS"]
-        LOGS["Log Analytics<br/>Workspace"]
+    subgraph "Azure Front Door (Global)"
+        AFD["Front Door + WAF"]
     end
 
-    USERS["Users / Testers"] -->|HTTPS| CORE
-    CORE --> PG
-    CORE --> REDIS
-    CORE --> BLOB
-    HUB --> PG
-    HUB --> REDIS
-    N8N --> CORE
-    SUPERSET --> PG
-    LICENSE --> PG
-```
-
----
-
-## Production Environment
-
-```mermaid
-graph TB
-    subgraph "rg-hivecfm-prod"
-        LB["Azure Container Apps<br/>Built-in Load Balancer<br/>+ Custom Domain + TLS"]
-
-        subgraph "Container Apps Environment"
-            direction TB
-            subgraph "hivecfm-core (2-4 replicas)"
-                CORE1["core-1<br/>2 vCPU | 4GB"]
-                CORE2["core-2<br/>2 vCPU | 4GB"]
-            end
-            subgraph "hivecfm-hub (2 replicas)"
-                HUB1["hub-1<br/>1 vCPU | 2GB"]
-                HUB2["hub-2<br/>1 vCPU | 2GB"]
-            end
-            subgraph "n8n (2 replicas)"
-                N8N1["n8n-1<br/>1 vCPU | 2GB"]
-                N8N2["n8n-2<br/>1 vCPU | 2GB"]
-            end
-            subgraph "superset (2 replicas)"
-                SS1["superset-1<br/>1 vCPU | 2GB"]
-                SS2["superset-2<br/>1 vCPU | 2GB"]
-            end
-            subgraph "license-portal (2 replicas)"
-                LP1["portal-1<br/>0.5 vCPU | 1GB"]
-                LP2["portal-2<br/>0.5 vCPU | 1GB"]
-            end
+    subgraph "PRD — Zone-Redundant"
+        subgraph "ACA Environment (Zone 1 + Zone 2)"
+            CORE1["hivecfm-core<br/>Replica 1"]
+            CORE2["hivecfm-core<br/>Replica 2"]
+            CORE3["hivecfm-core<br/>Replica 3 (auto-scale)"]
+            HUB1["hivecfm-hub<br/>Replica 1"]
+            HUB2["hivecfm-hub<br/>Replica 2"]
         end
 
-        subgraph "Managed Data Services (HA)"
-            PG["Azure PostgreSQL<br/>General Purpose D2s<br/>256GB | Zone-Redundant HA"]
-            REDIS["Azure Cache Redis<br/>Standard C1 | Replicated"]
-            BLOB["Azure Blob Storage<br/>Standard GRS"]
-        end
-
-        KV["Azure Key Vault"]
-        LOGS["Log Analytics +<br/>Application Insights"]
-        MONITOR["Azure Monitor<br/>Alerts & Metrics"]
-    end
-
-    USERS["Users"] -->|HTTPS 443| LB
-    GENESYS["Genesys Cloud<br/>IVR"] -->|API| LB
-    LB --> CORE1 & CORE2
-    CORE1 & CORE2 --> PG
-    CORE1 & CORE2 --> REDIS
-    CORE1 & CORE2 --> BLOB
-    HUB1 & HUB2 --> PG
-    HUB1 & HUB2 --> REDIS
-    N8N1 & N8N2 --> CORE1
-    SS1 & SS2 --> PG
-    LP1 & LP2 --> PG
-    CORE1 & CORE2 --> KV
-    MONITOR --> LOGS
-```
-
----
-
-## Network Architecture (Production)
-
-```mermaid
-graph LR
-    subgraph "Internet"
-        CLIENT["Browser / Mobile"]
-        IVR["Genesys IVR"]
-        API["API Consumers"]
-    end
-
-    subgraph "Azure Front Door / App Gateway"
-        WAF["WAF Policy<br/>DDoS Protection"]
-    end
-
-    subgraph "VNet: hivecfm-prod-vnet (10.0.0.0/16)"
-        subgraph "Subnet: apps (10.0.1.0/24)"
-            CAE["Container Apps<br/>Environment"]
-        end
-        subgraph "Subnet: data (10.0.2.0/24)"
-            PG["PostgreSQL<br/>Private Endpoint"]
-            REDIS["Redis<br/>Private Endpoint"]
-            BLOB["Blob Storage<br/>Private Endpoint"]
+        subgraph "Data — Zone-Redundant HA"
+            PG_PRIMARY["PostgreSQL Primary<br/>Zone 1"]
+            PG_STANDBY["PostgreSQL Standby<br/>Zone 2"]
+            REDIS_PRIMARY["Redis Primary"]
+            REDIS_REPLICA["Redis Replica"]
+            BLOB["Blob Storage<br/>ZRS (3 zones)"]
         end
     end
 
-    CLIENT -->|HTTPS| WAF
-    IVR -->|HTTPS| WAF
-    API -->|HTTPS| WAF
-    WAF --> CAE
-    CAE -->|Private Link| PG
-    CAE -->|Private Link| REDIS
-    CAE -->|Private Link| BLOB
+    AFD --> CORE1 & CORE2 & CORE3
+    CORE1 & CORE2 & CORE3 --> PG_PRIMARY
+    PG_PRIMARY -.->|"Sync Replication"| PG_STANDBY
+    REDIS_PRIMARY -.->|"Replication"| REDIS_REPLICA
 ```
+
+### HA Details
+
+| Component | Strategy | RPO | RTO |
+|-----------|----------|-----|-----|
+| **HiveCFM Core** | 2-4 replicas across zones | 0 | ~30s (ACA auto-restart) |
+| **HiveCFM Hub** | 2-3 replicas across zones | 0 | ~30s |
+| **PostgreSQL** | Zone-Redundant HA (sync standby) | 0 | ~60s (auto-failover) |
+| **Redis** | Standard tier with replication | ~1s | ~60s (auto-failover) |
+| **Blob Storage** | ZRS (3 availability zones) | 0 | 0 |
+| **Front Door** | Global anycast, auto-failover | 0 | ~10s |
 
 ---
 
-## CI/CD Pipeline
+## Tags Standard
 
-```mermaid
-graph LR
-    DEV["Developer<br/>git push"] -->|Push| REPO["Azure DevOps<br/>Git Repo"]
-    REPO -->|Trigger| PIPELINE["Pipeline"]
+All resources tagged with:
 
-    subgraph "Build (rg-hivecfm)"
-        PIPELINE --> CHECKOUT["Checkout Code"]
-        CHECKOUT --> DOCKER["Docker Build<br/>on hivecfmbuild VM"]
-        DOCKER --> PUSH["Push to ACR"]
-    end
-
-    subgraph "Deploy Non-Prod (rg-hivecfm-dev)"
-        PUSH -->|Auto| DEV_DEPLOY["Update Container Apps"]
-        DEV_DEPLOY --> SMOKE["Smoke Tests"]
-    end
-
-    subgraph "Deploy Production (rg-hivecfm-prod)"
-        SMOKE -->|Manual Approval| PROD_DEPLOY["Update Container Apps"]
-        PROD_DEPLOY --> HEALTH["Health Check"]
-        HEALTH -->|Fail| ROLLBACK["Auto Rollback"]
-    end
-```
+| Tag Key | Description | Examples |
+|---------|------------|---------|
+| `project` | Project name | `hivecfm` |
+| `env` | Environment | `nprd`, `prd`, `shared` |
+| `service` | Service name | `hivecfm-core`, `hivecfm-hub`, `n8n`, `superset`, `grafana`, `loki`, `postgresql`, `redis`, `blob-storage`, `keyvault` |
+| `owner` | Team/owner | `xcai-platform` |
+| `cost-center` | Cost allocation | `hivecfm-platform` |
+| `managed-by` | Deployment tool | `azure-devops` |
+| `created-date` | Creation date | `2026-04-03` |
 
 ---
 
-## Data Flow
+## Resource Summary
 
-```mermaid
-sequenceDiagram
-    participant User
-    participant Core as hivecfm-core
-    participant Hub as hivecfm-hub
-    participant PG as PostgreSQL
-    participant Redis as Redis
-    participant Blob as Blob Storage
-    participant N8N as n8n
-    participant Genesys as Genesys Cloud
-
-    Note over User,Genesys: Survey Response Flow
-    User->>Core: Submit Survey Response
-    Core->>PG: Store Response
-    Core->>Redis: Invalidate Cache
-    Core->>Hub: Pipeline Event (responseCreated)
-    Hub->>PG: Evaluate Quotas & Follow-ups
-    Hub->>N8N: Trigger Workflow (if configured)
-    N8N->>Core: API Callback (closed-loop)
-
-    Note over User,Genesys: IVR Flow
-    Genesys->>Core: GET /api/v1/client/{env}/ivr/{survey}
-    Core->>PG: Fetch Survey + Questions
-    Core-->>Genesys: Survey Config + Prompt Names
-    Genesys->>Core: POST /ivr/{survey}/responses (per question)
-    Core->>PG: Upsert Response (callId)
-    Core->>Hub: Pipeline Event
-
-    Note over User,Genesys: File Upload Flow
-    User->>Core: Upload WAV/Image
-    Core->>Blob: Store File (presigned URL)
-    Core->>Genesys: Sync Prompt (WAV upload)
-```
+| Resource Type | NPRD | PRD |
+|---------------|------|-----|
+| Container Apps Environment | 1 | 1 |
+| Container Apps | 7 | 7 |
+| PostgreSQL Flexible Server | 1 (Burstable B2s) | 1 (GP D2ds_v5 + HA) |
+| Azure Cache Redis | 1 (Basic C1) | 1 (Standard C1 + Replica) |
+| Storage Account (Blob) | 1 (LRS) | 1 (ZRS) |
+| Key Vault | 1 | 1 |
+| Log Analytics Workspace | 1 | 1 |
+| Private Endpoints | 4 | 4 |
+| **Total per env** | **16** | **16** |
+| **Shared** | ACR + Front Door + WAF = **3** | |
+| **Grand Total** | **35 resources** | |
 
 ---
 
-## Environment Comparison
+## Estimated Monthly Cost (USD)
 
-### Resource Specifications
-
-| Resource | Non-Production | Production |
-|---|---|---|
-| **hivecfm-core** | 1 vCPU, 2GB, 1 replica | 2 vCPU, 4GB, 2-4 replicas |
-| **hivecfm-hub** | 0.5 vCPU, 1GB, 1 replica | 1 vCPU, 2GB, 2 replicas |
-| **n8n** | 0.5 vCPU, 1GB, 1 replica | 1 vCPU, 2GB, 2 replicas |
-| **superset** | 0.5 vCPU, 1GB, 1 replica | 1 vCPU, 2GB, 2 replicas |
-| **license-portal** | 0.25 vCPU, 0.5GB, 1 replica | 0.5 vCPU, 1GB, 2 replicas |
-| **PostgreSQL** | Burstable B2s, 128GB, No HA | General Purpose D2s, 256GB, Zone-Redundant HA |
-| **Redis** | Basic C1, 1GB | Standard C1, 1GB, Replicated |
-| **Blob Storage** | Standard LRS | Standard GRS (Geo-Redundant) |
-| **Key Vault** | - | Standard |
-| **Monitoring** | Log Analytics only | Log Analytics + App Insights + Alerts |
-| **Network** | Public endpoints | VNet + Private Endpoints + WAF |
-| **Backup** | PG auto-backup (7 days) | PG auto-backup (35 days) + Blob versioning |
-
-### Monthly Cost Estimate
-
-| Resource | Non-Prod (rg-hivecfm-dev) | Production (rg-hivecfm-prod) |
-|---|---|---|
-| hivecfm-core | $23 | $140 |
-| hivecfm-hub | $8 | $70 |
-| n8n | $9 | $70 |
-| superset | $8 | $70 |
-| license-portal | $4 | $35 |
-| PostgreSQL | $40 | $280 |
-| Redis | $20 | $80 |
-| Blob Storage | $5 | $15 |
-| Key Vault | - | $5 |
-| Monitoring / Logs | $2 | $25 |
-| WAF / Front Door | - | $50 |
-| **Total** | **~$119/mo** | **~$840/mo** |
-
-> Shared infrastructure (ACR, Build VM, Azure DevOps) in `rg-hivecfm` costs ~$80/mo and is not included above.
+| Component | NPRD | PRD |
+|-----------|------|-----|
+| Container Apps (7 apps) | ~$80 | ~$350 |
+| PostgreSQL Flexible | ~$50 (B2s) | ~$200 (D2ds_v5 + HA) |
+| Redis | ~$16 (Basic C1) | ~$55 (Standard C1) |
+| Blob Storage | ~$5 | ~$10 (ZRS) |
+| Key Vault | ~$3 | ~$3 |
+| Log Analytics | ~$10 | ~$30 |
+| Front Door + WAF | ~$40 (shared) | included |
+| ACR (Standard) | ~$20 (shared) | included |
+| **Total** | **~$224/month** | **~$648/month** |
 
 ---
 
-## Step-by-Step Setup
+## Deployment Order
 
-### Phase 1: Non-Production (rg-hivecfm-dev)
+### Phase 1: Shared Infrastructure
+1. Create resource groups
+2. Create Azure Container Registry (`hivecfmacr`)
+3. Create Azure Front Door + WAF Policy
 
-```bash
-# 1. Create Resource Group
-az group create --name rg-hivecfm-dev --location westeurope
+### Phase 2: NPRD Environment
+1. Create VNet + Subnets (172.31.8.0/24)
+2. Peer with existing Virtual WAN Hub
+3. Create PostgreSQL Flexible Server + Private Endpoint
+4. Create Redis Cache + Private Endpoint
+5. Create Storage Account + Private Endpoint + Container
+6. Create Key Vault + Private Endpoint + Secrets
+7. Create Container Apps Environment
+8. Deploy Container Apps (capp01-capp07)
+9. Create Log Analytics Workspace
+10. Configure Front Door routes for NPRD
+11. Add DNS CNAME records
 
-# 2. Create Log Analytics Workspace
-az monitor log-analytics workspace create \
-  --resource-group rg-hivecfm-dev \
-  --workspace-name hivecfm-dev-logs
+### Phase 3: PRD Environment
+1. Create VNet + Subnets (172.31.9.0/24)
+2. Peer with existing Virtual WAN Hub
+3. Create PostgreSQL Flexible Server with **Zone-Redundant HA** + Private Endpoint
+4. Create Redis Cache **Standard** + Private Endpoint
+5. Create Storage Account **ZRS** + Private Endpoint + Container
+6. Create Key Vault + Private Endpoint + Secrets
+7. Create Container Apps Environment
+8. Deploy Container Apps with **min 2 replicas** (capp01-capp07)
+9. Create Log Analytics Workspace
+10. Configure Front Door routes for PRD
+11. Add DNS CNAME records
+12. Configure auto-scaling rules for Core (2→4) and Hub (2→3)
 
-# 3. Create Container Apps Environment
-az containerapp env create \
-  --name hivecfm-dev-env \
-  --resource-group rg-hivecfm-dev \
-  --location westeurope \
-  --logs-workspace-id <LOG_ANALYTICS_WORKSPACE_ID>
-
-# 4. PostgreSQL
-az postgres flexible-server create \
-  --name hivecfm-dev-pg \
-  --resource-group rg-hivecfm-dev \
-  --location westeurope \
-  --sku-name Standard_B2s \
-  --tier Burstable \
-  --storage-size 128 \
-  --version 17 \
-  --admin-user pgadmin \
-  --admin-password '<STRONG_PASSWORD>' \
-  --yes
-
-# 5. Redis
-az redis create \
-  --name hivecfm-dev-redis \
-  --resource-group rg-hivecfm-dev \
-  --location westeurope \
-  --sku Basic \
-  --vm-size C1
-
-# 6. Blob Storage
-az storage account create \
-  --name hivecfmdevstorage \
-  --resource-group rg-hivecfm-dev \
-  --location westeurope \
-  --sku Standard_LRS \
-  --kind StorageV2
-
-az storage container create \
-  --name hivecfm-uploads \
-  --account-name hivecfmdevstorage
-
-# 7. Container Apps (pull from shared ACR in rg-hivecfm)
-az containerapp create \
-  --name hivecfm-core \
-  --resource-group rg-hivecfm-dev \
-  --environment hivecfm-dev-env \
-  --image hivecfmregistry.azurecr.io/hivecfm-core:latest \
-  --registry-server hivecfmregistry.azurecr.io \
-  --cpu 1.0 --memory 2Gi \
-  --min-replicas 1 --max-replicas 3 \
-  --ingress external --target-port 3000 \
-  --env-vars \
-    DATABASE_URL="<DEV_PG_CONNECTION_STRING>" \
-    REDIS_URL="<DEV_REDIS_CONNECTION_STRING>" \
-    NEXTAUTH_URL="https://dev.hivecfm.yourdomain.com" \
-    NEXTAUTH_SECRET="<SECRET>" \
-    WEBAPP_URL="https://dev.hivecfm.yourdomain.com" \
-    ENCRYPTION_KEY="<KEY>" \
-    STORAGE_PROVIDER="azureBlob" \
-    AZURE_BLOB_CONNECTION_STRING="<DEV_BLOB_CONN>" \
-    AZURE_BLOB_CONTAINER_NAME="hivecfm-uploads"
-
-az containerapp create \
-  --name hivecfm-hub \
-  --resource-group rg-hivecfm-dev \
-  --environment hivecfm-dev-env \
-  --image hivecfmregistry.azurecr.io/hivecfm-hub:latest \
-  --registry-server hivecfmregistry.azurecr.io \
-  --cpu 0.5 --memory 1Gi \
-  --min-replicas 1 --max-replicas 2 \
-  --ingress external --target-port 3001 \
-  --env-vars \
-    DATABASE_URL="<DEV_PG_CONNECTION_STRING>" \
-    REDIS_URL="<DEV_REDIS_CONNECTION_STRING>"
-
-az containerapp create \
-  --name n8n \
-  --resource-group rg-hivecfm-dev \
-  --environment hivecfm-dev-env \
-  --image n8nio/n8n:latest \
-  --cpu 0.5 --memory 1Gi \
-  --min-replicas 1 --max-replicas 1 \
-  --ingress external --target-port 5678 \
-  --env-vars \
-    DB_TYPE="postgresdb" \
-    DB_POSTGRESDB_HOST="<DEV_PG_HOST>" \
-    DB_POSTGRESDB_DATABASE="n8n" \
-    DB_POSTGRESDB_USER="pgadmin" \
-    DB_POSTGRESDB_PASSWORD="<PW>"
-
-az containerapp create \
-  --name superset \
-  --resource-group rg-hivecfm-dev \
-  --environment hivecfm-dev-env \
-  --image apache/superset:3.1.0 \
-  --cpu 0.5 --memory 1Gi \
-  --min-replicas 1 --max-replicas 1 \
-  --ingress external --target-port 8088 \
-  --env-vars \
-    SUPERSET_SECRET_KEY="<SECRET>" \
-    SQLALCHEMY_DATABASE_URI="postgresql://superset:<PW>@<DEV_PG_HOST>:5432/superset_app"
-
-az containerapp create \
-  --name license-portal \
-  --resource-group rg-hivecfm-dev \
-  --environment hivecfm-dev-env \
-  --image hivecfmregistry.azurecr.io/hivecfm-license-portal:latest \
-  --registry-server hivecfmregistry.azurecr.io \
-  --cpu 0.25 --memory 0.5Gi \
-  --min-replicas 1 --max-replicas 1 \
-  --ingress external --target-port 3003 \
-  --env-vars \
-    HIVECFM_DATABASE_URL="<DEV_PG_CONNECTION_STRING>" \
-    NEXTAUTH_SECRET="<SECRET>"
-```
-
-### Phase 2: Production (rg-hivecfm-prod)
-
-```bash
-# 1. Create Resource Group
-az group create --name rg-hivecfm-prod --location westeurope
-
-# 2. Log Analytics + Application Insights
-az monitor log-analytics workspace create \
-  --resource-group rg-hivecfm-prod \
-  --workspace-name hivecfm-prod-logs
-
-# 3. Container Apps Environment
-az containerapp env create \
-  --name hivecfm-prod-env \
-  --resource-group rg-hivecfm-prod \
-  --location westeurope \
-  --logs-workspace-id <PROD_LOG_WORKSPACE_ID>
-
-# 4. PostgreSQL (General Purpose + HA)
-az postgres flexible-server create \
-  --name hivecfm-prod-pg \
-  --resource-group rg-hivecfm-prod \
-  --location westeurope \
-  --sku-name Standard_D2s_v3 \
-  --tier GeneralPurpose \
-  --storage-size 256 \
-  --version 17 \
-  --high-availability ZoneRedundant \
-  --admin-user pgadmin \
-  --admin-password '<STRONG_PASSWORD>' \
-  --yes
-
-# 5. Redis (Standard = replicated)
-az redis create \
-  --name hivecfm-prod-redis \
-  --resource-group rg-hivecfm-prod \
-  --location westeurope \
-  --sku Standard \
-  --vm-size C1
-
-# 6. Blob Storage (Geo-Redundant)
-az storage account create \
-  --name hivecfmprodstorage \
-  --resource-group rg-hivecfm-prod \
-  --location westeurope \
-  --sku Standard_GRS \
-  --kind StorageV2
-
-az storage container create \
-  --name hivecfm-uploads \
-  --account-name hivecfmprodstorage
-
-# 7. Key Vault
-az keyvault create \
-  --name hivecfm-prod-kv \
-  --resource-group rg-hivecfm-prod \
-  --location westeurope
-
-# 8. Container Apps (HA with replicas)
-az containerapp create \
-  --name hivecfm-core \
-  --resource-group rg-hivecfm-prod \
-  --environment hivecfm-prod-env \
-  --image hivecfmregistry.azurecr.io/hivecfm-core:latest \
-  --registry-server hivecfmregistry.azurecr.io \
-  --cpu 2.0 --memory 4Gi \
-  --min-replicas 2 --max-replicas 4 \
-  --ingress external --target-port 3000 \
-  --env-vars \
-    DATABASE_URL="<PROD_PG_CONNECTION_STRING>" \
-    REDIS_URL="<PROD_REDIS_CONNECTION_STRING>" \
-    NEXTAUTH_URL="https://hivecfm.yourdomain.com" \
-    NEXTAUTH_SECRET="<SECRET>" \
-    WEBAPP_URL="https://hivecfm.yourdomain.com" \
-    ENCRYPTION_KEY="<KEY>" \
-    STORAGE_PROVIDER="azureBlob" \
-    AZURE_BLOB_CONNECTION_STRING="<PROD_BLOB_CONN>" \
-    AZURE_BLOB_CONTAINER_NAME="hivecfm-uploads"
-
-az containerapp create \
-  --name hivecfm-hub \
-  --resource-group rg-hivecfm-prod \
-  --environment hivecfm-prod-env \
-  --image hivecfmregistry.azurecr.io/hivecfm-hub:latest \
-  --registry-server hivecfmregistry.azurecr.io \
-  --cpu 1.0 --memory 2Gi \
-  --min-replicas 2 --max-replicas 3 \
-  --ingress external --target-port 3001 \
-  --env-vars \
-    DATABASE_URL="<PROD_PG_CONNECTION_STRING>" \
-    REDIS_URL="<PROD_REDIS_CONNECTION_STRING>"
-
-az containerapp create \
-  --name n8n \
-  --resource-group rg-hivecfm-prod \
-  --environment hivecfm-prod-env \
-  --image n8nio/n8n:latest \
-  --cpu 1.0 --memory 2Gi \
-  --min-replicas 2 --max-replicas 3 \
-  --ingress external --target-port 5678 \
-  --env-vars \
-    DB_TYPE="postgresdb" \
-    DB_POSTGRESDB_HOST="<PROD_PG_HOST>" \
-    DB_POSTGRESDB_DATABASE="n8n" \
-    DB_POSTGRESDB_USER="pgadmin" \
-    DB_POSTGRESDB_PASSWORD="<PW>"
-
-az containerapp create \
-  --name superset \
-  --resource-group rg-hivecfm-prod \
-  --environment hivecfm-prod-env \
-  --image apache/superset:3.1.0 \
-  --cpu 1.0 --memory 2Gi \
-  --min-replicas 2 --max-replicas 3 \
-  --ingress external --target-port 8088 \
-  --env-vars \
-    SUPERSET_SECRET_KEY="<SECRET>" \
-    SQLALCHEMY_DATABASE_URI="postgresql://superset:<PW>@<PROD_PG_HOST>:5432/superset_app"
-
-az containerapp create \
-  --name license-portal \
-  --resource-group rg-hivecfm-prod \
-  --environment hivecfm-prod-env \
-  --image hivecfmregistry.azurecr.io/hivecfm-license-portal:latest \
-  --registry-server hivecfmregistry.azurecr.io \
-  --cpu 0.5 --memory 1Gi \
-  --min-replicas 2 --max-replicas 2 \
-  --ingress external --target-port 3003 \
-  --env-vars \
-    HIVECFM_DATABASE_URL="<PROD_PG_CONNECTION_STRING>" \
-    NEXTAUTH_SECRET="<SECRET>"
-
-# 9. Auto-scaling rules
-az containerapp update \
-  --name hivecfm-core \
-  --resource-group rg-hivecfm-prod \
-  --scale-rule-name http-scaling \
-  --scale-rule-type http \
-  --scale-rule-http-concurrency 100
-
-# 10. Custom Domain + TLS
-az containerapp hostname add \
-  --name hivecfm-core \
-  --resource-group rg-hivecfm-prod \
-  --hostname hivecfm.yourdomain.com
-
-az containerapp hostname bind \
-  --name hivecfm-core \
-  --resource-group rg-hivecfm-prod \
-  --hostname hivecfm.yourdomain.com \
-  --environment hivecfm-prod-env \
-  --validation-method CNAME
-```
-
-### Phase 3: Production Network Hardening
-
-```bash
-# 11. VNet Integration
-az network vnet create \
-  --name hivecfm-prod-vnet \
-  --resource-group rg-hivecfm-prod \
-  --location westeurope \
-  --address-prefix 10.0.0.0/16
-
-az network vnet subnet create \
-  --name apps-subnet \
-  --resource-group rg-hivecfm-prod \
-  --vnet-name hivecfm-prod-vnet \
-  --address-prefix 10.0.1.0/24
-
-az network vnet subnet create \
-  --name data-subnet \
-  --resource-group rg-hivecfm-prod \
-  --vnet-name hivecfm-prod-vnet \
-  --address-prefix 10.0.2.0/24
-
-# 12. Private Endpoints for Data Services
-az postgres flexible-server update \
-  --name hivecfm-prod-pg \
-  --resource-group rg-hivecfm-prod \
-  --public-access Disabled
-```
-
----
-
-## Scaling Rules
-
-```mermaid
-graph TD
-    subgraph "Auto-Scaling Triggers"
-        HTTP["HTTP Concurrent<br/>Requests > 100"]
-        CPU["CPU Usage > 70%"]
-        MEM["Memory Usage > 80%"]
-    end
-
-    subgraph "hivecfm-core"
-        MIN["Min: 2 replicas"]
-        MAX["Max: 4 replicas"]
-    end
-
-    subgraph "hivecfm-hub"
-        HMIN["Min: 2 replicas"]
-        HMAX["Max: 3 replicas"]
-    end
-
-    HTTP --> MIN
-    CPU --> MIN
-    MEM --> MIN
-    MIN -->|Scale Up| MAX
-    MAX -->|Scale Down| MIN
-```
-
----
-
-## Backup & Disaster Recovery (Production)
-
-```mermaid
-graph LR
-    subgraph "Primary Region (West Europe)"
-        PG1["PostgreSQL<br/>Primary"]
-        REDIS1["Redis<br/>Primary"]
-        BLOB1["Blob Storage<br/>Primary"]
-    end
-
-    subgraph "Standby / Replicas"
-        PG2["PostgreSQL<br/>Zone-Redundant<br/>Standby"]
-        REDIS2["Redis<br/>Replica"]
-        BLOB2["Blob Storage<br/>GRS Replica<br/>(Paired Region)"]
-    end
-
-    subgraph "Backup"
-        PGBAK["PG Auto-Backup<br/>35 days retention"]
-        BLOBBAK["Blob Versioning<br/>+ Soft Delete 30d"]
-    end
-
-    PG1 -->|Sync Replication| PG2
-    REDIS1 -->|Replication| REDIS2
-    BLOB1 -->|Geo-Replication| BLOB2
-    PG1 -->|Daily| PGBAK
-    BLOB1 -->|Versioned| BLOBBAK
-```
-
----
-
-## Monthly Cost Summary
-
-| Resource | Non-Prod (rg-hivecfm-dev) | Production (rg-hivecfm-prod) |
-|---|---|---|
-| hivecfm-core | $23 | $140 |
-| hivecfm-hub | $8 | $70 |
-| n8n | $9 | $70 |
-| superset | $8 | $70 |
-| license-portal | $4 | $35 |
-| PostgreSQL | $40 | $280 |
-| Redis | $20 | $80 |
-| Blob Storage | $5 | $15 |
-| Key Vault | - | $5 |
-| Monitoring / Logs | $2 | $25 |
-| WAF / Front Door | - | $50 |
-| **Total** | **~$119/mo** | **~$840/mo** |
-
-> Shared infrastructure (ACR, Build VM, Azure DevOps) remains in `rg-hivecfm` (~$80/mo) and is not included above.
-
----
-
-## Environment Variables Reference
-
-| Variable                       | Required     | Description                              |
-| ------------------------------ | ------------ | ---------------------------------------- |
-| `DATABASE_URL`                 | Yes          | PostgreSQL connection string             |
-| `REDIS_URL`                    | Yes          | Redis connection string                  |
-| `NEXTAUTH_URL`                 | Yes          | Public app URL                           |
-| `NEXTAUTH_SECRET`              | Yes          | NextAuth session secret                  |
-| `WEBAPP_URL`                   | Yes          | Public app URL (same as NEXTAUTH_URL)    |
-| `ENCRYPTION_KEY`               | Yes          | 32-char encryption key                   |
-| `CRON_SECRET`                  | Yes          | Secret for cron job endpoints            |
-| `STORAGE_PROVIDER`             | Yes          | `s3` or `azureBlob`                      |
-| `AZURE_BLOB_CONNECTION_STRING` | If azureBlob | Blob storage connection string           |
-| `AZURE_BLOB_CONTAINER_NAME`    | If azureBlob | Container name (e.g., `hivecfm-uploads`) |
-| `S3_ACCESS_KEY`                | If s3        | S3/MinIO access key                      |
-| `S3_SECRET_KEY`                | If s3        | S3/MinIO secret key                      |
-| `S3_BUCKET_NAME`               | If s3        | Bucket name                              |
-| `S3_ENDPOINT_URL`              | If s3        | S3 endpoint URL                          |
-| `ENTERPRISE_LICENSE_KEY`       | No           | Enables SSO, SAML, RBAC                  |
-| `AZUREAD_CLIENT_ID`            | No           | Azure AD SSO client ID                   |
-| `AZUREAD_CLIENT_SECRET`        | No           | Azure AD SSO client secret               |
-| `AZUREAD_TENANT_ID`            | No           | Azure AD tenant ID                       |
-| `MAIL_FROM`                    | No           | Email sender address                     |
-| `OPENAI_API_KEY`               | No           | AI translation feature                   |
+### Phase 4: CI/CD Pipeline
+1. Configure Azure DevOps pipeline to build → push to ACR → deploy to ACA
+2. NPRD: auto-deploy on merge to `hivecfm-main`
+3. PRD: manual approval gate after NPRD succeeds
