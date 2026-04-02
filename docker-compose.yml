@@ -285,10 +285,10 @@ services:
   # HiveCFM Hub API (Semantic Search + AI Enrichment)
   # =============================================================================
   hivecfm-hub-api:
-    image: ghcr.io/formbricks/hub:latest
     build:
       context: ../hivecfm-hub
       dockerfile: Dockerfile
+    image: hivecfm-hub-api:local
     container_name: hivecfm-hub-api
     restart: unless-stopped
     depends_on:
