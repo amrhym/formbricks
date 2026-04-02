@@ -172,6 +172,22 @@ const runSingleMigration = async (migration: MigrationScript, index: number): Pr
       await execAsync("pnpm prisma migrate deploy");
       logger.info(`Successfully applied schema migration: ${migration.name}`);
     } catch (err) {
+      // Non-critical schema migrations (like Superset views) should not block app startup
+      const nonCriticalMigrations = ["add_superset_views"];
+      const isNonCritical = nonCriticalMigrations.some((name) => migration.name.includes(name));
+
+      if (isNonCritical) {
+        logger.warn(
+          `Non-critical schema migration ${migration.name} failed — marking as resolved and continuing`
+        );
+        try {
+          await execAsync(`pnpm prisma migrate resolve --rolled-back ${migration.name} 2>/dev/null || true`);
+        } catch {
+          // ignore resolve errors
+        }
+        return;
+      }
+
       logger.error(err, `Schema migration ${migration.name} failed`);
       throw err;
     }
