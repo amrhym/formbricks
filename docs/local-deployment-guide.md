@@ -105,20 +105,14 @@ POSTGRES_PASSWORD=postgres
 EOF
 ```
 
-## Step 4: Create Docker Network
-
-Both services share a network:
-
-```bash
-docker network create hivecfm-network 2>/dev/null || true
-```
-
-## Step 5: Start Core Services
+## Step 4: Start Core Services
 
 ```bash
 cd ../hivecfm-core
-docker compose -f docker-compose.yml up -d
+docker compose up -d
 ```
+
+> **Note:** Docker Compose automatically creates the `hivecfm-network`. Do NOT create it manually with `docker network create` — this causes label mismatches.
 
 This starts: PostgreSQL, Redis, MinIO, and HiveCFM Core.
 
@@ -129,7 +123,7 @@ docker compose logs -f hivecfm-core
 # Press Ctrl+C to exit
 ```
 
-## Step 6: Create Hub Database
+## Step 5: Create Hub Database
 
 The Hub uses a separate database on the same PostgreSQL instance:
 
@@ -137,7 +131,7 @@ The Hub uses a separate database on the same PostgreSQL instance:
 docker exec hivecfm-postgres psql -U postgres -c "CREATE DATABASE hivecfm_hub;" 2>/dev/null || true
 ```
 
-## Step 7: Start Hub Services
+## Step 6: Start Hub Services
 
 ```bash
 cd ../hivecfm-hub
@@ -154,7 +148,7 @@ curl -s http://localhost:8090/health
 # Expected: {"status":"ok"}
 ```
 
-## Step 8: Access the Application
+## Step 7: Access the Application
 
 Open **http://localhost:3000** in your browser.
 
@@ -210,9 +204,8 @@ docker compose -f hivecfm-core/docker-compose.yml logs -f
 ### Full Reset (delete all data)
 
 ```bash
-cd hivecfm-hub && docker compose down
+cd hivecfm-hub && docker compose down -v
 cd ../hivecfm-core && docker compose down -v
-docker network rm hivecfm-network
 ```
 
 ### Rebuild After Code Changes
@@ -220,7 +213,7 @@ docker network rm hivecfm-network
 ```bash
 # Core
 cd hivecfm-core
-docker compose -f docker-compose.yml build hivecfm-core
+docker compose build hivecfm-core
 docker compose up -d hivecfm-core
 
 # Hub
@@ -322,9 +315,20 @@ For production, change these values:
 docker exec hivecfm-core npx prisma migrate deploy
 ```
 
+### Network label mismatch error
+If you see `network hivecfm-network was found but has incorrect label`:
+```bash
+# Stop everything, remove network, restart (compose recreates it correctly)
+cd hivecfm-hub && docker compose down
+cd ../hivecfm-core && docker compose down
+docker network rm hivecfm-network
+cd hivecfm-core && docker compose up -d
+cd ../hivecfm-hub && docker compose up -d
+```
+> **Important:** Never create the network manually with `docker network create`. Let Docker Compose manage it.
+
 ### Hub "connection refused"
-- Ensure the `hivecfm-network` Docker network exists
-- Ensure Hub containers are on the same network:
+- Ensure Hub containers are on the same network as Core:
   ```bash
   docker network inspect hivecfm-network
   ```
