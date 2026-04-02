@@ -34,12 +34,12 @@ export const createOrganizationAction = authenticatedActionClient.schema(ZCreate
         name: parsedInput.organizationName,
       });
 
-      // Auto-create a default tenant license so membership creation succeeds
+      // Auto-create trial license (5 users, 500 responses, 7 days)
       const validUntil = new Date();
-      validUntil.setFullYear(validUntil.getFullYear() + 10);
+      validUntil.setDate(validUntil.getDate() + 7);
       await createLicense(newOrganization.id, {
-        maxCompletedResponses: 1000000,
-        maxUsers: 1000,
+        maxCompletedResponses: 500,
+        maxUsers: 5,
         addonAiInsights: true,
         addonCampaignManagement: true,
         validUntil,
