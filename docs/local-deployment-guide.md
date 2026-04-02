@@ -10,6 +10,15 @@ Deploy HiveCFM with Hub (semantic search + AI enrichment) on any machine with Do
 
 ## Step 1: Clone Both Repositories
 
+First, configure Git for large repos (prevents transfer errors with Azure DevOps):
+
+```bash
+git config --global http.postBuffer 524288000
+git config --global http.version HTTP/1.1
+```
+
+Then clone:
+
 ```bash
 mkdir hivecfm && cd hivecfm
 
@@ -20,6 +29,12 @@ cd hivecfm-core && git checkout hivecfm-main && cd ..
 # Hub (semantic search + AI enrichment)
 git clone https://istnetworksrnd@dev.azure.com/istnetworksrnd/HiveCFM/_git/hivecfm-hub
 ```
+
+> **If clone fails** with `HTTP/2 stream was not closed cleanly`, try shallow clone:
+> ```bash
+> git clone --depth 1 https://istnetworksrnd@dev.azure.com/istnetworksrnd/HiveCFM/_git/hivecfm-core
+> cd hivecfm-core && git fetch --unshallow && cd ..
+> ```
 
 ## Step 2: Create Environment File
 
