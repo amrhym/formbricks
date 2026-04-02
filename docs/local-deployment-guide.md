@@ -93,10 +93,10 @@ EOF
 ## Step 3: Start All Services
 
 ```bash
-docker compose up -d
+docker compose up -d --build
 ```
 
-This starts **everything** in one command:
+This **builds** and **starts** everything in one command:
 - **HiveCFM Core** (Next.js) — port 3000
 - **PostgreSQL** (with pgvector) — port 5432
 - **Redis** — port 6379
