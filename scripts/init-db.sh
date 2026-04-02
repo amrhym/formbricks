@@ -60,6 +60,17 @@ psql -v ON_ERROR_STOP=1 --username "$POSTGRES_USER" --dbname "$POSTGRES_DB" <<-E
     CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
 EOSQL
 
+# Create HiveCFM Hub database
+psql -v ON_ERROR_STOP=1 --username "$POSTGRES_USER" --dbname "$POSTGRES_DB" <<-EOSQL
+    SELECT 'CREATE DATABASE hivecfm_hub' WHERE NOT EXISTS (SELECT FROM pg_database WHERE datname = 'hivecfm_hub')\gexec
+EOSQL
+
+# Enable pgvector extension in Hub database
+psql -v ON_ERROR_STOP=1 --username "$POSTGRES_USER" --dbname "hivecfm_hub" <<-EOSQL
+    CREATE EXTENSION IF NOT EXISTS vector;
+EOSQL
+
 echo "HiveCFM Database Initialization Complete"
+echo "Created databases: hivecfm, hivecfm_hub, superset_app"
 echo "Created users: superset (read-write superset_app), superset_readonly (read-only hivecfm)"
 echo "Enabled extensions: vector, uuid-ossp"

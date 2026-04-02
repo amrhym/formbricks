@@ -265,6 +265,54 @@ services:
     networks:
       - hivecfm-network
 
+  # =============================================================================
+  # HiveCFM Hub API (Semantic Search + AI Enrichment)
+  # =============================================================================
+  hivecfm-hub-api:
+    image: ghcr.io/formbricks/hub:latest
+    build:
+      context: ../hivecfm-hub
+      dockerfile: Dockerfile
+    container_name: hivecfm-hub-api
+    restart: unless-stopped
+    depends_on:
+      postgres:
+        condition: service_healthy
+    environment:
+      API_KEY: ${HIVECFM_HUB_API_KEY:-hivecfm-hub-secret-key}
+      DATABASE_URL: postgres://postgres:${POSTGRES_PASSWORD:-postgres}@postgres:5432/hivecfm_hub?sslmode=disable
+      PORT: "8080"
+      LOG_LEVEL: info
+      EMBEDDING_PROVIDER: ${EMBEDDING_PROVIDER:-}
+      EMBEDDING_PROVIDER_API_KEY: ${EMBEDDING_PROVIDER_API_KEY:-}
+      EMBEDDING_MODEL: ${EMBEDDING_MODEL:-text-embedding-3-small}
+    ports:
+      - "127.0.0.1:8090:8080"
+    networks:
+      - hivecfm-network
+    healthcheck:
+      test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:8080/health"]
+      <<: *healthcheck-defaults
+
+  # =============================================================================
+  # River UI - Hub Background Job Monitoring
+  # =============================================================================
+  hivecfm-hub-riverui:
+    image: ghcr.io/riverqueue/riverui:latest
+    container_name: hivecfm-hub-riverui
+    restart: unless-stopped
+    depends_on:
+      postgres:
+        condition: service_healthy
+    environment:
+      DATABASE_URL: postgres://postgres:${POSTGRES_PASSWORD:-postgres}@postgres:5432/hivecfm_hub?sslmode=disable
+      RIVER_BASIC_AUTH_USER: ${RIVER_BASIC_AUTH_USER:-admin}
+      RIVER_BASIC_AUTH_PASS: ${RIVER_BASIC_AUTH_PASS:-hivecfm2026}
+    ports:
+      - "127.0.0.1:8091:8080"
+    networks:
+      - hivecfm-network
+
 # =============================================================================
 # Secrets (for Docker BuildKit builds)
 # =============================================================================

@@ -90,78 +90,29 @@ HIVECFM_HUB_API_KEY=hivecfm-hub-secret-key
 EOF
 ```
 
-## Step 3: Create Hub Environment File
+## Step 3: Start All Services
 
 ```bash
-cd ../hivecfm-hub
-```
-
-Create `.env`:
-
-```bash
-cat > .env << 'EOF'
-HUB_API_KEY=hivecfm-hub-secret-key
-POSTGRES_PASSWORD=postgres
-EOF
-```
-
-## Step 4: Start Core Services
-
-```bash
-cd ../hivecfm-core
 docker compose up -d
 ```
 
-> **Note:** Docker Compose automatically creates the `hivecfm-network`. Do NOT create it manually with `docker network create` — this causes label mismatches.
+This starts **everything** in one command:
+- **HiveCFM Core** (Next.js) — port 3000
+- **PostgreSQL** (with pgvector) — port 5432
+- **Redis** — port 6379
+- **MinIO** (S3 storage) — port 9000/9001
+- **HiveCFM Hub API** (Go) — port 8090
+- **River UI** (job monitoring) — port 8091
+- **Superset** (analytics) — port 3002
 
-This starts: PostgreSQL, Redis, MinIO, and HiveCFM Core.
+> **Note:** Hub database (`hivecfm_hub`) is auto-created by the PostgreSQL init script. No manual step needed.
 
-Wait for startup (~2 min first time):
+Wait for startup (~2-5 min first time):
 ```bash
 docker compose logs -f hivecfm-core
 # Wait for: ✓ Ready in XXXms
 # Press Ctrl+C to exit
 ```
-
-## Step 5: Create Hub Database
-
-The Hub uses a separate database on the Core's PostgreSQL:
-
-```bash
-docker exec hivecfm-postgres psql -U postgres -c "CREATE DATABASE hivecfm_hub;" 2>/dev/null || true
-```
-
-## Step 6: Start Hub Services
-
-The Hub must join the Core's Docker network (`hivecfm-network`) so they can communicate. Before starting, create or update the Hub's `docker-compose.override.yml` to connect to the Core's network:
-
-```bash
-cd ../hivecfm-hub
-
-cat > docker-compose.override.yml << 'EOF'
-services:
-  hub-api:
-    networks:
-      - default
-      - hivecfm-network
-    environment:
-      DATABASE_URL: postgres://postgres:postgres@hivecfm-postgres:5432/hivecfm_hub?sslmode=disable
-    ports:
-      - "127.0.0.1:8090:8080"
-
-networks:
-  hivecfm-network:
-    external: true
-EOF
-
-docker compose up -d
-```
-
-> **Why?** Core creates `hivecfm-network`. The Hub joins it via the override file so `hivecfm-hub-api` can reach `hivecfm-postgres` and Core can reach `http://hivecfm-hub-api:8080`.
-
-This starts:
-- **hivecfm-hub-api** — Go API server (semantic search, AI enrichment, feedback ingestion)
-- **hivecfm-hub-riverui** — Background job monitoring UI
 
 Verify Hub is running:
 ```bash
@@ -169,7 +120,7 @@ curl -s http://localhost:8090/health
 # Expected: {"status":"ok"}
 ```
 
-## Step 7: Access the Application
+## Step 4: Access the Application
 
 Open **http://localhost:3000** in your browser.
 
@@ -198,15 +149,13 @@ No license keys, PEM files, or manual activation needed.
 ### Stop All Services
 
 ```bash
-cd hivecfm-core && docker compose down
-cd ../hivecfm-hub && docker compose down
+docker compose down
 ```
 
 ### Restart All Services
 
 ```bash
-cd hivecfm-core && docker compose up -d
-cd ../hivecfm-hub && docker compose up -d
+docker compose up -d
 ```
 
 ### View Logs
@@ -219,28 +168,25 @@ docker logs -f hivecfm-core
 docker logs -f hivecfm-hub-api
 
 # All services
-docker compose -f hivecfm-core/docker-compose.yml logs -f
+docker compose logs -f
 ```
 
 ### Full Reset (delete all data)
 
 ```bash
-cd hivecfm-hub && docker compose down -v
-cd ../hivecfm-core && docker compose down -v
+docker compose down -v
 ```
 
 ### Rebuild After Code Changes
 
 ```bash
-# Core
-cd hivecfm-core
+# Core only
 docker compose build hivecfm-core
 docker compose up -d hivecfm-core
 
-# Hub
-cd ../hivecfm-hub
-docker compose build hub-api
-docker compose up -d hub-api
+# Hub only (requires ../hivecfm-hub directory)
+docker compose build hivecfm-hub-api
+docker compose up -d hivecfm-hub-api
 ```
 
 ## Optional: Configure AI Features
@@ -339,20 +285,16 @@ docker exec hivecfm-core npx prisma migrate deploy
 ### Network label mismatch error
 If you see `network hivecfm-network was found but has incorrect label`:
 ```bash
-# Stop everything, remove network, restart (compose recreates it correctly)
-cd hivecfm-hub && docker compose down
-cd ../hivecfm-core && docker compose down
+docker compose down
 docker network rm hivecfm-network
-cd hivecfm-core && docker compose up -d
-cd ../hivecfm-hub && docker compose up -d
+docker compose up -d
 ```
 > **Important:** Never create the network manually with `docker network create`. Let Docker Compose manage it.
 
-### Hub "connection refused"
-- Ensure Hub containers are on the same network as Core:
-  ```bash
-  docker network inspect hivecfm-network
-  ```
+### Hub "connection refused" or not starting
+- Check Hub logs: `docker logs hivecfm-hub-api`
+- If Hub image not found, ensure `../hivecfm-hub` directory exists with a `Dockerfile`
+- Alternatively, use the pre-built image by removing the `build:` section from docker-compose.yml
 
 ### Port conflicts
 Change ports in the respective `docker-compose.yml`:
