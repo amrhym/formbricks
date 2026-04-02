@@ -266,6 +266,22 @@ services:
       - hivecfm-network
 
   # =============================================================================
+  # HiveCFM Hub Database Init (creates hivecfm_hub DB if not exists)
+  # =============================================================================
+  hivecfm-hub-db-init:
+    image: pgvector/pgvector:pg17
+    container_name: hivecfm-hub-db-init
+    depends_on:
+      postgres:
+        condition: service_healthy
+    environment:
+      PGPASSWORD: ${POSTGRES_PASSWORD:-postgres}
+    entrypoint: ["sh", "-c", "psql -h postgres -U postgres -tc \"SELECT 1 FROM pg_database WHERE datname = 'hivecfm_hub'\" | grep -q 1 || psql -h postgres -U postgres -c 'CREATE DATABASE hivecfm_hub;'; psql -h postgres -U postgres -d hivecfm_hub -c 'CREATE EXTENSION IF NOT EXISTS vector;'; echo 'Hub database ready'"]
+    networks:
+      - hivecfm-network
+    restart: "no"
+
+  # =============================================================================
   # HiveCFM Hub API (Semantic Search + AI Enrichment)
   # =============================================================================
   hivecfm-hub-api:
@@ -278,6 +294,8 @@ services:
     depends_on:
       postgres:
         condition: service_healthy
+      hivecfm-hub-db-init:
+        condition: service_completed_successfully
     environment:
       API_KEY: ${HIVECFM_HUB_API_KEY:-hivecfm-hub-secret-key}
       DATABASE_URL: postgres://postgres:${POSTGRES_PASSWORD:-postgres}@postgres:5432/hivecfm_hub?sslmode=disable
