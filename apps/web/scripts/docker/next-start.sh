@@ -55,8 +55,17 @@ run_with_timeout 60 "SAML database setup" sh -c '(cd packages/database && npm ru
 
 echo "✅ Database setup completed"
 
+# Apply Superset analytics views (after main schema is ready)
+# These views reference tables created by the main Prisma migration, so they must run after.
+if command -v psql >/dev/null 2>&1; then
+  SUPERSET_VIEWS_SQL="packages/database/migration/20260310000000_add_superset_views/migration.sql"
+  if [ -f "$SUPERSET_VIEWS_SQL" ]; then
+    echo "📊 Applying Superset analytics views..."
+    psql "$DATABASE_URL" -f "$SUPERSET_VIEWS_SQL" 2>/dev/null && echo "✅ Superset views applied" || echo "⚠️ Superset views partially applied (non-fatal)"
+  fi
+fi
+
 # Apply RLS policies for multi-tenant isolation (optional, non-fatal)
-# Requires psql client — apply manually via: docker exec hivecfm-postgres psql -U postgres -d hivecfm -f /path/to/script.sql
 if [ -f "scripts/rls/enable-rls.sql" ] && command -v psql >/dev/null 2>&1; then
   echo "🔒 Applying Row Level Security policies..."
   run_with_timeout 60 "RLS enable" sh -c 'psql "$DATABASE_URL" -f scripts/rls/enable-rls.sql' || echo "⚠️ RLS enable failed (non-fatal)"
