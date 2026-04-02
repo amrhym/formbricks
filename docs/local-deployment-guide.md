@@ -42,10 +42,14 @@ git clone https://istnetworksrnd@dev.azure.com/istnetworksrnd/HiveCFM/_git/hivec
 cd hivecfm-core
 ```
 
-Create `.env`:
+Generate and create `.env`:
 
 ```bash
-cat > .env << 'EOF'
+# Generate secure keys
+NEXTAUTH_SECRET=$(openssl rand -hex 32)
+ENCRYPTION_KEY=$(openssl rand -hex 32)
+
+cat > .env << EOF
 # =============================================================================
 # HiveCFM Local Environment Configuration
 # =============================================================================
@@ -60,8 +64,8 @@ REDIS_URL=redis://redis:6379
 # ---- Application ----
 WEBAPP_URL=http://localhost:3000
 NEXTAUTH_URL=http://localhost:3000
-NEXTAUTH_SECRET=local-dev-secret-change-in-production-min32chars
-ENCRYPTION_KEY=local-dev-encryption-key-change-in-production-must-be-64-hex-chars
+NEXTAUTH_SECRET=$NEXTAUTH_SECRET
+ENCRYPTION_KEY=$ENCRYPTION_KEY
 
 # ---- Email (disabled for local) ----
 EMAIL_VERIFICATION_DISABLED=1
