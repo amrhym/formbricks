@@ -141,7 +141,7 @@ docker exec hivecfm-postgres psql -U postgres -c "CREATE DATABASE hivecfm_hub;" 
 
 ```bash
 cd ../hivecfm-hub
-docker compose -f docker-compose.prod.yml up -d
+docker compose up -d
 ```
 
 This starts:
@@ -176,6 +176,7 @@ No license keys, PEM files, or manual activation needed.
 | MinIO Console | http://localhost:9001 | File storage admin |
 | Hub API | http://localhost:8090 | Semantic search API |
 | River UI | http://localhost:8091 | Hub job monitoring |
+| Grafana | http://localhost:3003 | Centralized logs (optional) |
 
 ## Common Operations
 
@@ -183,14 +184,14 @@ No license keys, PEM files, or manual activation needed.
 
 ```bash
 cd hivecfm-core && docker compose down
-cd ../hivecfm-hub && docker compose -f docker-compose.prod.yml down
+cd ../hivecfm-hub && docker compose down
 ```
 
 ### Restart All Services
 
 ```bash
 cd hivecfm-core && docker compose up -d
-cd ../hivecfm-hub && docker compose -f docker-compose.prod.yml up -d
+cd ../hivecfm-hub && docker compose up -d
 ```
 
 ### View Logs
@@ -209,7 +210,7 @@ docker compose -f hivecfm-core/docker-compose.yml logs -f
 ### Full Reset (delete all data)
 
 ```bash
-cd hivecfm-hub && docker compose -f docker-compose.prod.yml down
+cd hivecfm-hub && docker compose down
 cd ../hivecfm-core && docker compose down -v
 docker network rm hivecfm-network
 ```
@@ -224,8 +225,8 @@ docker compose up -d hivecfm-core
 
 # Hub
 cd ../hivecfm-hub
-docker compose -f docker-compose.prod.yml build hub-api
-docker compose -f docker-compose.prod.yml up -d hub-api
+docker compose build hub-api
+docker compose up -d hub-api
 ```
 
 ## Optional: Configure AI Features
@@ -253,7 +254,7 @@ EMBEDDING_MODEL=text-embedding-3-small
 Restart Hub after adding:
 ```bash
 cd hivecfm-hub
-docker compose -f docker-compose.prod.yml up -d hub-api
+docker compose up -d hub-api
 ```
 
 ## Optional: Configure Email (SMTP)
@@ -342,6 +343,211 @@ docker exec hivecfm-minio mc alias set local http://localhost:9000 hivecfm hivec
 docker exec hivecfm-minio mc mb local/hivecfm-uploads --ignore-existing
 ```
 
+## Centralized Logging (Grafana + Loki)
+
+Centralized log aggregation across all HiveCFM services. Search logs from a single web UI instead of checking each container separately.
+
+### Deploy Logging Stack
+
+Create the monitoring directory and configs:
+
+```bash
+mkdir -p monitoring/{loki,promtail,grafana/provisioning/datasources}
+```
+
+**Loki config** (`monitoring/loki/loki-config.yml`):
+
+```yaml
+auth_enabled: false
+
+server:
+  http_listen_port: 3100
+
+common:
+  path_prefix: /loki
+  storage:
+    filesystem:
+      chunks_directory: /loki/chunks
+      rules_directory: /loki/rules
+  replication_factor: 1
+  ring:
+    kvstore:
+      store: inmemory
+
+schema_config:
+  configs:
+    - from: 2020-10-24
+      store: tsdb
+      object_store: filesystem
+      schema: v13
+      index:
+        prefix: index_
+        period: 24h
+
+limits_config:
+  retention_period: 30d
+  max_query_length: 721h
+
+compactor:
+  working_directory: /loki/compactor
+  retention_enabled: true
+  delete_request_store: filesystem
+```
+
+**Promtail config** (`monitoring/promtail/promtail-config.yml`):
+
+```yaml
+server:
+  http_listen_port: 9080
+
+positions:
+  filename: /tmp/positions.yaml
+
+clients:
+  - url: http://loki:3100/loki/api/v1/push
+
+scrape_configs:
+  - job_name: docker
+    docker_sd_configs:
+      - host: unix:///var/run/docker.sock
+        refresh_interval: 5s
+    relabel_configs:
+      - source_labels: ['__meta_docker_container_name']
+        regex: '/(.*)'
+        target_label: 'container'
+      - source_labels: ['__meta_docker_container_log_stream']
+        target_label: 'stream'
+```
+
+**Grafana datasource** (`monitoring/grafana/provisioning/datasources/loki.yml`):
+
+```yaml
+apiVersion: 1
+datasources:
+  - name: Loki
+    type: loki
+    access: proxy
+    url: http://loki:3100
+    isDefault: true
+```
+
+**Docker Compose** (`monitoring/docker-compose.yml`):
+
+```yaml
+services:
+  loki:
+    image: grafana/loki:3.0.0
+    container_name: hivecfm-loki
+    restart: unless-stopped
+    volumes:
+      - ./loki/loki-config.yml:/etc/loki/local-config.yaml
+      - loki-data:/loki
+    command: -config.file=/etc/loki/local-config.yaml
+    networks:
+      - hivecfm-network
+
+  promtail:
+    image: grafana/promtail:3.0.0
+    container_name: hivecfm-promtail
+    restart: unless-stopped
+    volumes:
+      - ./promtail/promtail-config.yml:/etc/promtail/config.yml
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+      - /var/lib/docker/containers:/var/lib/docker/containers:ro
+    command: -config.file=/etc/promtail/config.yml
+    depends_on:
+      - loki
+    networks:
+      - hivecfm-network
+
+  grafana:
+    image: grafana/grafana:11.0.0
+    container_name: hivecfm-grafana
+    restart: unless-stopped
+    ports:
+      - '3003:3000'
+    environment:
+      GF_SECURITY_ADMIN_USER: admin
+      GF_SECURITY_ADMIN_PASSWORD: hivecfm-grafana-2026
+      GF_USERS_ALLOW_SIGN_UP: 'false'
+    volumes:
+      - ./grafana/provisioning:/etc/grafana/provisioning
+      - grafana-data:/var/lib/grafana
+    depends_on:
+      - loki
+    networks:
+      - hivecfm-network
+
+volumes:
+  loki-data:
+  grafana-data:
+
+networks:
+  hivecfm-network:
+    external: true
+```
+
+### Start Logging Stack
+
+```bash
+cd monitoring
+docker compose up -d
+```
+
+### Access Grafana
+
+| Field | Value |
+|-------|-------|
+| **URL** | http://localhost:3003 (local) or https://grafana.your-domain.com (production) |
+| **Username** | `admin` |
+| **Password** | `hivecfm-grafana-2026` |
+
+### Search Logs
+
+1. Open Grafana > **Explore** (compass icon)
+2. Select **Loki** datasource
+3. Use LogQL queries:
+
+| Query | What it shows |
+|-------|---------------|
+| `{container="hivecfm-core"}` | All app logs |
+| `{container="hivecfm-hub-api"}` | Hub API logs |
+| `{container="hivecfm-postgres"}` | Database logs |
+| `{container=~".+"}` | All containers |
+| `{container="hivecfm-core"} \|= "error"` | App errors only |
+| `{container=~".+"} \|= "error" \|!= "tsconfig"` | All errors (excluding noise) |
+| `{container="hivecfm-core"} \| json \| level="error"` | Structured error logs |
+
+### Log Retention
+
+- Default: **30 days** (configured in `loki-config.yml`)
+- Storage: ~50MB per day typical
+- Change retention: edit `retention_period` in Loki config
+
+### Production: Nginx Proxy for Grafana
+
+For production deployments, add an nginx site:
+
+```nginx
+server {
+    listen 443 ssl;
+    server_name grafana.your-domain.com;
+
+    ssl_certificate /etc/letsencrypt/live/grafana.your-domain.com/fullchain.pem;
+    ssl_certificate_key /etc/letsencrypt/live/grafana.your-domain.com/privkey.pem;
+
+    location / {
+        proxy_pass http://127.0.0.1:3003;
+        proxy_http_version 1.1;
+        proxy_set_header Host $http_host;
+        proxy_set_header Upgrade $http_upgrade;
+        proxy_set_header Connection "upgrade";
+    }
+}
+```
+
+Then generate SSL: `sudo certbot certonly --nginx -d grafana.your-domain.com`
+
 ## Architecture
 
 ```
@@ -359,8 +565,10 @@ docker exec hivecfm-minio mc mb local/hivecfm-uploads --ignore-existing
             │  :5432     │ │:6379│ │  :9000     │
             └──────┬─────┘ └─────┘ └───────────┘
                    │
-            ┌──────▼─────────┐
-            │  HiveCFM Hub   │ :8090
-            │  (Go API)      │
-            └────────────────┘
+            ┌──────▼─────────┐    ┌──────────────────┐
+            │  HiveCFM Hub   │    │  Monitoring       │
+            │  (Go API)      │    │  Grafana  :3003   │
+            │  :8090         │    │  Loki     (internal)│
+            └────────────────┘    │  Promtail (internal)│
+                                  └──────────────────┘
 ```
