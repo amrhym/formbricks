@@ -38,10 +38,14 @@ git clone https://istnetworksrnd@dev.azure.com/istnetworksrnd/HiveCFM/_git/hivec
 
 ## Step 2: Create Environment File
 
-Create `.env` in the `hivecfm-core` directory:
+```bash
+cd hivecfm-core
+```
+
+Create `.env`:
 
 ```bash
-cat > hivecfm-core/.env << 'EOF'
+cat > .env << 'EOF'
 # =============================================================================
 # HiveCFM Local Environment Configuration
 # =============================================================================
@@ -88,10 +92,14 @@ EOF
 
 ## Step 3: Create Hub Environment File
 
-Create `.env` in the `hivecfm-hub` directory:
+```bash
+cd ../hivecfm-hub
+```
+
+Create `.env`:
 
 ```bash
-cat > hivecfm-hub/.env << 'EOF'
+cat > .env << 'EOF'
 HUB_API_KEY=hivecfm-hub-secret-key
 POSTGRES_PASSWORD=postgres
 EOF
@@ -108,7 +116,7 @@ docker network create hivecfm-network 2>/dev/null || true
 ## Step 5: Start Core Services
 
 ```bash
-cd hivecfm-core
+cd ../hivecfm-core
 docker compose -f docker-compose.yml up -d
 ```
 
