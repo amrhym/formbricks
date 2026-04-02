@@ -174,7 +174,7 @@ USER nextjs
 
 # Prepare pnpm as the nextjs user to ensure it's available at runtime
 # Prepare volumes for uploads and SAML connections
-RUN corepack prepare pnpm@9.15.9 --activate && \
+RUN corepack enable && corepack prepare pnpm@9.15.9 --activate && \
     mkdir -p /home/nextjs/apps/web/uploads/ && \
     mkdir -p /home/nextjs/apps/web/saml-connection
 
