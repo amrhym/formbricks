@@ -277,7 +277,20 @@ For production, change these values:
 - Ensure you're on the latest `hivecfm-main` branch
 - Run `docker compose down -v && docker compose up -d` for a clean start
 
-### Database migration errors
+### Database migration failed (P3009 error)
+If you see `migrate found failed migrations` or `P3009`:
+```bash
+# Mark the failed migration as resolved
+docker exec hivecfm-postgres psql -U postgres -d hivecfm -c \
+  "UPDATE _prisma_migrations SET finished_at = NOW(), rolled_back_at = NULL, logs = NULL WHERE finished_at IS NULL OR logs IS NOT NULL;"
+
+# Restart the app (it will re-run remaining migrations)
+docker compose restart hivecfm-core
+```
+
+This commonly happens with `20260310000000_add_superset_views` on fresh databases because the migration creates views referencing tables that may not exist yet.
+
+### Database migration general errors
 ```bash
 docker exec hivecfm-core npx prisma migrate deploy
 ```
