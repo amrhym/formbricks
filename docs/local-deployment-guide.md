@@ -14,11 +14,11 @@ Deploy HiveCFM with Hub (semantic search + AI enrichment) on any machine with Do
 mkdir hivecfm && cd hivecfm
 
 # Core application
-git clone https://github.com/amrhym/formbricks.git hivecfm-core
+git clone https://istnetworksrnd@dev.azure.com/istnetworksrnd/HiveCFM/_git/hivecfm-core
 cd hivecfm-core && git checkout hivecfm-main && cd ..
 
 # Hub (semantic search + AI enrichment)
-git clone <hub-repo-url> hivecfm-hub
+git clone https://istnetworksrnd@dev.azure.com/istnetworksrnd/HiveCFM/_git/hivecfm-hub
 ```
 
 ## Step 2: Create Environment File
